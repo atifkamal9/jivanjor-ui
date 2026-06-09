@@ -135,10 +135,10 @@ export default function Navbar() {
   return (
     <header
       id="main-landing-header"
-      className="fixed top-0 left-0 right-0 z-50 w-full h-22 bg-white backdrop-blur-md transition-all duration-300 flex items-center"
+      className="sticky top-0 left-0 right-0 z-50 w-full h-22 bg-white backdrop-blur-md transition-all duration-300 flex items-center"
     >
       <nav className="flex items-center justify-between max-w-7xl mx-auto w-full px-6 font-google-sans relative">
-        <div className="shrink-0">
+        <Link href="/" className="shrink-0">
           <Image
             src="/images/logo.png"
             alt="Jivanjor Logo"
@@ -146,7 +146,7 @@ export default function Navbar() {
             width={120}
             height={72}
           />
-        </div>
+        </Link>
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
           <Link href="#" className="hover:text-primary transition-colors">
             About
@@ -182,7 +182,9 @@ export default function Navbar() {
         {/* Backdrop Overlay with Blur */}
         <div
           className={`fixed top-22 inset-x-0 bottom-0 bg-black/10 backdrop-blur-sm z-40 transition-all duration-300 pointer-events-none ${
-            isProductsOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            isProductsOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
           }`}
           onMouseEnter={handleMouseLeave}
         />
