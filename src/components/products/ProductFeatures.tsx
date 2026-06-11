@@ -122,7 +122,7 @@ export default function ProductFeatures() {
                 <div
                   className={`transition-all duration-300 ease-in-out ${
                     isOpen
-                      ? "max-h-[600px] opacity-100 pb-6"
+                      ? "max-h-150 opacity-100 pb-6"
                       : "max-h-0 opacity-0 pointer-events-none"
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function ProductFeatures() {
 
                     {/* Right: Two side-by-side images */}
                     <div className="flex gap-4 w-full md:w-auto shrink-0 justify-center md:justify-end">
-                      <div className="relative w-[130px] h-[130px] sm:w-[150px] sm:h-[150px] lg:w-[180px] lg:h-[180px] rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                      <div className="relative w-32.5 h-32.5 sm:w-37.5 sm:h-37.5 lg:w-45 lg:h-45 rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
                         <Image
                           src={item.imageA}
                           alt={`${item.title} detail layout`}
@@ -165,7 +165,7 @@ export default function ProductFeatures() {
                           sizes="(max-width: 768px) 130px, 180px"
                         />
                       </div>
-                      <div className="relative w-[130px] h-[130px] sm:w-[150px] sm:h-[150px] lg:w-[180px] lg:h-[180px] rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                      <div className="relative w-32.5 h-32.5 sm:w-37.5 sm:h-37.5 lg:w-45 lg:h-45 rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
                         <Image
                           src={item.imageB}
                           alt={`${item.title} bonding application`}
@@ -207,13 +207,14 @@ export default function ProductFeatures() {
 
         {/* Video Column (On Mobile: goes bottom. On Desktop: goes left) */}
         <div className="order-2 md:order-1 w-full md:w-auto shrink-0 flex justify-center">
-          <div className="relative w-full max-w-[440px] aspect-video sm:aspect-16/10 md:aspect-video rounded-[24px] overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
+          <div className="relative w-full max-w-110 aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
             {/* Background image mockup for video */}
             <Image
-              src="/images/Professional.png"
+              src="/images/Rectangle 4.png"
               alt="Supremo wood bonding video"
-              fill
-              className="object-cover"
+              width={800}
+              height={450}
+              className="object-cover w-full h-full"
               sizes="(max-width: 768px) 100vw, 440px"
             />
             {/* Center play icon overlay */}

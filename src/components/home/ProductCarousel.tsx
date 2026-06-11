@@ -47,7 +47,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
     "bg-[#0083CB]",
     "bg-[#077937]",
     "bg-[#F57F26]",
-    "bg-[#007B8A]",
+    "bg-[#0498AA]",
   ];
 
   const defaultProductCards = [
@@ -85,7 +85,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
       title: "Watershield",
       description:
         "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-      color: "bg-[#007B8A]",
+      color: "bg-[#0498AA]",
       badge: "Eco Friendly",
       image: "/images/Watershield.png",
       ctaText: "",

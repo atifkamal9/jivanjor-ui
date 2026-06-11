@@ -110,9 +110,9 @@ export default function ProductInfo() {
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-16">
       {/* Tab bar header pill container */}
-      <div className="flex items-center overflow-x-auto pb-4 mb-8 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-none">
+      <div className="hidden md:flex items-center overflow-x-auto pb-4 px-6 md:mx-0 md:px-0 scrollbar-none">
         <div
-          className="flex items-center bg-white rounded-full p-1.5 shadow-xs max-w-4xl mx-auto gap-1 md:gap-2 shrink-0"
+          className="flex items-center bg-white rounded-full my-10 p-1.5 max-w-4xl mx-auto gap-1 md:gap-2 shrink-0"
           style={{
             boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
           }}
@@ -126,7 +126,7 @@ export default function ProductInfo() {
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
                   isActive
                     ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
-                    : "text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50"
+                    : "hover:bg-surface transition-colors"
                 }`}
               >
                 {tab.icon}
@@ -138,12 +138,12 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div className="bg-[#F6F6F6] rounded-[28px] p-6 sm:p-10 lg:p-12 shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300">
+      <div className="bg-surface rounded-[28px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300">
         {/* ==================== 1. OVERVIEW TAB ==================== */}
         {activeTab === "Overview" && (
           <div className="space-y-10">
             {/* Centered link icon & tagline */}
-            <div className="flex flex-col items-center text-center max-w-3xl mx-auto space-y-4">
+            <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
               <div className="text-[#A31652]">
                 {/* Custom Interlocking Infinity Loop */}
                 <svg
@@ -167,7 +167,7 @@ export default function ProductInfo() {
             </div>
 
             {/* Split specifications grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 pt-4 border-t border-neutral-200/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12 pt-4 border-t border-neutral-200/50">
               {/* Left Column: Technical Specifications */}
               <div>
                 <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300/80 mb-6 font-medium">
@@ -247,7 +247,7 @@ export default function ProductInfo() {
             </div>
 
             {/* Bottom USP Section (Rounded Teal box) */}
-            <div className="bg-[#007B8A] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
+            <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
                 {/* USP 1 */}
                 <div className="text-center space-y-3">
@@ -439,7 +439,7 @@ export default function ProductInfo() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#007B8A]">
+                <h4 className="font-bold text-lg text-[#0498AA]">
                   1. Fast Drying & Strong Bond
                 </h4>
                 <p className="text-neutral-600 text-sm leading-relaxed">
@@ -449,7 +449,7 @@ export default function ProductInfo() {
                 </p>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#007B8A]">
+                <h4 className="font-bold text-lg text-[#0498AA]">
                   2. Excellent Moisture Resistance
                 </h4>
                 <p className="text-neutral-600 text-sm leading-relaxed">
@@ -459,7 +459,7 @@ export default function ProductInfo() {
                 </p>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#007B8A]">
+                <h4 className="font-bold text-lg text-[#0498AA]">
                   3. Superior Coverage Ratio
                 </h4>
                 <p className="text-neutral-600 text-sm leading-relaxed">
@@ -469,7 +469,7 @@ export default function ProductInfo() {
                 </p>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#007B8A]">
+                <h4 className="font-bold text-lg text-[#0498AA]">
                   4. Safe & Odourless Application
                 </h4>
                 <p className="text-neutral-600 text-sm leading-relaxed">

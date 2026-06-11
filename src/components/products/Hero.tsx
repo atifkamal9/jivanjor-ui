@@ -54,7 +54,7 @@ export default function Hero() {
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
-        <div className="order-2 md:order-1 w-full md:w-[40%] bg-[#007B8A] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
+        <div className="order-2 md:order-1 w-full md:w-[40%] bg-[#0498AA] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
           {/* Product Title using Serif Amethysta font */}
           <h1 className="font-amethysta text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">
             Watershield
@@ -126,7 +126,7 @@ export default function Hero() {
           {/* Enquire Now pill button */}
           <Link
             href="#"
-            className="w-full max-w-xs md:w-auto bg-white text-[#007B8A] font-bold text-center px-8 py-3 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-base"
+            className="w-full max-w-xs md:w-auto bg-white text-[#0498AA] font-bold text-center px-8 py-3 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-base"
           >
             Enquire Now
           </Link>
@@ -148,7 +148,7 @@ export default function Hero() {
 
           {/* Mobile Kitchen Backdrop Image */}
           <Image
-            src="/images/Rectangle 5 (1).png"
+            src="/images/Rectangle 149 (1).png"
             alt="Kitchen background mobile"
             fill
             priority
