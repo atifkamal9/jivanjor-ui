@@ -31,15 +31,24 @@ interface ProductCarouselProps {
 
 function mapProductImage(name: string, fallbackUrl?: string) {
   const n = name.toLowerCase();
-  if (n.includes("champion") || n.includes("super")) return "/images/Champion Super.png";
-  if (n.includes("aquabond") || n.includes("aqua")) return "/images/Aquabond.png";
-  if (n.includes("foambond") || n.includes("foam")) return "/images/Foambond.png";
-  if (n.includes("watershield") || n.includes("water") || n.includes("shield")) return "/images/Watershield.png";
+  if (n.includes("champion") || n.includes("super"))
+    return "/images/Champion Super.png";
+  if (n.includes("aquabond") || n.includes("aqua"))
+    return "/images/Aquabond.png";
+  if (n.includes("foambond") || n.includes("foam"))
+    return "/images/Foambond.png";
+  if (n.includes("watershield") || n.includes("water") || n.includes("shield"))
+    return "/images/Watershield.png";
   return fallbackUrl || "/images/Champion Super.png";
 }
 
 export default function ProductCarousel({ items }: ProductCarouselProps) {
-  const colors = ["bg-[#0083CB]", "bg-[#077937]", "bg-[#F57F26]", "bg-[#007B8A]"];
+  const colors = [
+    "bg-[#0083CB]",
+    "bg-[#077937]",
+    "bg-[#F57F26]",
+    "bg-[#007B8A]",
+  ];
 
   const defaultProductCards = [
     {
@@ -84,17 +93,21 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
     },
   ];
 
-  const cards = items && items.length > 0
-    ? items.map((item, idx) => ({
-      title: item.title || item.name || "",
-      description: item.description || "",
-      color: item.color || colors[idx % colors.length],
-      badge: item.tag || item.badge || "",
-      image: mapProductImage(item.title || item.name || "", item.imageUrl || item.image),
-      ctaText: item.cta?.text || "",
-      ctaLink: item.cta?.actionPath || "",
-    }))
-    : defaultProductCards;
+  const cards =
+    items && items.length > 0
+      ? items.map((item, idx) => ({
+          title: item.title || item.name || "",
+          description: item.description || "",
+          color: item.color || colors[idx % colors.length],
+          badge: item.tag || item.badge || "",
+          image: mapProductImage(
+            item.title || item.name || "",
+            item.imageUrl || item.image,
+          ),
+          ctaText: item.cta?.text || "",
+          ctaLink: item.cta?.actionPath || "",
+        }))
+      : defaultProductCards;
 
   return (
     <section className="w-full">
@@ -103,7 +116,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         watchOverflow={false}
         loop={false}
         spaceBetween={16}
-        slidesPerView={1.2}
+        slidesPerView={1}
         navigation={{
           prevEl: ".product-prev",
           nextEl: ".product-next",
@@ -111,7 +124,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         }}
         breakpoints={{
           480: {
-            slidesPerView: 1.5,
+            slidesPerView: 1,
             spaceBetween: 20,
           },
           768: {
@@ -130,7 +143,10 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         className="overflow-visible!"
       >
         {cards.map((card, idx) => (
-          <SwiperSlide key={`${card.title}-${idx}`} className="overflow-visible! px-1">
+          <SwiperSlide
+            key={`${card.title}-${idx}`}
+            className="overflow-visible! px-1"
+          >
             <div className="relative pt-24">
               {/* Floating image */}
               <Image

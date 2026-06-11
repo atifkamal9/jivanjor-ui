@@ -137,9 +137,8 @@ export default function MobileNav({ onClose }: MobileNavProps) {
               ) : (
                 <ChevronDown
                   size={20}
-                  className={`transition-transform duration-300 ${
-                    isExpanded ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
+                    }`}
                 />
               )}
             </button>

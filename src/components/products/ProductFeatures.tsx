@@ -1,0 +1,239 @@
+"use client";
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+interface AccordionItem {
+  title: string;
+  description: string;
+  imageA: string;
+  imageB: string;
+}
+
+const ACCORDION_ITEMS: AccordionItem[] = [
+  {
+    title: "Laminate to Plywood Bonding",
+    description:
+      "Supremo is suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.",
+    imageA: "/images/Rectangle 34.png",
+    imageB: "/images/Rectangle 34 (1).png",
+  },
+  {
+    title: "Wood to Wood Joinery",
+    description:
+      "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.",
+    imageA: "/images/Rectangle 35.png",
+    imageB: "/images/Rectangle 30.png",
+  },
+  {
+    title: "Plywood, Veneer & Boards",
+    description:
+      "Ideal for cold pressing veneers and decorative laminates on MDF, HDF, and blockboards. Minimizes warp and swelling.",
+    imageA: "/images/Rectangle 37.png",
+    imageB: "/images/Rectangle 79.png",
+  },
+  {
+    title: "Furniture Manufacturing",
+    description:
+      "Preferred by OEM factories for commercial assemblies, dining sets, premium tables, and modern office desks.",
+    imageA: "/images/Rectangle 110.png",
+    imageB: "/images/Rectangle 111.png",
+  },
+  {
+    title: "Wooden Cabinets & Boxes",
+    description:
+      "Perfect for modular cabinets, wardrobes, kitchen shelves, drawer joints, and premium storage boxes.",
+    imageA: "/images/Rectangle 34.png",
+    imageB: "/images/Rectangle 35.png",
+  },
+];
+
+export default function ProductFeatures() {
+  const [openIndex, setOpenIndex] = useState<number>(0);
+
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? -1 : index);
+  };
+
+  return (
+    <section className="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-20 space-y-16 lg:space-y-24">
+      {/* ========================================== */}
+      {/* 1. ACCORDION SECTION (TASK AT HAND) */}
+      {/* ========================================== */}
+      <div className="space-y-8">
+        {/* Header content with link icon */}
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="text-neutral-800 flex justify-center">
+            {/* Custom Infinity Link SVG */}
+            <svg
+              className="w-7 h-7"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth="2.5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+              />
+            </svg>
+          </div>
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+            Engineered for the Task at Hand
+          </h2>
+          <p className="text-sm sm:text-base text-neutral-500 leading-relaxed">
+            Explore where Supremo fits across furniture, laminates, plywood,
+            boards and professional woodwork applications.
+          </p>
+        </div>
+
+        {/* Accordion List */}
+        <div className="w-full max-w-4xl mx-auto border-b border-neutral-300">
+          {ACCORDION_ITEMS.map((item, idx) => {
+            const isOpen = openIndex === idx;
+            return (
+              <div
+                key={item.title}
+                className="border-t border-neutral-300 overflow-hidden"
+              >
+                {/* Header row click button */}
+                <button
+                  onClick={() => toggleAccordion(idx)}
+                  className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none"
+                >
+                  <span className="font-amethysta text-xl sm:text-2xl lg:text-3xl text-neutral-800 group-hover:text-primary transition-colors duration-200">
+                    {item.title}
+                  </span>
+
+                  {/* Indicator Toggle icon */}
+                  {isOpen ? (
+                    <span className="text-[#ed1c24] text-2xl lg:text-3xl font-light select-none leading-none pr-1">
+                      &times;
+                    </span>
+                  ) : (
+                    <span className="text-neutral-400 group-hover:text-neutral-600 text-2xl lg:text-3xl font-light select-none leading-none pr-1 transition-colors">
+                      +
+                    </span>
+                  )}
+                </button>
+
+                {/* Animated expandable content block */}
+                <div
+                  className={`transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "max-h-[600px] opacity-100 pb-6"
+                      : "max-h-0 opacity-0 pointer-events-none"
+                  }`}
+                >
+                  <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
+                    {/* Left: Text & explore link */}
+                    <div className="flex-1 space-y-4 max-w-md">
+                      <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
+                        {item.description}
+                      </p>
+
+                      {/* Explore Link */}
+                      <Link
+                        href="#"
+                        className="inline-flex items-center gap-1.5 font-bold text-xs sm:text-sm text-neutral-800 hover:text-primary transition-colors group/link cursor-pointer"
+                      >
+                        <span>Explore More</span>
+                        {/* Red circular arrow */}
+                        <svg
+                          className="w-5 h-5 text-[#ed1c24] transform group-hover/link:translate-x-0.5 transition-transform"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </Link>
+                    </div>
+
+                    {/* Right: Two side-by-side images */}
+                    <div className="flex gap-4 w-full md:w-auto shrink-0 justify-center md:justify-end">
+                      <div className="relative w-[130px] h-[130px] sm:w-[150px] sm:h-[150px] lg:w-[180px] lg:h-[180px] rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                        <Image
+                          src={item.imageA}
+                          alt={`${item.title} detail layout`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 130px, 180px"
+                        />
+                      </div>
+                      <div className="relative w-[130px] h-[130px] sm:w-[150px] sm:h-[150px] lg:w-[180px] lg:h-[180px] rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                        <Image
+                          src={item.imageB}
+                          alt={`${item.title} bonding application`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 130px, 180px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================== */}
+      {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
+      {/* ========================================== */}
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16 max-w-4xl mx-auto pt-6 border-t border-neutral-100">
+        {/* On Mobile: text goes top. On Desktop: text goes right */}
+        {/* Text Details Column */}
+        <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 max-w-md">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+            See Supremo in Action
+          </h2>
+          <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
+            Watch how trade professionals achieve flawless, high-coverage
+            laminate bonding in record time.
+          </p>
+          <Link
+            href="#"
+            className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-tr from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
+          >
+            Partner With Us
+          </Link>
+        </div>
+
+        {/* Video Column (On Mobile: goes bottom. On Desktop: goes left) */}
+        <div className="order-2 md:order-1 w-full md:w-auto shrink-0 flex justify-center">
+          <div className="relative w-full max-w-[440px] aspect-video sm:aspect-16/10 md:aspect-video rounded-[24px] overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
+            {/* Background image mockup for video */}
+            <Image
+              src="/images/Professional.png"
+              alt="Supremo wood bonding video"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 440px"
+            />
+            {/* Center play icon overlay */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+              <button
+                className="w-14 h-14 bg-white/95 hover:bg-white text-neutral-800 rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                aria-label="Play video"
+              >
+                {/* Play Triangle SVG */}
+                <svg
+                  className="w-5 h-5 text-neutral-800 ml-0.5 fill-current"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
