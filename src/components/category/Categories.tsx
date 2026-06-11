@@ -104,7 +104,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
-        color: "bg-[#007B8A]",
+        color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
         features: [
@@ -159,7 +159,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
-        color: "bg-[#007B8A]",
+        color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
         features: [

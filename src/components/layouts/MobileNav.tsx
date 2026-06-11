@@ -21,6 +21,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
     { label: "About", href: "#" },
     {
       label: "Products",
+      href: "/products",
       children: [
         {
           label: "Super Premium Adhesive",
@@ -115,13 +116,14 @@ export default function MobileNav({ onClose }: MobileNavProps) {
               {item.label}
             </Link>
           ) : (
-            <button
+            <Link
+              href={item.href ?? "#"}
               onClick={() => toggleExpandItem(item.label, level)}
               className={`w-full text-left ${verticalPadding} ${textClasses} hover:text-primary transition-colors duration-200`}
               style={{ paddingLeft: `${paddingLeft}px` }}
             >
               {item.label}
-            </button>
+            </Link>
           )}
           {hasChildren && (
             <button
@@ -137,8 +139,9 @@ export default function MobileNav({ onClose }: MobileNavProps) {
               ) : (
                 <ChevronDown
                   size={20}
-                  className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""
-                    }`}
+                  className={`transition-transform duration-300 ${
+                    isExpanded ? "rotate-180" : ""
+                  }`}
                 />
               )}
             </button>

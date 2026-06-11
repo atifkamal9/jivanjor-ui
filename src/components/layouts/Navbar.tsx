@@ -177,6 +177,14 @@ export default function Navbar() {
           <Link href="#" className="hover:text-primary transition-colors">
             Contact
           </Link>
+          <Link href="#" className="hover:scale-110 transition-colors">
+            <Image
+              src="/images/whatsapp-icon.svg"
+              alt="Enquire Now"
+              width={34}
+              height={34}
+            />
+          </Link>
         </div>
 
         {/* Backdrop Overlay with Blur */}
@@ -274,30 +282,39 @@ export default function Navbar() {
           {/* Bottom brand gradient strip */}
           <div className="w-full h-8 bg-linear-to-r from-[#FF0009] to-[#772571]" />
         </div>
-
-        <button
-          onClick={toggleMenu}
-          className="lg:hidden mr-2 relative transition-colors z-60 cursor-pointer"
-          aria-label="Toggle menu"
-        >
-          <div className="flex flex-col items-end justify-between w-6 h-4.5">
-            <span
-              className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
-                open ? "rotate-45 translate-y-2" : ""
-              }`}
-            ></span>
-            <span
-              className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
-                open ? "opacity-0" : ""
-              }`}
-            ></span>
-            <span
-              className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
-                open ? "-rotate-45 -translate-y-2" : ""
-              }`}
-            ></span>
-          </div>
-        </button>
+        <div className="flex items-center gap-2 lg:hidden mr-2">
+          <Link href="#" className="hover:scale-110 transition-colors">
+            <Image
+              src="/images/whatsapp-icon.svg"
+              alt="Enquire Now"
+              width={28}
+              height={28}
+            />
+          </Link>
+          <button
+            onClick={toggleMenu}
+            className="relative transition-colors z-60 cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            <div className="flex flex-col items-end justify-between w-6 h-4.5">
+              <span
+                className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
+                  open ? "rotate-45 translate-y-2" : ""
+                }`}
+              ></span>
+              <span
+                className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
+                  open ? "opacity-0" : ""
+                }`}
+              ></span>
+              <span
+                className={`block h-0.5 w-full bg-primary transition-all duration-300 ${
+                  open ? "-rotate-45 -translate-y-2" : ""
+                }`}
+              ></span>
+            </div>
+          </button>
+        </div>
         {open ? <MobileNav onClose={() => setOpen(false)} /> : null}
       </nav>
     </header>

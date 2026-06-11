@@ -25,7 +25,7 @@ export default function RightChoice() {
             </p>
             <a
               href={`ctaLink`}
-              className="inline-flex items-center justify-center font-medium text-base rounded-full min-w-50 px-6 py-2 border border-spacing-1.5 border-white text-center hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center font-medium text-base rounded-full min-w-50 px-6 py-2 bg-white text-foreground text-center transition-colors hover:scale-105"
             >
               Submit Your Query
             </a>
