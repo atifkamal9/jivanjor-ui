@@ -1,11 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 
 export default function Hero() {
   return (
     <>
       {/* 1. MOBILE BREADCRUMBS (Only visible on mobile/tablet, hidden on desktop) */}
-      <div className="md:hidden flex items-center gap-2 px-6 py-4 border-b border-neutral-100 text-sm font-medium">
+      <div className="md:hidden flex items-center gap-1.5 px-6 py-4 border-b border-neutral-100 text-sm font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
           <svg
@@ -17,27 +18,11 @@ export default function Hero() {
           </svg>
         </Link>
         {/* Chevron separator */}
-        <svg
-          className="w-3 h-3 text-neutral-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2.5"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-neutral-500 font-normal">Waterproof Grade</span>
+        <ChevronRight size={16} />
+        <span className="text-foreground/80 font-normal">Waterproof Grade</span>
         {/* Chevron separator */}
-        <svg
-          className="w-3 h-3 text-neutral-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2.5"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-black">Watershield</span>
+        <ChevronRight size={16} />
+        <span className="">Watershield</span>
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}

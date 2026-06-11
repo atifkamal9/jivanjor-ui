@@ -35,3 +35,5 @@ export default function RightChoice() {
     </section>
   );
 }
+
+// Product page will not be directly opened from the homepage cards, so we can use this component to direct users to the product page for more details and information about the product range. This will be placed at the bottom of the product page, after all the product details, features, specifications, etc.
