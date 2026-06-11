@@ -1,8 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, ThumbsUp } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronRightCircle,
+  ThumbsUp,
+} from "lucide-react";
 
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -193,19 +198,47 @@ const CATEGORIES_DATA: CategoryData[] = [
   },
 ];
 
-export default function Categories() {
+export default function ProductCategories() {
   const [activeCategory, setActiveCategory] = useState(
     "Water Proof Grade Adhesive",
   );
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleNextCategory = () => {
+    const currentIndex = CATEGORIES_DATA.findIndex(
+      (c) => c.name === activeCategory,
+    );
+    const nextIndex = (currentIndex + 1) % CATEGORIES_DATA.length;
+    setActiveCategory(CATEGORIES_DATA[nextIndex].name);
+  };
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const activeIndex = CATEGORIES_DATA.findIndex(
+        (c) => c.name === activeCategory,
+      );
+      const activeElement = scrollContainerRef.current.children[
+        activeIndex
+      ] as HTMLElement;
+
+      if (activeElement) {
+        scrollContainerRef.current.scrollTo({
+          left:
+            activeElement.offsetLeft - scrollContainerRef.current.offsetLeft,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [activeCategory]);
 
   const currentCategoryData =
     CATEGORIES_DATA.find((c) => c.name === activeCategory) ||
     CATEGORIES_DATA[3];
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-7xl mx-auto my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
+    <section className="flex flex-col lg:flex-row justify-between max-w-7xl mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
       {/* Sidebar Categories Panel */}
-      <div className="space-y-6 lg:w-[320px] shrink-0">
+      <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0">
         <h2 className="text-2xl font-bold tracking-tight">Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {CATEGORIES_DATA.map((cat) => {
@@ -235,15 +268,51 @@ export default function Categories() {
           })}
         </div>
       </div>
+      {/* Mobile categories tabs */}
+      <div className="flex lg:hidden items-center gap-3 my-4 w-full">
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+          .scrollbar-none::-webkit-scrollbar {
+            display: none;
+          }
+        `,
+          }}
+        />
+        <div
+          ref={scrollContainerRef}
+          className="flex-1 flex gap-3 overflow-x-auto scroll-smooth scrollbar-none"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {CATEGORIES_DATA.map((cat) => {
+            const isActive = activeCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                onClick={() => setActiveCategory(cat.name)}
+                className={`${isActive ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white" : "bg-surface"} cursor-pointer font-medium px-2 py-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-6px)] text-center truncate`}
+              >
+                {cat.name}
+              </button>
+            );
+          })}
+        </div>
+        <button
+          onClick={handleNextCategory}
+          className="cursor-pointer focus:outline-none hover:scale-105 active:scale-95 transition-all shrink-0"
+        >
+          <ChevronRightCircle size={24} className="text-[#FF0009]" />
+        </button>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 space-y-8 min-w-0">
         {/* Category Heading & Description */}
-        <div className="space-y-4">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
+        <div className="space-y-4 text-center">
+          <h1 className="text-4xl sm:text-5xl tracking-tight leading-tight">
             {currentCategoryData.title}
           </h1>
-          <p className="text-lg sm:text-xl text-neutral-600 leading-relaxed font-light">
+          <p className="text-lg sm:text-xl leading-relaxed font-light">
             {currentCategoryData.description}
           </p>
         </div>
@@ -266,7 +335,7 @@ export default function Categories() {
                 slidesPerView: 1,
               },
               640: {
-                slidesPerView: 1,
+                slidesPerView: 2,
               },
               1024: {
                 slidesPerView: Math.min(2, currentCategoryData.products.length),
@@ -280,15 +349,16 @@ export default function Categories() {
                 className="overflow-visible! py-1"
               >
                 {/* Responsive Design: Floating 3D card layout */}
-                <div className="relative pt-16 w-full max-w-105 mx-auto lg:mx-0">
+                <div className="relative pt-16 w-full max-w-60 md:max-w-105 mx-auto lg:mx-0">
                   {/* Card Main Body */}
-                  <div
-                    className={`${card.color} rounded-[28px] p-4 md:p-6 lg:p-8 text-white flex flex-col justify-between gap-4 shadow-[0_15px_30px_rgba(0,0,0,0.15)] transition-transform hover:scale-[1.01] duration-300`}
+                  <Link
+                    href={`/products`}
+                    className={`${card.color} rounded-3xl p-6 lg:p-8 text-white flex flex-col justify-between gap-4 shadow-[0_15px_30px_rgba(0,0,0,0.15)] transition-transform hover:scale-[1.01] duration-300`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
-                    <div className="flex flex-col xl:flex-row gap-3 items-start">
+                    <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
                       {/* Floating image wrapper */}
-                      <div className="relative w-32 h-32 sm:w-36 sm:h-36 -mt-16 ml-0 lg:-ml-6 shrink-0">
+                      <div className="absolute top-0 left-1/2 xl:left-1/6 -translate-x-1/2 -translate-y-1/2 w-40 h-40 xl:w-34 xl:h-34 object-contain z-100">
                         <Image
                           src={card.image}
                           alt={card.title}
@@ -299,13 +369,13 @@ export default function Categories() {
                       </div>
 
                       {/* Header content */}
-                      <div className="flex-1 min-w-0 pt-1">
-                        <h3 className="text-2xl lg:text-3xl font-bold tracking-wide">
+                      <div className="flex flex-1 flex-col items-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-24 xl:pt-2">
+                        <h3 className="text-2xl lg:text-3xl font-bold tracking-wide xl:text-right">
                           {card.title}
                         </h3>
                         {/* Custom White Divider */}
-                        <div className="w-24 sm:w-28 h-px bg-white my-3 opacity-90" />
-                        <p className="text-xs sm:text-sm opacity-90 leading-snug font-medium">
+                        <div className="w-full max-w-34 h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
+                        <p className="text-center xl:text-right text-xs sm:text-sm opacity-90 leading-snug font-normal">
                           {card.description}
                         </p>
                       </div>
@@ -314,7 +384,10 @@ export default function Categories() {
                     {/* Bottom Row: Feature Bullet points */}
                     <div className="space-y-3.5">
                       {card.features.map((feature, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-3">
+                        <div
+                          key={fIdx}
+                          className="hidden xl:flex items-center gap-3"
+                        >
                           {/* Premium SVG Custom Icons */}
                           <div className="shrink-0 text-white opacity-95">
                             {fIdx === 0 && (
@@ -361,7 +434,7 @@ export default function Categories() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </SwiperSlide>
             ))}

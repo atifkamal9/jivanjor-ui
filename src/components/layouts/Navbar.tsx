@@ -157,7 +157,7 @@ export default function Navbar() {
             onMouseLeave={handleMouseLeave}
           >
             <Link
-              href="/products"
+              href="/categories"
               className={`flex items-center gap-1 cursor-pointer transition-colors ${
                 isProductsOpen ? "text-[#FF0009]" : "hover:text-primary"
               }`}
@@ -189,7 +189,7 @@ export default function Navbar() {
 
         {/* Backdrop Overlay with Blur */}
         <div
-          className={`fixed top-22 inset-x-0 bottom-0 bg-black/10 backdrop-blur-sm z-40 transition-all duration-300 pointer-events-none ${
+          className={`fixed top-22 inset-x-0 bottom-0 bg-black/10 backdrop-blur-sm transition-all duration-300 pointer-events-none overflow-hidden z-1000 ${
             isProductsOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
@@ -221,7 +221,8 @@ export default function Navbar() {
               {/* Left Column: Categories List */}
               <div className="col-span-4 flex flex-col pt-2 pr-6">
                 {productCategories.map((cat) => (
-                  <button
+                  <Link
+                    href={`/categories#${cat.name.toLowerCase().replace(/\s+/g, "-")}`}
                     key={cat.name}
                     onMouseEnter={() => setActiveCategory(cat.name)}
                     onClick={() => setActiveCategory(cat.name)}
@@ -232,7 +233,7 @@ export default function Navbar() {
                     }`}
                   >
                     {cat.name}
-                  </button>
+                  </Link>
                 ))}
               </div>
 
