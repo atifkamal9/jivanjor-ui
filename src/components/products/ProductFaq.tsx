@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { RightChoice } from "../category";
 
 interface FaqItem {
   question: string;
@@ -39,92 +40,93 @@ export default function ProductFaq() {
   };
 
   return (
-    <section className="bg-surface max-w-7xl mx-6 xl:mx-auto p-12 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl">
-      {/* ========================================== */}
-      {/* 1. FAQS ACCORDION SECTION */}
-      {/* ========================================== */}
-      <div className="space-y-8">
-        {/* Header content with link icon */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="text-neutral-800 flex justify-center">
-            {/* Custom Link icon */}
-            <svg
-              className="w-7 h-7"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
+    <>
+      <section className="bg-surface max-w-7xl mx-6 xl:mx-auto p-12 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl">
+        {/* ========================================== */}
+        {/* 1. FAQS ACCORDION SECTION */}
+        {/* ========================================== */}
+        <div className="space-y-8">
+          {/* Header content with link icon */}
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <div className="text-neutral-800 flex justify-center">
+              {/* Custom Link icon */}
+              <svg
+                className="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth="2.5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                />
+              </svg>
+            </div>
+            <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+              FAQs
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-500 leading-relaxed">
+              Find quick answers about product use, coverage, setting time, pack
+              sizes and technical details.
+            </p>
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
-            FAQs
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-500 leading-relaxed">
-            Find quick answers about product use, coverage, setting time, pack
-            sizes and technical details.
-          </p>
-        </div>
 
-        {/* FAQs Container Card */}
-        <div className="border border-neutral-100/50 shadow-2xs max-w-4xl mx-auto">
-          <div className="w-full border-b border-neutral-300">
-            {FAQ_ITEMS.map((item, idx) => {
-              const isOpen = openIndex === idx;
-              return (
-                <div
-                  key={item.question}
-                  className="border-t border-neutral-300 overflow-hidden"
-                >
-                  {/* Accordion header button */}
-                  <button
-                    onClick={() => toggleAccordion(idx)}
-                    className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none gap-4"
-                  >
-                    <span className="font-amethysta text-lg sm:text-xl lg:text-2xl text-neutral-800 group-hover:text-primary transition-colors duration-200">
-                      {item.question}
-                    </span>
-
-                    {/* Toggle Icon */}
-                    {isOpen ? (
-                      <span className="text-[#ed1c24] text-xl sm:text-2xl font-light select-none pr-1">
-                        &times;
-                      </span>
-                    ) : (
-                      <span className="text-neutral-400 group-hover:text-neutral-600 text-xl sm:text-2xl font-light select-none pr-1">
-                        +
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Expandable answer panel */}
+          {/* FAQs Container Card */}
+          <div className="border border-neutral-100/50 shadow-2xs max-w-4xl mx-auto">
+            <div className="w-full border-b border-neutral-300">
+              {FAQ_ITEMS.map((item, idx) => {
+                const isOpen = openIndex === idx;
+                return (
                   <div
-                    className={`transition-all duration-300 ease-in-out ${
-                      isOpen
-                        ? "max-h-75 opacity-100 pb-5"
-                        : "max-h-0 opacity-0 pointer-events-none"
-                    }`}
+                    key={item.question}
+                    className="border-t border-neutral-300 overflow-hidden"
                   >
-                    <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
-                      {item.answer}
-                    </p>
+                    {/* Accordion header button */}
+                    <button
+                      onClick={() => toggleAccordion(idx)}
+                      className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none gap-4"
+                    >
+                      <span className="font-amethysta text-lg sm:text-xl lg:text-2xl text-neutral-800 group-hover:text-primary transition-colors duration-200">
+                        {item.question}
+                      </span>
+
+                      {/* Toggle Icon */}
+                      {isOpen ? (
+                        <span className="text-[#ed1c24] text-xl sm:text-2xl font-light select-none pr-1">
+                          &times;
+                        </span>
+                      ) : (
+                        <span className="text-neutral-400 group-hover:text-neutral-600 text-xl sm:text-2xl font-light select-none pr-1">
+                          +
+                        </span>
+                      )}
+                    </button>
+
+                    {/* Expandable answer panel */}
+                    <div
+                      className={`transition-all duration-300 ease-in-out ${
+                        isOpen
+                          ? "max-h-75 opacity-100 pb-5"
+                          : "max-h-0 opacity-0 pointer-events-none"
+                      }`}
+                    >
+                      <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed font-light">
+                        {item.answer}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ========================================== */}
-      {/* 2. BOTTOM GRADIENT CTA BANNER */}
-      {/* ========================================== */}
-      {/* <div className="relative bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-[28px] overflow-hidden shadow-md p-8 sm:p-12 max-w-6xl mx-auto">
+        {/* ========================================== */}
+        {/* 2. BOTTOM GRADIENT CTA BANNER */}
+        {/* ========================================== */}
+        {/* <div className="relative bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-[28px] overflow-hidden shadow-md p-8 sm:p-12 max-w-6xl mx-auto">
         <div className="absolute inset-y-0 left-0 w-full md:w-[60%] pointer-events-none opacity-20 z-0">
           <Image
             src="/images/watermark-1.png"
@@ -154,6 +156,8 @@ export default function ProductFaq() {
           </Link>
         </div>
       </div> */}
-    </section>
+      </section>
+      <RightChoice />
+    </>
   );
 }
