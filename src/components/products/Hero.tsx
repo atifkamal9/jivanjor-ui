@@ -39,7 +39,7 @@ export default function Hero() {
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
-        <div className="order-2 md:order-1 w-full md:w-[40%] bg-[#0498AA] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
+        <div className="order-2 md:order-1 w-full md:w-2/5 bg-[#0498AA] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
           {/* Product Title using Serif Amethysta font */}
           <h1 className="font-amethysta text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">
             Watershield
