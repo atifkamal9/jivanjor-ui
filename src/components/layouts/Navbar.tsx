@@ -157,7 +157,7 @@ export default function Navbar() {
             onMouseLeave={handleMouseLeave}
           >
             <Link
-              href="#"
+              href="/products"
               className={`flex items-center gap-1 cursor-pointer transition-colors ${
                 isProductsOpen ? "text-[#FF0009]" : "hover:text-primary"
               }`}
