@@ -14,11 +14,11 @@ export default function RightChoice() {
             className="w-full h-full object-cover object-center"
           />
         </div>
-        <div className="mx-auto max-w-7xl justify-center space-y-6 p-10">
+        <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-7xl space-y-6 p-10">
           <h2 className="font-amethysta text-4xl md:text-[42px]">
             Need Help Choosing the Right Adhesive?
           </h2>
-          <div className="flex flex-col items-start justify-between lg:flex-row gap-4">
+          <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-4">
             <p className="text-2xl max-w-3xl font-google-sans leading-relaxed">
               Share your woodwork needs, product query or application concerns.
               Our team will help you find the right Jivanjor solution.

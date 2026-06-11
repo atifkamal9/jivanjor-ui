@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState } from "react";
 
 type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
@@ -138,39 +139,33 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div className="bg-surface rounded-[28px] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300">
+      <div className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300">
         {/* ==================== 1. OVERVIEW TAB ==================== */}
         {activeTab === "Overview" && (
-          <div className="space-y-10">
+          <div className="">
             {/* Centered link icon & tagline */}
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
               <div className="text-[#A31652]">
                 {/* Custom Interlocking Infinity Loop */}
-                <svg
-                  className="w-7 h-7"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  />
-                </svg>
+                <Image
+                  className=""
+                  src="/images/badge.png"
+                  width={40}
+                  height={40}
+                  alt="badge"
+                />
               </div>
-              <p className="text-lg sm:text-xl lg:text-2xl font-light text-neutral-800 leading-relaxed">
+              <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-relaxed">
                 Watershield provides excellent water-resistance. Its superior
                 flow makes it smooth and easy to apply.
               </p>
             </div>
 
             {/* Split specifications grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12 pt-4 border-t border-neutral-200/50">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12">
               {/* Left Column: Technical Specifications */}
               <div>
-                <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300/80 mb-6 font-medium">
+                <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300/80 mb-6 font-medium">
                   Technical Specifications
                 </h3>
                 <div className="space-y-4">
@@ -178,7 +173,7 @@ export default function ProductInfo() {
                     <span className="text-neutral-500 font-medium text-sm sm:text-base">
                       Appearance
                     </span>
-                    <span className="text-neutral-800 font-bold text-sm sm:text-base text-right">
+                    <span className="font-bold text-sm sm:text-base text-right">
                       Milk White
                     </span>
                   </div>
@@ -186,7 +181,7 @@ export default function ProductInfo() {
                     <span className="text-neutral-500 font-medium text-sm sm:text-base">
                       Solids
                     </span>
-                    <span className="text-neutral-800 font-bold text-sm sm:text-base text-right">
+                    <span className="font-bold text-sm sm:text-base text-right">
                       50-53%
                     </span>
                   </div>
@@ -194,7 +189,7 @@ export default function ProductInfo() {
                     <span className="text-neutral-500 font-medium text-sm sm:text-base">
                       Viscosity
                     </span>
-                    <span className="text-neutral-800 font-bold text-sm sm:text-base text-right">
+                    <span className="font-bold text-sm sm:text-base text-right">
                       150-250 Poise
                     </span>
                   </div>
@@ -202,7 +197,7 @@ export default function ProductInfo() {
                     <span className="text-neutral-500 font-medium text-sm sm:text-base">
                       Coverage
                     </span>
-                    <span className="text-neutral-800 font-bold text-sm sm:text-base text-right">
+                    <span className="font-bold text-sm sm:text-base text-right">
                       60-70 Sqft/Kg
                     </span>
                   </div>
@@ -212,7 +207,7 @@ export default function ProductInfo() {
               {/* Right Column: Pack Sizes & Documentation */}
               <div className="flex flex-col justify-between">
                 <div>
-                  <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300/80 mb-6 font-medium">
+                  <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300/80 mb-6 font-medium">
                     Pack Sizes & Documentation
                   </h3>
 
@@ -363,7 +358,7 @@ export default function ProductInfo() {
         {/* ==================== 2. TECH SPECS TAB ==================== */}
         {activeTab === "Tech Specs" && (
           <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300 mb-6">
+            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
               Complete Technical Specifications
             </h3>
             <div className="overflow-x-auto bg-white rounded-2xl shadow-2xs border border-neutral-200/50">
@@ -434,7 +429,7 @@ export default function ProductInfo() {
         {/* ==================== 3. USPS TAB ==================== */}
         {activeTab === "USPs" && (
           <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300 mb-6">
+            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
               Core Unique Selling Propositions
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -485,7 +480,7 @@ export default function ProductInfo() {
         {/* ==================== 4. APPLICATIONS TAB ==================== */}
         {activeTab === "Applications" && (
           <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300 mb-6">
+            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
               Recommended Applications
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -532,7 +527,7 @@ export default function ProductInfo() {
         {/* ==================== 5. FAQS TAB ==================== */}
         {activeTab === "FAQs" && (
           <div className="space-y-4">
-            <h3 className="font-amethysta text-2xl lg:text-3xl text-neutral-800 pb-3 border-b border-neutral-300 mb-6">
+            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
               Frequently Asked Questions
             </h3>
             <div className="space-y-4 max-w-4xl mx-auto">
@@ -540,7 +535,7 @@ export default function ProductInfo() {
               <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === 0 ? null : 0)}
-                  className="w-full text-left px-6 py-4 font-bold text-neutral-800 flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
+                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
                 >
                   <span>
                     What is the drying and setting time for Jivanjor
@@ -564,7 +559,7 @@ export default function ProductInfo() {
               <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === 1 ? null : 1)}
-                  className="w-full text-left px-6 py-4 font-bold text-neutral-800 flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
+                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
                 >
                   <span>How does Watershield achieve D3 water resistance?</span>
                   <span className="text-[#A31652] text-xl font-bold">
@@ -586,7 +581,7 @@ export default function ProductInfo() {
               <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === 2 ? null : 2)}
-                  className="w-full text-left px-6 py-4 font-bold text-neutral-800 flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
+                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
                 >
                   <span>
                     Is Jivanjor Watershield safe for indoor environments?

@@ -450,7 +450,7 @@ export default function ProductCategories() {
         </div>
 
         {/* Lower Research & Development Section */}
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 pt-4 text-center md:text-start">
           <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">
             Superior Quality Backed by Research
           </h1>
