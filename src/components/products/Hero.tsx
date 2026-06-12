@@ -27,31 +27,31 @@ export default function Hero() {
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
       <div className="w-full relative flex flex-col md:flex-row md:h-150 lg:h-162.5 overflow-hidden">
-        <div className="absolute bottom-0 right-0 pointer-events-none">
+        <div className="absolute bottom-0 left-0 pointer-events-none">
           <Image
             src="/images/watermark-blog.png"
             alt="watermark"
             width={500}
             height={320}
-            className="object-cover"
+            className="object-contain"
           />
         </div>
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
-        <div className="order-2 md:order-1 w-full md:w-2/5 bg-[#0498AA] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
-          {/* Product Title using Serif Amethysta font */}
-          <h1 className="font-amethysta text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">
-            Watershield
-          </h1>
-
-          {/* Product Tagline */}
-          <p className="text-lg sm:text-xl lg:text-2xl font-light opacity-90 leading-relaxed max-w-sm sm:max-w-md">
-            Apke furniture ko paani se bachane wali shield.
-          </p>
-
+        <div className="order-2 md:order-1 w-full md:w-2/5 bg-[#0498AA] text-white p-4 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
+          <div className="space-y-1 max-w-xs sm:max-w-md">
+            {/* Product Title using Serif Amethysta font */}
+            <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">
+              Watershield
+            </h1>
+            {/* Product Tagline */}
+            <p className="font-amethysta text-xl lg:text-3xl font-light leading-tight max-w-sm sm:max-w-md">
+              Apke furniture ko paani se bachane wali shield.
+            </p>
+          </div>
           {/* Product Bullet Features list */}
-          <div className="space-y-4 self-center md:self-auto w-full max-w-xs md:max-w-none pl-4 md:pl-0">
+          <div className="space-y-1 self-center md:self-auto w-full max-w-xs md:max-w-none pl-4 md:pl-0">
             {/* Feature 1 */}
             <div className="flex items-center gap-3.5">
               <div className="shrink-0 text-white opacity-95">
@@ -66,7 +66,7 @@ export default function Hero() {
                   <line x1="20" y1="4" x2="4" y2="20" />
                 </svg>
               </div>
-              <span className="text-base sm:text-lg font-medium tracking-wide">
+              <span className="text-base sm:text-lg font-normal tracking-wide">
                 Best-in-Class Coverage
               </span>
             </div>
@@ -86,7 +86,7 @@ export default function Hero() {
                   <path strokeLinecap="round" d="M2 9h4M2 12h4M2 15h4" />
                 </svg>
               </div>
-              <span className="text-base sm:text-lg font-medium tracking-wide">
+              <span className="text-base sm:text-lg font-normal tracking-wide">
                 D3 Grade for Water Resistance
               </span>
             </div>
@@ -102,7 +102,7 @@ export default function Hero() {
                   <path d="M2 10h3v10H2zm4 0h11.28c.84 0 1.57-.53 1.83-1.33l1.83-5.5a2 2 0 0 0-1.83-2.67h-5.61l.85-2.54a1.5 1.5 0 0 0-2.83-.95L7.4 9.1A2 2 0 0 0 6 11v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5" />
                 </svg>
               </div>
-              <span className="text-base sm:text-lg font-medium tracking-wide">
+              <span className="text-base sm:text-lg font-normal tracking-wide">
                 Anti-bubble Adhesive
               </span>
             </div>
@@ -111,7 +111,7 @@ export default function Hero() {
           {/* Enquire Now pill button */}
           <Link
             href="#"
-            className="w-full max-w-xs md:w-auto bg-white text-[#0498AA] font-bold text-center px-8 py-3 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-base"
+            className="max-w-xs bg-white text-foreground text-center font-medium px-8 py-3 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-base z-10"
           >
             Enquire Now
           </Link>

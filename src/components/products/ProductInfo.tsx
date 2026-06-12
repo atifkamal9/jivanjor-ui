@@ -113,7 +113,7 @@ export default function ProductInfo() {
       {/* Tab bar header pill container */}
       <div className="hidden md:flex items-center overflow-x-auto pb-4 px-6 md:mx-0 md:px-0 scrollbar-none">
         <div
-          className="flex items-center bg-white rounded-full my-10 p-1.5 max-w-4xl mx-auto gap-1 md:gap-2 shrink-0"
+          className="flex items-center bg-white rounded-full my-10 p-px max-w-4xl mx-auto gap-1 md:gap-2 shrink-0"
           style={{
             boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
           }}
@@ -165,39 +165,27 @@ export default function ProductInfo() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12">
               {/* Left Column: Technical Specifications */}
               <div>
-                <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300/80 mb-6 font-medium">
+                <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
                   Technical Specifications
                 </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-2 border-b border-neutral-200/40">
-                    <span className="text-neutral-500 font-medium text-sm sm:text-base">
-                      Appearance
-                    </span>
-                    <span className="font-bold text-sm sm:text-base text-right">
-                      Milk White
-                    </span>
+                <div className="space-y-2 max-w-sm text-lg md:text-xl">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Appearance</span>
+                    <span className="font-normal text-right">Milk White</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-neutral-200/40">
-                    <span className="text-neutral-500 font-medium text-sm sm:text-base">
-                      Solids
-                    </span>
-                    <span className="font-bold text-sm sm:text-base text-right">
-                      50-53%
-                    </span>
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Solids</span>
+                    <span className="font-normal text-right">50-53%</span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-neutral-200/40">
-                    <span className="text-neutral-500 font-medium text-sm sm:text-base">
-                      Viscosity
-                    </span>
-                    <span className="font-bold text-sm sm:text-base text-right">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Viscosity</span>
+                    <span className="font-normal text-right">
                       150-250 Poise
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-neutral-200/40">
-                    <span className="text-neutral-500 font-medium text-sm sm:text-base">
-                      Coverage
-                    </span>
-                    <span className="font-bold text-sm sm:text-base text-right">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Coverage</span>
+                    <span className="font-normal text-right">
                       60-70 Sqft/Kg
                     </span>
                   </div>
@@ -207,7 +195,7 @@ export default function ProductInfo() {
               {/* Right Column: Pack Sizes & Documentation */}
               <div className="flex flex-col justify-between">
                 <div>
-                  <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300/80 mb-6 font-medium">
+                  <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
                     Pack Sizes & Documentation
                   </h3>
 
@@ -226,7 +214,7 @@ export default function ProductInfo() {
                     ].map((size) => (
                       <div
                         key={size}
-                        className="bg-white border border-neutral-200/50 rounded-lg py-2.5 text-center text-xs sm:text-sm font-bold text-neutral-700 shadow-2xs hover:border-neutral-300 hover:shadow-xs transition-all duration-200 cursor-default"
+                        className="bg-white rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
                       >
                         {size}
                       </div>
@@ -245,7 +233,7 @@ export default function ProductInfo() {
             <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
                 {/* USP 1 */}
-                <div className="text-center space-y-3">
+                <div className="text-center space-y-3 max-w-60">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -260,17 +248,17 @@ export default function ProductInfo() {
                       <path d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                     </svg>
                   </div>
-                  <h4 className="font-amethysta text-xl font-medium tracking-wide">
+                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                     Faster Site Rotation
                   </h4>
-                  <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-light max-w-xs mx-auto">
+                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
                     Fast setting time helps professionals complete work quicker
                     and move between jobs more efficiently.
-                  </p>
+                  </span>
                 </div>
 
                 {/* USP 2 */}
-                <div className="text-center space-y-3">
+                <div className="text-center space-y-3 max-w-60">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -286,17 +274,17 @@ export default function ProductInfo() {
                       />
                     </svg>
                   </div>
-                  <h4 className="font-amethysta text-xl font-medium tracking-wide">
+                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                     Smooth Spreadability
                   </h4>
-                  <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-light max-w-xs mx-auto">
+                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
                     Superior flow and easy spreading help reduce wastage and
                     support better coverage.
-                  </p>
+                  </span>
                 </div>
 
                 {/* USP 3 */}
-                <div className="text-center space-y-3">
+                <div className="text-center space-y-3 max-w-60">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -312,17 +300,17 @@ export default function ProductInfo() {
                       />
                     </svg>
                   </div>
-                  <h4 className="font-amethysta text-xl font-medium tracking-wide">
+                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                     Solvent-Free Safety
                   </h4>
-                  <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-light max-w-xs mx-auto">
+                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
                     Water-based, non-flammable and non-toxic formulation for
                     safer handling during application.
-                  </p>
+                  </span>
                 </div>
 
                 {/* USP 4 */}
-                <div className="text-center space-y-3">
+                <div className="text-center space-y-3 max-w-60">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -342,13 +330,13 @@ export default function ProductInfo() {
                       <circle cx="12" cy="12" r="1.5" fill="currentColor" />
                     </svg>
                   </div>
-                  <h4 className="font-amethysta text-xl font-medium tracking-wide">
+                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                     Clean Finish After Drying
                   </h4>
-                  <p className="text-xs sm:text-sm opacity-90 leading-relaxed font-light max-w-xs mx-auto">
+                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
                     Dries into a clear transparent film, helping maintain a neat
                     finish around edges and joints.
-                  </p>
+                  </span>
                 </div>
               </div>
             </div>
