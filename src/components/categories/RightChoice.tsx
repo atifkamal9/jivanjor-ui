@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function RightChoice() {
   return (
     <section className="">
-      <div className="relative my-10 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
+      <div className="relative my-10 lg:my-12 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
         <div className="absolute bottom-0 left-0 pointer-events-none">
           <Image

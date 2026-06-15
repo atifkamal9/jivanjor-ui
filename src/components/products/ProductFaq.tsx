@@ -40,7 +40,10 @@ export default function ProductFaq() {
 
   return (
     <>
-      <section className="bg-surface max-w-324 mx-6 xl:mx-auto p-12 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl">
+      <section
+        id="faqs"
+        className="bg-surface max-w-324 mx-6 xl:mx-auto p-8 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl"
+      >
         {/* ========================================== */}
         {/* 1. FAQS ACCORDION SECTION */}
         {/* ========================================== */}
