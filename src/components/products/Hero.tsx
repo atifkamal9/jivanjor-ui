@@ -39,7 +39,10 @@ export default function Hero() {
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
-        <div className="order-2 md:order-1 w-full md:w-2/5 bg-[#0498AA] text-white p-4 sm:p-12 lg:p-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8">
+        <div
+          className="order-2 md:order-1 w-full md:w-2/5 bg-[#0498AA] text-white py-12 md:py-16 pr-6 sm:pr-12 md:pr-16 flex flex-col justify-center items-center md:items-start text-center md:text-left gap-6 sm:gap-8"
+          style={{ paddingLeft: "max(24px, calc((100vw - 1440px) / 2 + 24px))" }}
+        >
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
             <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">

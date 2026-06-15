@@ -39,7 +39,7 @@ export default function ProductFaq() {
 
   return (
     <>
-      <section className="bg-surface max-w-7xl mx-6 xl:mx-auto p-12 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl">
+      <section className="bg-surface max-w-360 mx-6 xl:mx-auto p-12 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl">
         {/* ========================================== */}
         {/* 1. FAQS ACCORDION SECTION */}
         {/* ========================================== */}

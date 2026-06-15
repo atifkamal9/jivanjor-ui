@@ -40,7 +40,7 @@ export default function Professional({ data }: ProfessionalProps) {
     : defaultFeatures;
 
   return (
-    <section className="mx-auto max-w-7xl text-center py-20 px-6">
+    <section className="mx-auto max-w-360 text-center py-20 px-6">
       <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl mb-10">
         {title}
       </h2>

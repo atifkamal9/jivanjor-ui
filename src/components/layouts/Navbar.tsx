@@ -137,7 +137,7 @@ export default function Navbar() {
       id="main-landing-header"
       className="sticky top-0 left-0 right-0 z-50 w-full h-22 bg-white backdrop-blur-md transition-all duration-300 flex items-center"
     >
-      <nav className="flex items-center justify-between max-w-7xl mx-auto w-full px-6 font-google-sans relative">
+      <nav className="flex items-center justify-between max-w-360 mx-auto w-full px-6 font-google-sans relative">
         <Link href="/" className="shrink-0">
           <Image
             src="/images/logo.png"
