@@ -172,7 +172,7 @@ export default function ProductFeatures() {
       {/* ========================================== */}
       {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
       {/* ========================================== */}
-      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6 border-t border-neutral-100">
+      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6 border-t border-neutral-100">
         {/* On Mobile: text goes top. On Desktop: text goes right */}
         {/* Text Details Column */}
         <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 min-w-xs max-w-3xl">

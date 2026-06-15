@@ -192,7 +192,7 @@ export default function ProductInfo() {
         />
         <div
           ref={tabsContainerRef}
-          className="flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
+          className="hidden lg:flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
           style={{
             boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
             scrollbarWidth: "none",
