@@ -26,7 +26,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
 
   return (
     <section className="relative bg-surface pt-20">
-      <div className="mx-auto max-w-7xl justify-center px-6">
+      <div className="mx-auto max-w-360 justify-center px-6">
         <div className="mx-auto max-w-4xl space-y-6 text-center w-full">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
             {title}
@@ -48,7 +48,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             className="w-full"
           />
         </div>
-        <div className="mx-auto max-w-7xl justify-center space-y-6 ">
+        <div className="mx-auto max-w-360 justify-center space-y-6 ">
           <h2 className="font-amethysta text-4xl md:text-[42px]">
             {ctaTitle}
           </h2>

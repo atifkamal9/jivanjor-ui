@@ -77,7 +77,7 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
 export default function RelatedProducts() {
   return (
     <section id="related-products" className="relative overflow-hidden">
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-7xl px-6 lg:px-8 w-full">
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-360 px-6 lg:px-8 w-full">
         <div className="w-full">
           <Swiper
             modules={[Navigation]}

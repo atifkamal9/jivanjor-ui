@@ -14,8 +14,8 @@ export default function RightChoice() {
             className="w-full h-full object-cover object-center"
           />
         </div>
-        <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-7xl space-y-6 p-10">
-          <h2 className="font-amethysta text-4xl md:text-[42px]">
+        <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-6 py-24 px-5 lg:px-8 lg:py-14">
+          <h2 className="font-amethysta text-[34px] md:text-[44px]">
             Need Help Choosing the Right Adhesive?
           </h2>
           <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-4">

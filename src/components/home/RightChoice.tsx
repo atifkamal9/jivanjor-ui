@@ -66,7 +66,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
       </div>
-      <div className="flex flex-col items-center justify-between lg:flex-row relative mx-auto min-h-screen max-w-7xl px-6 py-24 lg:px-12">
+      <div className="flex flex-col items-center justify-between lg:flex-row relative mx-auto min-h-screen max-w-360 px-6 py-24 lg:px-12">
         <div className="max-w-xl text-center md:text-start pt-12 lg:pb-80">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl text-white">
             {title}

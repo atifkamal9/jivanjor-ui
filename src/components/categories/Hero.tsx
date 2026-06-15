@@ -17,21 +17,25 @@ export default function Hero() {
         <span className="font-medium text-lg">Premium Adhesives</span>
       </div>
       <div className="w-full h-67 relative hidden md:block">
-        <div className="absolute top-12 left-12 max-w-3xl px-6 py-4 text-white z-10">
-          <div className="flex items-center gap-1.5 text-xs font-normal">
-            <Link href="/" className="hover:opacity-80 transition-opacity">
-              {/* Home Solid Icon */}
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-              </svg>
-            </Link>
-            {/* Chevron separator */}
-            <ChevronRight size={16} />
-            <span className="font-normal text-lg text-white/80">Premium Adhesives</span>
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
+            <div className="max-w-3xl text-white pointer-events-auto">
+              <div className="flex items-center gap-1.5 text-xs font-normal">
+                <Link href="/" className="hover:opacity-80 transition-opacity">
+                  {/* Home Solid Icon */}
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                  </svg>
+                </Link>
+                {/* Chevron separator */}
+                <ChevronRight size={16} />
+                <span className="font-normal text-lg text-white/80">Premium Adhesives</span>
+              </div>
+              <h2 className="font-amethysta text-5xl mt-6">
+                A Complete Adhesive Range for Modern Woodworking
+              </h2>
+            </div>
           </div>
-          <h2 className="font-amethysta text-5xl mt-6">
-            A Complete Adhesive Range for Modern Woodworking
-          </h2>
         </div>
         <Image
           src="/images/category-hero.png"

@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronRightCircle,
+  ChevronLeftCircle,
   ThumbsUp,
 } from "lucide-react";
 
@@ -34,7 +35,7 @@ interface CategoryData {
 
 const CATEGORIES_DATA: CategoryData[] = [
   {
-    name: "Super Premium Adhesive",
+    name: "Waterproof Grade",
     title: "Super Premium Adhesives by Jivanjor",
     description:
       "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
@@ -100,7 +101,7 @@ const CATEGORIES_DATA: CategoryData[] = [
     ],
   },
   {
-    name: "Water Proof Grade Adhesive",
+    name: "Regular",
     title: "Waterproof Adhesives by Jivanjor",
     description:
       "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications.",
@@ -124,6 +125,18 @@ const CATEGORIES_DATA: CategoryData[] = [
         color: "bg-[#077937]",
         badge: "Waterproof Grade",
         image: "/images/Aquabond.png",
+        features: [
+          "Best-in-Class Coverage",
+          "D3 Grade for Water Resistance",
+          "Anti-bubble Adhesive",
+        ],
+      },
+      {
+        title: "Watershield",
+        description: "Provides excellent water-resistance.",
+        color: "bg-[#0498AA]",
+        badge: "Eco Friendly",
+        image: "/images/Watershield.png",
         features: [
           "Best-in-Class Coverage",
           "D3 Grade for Water Resistance",
@@ -202,7 +215,38 @@ export default function ProductCategories() {
   const [activeCategory, setActiveCategory] = useState(
     "Water Proof Grade Adhesive",
   );
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
+      setShowLeftArrow(scrollLeft > 1);
+      setShowRightArrow(
+        scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1,
+      );
+    }
+  };
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: -scrollContainerRef.current.clientWidth / 2,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: scrollContainerRef.current.clientWidth / 2,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const handleNextCategory = () => {
     const currentIndex = CATEGORIES_DATA.findIndex(
@@ -211,6 +255,32 @@ export default function ProductCategories() {
     const nextIndex = (currentIndex + 1) % CATEGORIES_DATA.length;
     setActiveCategory(CATEGORIES_DATA[nextIndex].name);
   };
+
+  const handlePrevCategory = () => {
+    const currentIndex = CATEGORIES_DATA.findIndex(
+      (c) => c.name === activeCategory,
+    );
+    const prevIndex =
+      (currentIndex - 1 + CATEGORIES_DATA.length) % CATEGORIES_DATA.length;
+    setActiveCategory(CATEGORIES_DATA[prevIndex].name);
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      checkScroll();
+      const timer = setTimeout(checkScroll, 100);
+
+      container.addEventListener("scroll", checkScroll);
+      window.addEventListener("resize", checkScroll);
+
+      return () => {
+        clearTimeout(timer);
+        container.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -223,12 +293,13 @@ export default function ProductCategories() {
 
       if (activeElement) {
         scrollContainerRef.current.scrollTo({
-          left:
-            activeElement.offsetLeft - scrollContainerRef.current.offsetLeft,
+          left: activeElement.offsetLeft,
           behavior: "smooth",
         });
       }
     }
+    const timer = setTimeout(checkScroll, 400);
+    return () => clearTimeout(timer);
   }, [activeCategory]);
 
   const currentCategoryData =
@@ -236,7 +307,7 @@ export default function ProductCategories() {
     CATEGORIES_DATA[3];
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-7xl mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
+    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0">
         <h2 className="text-2xl font-bold tracking-tight">Categories</h2>
@@ -247,29 +318,33 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-300 cursor-pointer text-center ${
+                className={`rounded-2xl p-1 w-40 min-h-24 ${
                   isActive
-                    ? "border-2 border-primary scale-[1.03] shadow-md"
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
                     : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
                 }`}
               >
-                <div className="relative w-12 h-14 mb-2 flex items-center justify-center">
-                  <Image
-                    src={cat.icon}
-                    alt={cat.name}
-                    width={40}
-                    height={48}
-                    className="object-contain max-h-full max-w-full drop-shadow-sm"
-                  />
+                <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
+                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
+                    <Image
+                      src={cat.icon}
+                      alt={cat.name}
+                      width={40}
+                      height={40}
+                      className="object-contain max-h-full max-w-full drop-shadow-sm"
+                    />
+                  </div>
+                  <span className="font-medium text-sm whitespace-nowrap">
+                    {cat.name}
+                  </span>
                 </div>
-                <span className="font-semibold text-sm">{cat.name}</span>
               </button>
             );
           })}
         </div>
       </div>
       {/* Mobile categories tabs */}
-      <div className="flex lg:hidden items-center gap-3 my-4 w-full">
+      <div className="flex lg:hidden items-center gap-3 w-full">
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -279,9 +354,19 @@ export default function ProductCategories() {
         `,
           }}
         />
+        <button
+          onClick={scrollLeft}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
+            showLeftArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
+          }`}
+        >
+          <ChevronLeftCircle size={24} className="text-[#FF0009]" />
+        </button>
         <div
           ref={scrollContainerRef}
-          className="flex-1 flex gap-3 overflow-x-auto scroll-smooth scrollbar-none"
+          className="flex-1 flex gap-3 overflow-x-auto scroll-smooth scrollbar-none relative"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {CATEGORIES_DATA.map((cat) => {
@@ -298,8 +383,12 @@ export default function ProductCategories() {
           })}
         </div>
         <button
-          onClick={handleNextCategory}
-          className="cursor-pointer focus:outline-none hover:scale-105 active:scale-95 transition-all shrink-0"
+          onClick={scrollRight}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
+            showRightArrow
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
         >
           <ChevronRightCircle size={24} className="text-[#FF0009]" />
         </button>
@@ -308,11 +397,11 @@ export default function ProductCategories() {
       {/* Main Content Area */}
       <div className="flex-1 space-y-8 min-w-0">
         {/* Category Heading & Description */}
-        <div className="space-y-4 text-center">
-          <h1 className="text-4xl sm:text-5xl tracking-tight leading-tight">
+        <div className="space-y-4 text-center md:text-start">
+          <h1 className="font-amethysta text-[34px] sm:text-5xl tracking-tight leading-tight">
             {currentCategoryData.title}
           </h1>
-          <p className="text-lg sm:text-xl leading-relaxed font-light">
+          <p className="text-lg sm:text-2xl leading-relaxed font-light">
             {currentCategoryData.description}
           </p>
         </div>
@@ -338,10 +427,10 @@ export default function ProductCategories() {
                 slidesPerView: 2,
               },
               1024: {
-                slidesPerView: Math.min(2, currentCategoryData.products.length),
+                slidesPerView: 2,
               },
             }}
-            className="overflow-visible!"
+            className="overflow-visible"
           >
             {currentCategoryData.products.map((card, idx) => (
               <SwiperSlide
@@ -353,23 +442,22 @@ export default function ProductCategories() {
                   {/* Card Main Body */}
                   <Link
                     href={`/products`}
-                    className={`${card.color} rounded-3xl p-6 lg:p-8 text-white flex flex-col justify-between gap-4 shadow-[0_15px_30px_rgba(0,0,0,0.15)] transition-transform hover:scale-[1.01] duration-300`}
+                    className={`${card.color} rounded-3xl p-6 lg:p-10 text-white flex flex-col justify-between gap-4 transition-transform hover:scale-[1.01] duration-300`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
                       {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/6 -translate-x-1/2 -translate-y-1/2 w-40 h-40 xl:w-34 xl:h-34 object-contain z-100">
+                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 translate-y-[-46%] aspect-69/80 w-40 h-40 xl:w-46 xl:h-50 object-contain z-100">
                         <Image
                           src={card.image}
                           alt={card.title}
                           fill
-                          className="object-contain z-10 drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)]"
+                          className="object-contain z-10"
                           priority
                         />
                       </div>
-
                       {/* Header content */}
-                      <div className="flex flex-1 flex-col items-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-24 xl:pt-2">
+                      <div className="flex flex-1 flex-col items-center text-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-24 xl:pt-2">
                         <h3 className="text-2xl lg:text-3xl font-bold tracking-wide xl:text-right">
                           {card.title}
                         </h3>
@@ -451,10 +539,10 @@ export default function ProductCategories() {
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">
+          <h1 className="font-amethysta text-[34px] md:text-5xl">
             Superior Quality Backed by Research
           </h1>
-          <p className="text-lg text-neutral-600 leading-relaxed font-light">
+          <p className="text-lg md:text-2xl leading-relaxed font-light">
             Learn how our focus on product development, quality standards and
             market reach supports India’s woodworking needs.
           </p>

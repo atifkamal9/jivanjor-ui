@@ -109,7 +109,7 @@ export default function ProductInfo() {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-16">
+    <section className="max-w-360 mx-auto px-6 lg:px-8 py-10 lg:py-16">
       {/* Tab bar header pill container */}
       <div className="hidden md:flex items-center overflow-x-auto pb-4 px-6 md:mx-0 md:px-0 scrollbar-none">
         <div

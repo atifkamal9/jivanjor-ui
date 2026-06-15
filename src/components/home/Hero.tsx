@@ -50,7 +50,7 @@ export default function Hero({ data }: HeroProps) {
         <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" />
       </div>
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-96px)] max-w-7xl items-center px-6 py-20 lg:px-8">
+      <div className="relative mx-auto flex min-h-[calc(100vh-96px)] max-w-360 items-center px-6 py-20 lg:px-8">
         <div className="max-w-md space-y-8 pt-80">
           <h1 className="text-4xl font-amethysta tracking-[0%] text-white sm:text-5xl">
             {title}
