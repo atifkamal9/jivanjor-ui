@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 interface AccordionItem {
   title: string;
@@ -56,40 +57,33 @@ export default function ProductFeatures() {
   };
 
   return (
-    <section className="max-w-360 mx-auto px-6 lg:px-8 py-12 lg:py-20 space-y-16 lg:space-y-24">
+    <section className="max-w-360 mx-auto px-6 lg:px-8 py-12 space-y-16 lg:space-y-24">
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
       {/* ========================================== */}
       <div className="space-y-8">
         {/* Header content with link icon */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="text-neutral-800 flex justify-center">
-            {/* Custom Infinity Link SVG */}
-            <svg
-              className="w-7 h-7"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth="2.5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
+        <div className="text-center space-y-3 max-w-4xl mx-auto">
+          <div className="flex justify-center">
+            <Image
+              className="mb-4"
+              src="/images/badge.png"
+              width={40}
+              height={40}
+              alt="badge"
+            />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
             Engineered for the Task at Hand
           </h2>
-          <p className="text-sm sm:text-base text-neutral-500 leading-relaxed">
+          <p className="text-2xl">
             Explore where Supremo fits across furniture, laminates, plywood,
             boards and professional woodwork applications.
           </p>
         </div>
 
         {/* Accordion List */}
-        <div className="w-full max-w-4xl mx-auto border-b border-neutral-300">
+        <div className="w-full max-w-7xl mx-auto border-b border-neutral-300">
           {ACCORDION_ITEMS.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
@@ -102,7 +96,7 @@ export default function ProductFeatures() {
                   onClick={() => toggleAccordion(idx)}
                   className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none"
                 >
-                  <span className="font-amethysta text-xl sm:text-2xl lg:text-3xl text-neutral-800 group-hover:text-primary transition-colors duration-200">
+                  <span className="font-amethysta text-xl sm:text-2xl lg:text-4xl group-hover:text-primary transition-colors duration-200">
                     {item.title}
                   </span>
 
@@ -112,7 +106,7 @@ export default function ProductFeatures() {
                       &times;
                     </span>
                   ) : (
-                    <span className="text-neutral-400 group-hover:text-neutral-600 text-2xl lg:text-3xl font-light select-none leading-none pr-1 transition-colors">
+                    <span className="text-neutral-400 group-hover text-2xl lg:text-3xl font-light select-none leading-none pr-1 transition-colors">
                       +
                     </span>
                   )}
@@ -128,29 +122,18 @@ export default function ProductFeatures() {
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
-                    <div className="flex-1 space-y-4 max-w-md">
-                      <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
-                        {item.description}
-                      </p>
-
+                    <div className="flex-1 space-y-4 max-w-lg">
+                      <p className="text-sm sm:text-lg">{item.description}</p>
                       {/* Explore Link */}
                       <Link
                         href="#"
-                        className="inline-flex items-center gap-1.5 font-bold text-xs sm:text-sm text-neutral-800 hover:text-primary transition-colors group/link cursor-pointer"
+                        className="inline-flex items-center gap-1.5 underline text-base sm:text-lg hover:text-primary transition-colors group/link cursor-pointer"
                       >
                         <span>Explore More</span>
                         {/* Red circular arrow */}
-                        <svg
-                          className="w-5 h-5 text-[#ed1c24] transform group-hover/link:translate-x-0.5 transition-transform"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                        <span className="w-10 h-10 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571] flex items-center justify-center group-hover/link:bg-[#FF0009] transition-colors">
+                          <ArrowRight className="text-white w-7 h-7" />
+                        </span>
                       </Link>
                     </div>
 
@@ -186,14 +169,14 @@ export default function ProductFeatures() {
       {/* ========================================== */}
       {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
       {/* ========================================== */}
-      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16 max-w-4xl mx-auto pt-6 border-t border-neutral-100">
+      <div className="w-full flex flex-col md:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6 border-t border-neutral-100">
         {/* On Mobile: text goes top. On Desktop: text goes right */}
         {/* Text Details Column */}
-        <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 max-w-md">
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+        <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 min-w-xs max-w-3xl">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
             See Supremo in Action
           </h2>
-          <p className="text-sm sm:text-base text-neutral-600 leading-relaxed font-light">
+          <p className="text-lg sm:text-2xl font-light">
             Watch how trade professionals achieve flawless, high-coverage
             laminate bonding in record time.
           </p>
@@ -207,7 +190,7 @@ export default function ProductFeatures() {
 
         {/* Video Column (On Mobile: goes bottom. On Desktop: goes left) */}
         <div className="order-2 md:order-1 w-full md:w-auto shrink-0 flex justify-center">
-          <div className="relative w-full max-w-110 aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
+          <div className="relative w-full max-w-2xl aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
             {/* Background image mockup for video */}
             <Image
               src="/images/Rectangle 4.png"
@@ -215,17 +198,17 @@ export default function ProductFeatures() {
               width={800}
               height={450}
               className="object-cover w-full h-full"
-              sizes="(max-width: 768px) 100vw, 440px"
+              sizes="(max-width: 768px) 100vw, 630px"
             />
             {/* Center play icon overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/10">
               <button
-                className="w-14 h-14 bg-white/95 hover:bg-white text-neutral-800 rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 aria-label="Play video"
               >
                 {/* Play Triangle SVG */}
                 <svg
-                  className="w-5 h-5 text-neutral-800 ml-0.5 fill-current"
+                  className="w-5 h-5 ml-0.5 fill-current"
                   viewBox="0 0 24 24"
                 >
                   <path d="M8 5v14l11-7z" />

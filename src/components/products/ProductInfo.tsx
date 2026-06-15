@@ -214,7 +214,7 @@ export default function ProductInfo() {
                     ].map((size) => (
                       <div
                         key={size}
-                        className="bg-white rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
+                        className="bg-white w-24 rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
                       >
                         {size}
                       </div>
@@ -233,7 +233,7 @@ export default function ProductInfo() {
             <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
                 {/* USP 1 */}
-                <div className="text-center space-y-3 max-w-60">
+                <div className="text-center space-y-3 max-w-60 mx-auto">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -258,7 +258,7 @@ export default function ProductInfo() {
                 </div>
 
                 {/* USP 2 */}
-                <div className="text-center space-y-3 max-w-60">
+                <div className="text-center space-y-3 max-w-60 mx-auto">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -284,7 +284,7 @@ export default function ProductInfo() {
                 </div>
 
                 {/* USP 3 */}
-                <div className="text-center space-y-3 max-w-60">
+                <div className="text-center space-y-3 max-w-60 mx-auto">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
@@ -310,7 +310,7 @@ export default function ProductInfo() {
                 </div>
 
                 {/* USP 4 */}
-                <div className="text-center space-y-3 max-w-60">
+                <div className="text-center space-y-3 max-w-60 mx-auto">
                   <div className="text-white">
                     <svg
                       className="w-8 h-8 mx-auto mb-3"
