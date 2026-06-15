@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import ProductFeatures from "./ProductFeatures";
+import RelatedProducts from "./RelatedProducts";
+import ProductFaq from "./ProductFaq";
 
 type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
 
@@ -8,9 +11,6 @@ export default function ProductInfo() {
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
   const [isManualScroll, setIsManualScroll] = useState(false);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-
-  // FAQ Accordion State
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const tabs: { name: TabName; label: string; icon: React.ReactNode }[] = [
     {
@@ -116,8 +116,8 @@ export default function ProductInfo() {
     const el = document.getElementById(elementId);
     if (el) {
       setIsManualScroll(true);
-      // Offset for sticky navbar (88px) + tab bar (approx 72px) = 160px
-      const yOffset = -160;
+      // Offset for sticky navbar (88px) + tab bar (approx 88px) + safety margin = 180px
+      const yOffset = -180;
       const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
       setTimeout(() => {
@@ -137,14 +137,16 @@ export default function ProductInfo() {
         "Applications",
         "FAQs",
       ];
-      const scrollPosition = window.scrollY + 180;
+      // 185px offset to match the scroll-to position of -180px with a 5px buffer
+      const scrollPosition = window.scrollY + 185;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
         const elementId = section.toLowerCase().replace(" ", "-");
         const el = document.getElementById(elementId);
         if (el) {
-          const top = el.offsetTop;
+          const rect = el.getBoundingClientRect();
+          const top = rect.top + window.pageYOffset;
           if (scrollPosition >= top) {
             setActiveTab(section);
             break;
@@ -184,10 +186,9 @@ export default function ProductInfo() {
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          .scrollbar-none::-webkit-scrollbar {
-            display: none;
-          }
-        `,
+              .scrollbar-none::-webkit-scrollbar {
+              display: none;
+            }`,
           }}
         />
         <div
@@ -220,219 +221,216 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div className="space-y-12">
+      <div id="overview" className="space-y-12">
         {/* ==================== 1. OVERVIEW SECTION ==================== */}
-        <div
-          id="overview"
-          className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300 scroll-mt-40"
-        >
-          <div className="">
-            {/* Centered link icon & tagline */}
-            <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
-              <div className="text-[#A31652]">
-                {/* Custom Interlocking Infinity Loop */}
-                <Image
-                  className=""
-                  src="/images/badge.png"
-                  width={40}
-                  height={40}
-                  alt="badge"
-                />
-              </div>
-              <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-relaxed">
-                Watershield provides excellent water-resistance. Its superior
-                flow makes it smooth and easy to apply.
-              </p>
-            </div>
-
-            {/* Split specifications grid */}
-            <div
-              id="tech-specs"
-              className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12"
-            >
-              {/* Left Column: Technical Specifications */}
-              <div>
-                <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
-                  Technical Specifications
-                </h3>
-                <div className="space-y-2 max-w-sm text-lg md:text-xl">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Appearance</span>
-                    <span className="font-normal text-right">Milk White</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Solids</span>
-                    <span className="font-normal text-right">50-53%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Viscosity</span>
-                    <span className="font-normal text-right">
-                      150-250 Poise
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Coverage</span>
-                    <span className="font-normal text-right">
-                      60-70 Sqft/Kg
-                    </span>
-                  </div>
+        <div className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300 scroll-mt-40">
+          <div>
+            <div className="" id="tech-specs">
+              {/* Centered link icon & tagline */}
+              <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
+                <div className="text-[#A31652]">
+                  {/* Custom Interlocking Infinity Loop */}
+                  <Image
+                    className=""
+                    src="/images/badge.png"
+                    width={40}
+                    height={40}
+                    alt="badge"
+                  />
                 </div>
+                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-relaxed">
+                  Watershield provides excellent water-resistance. Its superior
+                  flow makes it smooth and easy to apply.
+                </p>
               </div>
 
-              {/* Right Column: Pack Sizes & Documentation */}
-              <div className="flex flex-col justify-between">
+              {/* Split specifications grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12">
+                {/* Left Column: Technical Specifications */}
                 <div>
                   <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
-                    Pack Sizes & Documentation
+                    Technical Specifications
                   </h3>
-
-                  {/* Grid layout of sizes chips */}
-                  <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
-                    {[
-                      "0.6 Kg",
-                      "1 Kg",
-                      "2 Kg",
-                      "5 Kg",
-                      "10 Kg",
-                      "20 Kg",
-                      "30 Kg",
-                      "50 Kg",
-                      "60 Kg",
-                    ].map((size) => (
-                      <div
-                        key={size}
-                        className="bg-white w-24 rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
-                      >
-                        {size}
-                      </div>
-                    ))}
+                  <div className="space-y-2 max-w-sm text-lg md:text-xl">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Appearance</span>
+                      <span className="font-normal text-right">Milk White</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Solids</span>
+                      <span className="font-normal text-right">50-53%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Viscosity</span>
+                      <span className="font-normal text-right">
+                        150-250 Poise
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Coverage</span>
+                      <span className="font-normal text-right">
+                        60-70 Sqft/Kg
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* PDF technical data sheet download action */}
-                <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-tr from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
-                  Download Technical Data Sheet
-                </button>
+                {/* Right Column: Pack Sizes & Documentation */}
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
+                      Pack Sizes & Documentation
+                    </h3>
+
+                    {/* Grid layout of sizes chips */}
+                    <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+                      {[
+                        "0.6 Kg",
+                        "1 Kg",
+                        "2 Kg",
+                        "5 Kg",
+                        "10 Kg",
+                        "20 Kg",
+                        "30 Kg",
+                        "50 Kg",
+                        "60 Kg",
+                      ].map((size) => (
+                        <div
+                          key={size}
+                          className="bg-white w-24 rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
+                        >
+                          {size}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* PDF technical data sheet download action */}
+                  <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-tr from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
+                    Download Technical Data Sheet
+                  </button>
+                </div>
               </div>
             </div>
-
             {/* Bottom USP Section (Rounded Teal box) */}
-            <div
-              id="usps"
-              className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-                {/* USP 1 */}
-                <div className="text-center space-y-3 max-w-60 mx-auto">
-                  <div className="text-white">
-                    <svg
-                      className="w-8 h-8 mx-auto mb-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
-                      <path d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                  </div>
-                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
-                    Faster Site Rotation
-                  </h4>
-                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
-                    Fast setting time helps professionals complete work quicker
-                    and move between jobs more efficiently.
-                  </span>
-                </div>
-
-                {/* USP 2 */}
-                <div className="text-center space-y-3 max-w-60 mx-auto">
-                  <div className="text-white">
-                    <svg
-                      className="w-8 h-8 mx-auto mb-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <rect x="4" y="4" width="16" height="16" rx="2" />
-                      <path
+            <div id="usps" className="">
+              <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+                  {/* USP 1 */}
+                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                    <div className="text-white">
+                      <svg
+                        className="w-8 h-8 mx-auto mb-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
                         strokeLinecap="round"
-                        d="M9 4L4 9M14 4L4 14M19 4L4 19M20 9L9 20M20 14L14 20"
-                      />
-                    </svg>
+                        strokeLinejoin="round"
+                      >
+                        <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                        <path d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                    </div>
+                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                      Faster Site Rotation
+                    </h4>
+                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                      Fast setting time helps professionals complete work
+                      quicker and move between jobs more efficiently.
+                    </span>
                   </div>
-                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
-                    Smooth Spreadability
-                  </h4>
-                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
-                    Superior flow and easy spreading help reduce wastage and
-                    support better coverage.
-                  </span>
-                </div>
 
-                {/* USP 3 */}
-                <div className="text-center space-y-3 max-w-60 mx-auto">
-                  <div className="text-white">
-                    <svg
-                      className="w-8 h-8 mx-auto mb-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path
-                        strokeLinecap="round"
-                        d="M12 8v8M8 12h8M9.17 9.17l5.66 5.66M9.17 14.83l5.66-5.66"
-                      />
-                    </svg>
+                  {/* USP 2 */}
+                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                    <div className="text-white">
+                      <svg
+                        className="w-8 h-8 mx-auto mb-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <path
+                          strokeLinecap="round"
+                          d="M9 4L4 9M14 4L4 14M19 4L4 19M20 9L9 20M20 14L14 20"
+                        />
+                      </svg>
+                    </div>
+                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                      Smooth Spreadability
+                    </h4>
+                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                      Superior flow and easy spreading help reduce wastage and
+                      support better coverage.
+                    </span>
                   </div>
-                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
-                    Solvent-Free Safety
-                  </h4>
-                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
-                    Water-based, non-flammable and non-toxic formulation for
-                    safer handling during application.
-                  </span>
-                </div>
 
-                {/* USP 4 */}
-                <div className="text-center space-y-3 max-w-60 mx-auto">
-                  <div className="text-white">
-                    <svg
-                      className="w-8 h-8 mx-auto mb-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                      <circle cx="17" cy="7" r="1.5" fill="currentColor" />
-                      <circle cx="19" cy="12" r="1.5" fill="currentColor" />
-                      <circle cx="17" cy="17" r="1.5" fill="currentColor" />
-                      <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-                      <circle cx="7" cy="17" r="1.5" fill="currentColor" />
-                      <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-                      <circle cx="7" cy="7" r="1.5" fill="currentColor" />
-                      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                    </svg>
+                  {/* USP 3 */}
+                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                    <div className="text-white">
+                      <svg
+                        className="w-8 h-8 mx-auto mb-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                          strokeLinecap="round"
+                          d="M12 8v8M8 12h8M9.17 9.17l5.66 5.66M9.17 14.83l5.66-5.66"
+                        />
+                      </svg>
+                    </div>
+                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                      Solvent-Free Safety
+                    </h4>
+                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                      Water-based, non-flammable and non-toxic formulation for
+                      safer handling during application.
+                    </span>
                   </div>
-                  <h4 className="font-amethysta text-3xl font-medium tracking-wide">
-                    Clean Finish After Drying
-                  </h4>
-                  <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
-                    Dries into a clear transparent film, helping maintain a neat
-                    finish around edges and joints.
-                  </span>
+
+                  {/* USP 4 */}
+                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                    <div className="text-white">
+                      <svg
+                        className="w-8 h-8 mx-auto mb-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+                        <circle cx="17" cy="7" r="1.5" fill="currentColor" />
+                        <circle cx="19" cy="12" r="1.5" fill="currentColor" />
+                        <circle cx="17" cy="17" r="1.5" fill="currentColor" />
+                        <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+                        <circle cx="7" cy="17" r="1.5" fill="currentColor" />
+                        <circle cx="5" cy="12" r="1.5" fill="currentColor" />
+                        <circle cx="7" cy="7" r="1.5" fill="currentColor" />
+                        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                      </svg>
+                    </div>
+                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                      Clean Finish After Drying
+                    </h4>
+                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                      Dries into a clear transparent film, helping maintain a
+                      neat finish around edges and joints.
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <ProductFeatures />
+      <RelatedProducts />
+      <ProductFaq />
     </section>
   );
 }

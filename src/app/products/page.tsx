@@ -6,6 +6,7 @@ import {
   RelatedProducts,
   ProductFaq,
 } from "@/components/products";
+import { RightChoice } from "@/components/categories";
 
 export const metadata: Metadata = {
   title: "Watershield | Jivanjor Adhesives",
@@ -17,9 +18,7 @@ export default function Products() {
     <div className="font-google-sans min-h-screen bg-background text-foreground">
       <Hero />
       <ProductInfo />
-      <ProductFeatures />
-      <RelatedProducts />
-      <ProductFaq />
+      <RightChoice />
     </div>
   );
 }
