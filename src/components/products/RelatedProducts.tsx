@@ -77,7 +77,21 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
 export default function RelatedProducts() {
   return (
     <section id="related-products" className="relative overflow-hidden">
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-360 px-6 lg:px-8 w-full">
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-6 max-w-330 px-6 lg:px-8 w-full">
+        <div className="text-center space-y-3 max-w-4xl mx-auto mb-6">
+          <div className="flex justify-center">
+            <Image
+              className="mb-2"
+              src="/images/badge.png"
+              width={40}
+              height={40}
+              alt="badge"
+            />
+          </div>
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+            Related Products
+          </h2>
+        </div>
         <div className="w-full">
           <Swiper
             modules={[Navigation]}
@@ -108,14 +122,14 @@ export default function RelatedProducts() {
                 spaceBetween: 30,
               },
             }}
-            className="overflow-visible!"
+            className="overflow-visible"
           >
             {RELATED_PRODUCTS.map((card, idx) => (
               <SwiperSlide
                 key={`${card.title}-${idx}`}
                 className="overflow-visible! px-1"
               >
-                <div className="relative pt-24">
+                <div className="relative px-4 pt-24">
                   {/* Floating image */}
                   <Image
                     src={card.image}
@@ -126,7 +140,7 @@ export default function RelatedProducts() {
                   />
                   {/* Card */}
                   <div
-                    className={`${card.color} rounded-[28px] p-6 flex flex-col justify-end items-center text-white shadow-xl min-h-90 w-full`}
+                    className={`${card.color} rounded-[28px] p-6 flex flex-col justify-end items-center text-white min-h-90 w-full`}
                   >
                     <h3 className="text-2xl font-semibold text-center">
                       {card.title}
@@ -148,6 +162,12 @@ export default function RelatedProducts() {
             <ChevronRight size={44} strokeWidth={2.5} />
           </button>
         </div>
+        <Link
+          href="#"
+          className="inline-flex items-center justify-center font-medium min-w-40 my-10 px-6 py-2 rounded-3xl text-sm bg-linear-to-tr from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
+        >
+          View all
+        </Link>
       </div>
     </section>
   );
