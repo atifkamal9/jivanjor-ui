@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
 
 export default function ProductInfo() {
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
+  const [isManualScroll, setIsManualScroll] = useState(false);
+  const tabsContainerRef = useRef<HTMLDivElement>(null);
 
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -108,14 +110,93 @@ export default function ProductInfo() {
     },
   ];
 
+  const handleTabClick = (tabName: TabName) => {
+    setActiveTab(tabName);
+    const elementId = tabName.toLowerCase().replace(" ", "-");
+    const el = document.getElementById(elementId);
+    if (el) {
+      setIsManualScroll(true);
+      // Offset for sticky navbar (88px) + tab bar (approx 72px) = 160px
+      const yOffset = -160;
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setTimeout(() => {
+        setIsManualScroll(false);
+      }, 800);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isManualScroll) return;
+
+      const sections: TabName[] = [
+        "Overview",
+        "Tech Specs",
+        "USPs",
+        "Applications",
+        "FAQs",
+      ];
+      const scrollPosition = window.scrollY + 180;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        const elementId = section.toLowerCase().replace(" ", "-");
+        const el = document.getElementById(elementId);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveTab(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isManualScroll]);
+
+  useEffect(() => {
+    if (tabsContainerRef.current) {
+      const activeIndex = tabs.findIndex((t) => t.name === activeTab);
+      const activeElement = tabsContainerRef.current.children[
+        activeIndex
+      ] as HTMLElement;
+      if (activeElement) {
+        const container = tabsContainerRef.current;
+        const targetScrollLeft =
+          activeElement.offsetLeft -
+          container.clientWidth / 2 +
+          activeElement.clientWidth / 2;
+        container.scrollTo({
+          left: targetScrollLeft,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [activeTab]);
+
   return (
     <section className="max-w-360 mx-auto px-6 lg:px-8 py-10 lg:py-16">
-      {/* Tab bar header pill container */}
-      <div className="hidden md:flex items-center overflow-x-auto pb-4 px-6 md:mx-0 md:px-0 scrollbar-none">
+      {/* Tab bar header pill container - Sticky with Scroll Spy */}
+      <div className="sticky top-22 z-40 bg-white/95 backdrop-blur-md py-2 -mx-6 px-6 md:mx-0 md:px-0 flex items-center justify-center w-full border-b border-neutral-100">
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+          .scrollbar-none::-webkit-scrollbar {
+            display: none;
+          }
+        `,
+          }}
+        />
         <div
-          className="flex items-center bg-white rounded-full my-10 p-px max-w-4xl mx-auto gap-1 md:gap-2 shrink-0"
+          ref={tabsContainerRef}
+          className="flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
           style={{
             boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
           }}
         >
           {tabs.map((tab) => {
@@ -123,7 +204,7 @@ export default function ProductInfo() {
             return (
               <button
                 key={tab.name}
-                onClick={() => setActiveTab(tab.name)}
+                onClick={() => handleTabClick(tab.name)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
                   isActive
                     ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
@@ -139,9 +220,12 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300">
-        {/* ==================== 1. OVERVIEW TAB ==================== */}
-        {activeTab === "Overview" && (
+      <div className="space-y-12">
+        {/* ==================== 1. OVERVIEW SECTION ==================== */}
+        <div
+          id="overview"
+          className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300 scroll-mt-40"
+        >
           <div className="">
             {/* Centered link icon & tagline */}
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
@@ -162,7 +246,10 @@ export default function ProductInfo() {
             </div>
 
             {/* Split specifications grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12">
+            <div
+              id="tech-specs"
+              className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12"
+            >
               {/* Left Column: Technical Specifications */}
               <div>
                 <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
@@ -230,7 +317,10 @@ export default function ProductInfo() {
             </div>
 
             {/* Bottom USP Section (Rounded Teal box) */}
-            <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
+            <div
+              id="usps"
+              className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
                 {/* USP 1 */}
                 <div className="text-center space-y-3 max-w-60 mx-auto">
@@ -341,256 +431,7 @@ export default function ProductInfo() {
               </div>
             </div>
           </div>
-        )}
-
-        {/* ==================== 2. TECH SPECS TAB ==================== */}
-        {activeTab === "Tech Specs" && (
-          <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
-              Complete Technical Specifications
-            </h3>
-            <div className="overflow-x-auto bg-white rounded-2xl shadow-2xs border border-neutral-200/50">
-              <table className="w-full text-left border-collapse text-sm">
-                <thead>
-                  <tr className="bg-neutral-50 text-neutral-600 font-bold uppercase tracking-wider text-xs border-b border-neutral-200">
-                    <th className="p-4 sm:p-5">Parameter</th>
-                    <th className="p-4 sm:p-5">Specification Value</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-100 text-neutral-700">
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Appearance
-                    </td>
-                    <td className="p-4 sm:p-5">Milk White emulsion</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Solids Content
-                    </td>
-                    <td className="p-4 sm:p-5">50% - 53%</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Viscosity at 30°C
-                    </td>
-                    <td className="p-4 sm:p-5">150 - 250 Poise</td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Theoretical Coverage
-                    </td>
-                    <td className="p-4 sm:p-5">
-                      60 - 70 sq.ft per kg (depends on surface porosity)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Open Time
-                    </td>
-                    <td className="p-4 sm:p-5">
-                      10 - 15 minutes at standard ambient temperature
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Setting Time
-                    </td>
-                    <td className="p-4 sm:p-5">
-                      2 - 3 hours (complete curing in 24 hours)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="p-4 sm:p-5 font-semibold text-neutral-800">
-                      Acid / Water Resistance
-                    </td>
-                    <td className="p-4 sm:p-5">
-                      Excellent D3 waterproofing grade protection
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== 3. USPS TAB ==================== */}
-        {activeTab === "USPs" && (
-          <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
-              Core Unique Selling Propositions
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#0498AA]">
-                  1. Fast Drying & Strong Bond
-                </h4>
-                <p className="text-neutral-600 text-sm leading-relaxed">
-                  Engineered for high initial tack, it speeds up setting times
-                  to 2-3 hours. This increases rotation speed and reduces
-                  structural clamping times.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#0498AA]">
-                  2. Excellent Moisture Resistance
-                </h4>
-                <p className="text-neutral-600 text-sm leading-relaxed">
-                  Compliant with D3 European grade water-resistance guidelines.
-                  Prevents laminate peeling in highly humid spaces like kitchens
-                  and bathrooms.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#0498AA]">
-                  3. Superior Coverage Ratio
-                </h4>
-                <p className="text-neutral-600 text-sm leading-relaxed">
-                  Provides a high coverage rate of up to 70 sqft/kg. Spreads
-                  easily and creates a thin, ultra-strong bonding film, reducing
-                  overall glue consumption.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs space-y-3">
-                <h4 className="font-bold text-lg text-[#0498AA]">
-                  4. Safe & Odourless Application
-                </h4>
-                <p className="text-neutral-600 text-sm leading-relaxed">
-                  Formulated completely without hazardous organic solvents or
-                  toxic compounds. Zero VOC emission, safe for both children and
-                  carpentry teams.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== 4. APPLICATIONS TAB ==================== */}
-        {activeTab === "Applications" && (
-          <div className="space-y-6">
-            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
-              Recommended Applications
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs flex flex-col justify-between">
-                <div className="space-y-2">
-                  <h4 className="font-bold text-[#A31652] text-lg">
-                    Kitchen & Bathroom Units
-                  </h4>
-                  <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
-                    Perfect for modular kitchen setups, sinks, under-counter
-                    cabinets, vanity frames, and other spaces exposed to
-                    humidity or steam.
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs flex flex-col justify-between">
-                <div className="space-y-2">
-                  <h4 className="font-bold text-[#A31652] text-lg">
-                    Laminate to Wood Bonding
-                  </h4>
-                  <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
-                    Bonding decorative laminates, mica layers, and wood veneers
-                    to plywood, particle board, or medium-density fiberboards
-                    (MDF).
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl border border-neutral-100 shadow-2xs flex flex-col justify-between">
-                <div className="space-y-2">
-                  <h4 className="font-bold text-[#A31652] text-lg">
-                    General Carpentry Joints
-                  </h4>
-                  <p className="text-neutral-600 text-xs sm:text-sm leading-relaxed">
-                    High-strength mortise & tenon joints, finger jointing,
-                    dowelling, furniture assembly, and regular domestic edge
-                    bonding.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================== 5. FAQS TAB ==================== */}
-        {activeTab === "FAQs" && (
-          <div className="space-y-4">
-            <h3 className="font-amethysta text-2xl lg:text-3xl pb-3 border-b border-neutral-300 mb-6">
-              Frequently Asked Questions
-            </h3>
-            <div className="space-y-4 max-w-4xl mx-auto">
-              {/* FAQ 1 */}
-              <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
-                <button
-                  onClick={() => setOpenFaq(openFaq === 0 ? null : 0)}
-                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
-                >
-                  <span>
-                    What is the drying and setting time for Jivanjor
-                    Watershield?
-                  </span>
-                  <span className="text-[#A31652] text-xl font-bold">
-                    {openFaq === 0 ? "−" : "+"}
-                  </span>
-                </button>
-                {openFaq === 0 && (
-                  <div className="px-6 pb-5 pt-1 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100/50">
-                    Jivanjor Watershield has a fast-drying profile. Clamping or
-                    pressing time is usually 2 to 3 hours under standard ambient
-                    conditions, while complete load-bearing strength and curing
-                    is achieved after 24 hours.
-                  </div>
-                )}
-              </div>
-
-              {/* FAQ 2 */}
-              <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
-                <button
-                  onClick={() => setOpenFaq(openFaq === 1 ? null : 1)}
-                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
-                >
-                  <span>How does Watershield achieve D3 water resistance?</span>
-                  <span className="text-[#A31652] text-xl font-bold">
-                    {openFaq === 1 ? "−" : "+"}
-                  </span>
-                </button>
-                {openFaq === 1 && (
-                  <div className="px-6 pb-5 pt-1 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100/50">
-                    Jivanjor Watershield is engineered with advanced
-                    cross-linking polymer technologies that resist water
-                    ingress. It complies with D3 grade specifications according
-                    to European Standard EN 204, making it highly effective at
-                    preserving joint bonds in damp or moisture-rich zones.
-                  </div>
-                )}
-              </div>
-
-              {/* FAQ 3 */}
-              <div className="bg-white rounded-2xl border border-neutral-200/50 shadow-2xs overflow-hidden">
-                <button
-                  onClick={() => setOpenFaq(openFaq === 2 ? null : 2)}
-                  className="w-full text-left px-6 py-4 font-bold flex justify-between items-center cursor-pointer hover:bg-neutral-50/50"
-                >
-                  <span>
-                    Is Jivanjor Watershield safe for indoor environments?
-                  </span>
-                  <span className="text-[#A31652] text-xl font-bold">
-                    {openFaq === 2 ? "−" : "+"}
-                  </span>
-                </button>
-                {openFaq === 2 && (
-                  <div className="px-6 pb-5 pt-1 text-sm text-neutral-600 leading-relaxed border-t border-neutral-100/50">
-                    Yes, it is completely water-based, solvent-free, non-toxic,
-                    and non-flammable. It complies with safety regulations and
-                    has zero volatile organic compound (VOC) emissions, making
-                    it completely safe for indoor installations and household
-                    furniture.
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );
