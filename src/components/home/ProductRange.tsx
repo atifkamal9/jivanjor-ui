@@ -59,7 +59,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`${tab === activeTab ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white" : "bg-surface"} cursor-pointer font-medium px-4 py-2 rounded-3xl text-sm`}
+                className={`${tab === activeTab ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white" : "bg-surface"} cursor-pointer font-medium px-4 py-2 rounded-3xl text-sm`}
               >
                 {tab}
               </button>

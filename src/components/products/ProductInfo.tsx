@@ -208,7 +208,7 @@ export default function ProductInfo() {
                 onClick={() => handleTabClick(tab.name)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
                   isActive
-                    ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
                     : "hover:bg-surface transition-colors"
                 }`}
               >
@@ -306,7 +306,7 @@ export default function ProductInfo() {
                   </div>
 
                   {/* PDF technical data sheet download action */}
-                  <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-tr from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
+                  <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
                     Download Technical Data Sheet
                   </button>
                 </div>

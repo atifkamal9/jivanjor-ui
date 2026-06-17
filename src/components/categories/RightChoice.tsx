@@ -24,10 +24,10 @@ export default function RightChoice() {
           />
         </div>
         <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-6 py-24 px-5 lg:px-8 lg:py-14">
-          <h2 className="font-amethysta text-[34px] md:text-[44px]">
+          <h2 className="font-amethysta text-[34px] md:text-[44px] leading-normal">
             Need Help Choosing the Right Adhesive?
           </h2>
-          <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-4">
+          <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-8">
             <p className="text-2xl max-w-3xl font-google-sans leading-normal">
               Share your woodwork needs, product query or application concerns.
               Our team will help you find the right Jivanjor solution.
