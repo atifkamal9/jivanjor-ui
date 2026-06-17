@@ -44,7 +44,7 @@ export default function Hero({ data }: HeroProps) {
           src={bgImage}
           alt="Jivanjor hero thumbnail"
           fill
-          className="object-cover mt-22"
+          className="object-cover"
           priority
         />
         <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" />
@@ -60,7 +60,7 @@ export default function Hero({ data }: HeroProps) {
               {subtitle}
             </p>
           )}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <a
               href={primaryLink}
               className="min-w-36 rounded-full bg-white px-6 py-2 text-sm font-medium text-black shadow-lg shadow-black/20 transition hover:bg-white/90 text-center"
@@ -69,7 +69,7 @@ export default function Hero({ data }: HeroProps) {
             </a>
             <a
               href={secondaryLink}
-              className="min-w-36 rounded-full border-2 border-white/30 px-6 py-2 text-sm font-medium text-white transition hover:border-white hover:bg-white/5 text-center"
+              className="min-w-36 rounded-full border-2 border-white px-6 py-2 text-sm font-medium text-white transition hover:border-white hover:bg-white/5 text-center"
             >
               {secondaryText}
             </a>
