@@ -73,7 +73,7 @@ export default function ProductFaq() {
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openIndex === idx;
               return (
-                <div key={item.question} className="border-t overflow-hidden">
+                <div key={item.question} className="border-t overflow-hidden first:border-t-0">
                   {/* Accordion header button */}
                   <button
                     onClick={() => toggleAccordion(idx)}
