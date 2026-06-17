@@ -59,7 +59,7 @@ export default function ProductFeatures() {
   return (
     <section
       id="applications"
-      className="max-w-360 mx-auto px-6 lg:px-8 py-12 space-y-16 lg:space-y-24"
+      className="max-w-360 mx-auto px-5 lg:px-8 py-12 space-y-16 lg:space-y-24"
     >
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
@@ -117,11 +117,10 @@ export default function ProductFeatures() {
 
                 {/* Animated expandable content block */}
                 <div
-                  className={`transition-all duration-300 ease-in-out ${
-                    isOpen
+                  className={`transition-all duration-300 ease-in-out ${isOpen
                       ? "max-h-150 opacity-100 pb-6"
                       : "max-h-0 opacity-0 pointer-events-none"
-                  }`}
+                    }`}
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
