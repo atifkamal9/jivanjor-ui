@@ -5,9 +5,18 @@ export default function RightChoice() {
     <section className="">
       <div className="relative my-10 lg:my-12 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
-        <div className="absolute bottom-0 left-0 pointer-events-none">
+        <div className="hidden lg:block absolute top-px bottom-0 left-0 pointer-events-none">
           <Image
             src="/images/watermark-1.png"
+            alt="watermark"
+            width={840}
+            height={440}
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+        <div className="absolute bottom-0 right-0 pointer-events-none lg:hidden">
+          <Image
+            src="/images/watermark-choice.png"
             alt="watermark"
             width={840}
             height={440}

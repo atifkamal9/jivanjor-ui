@@ -21,7 +21,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
     { label: "About", href: "#" },
     {
       label: "Products",
-      href: "/products",
+      href: "/categories",
       children: [
         {
           label: "Super Premium Adhesive",
