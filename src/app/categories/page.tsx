@@ -8,7 +8,7 @@ export default function Categories() {
       <div className="relative w-full">
         {/* Watermark */}
         <Image
-          src="/images/watermark 9.png"
+          src="/images/Watermark 9.png"
           alt="watermark"
           width={580}
           height={682}
