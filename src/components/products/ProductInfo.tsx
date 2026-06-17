@@ -17,95 +17,65 @@ export default function ProductInfo() {
       name: "Overview",
       label: "Overview",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
-        </svg>
+        <Image
+          src="/icons/overview.svg"
+          className="aspect-square"
+          alt="Overview"
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       name: "Tech Specs",
       label: "Tech Specs",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
+        <Image
+          src="/icons/Table-report.svg"
+          className="aspect-square"
+          alt="Tech Specs"
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       name: "USPs",
       label: "USPs",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.907c.961 0 1.36 1.25.588 1.81l-3.974 2.89a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h4.906a1 1 0 00.95-.69l1.519-4.674z"
-          />
-        </svg>
+        <Image
+          src="/icons/Star.svg"
+          className="aspect-square"
+          alt="USPs"
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       name: "Applications",
       label: "Applications",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-          />
-        </svg>
+        <Image
+          src="/icons/Blocks-and-arrows.svg"
+          className="aspect-square"
+          alt="Applications"
+          width={20}
+          height={20}
+        />
       ),
     },
     {
       name: "FAQs",
       label: "FAQs",
       icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
+        <Image
+          src="/icons/File-question.svg"
+          className="aspect-square"
+          alt="FAQs"
+          width={20}
+          height={20}
+        />
       ),
     },
   ];
@@ -187,7 +157,7 @@ export default function ProductInfo() {
   return (
     <section className="max-w-360 mx-auto px-5 lg:px-8 pt-10 pb-24 lg:py-16">
       {/* Desktop Tab bar header pill container - Sticky with Scroll Spy */}
-      <div className="hidden lg:flex sticky top-22 z-40 bg-white/95 backdrop-blur-md py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full border-b border-neutral-100">
+      <div className="hidden lg:flex sticky top-22 z-40 py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full">
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -211,13 +181,13 @@ export default function ProductInfo() {
               <button
                 key={tab.name}
                 onClick={() => handleTabClick(tab.name)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${
                   isActive
                     ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
                     : "hover:bg-surface transition-colors"
                 }`}
               >
-                {tab.icon}
+                <span className={isActive ? "invert" : ""}>{tab.icon}</span>
                 <span>{tab.label}</span>
               </button>
             );
@@ -240,7 +210,7 @@ export default function ProductInfo() {
               }`}
             >
               <div
-                className={`w-5 h-5 flex items-center justify-center ${isActive ? "text-white" : "text-foreground"}`}
+                className={`w-5 h-5 flex items-center justify-center ${isActive ? "invert" : ""}`}
               >
                 {tab.icon}
               </div>
