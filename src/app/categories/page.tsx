@@ -12,7 +12,7 @@ export default function Categories() {
           alt="watermark"
           width={580}
           height={682}
-          className="hidden lg:block absolute top-[27%] -right-2 pointer-events-none"
+          className="hidden lg:block absolute top-[22%] -right-2 pointer-events-none"
         />
         <ProductCategories />
       </div>

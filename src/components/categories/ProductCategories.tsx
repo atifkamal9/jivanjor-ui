@@ -48,7 +48,8 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Champion Super",
         description:
           "Provides a superior bond and strength, while being non-hazardous.",
-        mobileDesc: "Provides superior bond and strength, while being non-hazardous.",
+        mobileDesc:
+          "Provides superior bond and strength, while being non-hazardous.",
         color: "bg-[#0083CB]",
         badge: "Super Premium",
         image: "/images/Champion Super.png",
@@ -71,7 +72,8 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Foambond",
         description:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        mobileDesc: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        mobileDesc:
+          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         color: "bg-[#F57F26]",
         badge: "Speciality",
         image: "/images/Foambond.png",
@@ -94,7 +96,8 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Champion Super",
         description:
           "Provides a superior bond and strength, while being non-hazardous.",
-        mobileDesc: "Provides superior bond and strength, while being non-hazardous.",
+        mobileDesc:
+          "Provides superior bond and strength, while being non-hazardous.",
         color: "bg-[#0083CB]",
         badge: "Premium Regular",
         image: "/images/Champion Super.png",
@@ -116,7 +119,8 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
-        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+        mobileDesc:
+          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -142,7 +146,8 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
-        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+        mobileDesc:
+          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -165,7 +170,8 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Foambond",
         description:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        mobileDesc: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        mobileDesc:
+          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         color: "bg-[#F57F26]",
         badge: "Speciality",
         image: "/images/Foambond.png",
@@ -187,7 +193,8 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
-        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+        mobileDesc:
+          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -330,10 +337,11 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`rounded-2xl p-1 w-40 min-h-24 ${isActive
-                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
-                  : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
-                  }`}
+                className={`rounded-2xl p-1 w-40 min-h-24 ${
+                  isActive
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
+                    : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                }`}
               >
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
                   <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
@@ -367,10 +375,11 @@ export default function ProductCategories() {
         />
         <button
           onClick={scrollLeft}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
-            ? "block pointer-events-auto"
-            : "hidden pointer-events-none"
-            }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
+            showLeftArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
+          }`}
         >
           <ChevronLeftCircle size={24} className="text-[#FF0009]" />
         </button>
@@ -385,7 +394,7 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`${isActive ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"} cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
+                className={`${isActive ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"} cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
               >
                 {cat.name}
               </button>
@@ -394,10 +403,11 @@ export default function ProductCategories() {
         </div>
         <button
           onClick={scrollRight}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-            }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
+            showRightArrow
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
         >
           <ChevronRightCircle size={24} className="text-[#FF0009]" />
         </button>
@@ -447,16 +457,16 @@ export default function ProductCategories() {
                 className="overflow-visible! py-1"
               >
                 {/* Responsive Design: Floating 3D card layout */}
-                <div className="relative pt-21 w-full max-w-68 min-h-78 md:max-w-108 mx-auto lg:mx-0">
+                <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">
                   {/* Card Main Body */}
                   <Link
                     href={`/products`}
-                    className={`${card.color} rounded-3xl px-10 py-6 text-white flex flex-col justify-between gap-4 transition-transform hover:scale-[1.01] duration-300`}
+                    className={`${card.color} rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform hover:scale-[1.01] duration-300 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
                       {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-50 object-contain z-100">
+                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-54 object-contain z-100">
                         <Image
                           src={card.image}
                           alt={card.title}
@@ -466,28 +476,25 @@ export default function ProductCategories() {
                         />
                       </div>
                       {/* Header content */}
-                      <div className="flex flex-1 flex-col items-center text-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-2">
-                        <h3 className="text-2xl lg:text-3xl font-bold tracking-wide xl:text-right">
+                      <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pl-12 xl:pt-0">
+                        <h3 className="text-2xl lg:text-3xl font-bold leading-normal">
                           {card.title}
                         </h3>
                         {/* Custom White Divider */}
-                        <div className="w-full max-w-34 h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
-                        <p className="hidden xl:block text-right text-sm leading-normal font-normal">
+                        <div className="w-full h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
+                        <p className="hidden xl:block text-sm leading-normal font-normal">
                           {card.description}
                         </p>
-                        <p className="xl:hidden text-center text-xs leading-normal font-normal">
+                        <p className="xl:hidden text-center text-base leading-[100%] font-normal">
                           {card.mobileDesc}
                         </p>
                       </div>
                     </div>
 
                     {/* Bottom Row: Feature Bullet points */}
-                    <div className="hidden xl:block pt-4 space-y-1">
+                    <div className="hidden absolute bottom-6 xl:block space-y-1">
                       {card.features.map((feature, fIdx) => (
-                        <div
-                          key={fIdx}
-                          className="flex items-center gap-3"
-                        >
+                        <div key={fIdx} className="flex items-center gap-3">
                           {/* Premium SVG Custom Icons */}
                           <div className="shrink-0 text-white opacity-95">
                             {fIdx === 0 && (
@@ -526,13 +533,13 @@ export default function ProductCategories() {
           <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal">
             Superior Quality Backed by Research
           </h1>
-          <p className="text-lg md:text-2xl leading-normal font-light">
+          <p className="text-lg md:text-2xl leading-normal max-w-3xl">
             Learn how our focus on product development, quality standards and
             market reach supports India’s woodworking needs.
           </p>
           <Link
             href="#"
-            className="inline-flex items-center justify-center font-bold min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-tr from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"
+            className="inline-flex items-center justify-center font-bold min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"
           >
             Inside Our Labs
           </Link>

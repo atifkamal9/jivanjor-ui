@@ -114,7 +114,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                   contractors and dealers who rely on Jivanjor for real
                   projects.
                 </p>
-                <a href="/blogs" className="inline-flex items-center justify-center font-medium min-w-35 px-4 py-2 rounded-3xl text-sm bg-linear-to-tr from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center">
+                <a href="/blogs" className="inline-flex items-center justify-center font-medium min-w-35 px-4 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center">
                   Learn More
                 </a>
               </div>
