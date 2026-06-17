@@ -414,7 +414,7 @@ export default function ProductCategories() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 space-y-8 min-w-0 overflow-x-clip">
+      <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
         <div className="space-y-5 text-center md:text-start max-w-250">
           <h1 className="font-amethysta text-[34px] sm:text-5xl  leading-normal">
