@@ -36,7 +36,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-red-600 border-t-transparent z-10 shadow-lg"></div>
           </div>
           <div className="flex flex-col items-center gap-1">
-            <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-zinc-50 font-google-sans">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-zinc-50 font-google-sans">
               JIVANJOR
             </h2>
             <p className="text-xs font-semibold uppercase tracking-wider text-red-600">

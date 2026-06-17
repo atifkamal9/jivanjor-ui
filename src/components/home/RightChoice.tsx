@@ -72,7 +72,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
             {title}
           </h2>
           {data?.subtitle && (
-            <p className="mt-4 text-lg text-white/80 font-google-sans leading-relaxed">
+            <p className="mt-4 text-lg text-white/80 font-google-sans leading-normal">
               {data.subtitle}
             </p>
           )}

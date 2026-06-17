@@ -76,7 +76,7 @@ export default function ProductFeatures() {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
             Engineered for the Task at Hand
           </h2>
           <p className="text-2xl">
@@ -176,7 +176,7 @@ export default function ProductFeatures() {
         {/* On Mobile: text goes top. On Desktop: text goes right */}
         {/* Text Details Column */}
         <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 min-w-xs max-w-3xl">
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
             See Supremo in Action
           </h2>
           <p className="text-lg sm:text-2xl font-light">

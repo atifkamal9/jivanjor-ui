@@ -69,7 +69,7 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
 //       />
 //     </svg>
 //   </div>
-//   <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-tight">
+//   <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal text-neutral-800 leading-normal">
 //     Related Products
 //   </h2>
 // </div> */}
@@ -88,7 +88,7 @@ export default function RelatedProducts() {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
             Related Products
           </h2>
         </div>
@@ -146,7 +146,7 @@ export default function RelatedProducts() {
                       {card.title}
                     </h3>
                     <div className="w-full h-px bg-white my-4" />
-                    <p className="text-center text-base leading-relaxed max-w-60">
+                    <p className="text-center text-base leading-normal max-w-60">
                       {card.description}
                     </p>
                   </div>

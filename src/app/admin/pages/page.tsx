@@ -118,7 +118,7 @@ export default function PagesPage() {
       <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-foreground tracking-tight">
+            <h1 className="text-2xl font-black text-foreground">
               Dynamic Pages
             </h1>
             <p className="text-sm font-semibold text-foreground/45 uppercase tracking-wider">
@@ -380,10 +380,10 @@ export default function PagesPage() {
               <h3 className="text-lg font-black text-foreground">
                 Confirm Cascading Deletion
               </h3>
-              <p className="text-sm text-foreground/60 leading-relaxed font-medium">
+              <p className="text-sm text-foreground/60 leading-normal font-medium">
                 Are you absolutely sure you want to delete this dynamic page? 
               </p>
-              <div className="p-3 bg-red-50 dark:bg-red-950/20 text-[11px] font-bold text-red-600 rounded-xl leading-relaxed border border-red-100 dark:border-red-950/30">
+              <div className="p-3 bg-red-50 dark:bg-red-950/20 text-[11px] font-bold text-red-600 rounded-xl leading-normal border border-red-100 dark:border-red-950/30">
                 ⚠️ WARNING: Deleting this page will trigger cascading deletions, permanently removing all attached layouts, sections, and template configurations from the database!
               </div>
               <div className="flex items-center justify-end gap-3 pt-2">

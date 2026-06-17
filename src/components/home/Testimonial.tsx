@@ -125,7 +125,7 @@ export default function Testimonial({ data }: TestimonialProps) {
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
             {title}
           </h2>
-          <p className="text-2xl font-google-sans leading-relaxed text-foreground/80 my-4">
+          <p className="text-2xl font-google-sans leading-normal text-foreground/80 my-4">
             {subtitle}
           </p>
           <a href={ctaLink} className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-tr from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center">
@@ -163,7 +163,7 @@ export default function Testimonial({ data }: TestimonialProps) {
                     </div>
 
                     <div className="absolute bottom-6 left-6 text-left space-y-1">
-                      <p className="text-white font-extrabold text-lg tracking-tight">{item.name}</p>
+                      <p className="text-white font-extrabold text-lg">{item.name}</p>
                       <p className="text-white/70 text-[10px] font-bold uppercase tracking-wider font-google-sans">{item.role}</p>
                     </div>
                   </div>
@@ -176,7 +176,7 @@ export default function Testimonial({ data }: TestimonialProps) {
                       </p>
                     </div>
                     <div className="space-y-1 pt-4 border-t border-border/10">
-                      <p className="text-foreground font-extrabold text-base tracking-tight">{item.name}</p>
+                      <p className="text-foreground font-extrabold text-base">{item.name}</p>
                       <p className="text-foreground/45 text-[10px] font-bold uppercase tracking-wider font-google-sans">{item.role}</p>
                     </div>
                   </div>

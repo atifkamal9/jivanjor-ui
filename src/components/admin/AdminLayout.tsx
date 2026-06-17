@@ -120,10 +120,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="h-20 flex items-center justify-between px-5 border-b border-border shrink-0">
             <div className="flex items-center gap-2.5 truncate">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30 shrink-0">
-                <span className="text-lg font-black text-white tracking-tighter">JJ</span>
+                <span className="text-lg font-black text-white">JJ</span>
               </div>
               <div className="truncate">
-                <h1 className="text-sm font-extrabold tracking-tight text-foreground animate-[fadeIn_0.2s_ease-out]">
+                <h1 className="text-sm font-extrabold text-foreground animate-[fadeIn_0.2s_ease-out]">
                   Jivanjor
                 </h1>
                 <p className="text-[9px] font-bold tracking-wider text-primary uppercase animate-[fadeIn_0.2s_ease-out]">

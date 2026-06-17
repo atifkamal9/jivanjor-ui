@@ -310,7 +310,7 @@ export default function ProductCategories() {
     <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0">
-        <h2 className="text-2xl tracking-tight">Categories</h2>
+        <h2 className="text-2xl ">Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {CATEGORIES_DATA.map((cat) => {
             const isActive = activeCategory === cat.name;
@@ -398,10 +398,10 @@ export default function ProductCategories() {
       <div className="flex-1 space-y-8 min-w-0">
         {/* Category Heading & Description */}
         <div className="space-y-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] sm:text-5xl tracking-tight leading-tight">
+          <h1 className="font-amethysta text-[34px] sm:text-5xl  leading-normal">
             {currentCategoryData.title}
           </h1>
-          <p className="text-lg sm:text-2xl leading-relaxed font-light">
+          <p className="text-lg sm:text-2xl leading-normal font-normal">
             {currentCategoryData.description}
           </p>
         </div>
@@ -542,7 +542,7 @@ export default function ProductCategories() {
           <h1 className="font-amethysta text-[34px] md:text-5xl">
             Superior Quality Backed by Research
           </h1>
-          <p className="text-lg md:text-2xl leading-relaxed font-light">
+          <p className="text-lg md:text-2xl leading-normal font-light">
             Learn how our focus on product development, quality standards and
             market reach supports India’s woodworking needs.
           </p>

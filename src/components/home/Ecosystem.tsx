@@ -31,7 +31,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
             {title}
           </h2>
-          <p className="text-2xl font-google-sans leading-relaxed">
+          <p className="text-2xl font-google-sans leading-normal">
             {subtitle}
           </p>
         </div>
@@ -53,7 +53,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             {ctaTitle}
           </h2>
           <div className="flex flex-col items-start justify-between lg:flex-row gap-4">
-            <p className="text-2xl max-w-xl font-google-sans leading-relaxed">
+            <p className="text-2xl max-w-xl font-google-sans leading-normal">
               {ctaSubtitle}
             </p>
             <a href={ctaLink} className="inline-flex items-center justify-center font-medium text-base rounded-full min-w-50 px-6 py-2 border border-spacing-1.5 border-white text-center hover:bg-white/10 transition-colors">

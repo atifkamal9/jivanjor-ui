@@ -175,7 +175,7 @@ export default function BlogPage() {
       <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 tracking-tight">
+            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50">
               Knowledge Hub & Blogs
             </h1>
             <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
@@ -241,13 +241,13 @@ export default function BlogPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-lg font-black text-gray-900 dark:text-zinc-50 leading-tight line-clamp-2">
+                    <h3 className="text-lg font-black text-gray-900 dark:text-zinc-50 leading-normal line-clamp-2">
                       {blog.title}
                     </h3>
                     <p className="text-xs text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">
                       {blog.slug}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-zinc-400 line-clamp-3 leading-relaxed font-medium">
+                    <p className="text-sm text-gray-500 dark:text-zinc-400 line-clamp-3 leading-normal font-medium">
                       {blog.content}
                     </p>
                   </div>
@@ -361,7 +361,7 @@ export default function BlogPage() {
               <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
                 {composerPreview ? (
                   /* ================= PREVIEW MODE ================= */
-                  <div className="space-y-6 min-h-[40vh] p-4 bg-gray-50/50 dark:bg-zinc-950/50 rounded-2xl leading-relaxed">
+                  <div className="space-y-6 min-h-[40vh] p-4 bg-gray-50/50 dark:bg-zinc-950/50 rounded-2xl leading-normal">
                     <div className="space-y-2">
                       <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-600 text-white">
                         {formData.category}
@@ -382,7 +382,7 @@ export default function BlogPage() {
                       </div>
                     )}
 
-                    <div className="text-gray-700 dark:text-zinc-300 text-sm whitespace-pre-wrap leading-relaxed font-medium">
+                    <div className="text-gray-700 dark:text-zinc-300 text-sm whitespace-pre-wrap leading-normal font-medium">
                       {formData.content || "Empty content. Begin typing in editor panel to populate details."}
                     </div>
                   </div>
@@ -552,7 +552,7 @@ export default function BlogPage() {
                           value={formData.content}
                           onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
                           placeholder="Draft full analytical blog text here. Utilize the layout buttons in the toolbar to apply formatting tags..."
-                          className="w-full p-4 text-sm bg-transparent outline-none resize-none leading-relaxed text-gray-800 dark:text-zinc-200 min-h-[30vh]"
+                          className="w-full p-4 text-sm bg-transparent outline-none resize-none leading-normal text-gray-800 dark:text-zinc-200 min-h-[30vh]"
                         />
                       </div>
                     </div>
@@ -586,7 +586,7 @@ export default function BlogPage() {
               <h3 className="text-lg font-black text-gray-900 dark:text-zinc-50">
                 Confirm Deletion
               </h3>
-              <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed font-medium">
+              <p className="text-sm text-gray-500 dark:text-zinc-400 leading-normal font-medium">
                 Are you absolutely sure you want to delete this publication? This will permanently erase this knowledge asset from Jivanjor catalogs.
               </p>
               <div className="flex items-center justify-end gap-3 pt-2">
