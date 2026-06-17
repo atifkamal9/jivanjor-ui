@@ -45,11 +45,11 @@ export default function Hero() {
         >
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-tight tracking-wide">
+            <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-normal tracking-wide">
               Watershield
             </h1>
             {/* Product Tagline */}
-            <p className="font-amethysta text-xl lg:text-3xl font-light leading-tight max-w-sm sm:max-w-md">
+            <p className="font-amethysta text-xl lg:text-3xl font-light leading-normal max-w-sm sm:max-w-md">
               Apke furniture ko paani se bachane wali shield.
             </p>
           </div>

@@ -164,7 +164,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
                   {card.title}
                 </h3>
                 <div className="w-full h-px bg-white my-4" />
-                <p className="text-center text-base leading-relaxed max-w-60">
+                <p className="text-center text-base leading-normal max-w-60">
                   {card.description}
                 </p>
               </div>

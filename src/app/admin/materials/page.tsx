@@ -99,7 +99,7 @@ export default function MaterialsPage() {
       <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 tracking-tight">
+            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50">
               Timber & Materials
             </h1>
             <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
@@ -293,7 +293,7 @@ export default function MaterialsPage() {
               <h3 className="text-lg font-black text-gray-900 dark:text-zinc-50">
                 Confirm Deletion
               </h3>
-              <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed font-medium">
+              <p className="text-sm text-gray-500 dark:text-zinc-400 leading-normal font-medium">
                 Are you absolutely sure you want to delete this material specification? This will permanently remove its catalog parameters and description.
               </p>
               <div className="flex items-center justify-end gap-3 pt-2">

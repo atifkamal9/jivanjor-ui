@@ -53,9 +53,9 @@ export default function LoginPage() {
         <div className="flex flex-col items-center text-center">
           {/* Glowing Premium Brand Logo Container */}
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/30">
-            <span className="text-2xl font-black text-white tracking-tighter">JJ</span>
+            <span className="text-2xl font-black text-white">JJ</span>
           </div>
-          <h2 className="mt-6 text-3xl font-black tracking-tight text-foreground dark:text-zinc-50 font-google-sans">
+          <h2 className="mt-6 text-3xl font-black text-foreground dark:text-zinc-50 font-google-sans">
             Welcome Back
           </h2>
           <p className="mt-1 text-sm font-semibold uppercase tracking-wider text-primary">
@@ -138,7 +138,7 @@ export default function LoginPage() {
                 <span className="text-xs font-bold text-foreground/80 dark:text-zinc-400">
                   Reviewer Credentials Quick Access
                 </span>
-                <p className="text-xs text-foreground/60 dark:text-zinc-5050 leading-relaxed">
+                <p className="text-xs text-foreground/60 dark:text-zinc-5050 leading-normal">
                   Click below to automatically pre-fill the approved credentials for immediate CMS access.
                 </p>
                 <button

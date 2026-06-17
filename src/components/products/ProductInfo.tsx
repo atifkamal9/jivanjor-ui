@@ -238,7 +238,7 @@ export default function ProductInfo() {
                     alt="badge"
                   />
                 </div>
-                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-relaxed">
+                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
                   Watershield provides excellent water-resistance. Its superior
                   flow makes it smooth and easy to apply.
                 </p>
@@ -335,7 +335,7 @@ export default function ProductInfo() {
                     <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                       Faster Site Rotation
                     </h4>
-                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
                       Fast setting time helps professionals complete work
                       quicker and move between jobs more efficiently.
                     </span>
@@ -361,7 +361,7 @@ export default function ProductInfo() {
                     <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                       Smooth Spreadability
                     </h4>
-                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
                       Superior flow and easy spreading help reduce wastage and
                       support better coverage.
                     </span>
@@ -387,7 +387,7 @@ export default function ProductInfo() {
                     <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                       Solvent-Free Safety
                     </h4>
-                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
                       Water-based, non-flammable and non-toxic formulation for
                       safer handling during application.
                     </span>
@@ -417,7 +417,7 @@ export default function ProductInfo() {
                     <h4 className="font-amethysta text-3xl font-medium tracking-wide">
                       Clean Finish After Drying
                     </h4>
-                    <span className="text-base sm:text-lg leading-tight font-light max-w-xs mx-auto">
+                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
                       Dries into a clear transparent film, helping maintain a
                       neat finish around edges and joints.
                     </span>

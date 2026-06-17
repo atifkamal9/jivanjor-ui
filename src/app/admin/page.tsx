@@ -155,10 +155,10 @@ export default function DashboardPage() {
           <div className="absolute right-20 bottom-0 translate-x-10 translate-y-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2">
+            <h1 className="text-2xl md:text-3xl font-extrabold mb-2">
               Welcome to Jivanjor Admin Panel
             </h1>
-            <p className="text-sm md:text-base text-red-50/90 leading-relaxed font-medium">
+            <p className="text-sm md:text-base text-red-50/90 leading-normal font-medium">
               Manage your products range, write articles, edit troubleshooting
               categories, configure meta tags, and control site parameters
               instantly from this dashboard.
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                   {loading ? (
                     <div className="h-8 w-12 bg-foreground/10 rounded-lg animate-pulse mt-1" />
                   ) : (
-                    <p className="text-3xl font-black text-foreground tracking-tight">
+                    <p className="text-3xl font-black text-foreground">
                       {card.value}
                     </p>
                   )}
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                 Latest Activity
               </h4>
               <div className="space-y-3">
-                <div className="flex gap-3 text-xs leading-relaxed">
+                <div className="flex gap-3 text-xs leading-normal">
                   <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 shrink-0" />
                   <div>
                     <p className="font-bold text-foreground/80">
@@ -393,7 +393,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-3 text-xs leading-relaxed">
+                <div className="flex gap-3 text-xs leading-normal">
                   <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                   <div>
                     <p className="font-bold text-foreground/80">

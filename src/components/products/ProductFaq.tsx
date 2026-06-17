@@ -58,7 +58,7 @@ export default function ProductFaq() {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-tight">
+          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
             FAQs
           </h2>
           <p className="text-lg md:text-2xl max-w-2xl mx-auto">
@@ -103,7 +103,7 @@ export default function ProductFaq() {
                         : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                   >
-                    <p className="text-sm md:text-lg leading-relaxed font-normal max-w-2xl">
+                    <p className="text-sm md:text-lg leading-normal font-normal max-w-2xl">
                       {item.answer}
                     </p>
                   </div>

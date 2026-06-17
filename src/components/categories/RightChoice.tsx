@@ -19,7 +19,7 @@ export default function RightChoice() {
             Need Help Choosing the Right Adhesive?
           </h2>
           <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-4">
-            <p className="text-2xl max-w-3xl font-google-sans leading-relaxed">
+            <p className="text-2xl max-w-3xl font-google-sans leading-normal">
               Share your woodwork needs, product query or application concerns.
               Our team will help you find the right Jivanjor solution.
             </p>

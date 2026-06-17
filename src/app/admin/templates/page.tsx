@@ -356,7 +356,7 @@ export default function TemplatesPage() {
         <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-black text-foreground tracking-tight">
+              <h1 className="text-2xl font-black text-foreground">
                 Dynamic Section Templates
               </h1>
               <p className="text-sm font-semibold text-foreground/45 uppercase tracking-wider">
@@ -522,7 +522,7 @@ export default function TemplatesPage() {
                 <ArrowLeft className="h-5 w-5" />
               </button>
               <div>
-                <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
+                <h1 className="text-2xl font-black text-foreground flex items-center gap-2">
                   <Layers className="h-6 w-6 text-primary" />
                   <span>{editingId ? "CMS Layout Studio" : "Create dynamic layout state"}</span>
                 </h1>
@@ -543,7 +543,7 @@ export default function TemplatesPage() {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm font-bold tracking-tight transition-all cursor-pointer border ${activeTab === tab.id
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm font-bold transition-all cursor-pointer border ${activeTab === tab.id
                       ? "bg-primary text-white border-primary shadow-sm"
                       : "bg-background/40 hover:bg-surface text-foreground/80 border-border"
                       }`}
@@ -1309,7 +1309,7 @@ export default function TemplatesPage() {
             <h3 className="text-lg font-black text-foreground">
               Confirm Template Deletion
             </h3>
-            <p className="text-sm text-foreground/60 leading-relaxed font-medium">
+            <p className="text-sm text-foreground/60 leading-normal font-medium">
               Are you absolutely sure you want to delete thisdynamic layout sections template? This will erase all configured section parameters permanently.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">

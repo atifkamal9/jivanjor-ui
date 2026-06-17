@@ -56,7 +56,7 @@ export default function Hero({ data }: HeroProps) {
             {title}
           </h1>
           {subtitle && (
-            <p className="text-lg text-white/80 leading-relaxed font-google-sans">
+            <p className="text-lg text-white/80 leading-normal font-google-sans">
               {subtitle}
             </p>
           )}

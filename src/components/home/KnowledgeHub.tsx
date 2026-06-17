@@ -108,7 +108,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                 </div>
               </div>
               <div className="relative flex flex-col items-start flex-1 min-h-80 px-10 md:py-10 md:px-0 md:pr-10 space-y-4">
-                <p className="text-xl max-w-124 font-google-sans leading-relaxed text-foreground/80">
+                <p className="text-xl max-w-124 font-google-sans leading-normal text-foreground/80">
                   Hear from the carpenters, contractors and dealers who rely on
                   Jivanjor for real projects. Hear from the carpenters,
                   contractors and dealers who rely on Jivanjor for real
