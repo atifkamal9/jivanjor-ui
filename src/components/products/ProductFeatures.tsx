@@ -59,14 +59,14 @@ export default function ProductFeatures() {
   return (
     <section
       id="applications"
-      className="max-w-360 mx-auto px-5 lg:px-8 py-12 space-y-16 lg:space-y-24"
+      className="max-w-360 mx-auto py-12 space-y-16 lg:space-y-24"
     >
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
       {/* ========================================== */}
       <div className="space-y-8">
         {/* Header content with link icon */}
-        <div className="text-center space-y-3 max-w-4xl mx-auto">
+        <div className="text-center space-y-3 max-w-sm md:max-w-4xl mx-auto">
           <div className="flex justify-center">
             <Image
               className="mb-4"
@@ -76,30 +76,30 @@ export default function ProductFeatures() {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
+          <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal max-w-75 lg:max-w-full mx-auto">
             Engineered for the Task at Hand
           </h2>
-          <p className="text-2xl">
+          <p className="text-lg md:text-2xl leading-normal max-w-85 lg:max-w-full mx-auto">
             Explore where Supremo fits across furniture, laminates, plywood,
             boards and professional woodwork applications.
           </p>
         </div>
 
         {/* Accordion List */}
-        <div className="w-full max-w-7xl mx-auto border-b border-neutral-300">
+        <div className="w-full max-w-7xl mx-auto">
           {ACCORDION_ITEMS.map((item, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div
                 key={item.title}
-                className="border-t border-neutral-300 overflow-hidden"
+                className="border-t overflow-hidden first:border-t-0"
               >
                 {/* Header row click button */}
                 <button
                   onClick={() => toggleAccordion(idx)}
-                  className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none"
+                  className="w-full text-left py-5 flex justify-between items-center cursor-pointer group gap-20 select-none"
                 >
-                  <span className="font-amethysta text-xl sm:text-2xl lg:text-4xl group-hover:text-primary transition-colors duration-200">
+                  <span className="font-amethysta text-2xl lg:text-4xl group-hover:text-primary leading-normal transition-colors duration-200">
                     {item.title}
                   </span>
 
@@ -109,7 +109,7 @@ export default function ProductFeatures() {
                       &times;
                     </span>
                   ) : (
-                    <span className="text-neutral-400 group-hover text-2xl lg:text-3xl font-light select-none leading-none pr-1 transition-colors">
+                    <span className="group-hover text-2xl lg:text-3xl font-light select-none leading-none pr-1 transition-colors">
                       +
                     </span>
                   )}
@@ -118,14 +118,16 @@ export default function ProductFeatures() {
                 {/* Animated expandable content block */}
                 <div
                   className={`transition-all duration-300 ease-in-out ${isOpen
-                      ? "max-h-150 opacity-100 pb-6"
-                      : "max-h-0 opacity-0 pointer-events-none"
+                    ? "max-h-150 opacity-100 pb-6"
+                    : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
                     <div className="flex-1 space-y-4 max-w-lg">
-                      <p className="text-sm sm:text-lg">{item.description}</p>
+                      <p className="text-sm sm:text-lg leading-normal">
+                        {item.description}
+                      </p>
                       {/* Explore Link */}
                       <Link
                         href="#"
@@ -133,15 +135,15 @@ export default function ProductFeatures() {
                       >
                         <span>Explore More</span>
                         {/* Red circular arrow */}
-                        <span className="w-10 h-10 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571] flex items-center justify-center group-hover/link:bg-[#FF0009] transition-colors">
-                          <ArrowRight className="text-white w-7 h-7" />
+                        <span className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571] flex items-center justify-center group-hover/link:bg-[#FF0009] transition-colors">
+                          <ArrowRight className="text-white w-5 h-5 lg:w-7 lg:h-7" />
                         </span>
                       </Link>
                     </div>
 
                     {/* Right: Two side-by-side images */}
-                    <div className="flex gap-4 w-full md:w-auto shrink-0 justify-center md:justify-end">
-                      <div className="relative w-32.5 h-32.5 sm:w-37.5 sm:h-37.5 lg:w-45 lg:h-45 rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                    <div className="grid grid-cols-3 gap-1.5 lg:gap-5 shrink-0 items-center justify-center lg:justify-end lg:pr-12">
+                      <div className="col-span-1 relative min-w-32 min-h-40 lg:min-w-49 lg:min-h-60 w-full rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
                         <Image
                           src={item.imageA}
                           alt={`${item.title} detail layout`}
@@ -150,7 +152,7 @@ export default function ProductFeatures() {
                           sizes="(max-width: 768px) 130px, 180px"
                         />
                       </div>
-                      <div className="relative w-32.5 h-32.5 sm:w-37.5 sm:h-37.5 lg:w-45 lg:h-45 rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                      <div className="col-span-2 relative min-w-52 min-h-40 lg:min-w-80 lg:min-h-60 w-full rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
                         <Image
                           src={item.imageB}
                           alt={`${item.title} bonding application`}
@@ -178,7 +180,7 @@ export default function ProductFeatures() {
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
             See Supremo in Action
           </h2>
-          <p className="text-lg sm:text-2xl font-light">
+          <p className="text-lg sm:text-2xl leading-normal">
             Watch how trade professionals achieve flawless, high-coverage
             laminate bonding in record time.
           </p>

@@ -353,7 +353,7 @@ export default function ProductCategories() {
                       className="object-contain max-h-full max-w-full drop-shadow-sm"
                     />
                   </div>
-                  <span className="font-medium text-sm whitespace-nowrap">
+                  <span className="font-medium text-sm leading-normal whitespace-nowrap">
                     {cat.name}
                   </span>
                 </div>

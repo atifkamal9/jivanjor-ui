@@ -92,7 +92,7 @@ export default function RelatedProducts() {
             Related Products
           </h2>
         </div>
-        <div className="w-full">
+        <div className="w-full mt-24">
           <Swiper
             modules={[Navigation]}
             watchOverflow={false}
@@ -111,36 +111,39 @@ export default function RelatedProducts() {
               },
               768: {
                 slidesPerView: 2,
-                spaceBetween: 24,
+                spaceBetween: 20,
               },
               1024: {
                 slidesPerView: 3,
-                spaceBetween: 30,
+                spaceBetween: 20,
               },
               1280: {
                 slidesPerView: 4,
-                spaceBetween: 30,
+                spaceBetween: 20,
               },
             }}
-            className="overflow-visible"
+            className="overflow-visible!"
           >
             {RELATED_PRODUCTS.map((card, idx) => (
               <SwiperSlide
                 key={`${card.title}-${idx}`}
                 className="overflow-visible! px-1"
               >
-                <div className="relative px-4 pt-24">
-                  {/* Floating image */}
-                  <Image
-                    src={card.image}
-                    alt={card.title}
-                    width={300}
-                    height={300}
-                    className="absolute top-0 left-1/2 -translate-x-1/2 w-60 h-60 object-contain z-100"
-                  />
+                <div className="flex flex-col items-center relative px-4">
+                  <div className="absolute aspect-44/51 -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain z-100">
+                    {/* Floating image */}
+                    <Image
+                      src={card.image}
+                      alt={card.title}
+                      fill
+                      className="object-contain z-10"
+                      priority
+                      // className="absolute aspect-44/51 top-[-28%] w-60 h-65 object-contain z-100"
+                    />
+                  </div>
                   {/* Card */}
                   <div
-                    className={`${card.color} rounded-[28px] p-6 flex flex-col justify-end items-center text-white min-h-90 w-full`}
+                    className={`${card.color} rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
                   >
                     <h3 className="text-2xl font-semibold text-center">
                       {card.title}

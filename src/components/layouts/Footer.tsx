@@ -120,7 +120,7 @@ export default function Footer() {
                       <li key={link}>
                         <Link
                           href="/"
-                          className="text-lg text-black/80 hover:text-primary transition"
+                          className="text-lg text-foreground hover:text-primary transition"
                         >
                           {link}
                         </Link>

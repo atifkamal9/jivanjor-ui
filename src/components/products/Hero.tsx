@@ -47,16 +47,16 @@ export default function Hero() {
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <h1 className="font-amethysta text-3xl sm:text-5xl lg:text-6xl font-normal leading-normal">
+            <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-normal">
               Watershield
             </h1>
             {/* Product Tagline */}
-            <p className="font-amethysta text-base sm:text-xl lg:text-3xl leading-[120%] max-w-sm sm:max-w-md">
+            <p className="font-amethysta text-xl lg:text-3xl leading-[120%] max-w-3xs sm:max-w-md">
               Apke furniture ko paani se bachane wali shield.
             </p>
           </div>
           {/* Product Bullet Features list */}
-          <div className="space-y-1 self-center lg:self-auto w-full max-w-sm lg:max-w-none">
+          <div className="space-y-1">
             {/* Feature 1 */}
             <div className="flex items-center gap-3.5">
               <div className="shrink-0 text-white">

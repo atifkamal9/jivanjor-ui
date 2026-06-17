@@ -155,7 +155,7 @@ export default function ProductInfo() {
   }, [activeTab]);
 
   return (
-    <section className="max-w-360 mx-auto px-5 lg:px-8 pt-10 pb-24 lg:py-16">
+    <section className="max-w-360 mx-auto p-5 lg:px-8">
       {/* Desktop Tab bar header pill container - Sticky with Scroll Spy */}
       <div className="hidden lg:flex sticky top-22 z-40 py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full">
         <style
@@ -245,7 +245,7 @@ export default function ProductInfo() {
               </div>
 
               {/* Split specifications grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 p-6 sm:p-10 lg:p-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 p-6 sm:p-10 lg:p-12 text-center lg:text-start">
                 {/* Left Column: Technical Specifications */}
                 <div>
                   <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
@@ -254,21 +254,21 @@ export default function ProductInfo() {
                   <div className="space-y-2 max-w-sm text-lg md:text-xl">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Appearance</span>
-                      <span className="font-normal text-right">Milk White</span>
+                      <span className="font-normal text-start">Milk White</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Solids</span>
-                      <span className="font-normal text-right">50-53%</span>
+                      <span className="font-normal text-start">50-53%</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Viscosity</span>
-                      <span className="font-normal text-right">
+                      <span className="font-normal text-start">
                         150-250 Poise
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="font-medium">Coverage</span>
-                      <span className="font-normal text-right">
+                      <span className="font-normal text-start">
                         60-70 Sqft/Kg
                       </span>
                     </div>
@@ -276,14 +276,14 @@ export default function ProductInfo() {
                 </div>
 
                 {/* Right Column: Pack Sizes & Documentation */}
-                <div className="flex flex-col justify-between">
+                <div className="">
                   <div>
                     <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
                       Pack Sizes & Documentation
                     </h3>
 
                     {/* Grid layout of sizes chips */}
-                    <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+                    <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mb-5 max-w-lg">
                       {[
                         "0.6 Kg",
                         "1 Kg",
@@ -297,7 +297,7 @@ export default function ProductInfo() {
                       ].map((size) => (
                         <div
                           key={size}
-                          className="bg-white w-24 rounded-xl p-2.5 text-center text-sm sm:text-base font-medium shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
+                          className="bg-white w-24 rounded-xl p-2.5 text-center text-base sm:text-xl font-medium leading-normal shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
                         >
                           {size}
                         </div>
@@ -317,107 +317,80 @@ export default function ProductInfo() {
               <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
                   {/* USP 1 */}
-                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
                     <div className="text-white">
-                      <svg
-                        className="w-8 h-8 mx-auto mb-3"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
-                        <path d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                      </svg>
+                      <Image
+                        src="/icons/Cycle-arrow.svg"
+                        alt="USP1"
+                        className="aspect-square"
+                        width={40}
+                        height={40}
+                      />
                     </div>
-                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
                       Faster Site Rotation
                     </h4>
-                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
+                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
                       Fast setting time helps professionals complete work
                       quicker and move between jobs more efficiently.
                     </span>
                   </div>
 
                   {/* USP 2 */}
-                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
                     <div className="text-white">
-                      <svg
-                        className="w-8 h-8 mx-auto mb-3"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <rect x="4" y="4" width="16" height="16" rx="2" />
-                        <path
-                          strokeLinecap="round"
-                          d="M9 4L4 9M14 4L4 14M19 4L4 19M20 9L9 20M20 14L14 20"
-                        />
-                      </svg>
+                      <Image
+                        src="/icons/Texture.svg"
+                        alt="USP2"
+                        className="aspect-square"
+                        width={40}
+                        height={40}
+                      />
                     </div>
-                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
                       Smooth Spreadability
                     </h4>
-                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
+                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
                       Superior flow and easy spreading help reduce wastage and
                       support better coverage.
                     </span>
                   </div>
 
                   {/* USP 3 */}
-                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
                     <div className="text-white">
-                      <svg
-                        className="w-8 h-8 mx-auto mb-3"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path
-                          strokeLinecap="round"
-                          d="M12 8v8M8 12h8M9.17 9.17l5.66 5.66M9.17 14.83l5.66-5.66"
-                        />
-                      </svg>
+                      <Image
+                        src="/icons/Asterisk.svg"
+                        alt="USP3"
+                        className="aspect-square"
+                        width={40}
+                        height={40}
+                      />
                     </div>
-                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
                       Solvent-Free Safety
                     </h4>
-                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
+                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
                       Water-based, non-flammable and non-toxic formulation for
                       safer handling during application.
                     </span>
                   </div>
 
                   {/* USP 4 */}
-                  <div className="text-center space-y-3 max-w-60 mx-auto">
+                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
                     <div className="text-white">
-                      <svg
-                        className="w-8 h-8 mx-auto mb-3"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                        <circle cx="17" cy="7" r="1.5" fill="currentColor" />
-                        <circle cx="19" cy="12" r="1.5" fill="currentColor" />
-                        <circle cx="17" cy="17" r="1.5" fill="currentColor" />
-                        <circle cx="12" cy="19" r="1.5" fill="currentColor" />
-                        <circle cx="7" cy="17" r="1.5" fill="currentColor" />
-                        <circle cx="5" cy="12" r="1.5" fill="currentColor" />
-                        <circle cx="7" cy="7" r="1.5" fill="currentColor" />
-                        <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-                      </svg>
+                      <Image
+                        src="/icons/Circles-seven.svg"
+                        alt="USP4"
+                        className="aspect-square"
+                        width={40}
+                        height={40}
+                      />
                     </div>
-                    <h4 className="font-amethysta text-3xl font-medium tracking-wide">
+                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
                       Clean Finish After Drying
                     </h4>
-                    <span className="text-base sm:text-lg leading-normal font-light max-w-xs mx-auto">
+                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
                       Dries into a clear transparent film, helping maintain a
                       neat finish around edges and joints.
                     </span>
