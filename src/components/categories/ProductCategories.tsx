@@ -310,7 +310,7 @@ export default function ProductCategories() {
     <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0">
-        <h2 className="text-2xl font-bold tracking-tight">Categories</h2>
+        <h2 className="text-2xl tracking-tight">Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {CATEGORIES_DATA.map((cat) => {
             const isActive = activeCategory === cat.name;
@@ -442,12 +442,12 @@ export default function ProductCategories() {
                   {/* Card Main Body */}
                   <Link
                     href={`/products`}
-                    className={`${card.color} rounded-3xl p-6 lg:p-10 text-white flex flex-col justify-between gap-4 transition-transform hover:scale-[1.01] duration-300`}
+                    className={`${card.color} rounded-3xl px-10 py-6 text-white flex flex-col justify-between gap-4 transition-transform hover:scale-[1.01] duration-300`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
                       {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 translate-y-[-46%] aspect-69/80 w-40 h-40 xl:w-46 xl:h-50 object-contain z-100">
+                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 translate-y-[-36%] aspect-69/80 w-40 h-40 xl:w-46 xl:h-50 object-contain z-100">
                         <Image
                           src={card.image}
                           alt={card.title}
@@ -470,7 +470,7 @@ export default function ProductCategories() {
                     </div>
 
                     {/* Bottom Row: Feature Bullet points */}
-                    <div className="space-y-3.5">
+                    <div className="pt-4">
                       {card.features.map((feature, fIdx) => (
                         <div
                           key={fIdx}
@@ -516,7 +516,7 @@ export default function ProductCategories() {
                               <ThumbsUp size={16} strokeWidth={2.5} />
                             )}
                           </div>
-                          <span className="text-sm sm:text-base opacity-95 tracking-wide leading-none">
+                          <span className="font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
                             {feature}
                           </span>
                         </div>
