@@ -180,7 +180,7 @@ export default function ProductInfo() {
   }, [activeTab]);
 
   return (
-    <section className="max-w-360 mx-auto px-6 lg:px-8 py-10 lg:py-16">
+    <section className="max-w-360 mx-auto px-5 lg:px-8 py-10 lg:py-16">
       {/* Tab bar header pill container - Sticky with Scroll Spy */}
       <div className="sticky top-22 z-40 bg-white/95 backdrop-blur-md py-2 -mx-6 px-6 md:mx-0 md:px-0 flex items-center justify-center w-full border-b border-neutral-100">
         <style
@@ -206,11 +206,10 @@ export default function ProductInfo() {
               <button
                 key={tab.name}
                 onClick={() => handleTabClick(tab.name)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
-                  isActive
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${isActive
                     ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
                     : "hover:bg-surface transition-colors"
-                }`}
+                  }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
