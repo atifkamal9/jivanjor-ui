@@ -19,7 +19,7 @@ export default function Hero() {
       <div className="w-full h-67 relative hidden md:block">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
-            <div className="max-w-3xl text-white pointer-events-auto">
+            <div className="max-w-2xl text-white pointer-events-auto">
               <div className="flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">
                   {/* Home Solid Icon */}
@@ -31,7 +31,7 @@ export default function Hero() {
                 <ChevronRight size={16} />
                 <span className="font-normal text-lg text-white/80">Premium Adhesives</span>
               </div>
-              <h2 className="font-amethysta text-5xl mt-6">
+              <h2 className="font-amethysta font-normal text-5xl mt-6">
                 A Complete Adhesive Range for Modern Woodworking
               </h2>
             </div>

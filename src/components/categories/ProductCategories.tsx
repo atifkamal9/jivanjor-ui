@@ -8,6 +8,8 @@ import {
   ChevronRightCircle,
   ChevronLeftCircle,
   ThumbsUp,
+  Shield,
+  Gauge,
 } from "lucide-react";
 
 import { Navigation } from "swiper/modules";
@@ -19,6 +21,7 @@ import "swiper/css/navigation";
 interface ProductCard {
   title: string;
   description: string;
+  mobileDesc: string;
   color: string;
   badge: string;
   image: string;
@@ -45,6 +48,7 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Champion Super",
         description:
           "Provides a superior bond and strength, while being non-hazardous.",
+        mobileDesc: "Provides superior bond and strength, while being non-hazardous.",
         color: "bg-[#0083CB]",
         badge: "Super Premium",
         image: "/images/Champion Super.png",
@@ -67,6 +71,7 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Foambond",
         description:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        mobileDesc: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         color: "bg-[#F57F26]",
         badge: "Speciality",
         image: "/images/Foambond.png",
@@ -89,6 +94,7 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Champion Super",
         description:
           "Provides a superior bond and strength, while being non-hazardous.",
+        mobileDesc: "Provides superior bond and strength, while being non-hazardous.",
         color: "bg-[#0083CB]",
         badge: "Premium Regular",
         image: "/images/Champion Super.png",
@@ -104,12 +110,13 @@ const CATEGORIES_DATA: CategoryData[] = [
     name: "Regular",
     title: "Waterproof Adhesives by Jivanjor",
     description:
-      "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications.",
+      "Explore where watershield fits across furniture, laminates, plywood, boards and professional woodwork applications.",
     icon: "/images/Watershield.png",
     products: [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
+        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -122,6 +129,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Aquabond",
         description: "Heatproof and waterproof adhesive.",
+        mobileDesc: "Heatproof and waterproof adhesive.",
         color: "bg-[#077937]",
         badge: "Waterproof Grade",
         image: "/images/Aquabond.png",
@@ -134,6 +142,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
+        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -156,6 +165,7 @@ const CATEGORIES_DATA: CategoryData[] = [
         title: "Foambond",
         description:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        mobileDesc: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         color: "bg-[#F57F26]",
         badge: "Speciality",
         image: "/images/Foambond.png",
@@ -177,6 +187,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Watershield",
         description: "Provides excellent water-resistance.",
+        mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
         color: "bg-[#0498AA]",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
@@ -198,6 +209,7 @@ const CATEGORIES_DATA: CategoryData[] = [
       {
         title: "Aquabond",
         description: "Heatproof and waterproof adhesive.",
+        mobileDesc: "Heatproof and waterproof adhesive.",
         color: "bg-[#077937]",
         badge: "Waterproof Grade",
         image: "/images/Aquabond.png",
@@ -293,7 +305,7 @@ export default function ProductCategories() {
 
       if (activeElement) {
         scrollContainerRef.current.scrollTo({
-          left: activeElement.offsetLeft,
+          left: activeElement.offsetLeft - 16,
           behavior: "smooth",
         });
       }
@@ -307,9 +319,9 @@ export default function ProductCategories() {
     CATEGORIES_DATA[3];
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-6 lg:px-8 gap-12 overflow-hidden z-10">
+    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
       {/* Sidebar Categories Panel */}
-      <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0">
+      <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
         <h2 className="text-2xl ">Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {CATEGORIES_DATA.map((cat) => {
@@ -318,11 +330,10 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`rounded-2xl p-1 w-40 min-h-24 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
-                    : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
-                }`}
+                className={`rounded-2xl p-1 w-40 min-h-24 ${isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
+                  : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                  }`}
               >
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
                   <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
@@ -344,7 +355,7 @@ export default function ProductCategories() {
         </div>
       </div>
       {/* Mobile categories tabs */}
-      <div className="flex lg:hidden items-center gap-3 w-full">
+      <div className="flex lg:hidden items-center gap-2 w-full">
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -356,17 +367,16 @@ export default function ProductCategories() {
         />
         <button
           onClick={scrollLeft}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showLeftArrow
-              ? "block pointer-events-auto"
-              : "hidden pointer-events-none"
-          }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
+            ? "block pointer-events-auto"
+            : "hidden pointer-events-none"
+            }`}
         >
           <ChevronLeftCircle size={24} className="text-[#FF0009]" />
         </button>
         <div
           ref={scrollContainerRef}
-          className="flex-1 flex gap-3 overflow-x-auto scroll-smooth scrollbar-none relative"
+          className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {CATEGORIES_DATA.map((cat) => {
@@ -375,7 +385,7 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`${isActive ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white" : "bg-surface"} cursor-pointer font-medium px-2 py-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-6px)] text-center truncate`}
+                className={`${isActive ? "bg-linear-to-tr from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"} cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
               >
                 {cat.name}
               </button>
@@ -384,20 +394,19 @@ export default function ProductCategories() {
         </div>
         <button
           onClick={scrollRight}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showRightArrow
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+            }`}
         >
           <ChevronRightCircle size={24} className="text-[#FF0009]" />
         </button>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 space-y-8 min-w-0">
+      <div className="flex-1 space-y-8 min-w-0 overflow-x-clip">
         {/* Category Heading & Description */}
-        <div className="space-y-4 text-center md:text-start">
+        <div className="space-y-5 text-center md:text-start max-w-250">
           <h1 className="font-amethysta text-[34px] sm:text-5xl  leading-normal">
             {currentCategoryData.title}
           </h1>
@@ -412,7 +421,7 @@ export default function ProductCategories() {
             modules={[Navigation]}
             watchOverflow={false}
             loop={false}
-            spaceBetween={24}
+            spaceBetween={20}
             slidesPerView={1}
             navigation={{
               prevEl: ".cat-swiper-prev",
@@ -438,7 +447,7 @@ export default function ProductCategories() {
                 className="overflow-visible! py-1"
               >
                 {/* Responsive Design: Floating 3D card layout */}
-                <div className="relative pt-16 w-full max-w-60 md:max-w-105 mx-auto lg:mx-0">
+                <div className="relative pt-21 w-full max-w-68 min-h-78 md:max-w-108 mx-auto lg:mx-0">
                   {/* Card Main Body */}
                   <Link
                     href={`/products`}
@@ -447,7 +456,7 @@ export default function ProductCategories() {
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
                       {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 translate-y-[-36%] aspect-69/80 w-40 h-40 xl:w-46 xl:h-50 object-contain z-100">
+                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-50 object-contain z-100">
                         <Image
                           src={card.image}
                           alt={card.title}
@@ -457,60 +466,35 @@ export default function ProductCategories() {
                         />
                       </div>
                       {/* Header content */}
-                      <div className="flex flex-1 flex-col items-center text-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-24 xl:pt-2">
+                      <div className="flex flex-1 flex-col items-center text-center xl:items-end xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-2">
                         <h3 className="text-2xl lg:text-3xl font-bold tracking-wide xl:text-right">
                           {card.title}
                         </h3>
                         {/* Custom White Divider */}
                         <div className="w-full max-w-34 h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
-                        <p className="text-center xl:text-right text-xs sm:text-sm opacity-90 leading-snug font-normal">
+                        <p className="hidden xl:block text-right text-sm leading-normal font-normal">
                           {card.description}
+                        </p>
+                        <p className="xl:hidden text-center text-xs leading-normal font-normal">
+                          {card.mobileDesc}
                         </p>
                       </div>
                     </div>
 
                     {/* Bottom Row: Feature Bullet points */}
-                    <div className="pt-4">
+                    <div className="hidden xl:block pt-4 space-y-1">
                       {card.features.map((feature, fIdx) => (
                         <div
                           key={fIdx}
-                          className="hidden xl:flex items-center gap-3"
+                          className="flex items-center gap-3"
                         >
                           {/* Premium SVG Custom Icons */}
                           <div className="shrink-0 text-white opacity-95">
                             {fIdx === 0 && (
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                              >
-                                <rect
-                                  x="4"
-                                  y="4"
-                                  width="16"
-                                  height="16"
-                                  rx="3"
-                                />
-                                <line x1="20" y1="4" x2="4" y2="20" />
-                              </svg>
+                              <Shield size={16} strokeWidth={2.5} />
                             )}
                             {fIdx === 1 && (
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                              >
-                                <circle cx="14" cy="12" r="6" />
-                                <path d="M14 9v3l2 1" />
-                                <path
-                                  strokeLinecap="round"
-                                  d="M2 9h4M2 12h4M2 15h4"
-                                />
-                              </svg>
+                              <Gauge size={16} strokeWidth={2.5} />
                             )}
                             {fIdx === 2 && (
                               <ThumbsUp size={16} strokeWidth={2.5} />
@@ -539,7 +523,7 @@ export default function ProductCategories() {
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl">
+          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal">
             Superior Quality Backed by Research
           </h1>
           <p className="text-lg md:text-2xl leading-normal font-light">
@@ -556,7 +540,7 @@ export default function ProductCategories() {
             <div className="hidden md:block col-span-1">
               <Image
                 src="/images/Rectangle 110.png"
-                className="object-cover w-full h-full rounded-2xl shadow-sm"
+                className="object-cover w-full h-full rounded-2xl bg-surface"
                 alt="Research Laboratory"
                 width={400}
                 height={260}
@@ -565,7 +549,7 @@ export default function ProductCategories() {
             <div className="col-span-2">
               <Image
                 src="/images/Rectangle 111.png"
-                className="object-cover w-full h-full rounded-2xl shadow-sm"
+                className="object-cover w-full h-full rounded-2xl bg-surface"
                 alt="Adhesive Testing Laboratory"
                 width={800}
                 height={260}
