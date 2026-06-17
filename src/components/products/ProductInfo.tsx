@@ -116,8 +116,10 @@ export default function ProductInfo() {
     const el = document.getElementById(elementId);
     if (el) {
       setIsManualScroll(true);
-      // Offset for sticky navbar (88px) + tab bar (approx 88px) + safety margin = 180px
-      const yOffset = -180;
+      // Offset: mobile (innerWidth < 1024) has only top header (~90px offset), desktop has top header + top sticky tab bar (~180px offset)
+      const isMobile =
+        typeof window !== "undefined" && window.innerWidth < 1024;
+      const yOffset = isMobile ? -90 : -180;
       const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: "smooth" });
       setTimeout(() => {
@@ -137,8 +139,11 @@ export default function ProductInfo() {
         "Applications",
         "FAQs",
       ];
-      // 185px offset to match the scroll-to position of -180px with a 5px buffer
-      const scrollPosition = window.scrollY + 185;
+      // Offset buffer: 95px on mobile, 185px on desktop
+      const isMobile =
+        typeof window !== "undefined" && window.innerWidth < 1024;
+      const offset = isMobile ? 95 : 185;
+      const scrollPosition = window.scrollY + offset;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
@@ -180,9 +185,9 @@ export default function ProductInfo() {
   }, [activeTab]);
 
   return (
-    <section className="max-w-360 mx-auto px-5 lg:px-8 py-10 lg:py-16">
-      {/* Tab bar header pill container - Sticky with Scroll Spy */}
-      <div className="sticky top-22 z-40 bg-white/95 backdrop-blur-md py-2 -mx-6 px-6 md:mx-0 md:px-0 flex items-center justify-center w-full border-b border-neutral-100">
+    <section className="max-w-360 mx-auto px-5 lg:px-8 pt-10 pb-24 lg:py-16">
+      {/* Desktop Tab bar header pill container - Sticky with Scroll Spy */}
+      <div className="hidden lg:flex sticky top-22 z-40 bg-white/95 backdrop-blur-md py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full border-b border-neutral-100">
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -193,7 +198,7 @@ export default function ProductInfo() {
         />
         <div
           ref={tabsContainerRef}
-          className="hidden lg:flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
+          className="flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
           style={{
             boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
             scrollbarWidth: "none",
@@ -206,10 +211,11 @@ export default function ProductInfo() {
               <button
                 key={tab.name}
                 onClick={() => handleTabClick(tab.name)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${isActive
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all cursor-pointer select-none shrink-0 ${
+                  isActive
                     ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
                     : "hover:bg-surface transition-colors"
-                  }`}
+                }`}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
@@ -217,6 +223,31 @@ export default function ProductInfo() {
             );
           })}
         </div>
+      </div>
+
+      {/* Mobile Sticky Bottom Tab Bar (Visible on mobile/tablet, hidden on desktop) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-200 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around w-full">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.name;
+          return (
+            <button
+              key={tab.name}
+              onClick={() => handleTabClick(tab.name)}
+              className={`flex flex-col items-center justify-center gap-1 p-1.5 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${
+                isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
+                  : "hover:text-black"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 flex items-center justify-center ${isActive ? "text-white" : "text-foreground"}`}
+              >
+                {tab.icon}
+              </div>
+              <span className="text-[10px] text-center">{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Main content body container */}
