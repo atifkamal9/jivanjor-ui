@@ -59,7 +59,7 @@ export default function ProductFeatures() {
   return (
     <section
       id="applications"
-      className="max-w-360 mx-auto py-12 space-y-16 lg:space-y-24"
+      className="max-w-360 mx-auto pt-12 space-y-16 lg:space-y-24"
     >
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
@@ -117,10 +117,11 @@ export default function ProductFeatures() {
 
                 {/* Animated expandable content block */}
                 <div
-                  className={`transition-all duration-300 ease-in-out ${isOpen
-                    ? "max-h-150 opacity-100 pb-6"
-                    : "max-h-0 opacity-0 pointer-events-none"
-                    }`}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "max-h-150 opacity-100 pb-6"
+                      : "max-h-0 opacity-0 pointer-events-none"
+                  }`}
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
@@ -142,8 +143,8 @@ export default function ProductFeatures() {
                     </div>
 
                     {/* Right: Two side-by-side images */}
-                    <div className="grid grid-cols-3 gap-1.5 lg:gap-5 shrink-0 items-center justify-center lg:justify-end lg:pr-12">
-                      <div className="col-span-1 relative min-w-32 min-h-40 lg:min-w-49 lg:min-h-60 w-full rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                    <div className="grid grid-cols-3 gap-1.5 lg:gap-5 shrink-0 items-center justify-center lg:justify-end pr-0 lg:pr-12">
+                      <div className="col-span-1 relative min-w-30 min-h-40 lg:min-w-49 lg:min-h-60 w-full rounded-2xl overflow-hidden">
                         <Image
                           src={item.imageA}
                           alt={`${item.title} detail layout`}
@@ -152,7 +153,7 @@ export default function ProductFeatures() {
                           sizes="(max-width: 768px) 130px, 180px"
                         />
                       </div>
-                      <div className="col-span-2 relative min-w-52 min-h-40 lg:min-w-80 lg:min-h-60 w-full rounded-2xl overflow-hidden shadow-xs border border-neutral-100/50">
+                      <div className="col-span-2 relative min-w-50 min-h-40 lg:min-w-80 lg:min-h-60 w-full rounded-2xl overflow-hidden">
                         <Image
                           src={item.imageB}
                           alt={`${item.title} bonding application`}
@@ -173,7 +174,7 @@ export default function ProductFeatures() {
       {/* ========================================== */}
       {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
       {/* ========================================== */}
-      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6 border-t border-neutral-100">
+      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6">
         {/* On Mobile: text goes top. On Desktop: text goes right */}
         {/* Text Details Column */}
         <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 min-w-xs max-w-3xl">
