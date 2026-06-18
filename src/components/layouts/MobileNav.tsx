@@ -1,73 +1,91 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, JSX } from "react";
-import { ChevronDown, Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { X, ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
 
 interface NavItem {
   label: string;
   href?: string;
-  children?: NavItem[];
+}
+
+interface ProductItem {
+  name: string;
+}
+
+interface CategoryItem {
+  name: string;
+  products: string[];
 }
 
 interface MobileNavProps {
   onClose?: () => void;
 }
 
-export default function MobileNav({ onClose }: MobileNavProps) {
-  const [expandedParent, setExpandedParent] = useState<string | null>(null);
-  const [expandedChild, setExpandedChild] = useState<string | null>(null);
+const productCategories: CategoryItem[] = [
+  {
+    name: "Woodworking Adhesive",
+    products: [
+      "Super Premium Adhesive",
+      "Specialty Adhesive",
+      "Regular Adhesive",
+      "Waterproof Grade Adhesive",
+      "Wood Ancillaries",
+      "ECO",
+      "Wood Preservative",
+    ],
+  },
+  {
+    name: "Construction Chemicals",
+    products: [
+      "Tile Adhesive",
+      "Grout",
+      "Waterproofing Compound",
+      "Epoxy Grout",
+    ],
+  },
+  {
+    name: "Maintenance",
+    products: ["Pipe Sealant", "Thread Seal Tape", "Maintenance Spray"],
+  },
+  {
+    name: "Wood Finish Products",
+    products: ["Wood Polish", "Wood Stain", "Lacquer"],
+  },
+  {
+    name: "Packaging Adhesives",
+    products: [
+      "Box Sealing Adhesive",
+      "Lamination Adhesive",
+      "Carton Adhesive",
+    ],
+  },
+  {
+    name: "Footwear Adhesives",
+    products: [
+      "Sole Bonding Adhesive",
+      "Leather Adhesive",
+      "Synthetic Adhesive",
+    ],
+  },
+];
 
-  const navLinks: NavItem[] = [
-    { label: "About", href: "#" },
-    {
-      label: "Products",
-      href: "/categories",
-      children: [
-        {
-          label: "Super Premium Adhesive",
-          children: [{ label: "Product 1", href: "#" }],
-        },
-        {
-          label: "Speciality Adhesive",
-          children: [{ label: "Product 1", href: "#" }],
-        },
-        { label: "Regular Adhesive", href: "#" },
-        {
-          label: "Water Based or Grade Adhesive",
-          children: [
-            { label: "Watershed", href: "#" },
-            { label: "Aquaprotekt", href: "#" },
-            { label: "Aquashield", href: "#" },
-          ],
-        },
-        {
-          label: "Wood Ancillaries",
-          children: [{ label: "Product 1", href: "#" }],
-        },
-        { label: "ECO", children: [{ label: "Product 1", href: "#" }] },
-        {
-          label: "Wood Preservatives",
-          children: [{ label: "Product 1", href: "#" }],
-        },
-      ],
-    },
-    {
-      label: "Applications",
-      children: [
-        { label: "Furniture & Woodwork", href: "#" },
-        { label: "Laminates & Finishing", href: "#" },
-        { label: "Kitchen & Storage Units", href: "#" },
-        { label: "Moisture-Prone Woodwork", href: "#" },
-        { label: "PVC & Edge Finishing", href: "#" },
-        { label: "Home Repairs & DIY", href: "#" },
-        { label: "Foam & Acoustic Bonding", href: "#" },
-        { label: "OEM & Bulk Woodwork", href: "#" },
-      ],
-    },
-    { label: "Knowledge Hub", href: "#" },
-    { label: "Partner", href: "#" },
-    { label: "Contact", href: "#" },
-  ];
+const applications = [
+  "Furniture & Woodwork",
+  "Laminates & Finishing",
+  "Kitchen & Storage Units",
+  "Moisture-Prone Woodwork",
+  "PVC & Edge Finishing",
+  "Home Repairs & DIY",
+  "Foam & Acoustic Bonding",
+  "OEM & Bulk Woodwork",
+];
+
+export default function MobileNav({ onClose }: MobileNavProps) {
+  const [openSection, setOpenSection] = useState<string | null>("Products");
+  const [openCategory, setOpenCategory] = useState<string | null>(
+    "Woodworking Adhesive",
+  );
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -76,89 +94,204 @@ export default function MobileNav({ onClose }: MobileNavProps) {
     };
   }, []);
 
-  const toggleExpandItem = (label: string, level: number) => {
-    if (level === 0) {
-      // Top level - accordion behavior, reset children when switching
-      if (expandedParent === label) {
-        setExpandedParent(null);
-        setExpandedChild(null);
-      } else {
-        setExpandedParent(label);
-        setExpandedChild(null);
-      }
-    } else {
-      // Child level - accordion within children
-      setExpandedChild(expandedChild === label ? null : label);
-    }
+  const toggleSection = (section: string) => {
+    setOpenSection(openSection === section ? null : section);
   };
 
-  const renderNavItem = (item: NavItem, level: number = 0): JSX.Element => {
-    const hasChildren = item.children && item.children.length > 0;
-    const isExpanded =
-      level === 0
-        ? expandedParent === item.label
-        : expandedChild === item.label;
-    const paddingLeft = level * 16;
-    const textClasses =
-      level === 0 ? "text-lg font-semibold" : "text-base font-medium";
-    const verticalPadding = level > 0 ? "py-0.5" : "py-3";
-
-    return (
-      <div key={item.label}>
-        <div className="flex items-center justify-between pr-3">
-          {item.href && !hasChildren ? (
-            <Link
-              href={item.href}
-              className={`flex-1 ${verticalPadding} ${textClasses} hover:text-primary transition-colors duration-200`}
-              onClick={onClose}
-              style={{ paddingLeft: `${paddingLeft}px` }}
-            >
-              {item.label}
-            </Link>
-          ) : (
-            <Link
-              href={item.href ?? "#"}
-              onClick={() => toggleExpandItem(item.label, level)}
-              className={`w-full text-left ${verticalPadding} ${textClasses} hover:text-primary transition-colors duration-200`}
-              style={{ paddingLeft: `${paddingLeft}px` }}
-            >
-              {item.label}
-            </Link>
-          )}
-          {hasChildren && (
-            <button
-              onClick={() => toggleExpandItem(item.label, level)}
-              className="hover:bg-gray-100 rounded transition-colors"
-            >
-              {level > 0 ? (
-                isExpanded ? (
-                  <Minus size={18} className="text-primary" />
-                ) : (
-                  <Plus size={18} className="text-primary" />
-                )
-              ) : (
-                <ChevronDown
-                  size={20}
-                  className={`transition-transform duration-300 ${
-                    isExpanded ? "rotate-180" : ""
-                  }`}
-                />
-              )}
-            </button>
-          )}
-        </div>
-        {hasChildren && isExpanded && (
-          <div className="">
-            {item.children!.map((child) => renderNavItem(child, level + 1))}
-          </div>
-        )}
-      </div>
-    );
+  const toggleCategory = (catName: string) => {
+    setOpenCategory(openCategory === catName ? null : catName);
   };
 
   return (
-    <section className="fixed inset-0 top-21 bg-white z-50 h-screen w-screen overflow-y-auto animate-in fade-in duration-300">
-      <div className="p-6">{navLinks.map((link) => renderNavItem(link))}</div>
+    <section className="fixed inset-0 bg-white z-50 flex flex-col h-screen w-screen overflow-hidden font-google-sans animate-in fade-in duration-300">
+      {/* Header bar inside Mobile Menu */}
+      <div className="flex items-center justify-between px-6 py-4">
+        <Link href="/" onClick={onClose} className="shrink-0">
+          <Image
+            src="/images/logo.png"
+            alt="Jivanjor Logo"
+            width={120}
+            height={72}
+            priority
+          />
+        </Link>
+      </div>
+
+      {/* Main Nav Content */}
+      <div className="flex-1 overflow-y-auto px-6 py-4">
+        {/* About Link / Accordion */}
+        <div className="border-b">
+          <button
+            onClick={() => toggleSection("About")}
+            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+          >
+            <span>About</span>
+            <ChevronDown
+              strokeWidth={2.5}
+              size={20}
+              className={`transition-transform duration-300 ${
+                openSection === "About" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Products Accordion (Expanded by default) */}
+        <div className="border-b">
+          <button
+            onClick={() => toggleSection("Products")}
+            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+          >
+            <span>Products</span>
+            <ChevronDown
+              strokeWidth={2.5}
+              size={20}
+              className={`transition-transform duration-300 ${
+                openSection === "Products" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {openSection === "Products" && (
+            <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
+              {productCategories.map((cat) => {
+                const isCatOpen = openCategory === cat.name;
+                return (
+                  <div key={cat.name} className="space-y-1">
+                    <button
+                      onClick={() => toggleCategory(cat.name)}
+                      className="flex items-center justify-between w-full text-base font-medium cursor-pointer"
+                    >
+                      <span className="">{cat.name}</span>
+                      {isCatOpen ? (
+                        <Minus
+                          size={18}
+                          strokeWidth={2.5}
+                          className="text-[#FF0009]"
+                        />
+                      ) : (
+                        <Plus
+                          size={18}
+                          strokeWidth={2.5}
+                          className="text-[#FF0009]"
+                        />
+                      )}
+                    </button>
+
+                    {isCatOpen && (
+                      <div className="space-y-1">
+                        {cat.products.map((prod) => {
+                          const isWaterproof =
+                            prod === "Waterproof Grade Adhesive";
+                          return (
+                            <Link
+                              key={prod}
+                              href={`/categories#${prod.toLowerCase().replace(/\s+/g, "-")}`}
+                              onClick={onClose}
+                              className={`flex items-center gap-1 text-base leading-[150%] cursor-pointer ${
+                                isWaterproof
+                                  ? "text-[#FF0009]"
+                                  : "hover:text-primary"
+                              }`}
+                            >
+                              <CornerDownRight
+                                size={16}
+                                strokeWidth={2.5}
+                                className="text-[#FF0009] -mt-1.5"
+                              />
+                              <span>{prod}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Applications Accordion */}
+        <div className="border-b">
+          <button
+            onClick={() => toggleSection("Applications")}
+            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+          >
+            <span>Applications</span>
+            <ChevronDown
+              strokeWidth={2.5}
+              size={20}
+              className={`transition-transform duration-300 ${
+                openSection === "Applications" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {openSection === "Applications" && (
+            <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
+              {applications.map((app) => (
+                <Link
+                  key={app}
+                  href="#"
+                  onClick={onClose}
+                  className="block text-base hover:text-primary cursor-pointer"
+                >
+                  {app}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Knowledge Hub Accordion */}
+        <div className="border-b">
+          <button
+            onClick={() => toggleSection("KnowledgeHub")}
+            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+          >
+            <span>Knowledge Hub</span>
+            <ChevronDown
+              strokeWidth={2.5}
+              size={20}
+              className={`transition-transform duration-300 ${
+                openSection === "KnowledgeHub" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Partner Accordion */}
+        <div className="border-b">
+          <button
+            onClick={() => toggleSection("Partner")}
+            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+          >
+            <span>Partner</span>
+            <ChevronDown
+              strokeWidth={2.5}
+              size={20}
+              className={`transition-transform duration-300 ${
+                openSection === "Partner" ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Contact Pill Button (Centered at bottom of scroll area) */}
+        <div className="flex justify-center pt-6 pb-4">
+          <Link
+            href="#"
+            onClick={onClose}
+            className="min-w-28 px-6 py-1 rounded-full text-white text-lg font-bold bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-md whitespace-nowrap"
+          >
+            Contact
+          </Link>
+        </div>
+      </div>
+
+      {/* Bottom Brand Gradient Strip */}
+      <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571] shrink-0" />
     </section>
   );
 }
