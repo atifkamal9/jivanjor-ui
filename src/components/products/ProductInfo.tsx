@@ -223,7 +223,7 @@ export default function ProductInfo() {
       {/* Main content body container */}
       <div id="overview" className="space-y-12">
         {/* ==================== 1. OVERVIEW SECTION ==================== */}
-        <div className="bg-surface rounded-3xl shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-neutral-100 transition-all duration-300 scroll-mt-40">
+        <div className="lg:bg-surface rounded-3xl transition-all duration-300 scroll-mt-40">
           <div>
             <div className="" id="tech-specs">
               {/* Centered link icon & tagline */}
@@ -297,7 +297,7 @@ export default function ProductInfo() {
                       ].map((size) => (
                         <div
                           key={size}
-                          className="bg-white w-24 rounded-xl p-2.5 text-center text-base sm:text-xl font-medium leading-normal shadow-2xs hover:shadow-xs transition-all duration-200 cursor-default"
+                          className="bg-surface lg:bg-white w-24 rounded-xl p-3 text-center text-base sm:text-xl font-medium leading-normal transition-all duration-200 cursor-default"
                         >
                           {size}
                         </div>

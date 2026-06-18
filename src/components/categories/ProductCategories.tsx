@@ -339,9 +339,12 @@ export default function ProductCategories() {
                 onClick={() => setActiveCategory(cat.name)}
                 className={`rounded-2xl p-1 w-40 min-h-24 ${
                   isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)]"
-                    : "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                    : "bg-white"
                 }`}
+                style={{
+                  boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
+                }}
               >
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
                   <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
