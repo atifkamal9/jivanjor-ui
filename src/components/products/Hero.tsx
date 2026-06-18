@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function Hero() {
   return (
-    <>
+    <section id="overview">
       {/* 1. MOBILE BREADCRUMBS (Only visible on mobile/tablet, hidden on desktop) */}
       <div className="md:hidden flex items-center gap-1.5 px-6 py-2.5 border-b border-neutral-100 text-sm font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
@@ -140,6 +140,6 @@ export default function Hero() {
           />
         </div>
       </div>
-    </>
+    </section>
   );
 }
