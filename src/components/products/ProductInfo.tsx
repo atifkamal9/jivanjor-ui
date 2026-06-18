@@ -221,11 +221,11 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div id="overview" className="space-y-12">
-        {/* ==================== 1. OVERVIEW SECTION ==================== */}
+      <div id="tech-specs" className="space-y-12">
+        {/* ==================== Technical Specifications ==================== */}
         <div className="lg:bg-surface rounded-3xl transition-all duration-300 scroll-mt-40">
           <div>
-            <div className="" id="tech-specs">
+            <div className="">
               {/* Centered link icon & tagline */}
               <div className="flex flex-col items-center text-center max-w-3xl mx-auto p-6 sm:p-10 lg:p-12 space-y-4">
                 <div className="text-[#A31652]">

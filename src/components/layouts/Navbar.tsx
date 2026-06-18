@@ -283,7 +283,7 @@ export default function Navbar() {
                   key={cat.name}
                   onMouseEnter={() => setActiveCategory(cat.name)}
                   onClick={() => setActiveCategory(cat.name)}
-                  className={`flex items-center justify-between group w-full text-left text-base leading-[200%] py-1.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${
+                  className={`flex items-center justify-between group w-full text-left text-base leading-[200%] py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${
                     activeCategory === cat.name
                       ? "font-bold"
                       : "font-normal hover:font-bold"
