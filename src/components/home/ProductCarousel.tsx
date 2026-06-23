@@ -157,7 +157,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
               </div>
               {/* Card */}
               <div
-                className={`${card.color} relative rounded-[28px] flex-1 w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
+                className={`${card.color} relative rounded-[28px] flex-1 w-69 min-h-76 lg:w-69 lg:h-93 lg:min-h-88`}
               >
                 <div className="absolute bottom-2.5 flex flex-col items-center justify-stretch p-6 text-white">
                   <h3 className="text-2xl font-semibold text-center my-4 pb-4 px-12 border-b">
