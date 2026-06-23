@@ -32,12 +32,13 @@ export default function Professional({ data }: ProfessionalProps) {
     { icon: "/images/Tag.png", title: "Preferred by Experts" },
   ];
 
-  const features = items && items.length > 0
-    ? items.map((item, idx) => ({
-        icon: mapFeatureIcon(idx),
-        title: item.title || item.name || "",
-      }))
-    : defaultFeatures;
+  const features =
+    items && items.length > 0
+      ? items.map((item, idx) => ({
+          icon: mapFeatureIcon(idx),
+          title: item.title || item.name || "",
+        }))
+      : defaultFeatures;
 
   return (
     <section className="mx-auto max-w-360 text-center py-20 px-6">
@@ -49,11 +50,16 @@ export default function Professional({ data }: ProfessionalProps) {
           {data.subtitle}
         </p>
       )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-surface gap-12 p-8 lg:p-10 pb-20 rounded-2xl">
+      <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-surface gap-12 p-8 lg:pt-12 pb-16! lg:px-20 rounded-2xl">
         {features.map((f) => (
-          <div key={f.title} className="flex flex-col items-center space-y-4">
+          <div
+            key={f.title}
+            className="flex flex-col items-center mx-auto space-y-4 max-w-40"
+          >
             <Image src={f.icon} alt={f.title} width={40} height={40} />
-            <h3 className="font-amethysta text-xl lg:text-2xl">{f.title}</h3>
+            <h3 className="font-amethysta text-xl lg:text-3xl leading-normal">
+              {f.title}
+            </h3>
           </div>
         ))}
       </div>

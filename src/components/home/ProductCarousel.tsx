@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -96,21 +96,21 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
   const cards =
     items && items.length > 0
       ? items.map((item, idx) => ({
-          title: item.title || item.name || "",
-          description: item.description || "",
-          color: item.color || colors[idx % colors.length],
-          badge: item.tag || item.badge || "",
-          image: mapProductImage(
-            item.title || item.name || "",
-            item.imageUrl || item.image,
-          ),
-          ctaText: item.cta?.text || "",
-          ctaLink: item.cta?.actionPath || "",
-        }))
+        title: item.title || item.name || "",
+        description: item.description || "",
+        color: item.color || colors[idx % colors.length],
+        badge: item.tag || item.badge || "",
+        image: mapProductImage(
+          item.title || item.name || "",
+          item.imageUrl || item.image,
+        ),
+        ctaText: item.cta?.text || "",
+        ctaLink: item.cta?.actionPath || "",
+      }))
       : defaultProductCards;
 
   return (
-    <section className="w-full">
+    <section className="relative mx-auto max-w-7xl w-full px-10 pb-12">
       <Swiper
         modules={[Navigation]}
         watchOverflow={false}
@@ -118,47 +118,46 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         spaceBetween={16}
         slidesPerView={1}
         navigation={{
-          prevEl: ".product-prev",
-          nextEl: ".product-next",
+          prevEl: ".rel-swiper-prev",
+          nextEl: ".rel-swiper-next",
           disabledClass: "swiper-button-disabled",
         }}
         breakpoints={{
           480: {
             slidesPerView: 1,
-            spaceBetween: 20,
           },
           768: {
             slidesPerView: 2,
-            spaceBetween: 24,
           },
           1024: {
             slidesPerView: 3,
-            spaceBetween: 30,
           },
           1280: {
             slidesPerView: 4,
-            spaceBetween: 30,
           },
         }}
         className="overflow-visible!"
       >
-        {cards.map((card, idx) => (
+        {defaultProductCards.map((card, idx) => (
           <SwiperSlide
             key={`${card.title}-${idx}`}
             className="overflow-visible! px-1"
           >
-            <div className="relative pt-24">
-              {/* Floating image */}
-              <Image
-                src={card.image}
-                alt={card.title}
-                width={300}
-                height={300}
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-60 h-60 object-contain z-100"
-              />
+            <div className="flex flex-col items-center relative px-4">
+              <div className="absolute aspect-44/51 -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain z-100">
+                {/* Floating image */}
+                <Image
+                  src={card.image}
+                  alt={card.title}
+                  fill
+                  className="object-contain z-10"
+                  priority
+                // className="absolute aspect-44/51 top-[-28%] w-60 h-65 object-contain z-100"
+                />
+              </div>
               {/* Card */}
               <div
-                className={`${card.color} rounded-[28px] p-6 flex flex-col justify-end items-center text-white shadow-xl min-h-90 w-full`}
+                className={`${card.color} rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
               >
                 <h3 className="text-2xl font-semibold text-center">
                   {card.title}
@@ -173,14 +172,12 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         ))}
       </Swiper>
       {/* Navigation */}
-      <div className="flex items-center justify-center gap-4 mt-12">
-        <button className="cursor-pointer product-prev w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center transition-all hover:bg-primary hover:text-white">
-          <ArrowLeft size={20} />
-        </button>
-        <button className="cursor-pointer product-next w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center transition-all hover:bg-primary hover:text-white">
-          <ArrowRight size={20} />
-        </button>
-      </div>
+      <button className="rel-swiper-prev absolute -left-2 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+        <ChevronLeft size={44} strokeWidth={2.5} />
+      </button>
+      <button className="rel-swiper-next absolute -right-2 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+        <ChevronRight size={44} strokeWidth={2.5} />
+      </button>
     </section>
   );
 }
