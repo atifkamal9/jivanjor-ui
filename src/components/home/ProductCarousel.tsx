@@ -172,10 +172,10 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
         ))}
       </Swiper>
       {/* Navigation */}
-      <button className="rel-swiper-prev absolute left-0 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+      <button className="rel-swiper-prev absolute left-1.5 xl:left-0 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
         <ChevronLeft size={44} strokeWidth={2.5} />
       </button>
-      <button className="rel-swiper-next absolute right-0 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+      <button className="rel-swiper-next absolute right-1.5 xl:right-0 top-[50%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
         <ChevronRight size={44} strokeWidth={2.5} />
       </button>
     </section>
