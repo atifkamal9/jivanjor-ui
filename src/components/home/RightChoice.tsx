@@ -30,20 +30,20 @@ export default function RightChoice({ data }: RightChoiceProps) {
   const items = data?.items || [];
 
   const defaultAdhesiveTypes = [
-    { icon: "/images/image 4.svg", title: "Furniture and Woodwork", link: "#" },
-    { icon: "/images/image 5.svg", title: "Kitchen Cabinets & Storage", link: "#" },
-    { icon: "/images/image 6.svg", title: "Laminates & Surface Finishings", link: "#" },
-    { icon: "/images/image 7.svg", title: "Moisture-Prone Woodwork", link: "#" },
-    { icon: "/images/image 8.svg", title: "PVC, Acrylic & Edge Finishing", link: "#" },
-    { icon: "/images/image 9.svg", title: "Home Repairs & Special Fixing", link: "#" },
+    { icon: "/icons/chair.png", title: "Furniture and Woodwork", link: "#" },
+    { icon: "/icons/cabinet.png", title: "Kitchen Cabinets & Storage", link: "#" },
+    { icon: "/icons/woodfloor.png", title: "Laminates & Surface Finishings", link: "#" },
+    { icon: "/icons/wooden plank.png", title: "Moisture-Prone Woodwork", link: "#" },
+    { icon: "/icons/checklist.png", title: "PVC, Acrylic & Edge Finishing", link: "#" },
+    { icon: "/icons/house.png", title: "Home Repairs & Special Fixing", link: "#" },
   ];
 
   const types = items && items.length > 0
     ? items.map((item, idx) => ({
-        icon: mapAdhesiveIcon(idx),
-        title: item.name || item.title || "",
-        link: item.link || "#",
-      }))
+      icon: mapAdhesiveIcon(idx),
+      title: item.name || item.title || "",
+      link: item.link || "#",
+    }))
     : defaultAdhesiveTypes;
 
   return (
@@ -66,8 +66,8 @@ export default function RightChoice({ data }: RightChoiceProps) {
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
       </div>
-      <div className="flex flex-col items-center justify-between lg:flex-row relative mx-auto min-h-screen max-w-360 px-6 py-24 lg:px-12">
-        <div className="max-w-xl text-center md:text-start pt-12 lg:pb-80">
+      <div className="flex flex-col items-center justify-between lg:flex-row relative mx-auto min-h-screen max-w-360 px-6 py-25 lg:px-12">
+        <div className="max-w-xl text-center md:text-start py-12 lg:pb-80">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl text-white">
             {title}
           </h2>
@@ -88,7 +88,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
                 <Image
                   src={type.icon}
                   alt={type.title}
-                  className="aspect-square group-hover:bg-transparent!"
+                  className="aspect-square bg-transparent! invert group-hover:invert-0!"
                   height={48}
                   width={48}
                 />

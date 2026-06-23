@@ -12,7 +12,8 @@ interface ProductRangeProps {
 }
 
 export default function ProductRange({ data }: ProductRangeProps) {
-  const title = data?.title || "A Complete Adhesive Range for Modern Woodworking";
+  const title =
+    data?.title || "A Complete Adhesive Range for Modern Woodworking";
   const subtitle = data?.subtitle || "";
   const items = data?.items || [];
 
@@ -66,8 +67,8 @@ export default function ProductRange({ data }: ProductRangeProps) {
             ))}
           </div>
         </div>
-        <ProductCarousel items={items} />
       </div>
+      <ProductCarousel items={items} />
     </section>
   );
 }
