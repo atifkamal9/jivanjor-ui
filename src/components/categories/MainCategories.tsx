@@ -3,20 +3,12 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ChevronLeft,
   ChevronRight,
   ChevronRightCircle,
   ChevronLeftCircle,
-  ThumbsUp,
-  Shield,
-  Gauge,
+  ChevronDown,
+  Plus,
 } from "lucide-react";
-
-import { Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-
-import "swiper/css";
-import "swiper/css/navigation";
 
 interface ProductCard {
   title: string;
@@ -28,7 +20,7 @@ interface ProductCard {
   features: string[];
 }
 
-interface CategoryData {
+interface SubCategoryData {
   name: string;
   title: string;
   description: string;
@@ -36,194 +28,304 @@ interface CategoryData {
   products: ProductCard[];
 }
 
-const CATEGORIES_DATA: CategoryData[] = [
+interface MainCategoryData {
+  name: string;
+  subCategories: SubCategoryData[];
+}
+
+const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   {
-    name: "Waterproof Grade",
-    title: "Super Premium Adhesives by Jivanjor",
-    description:
-      "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
-    icon: "/images/Champion Super.png",
-    products: [
+    name: "Woodworking Adhesives",
+    subCategories: [
       {
-        title: "Champion Super",
+        name: "Waterproof Grade",
+        title: "Waterproof Adhesives by Jivanjor",
         description:
-          "Provides a superior bond and strength, while being non-hazardous.",
-        mobileDesc:
-          "Provides superior bond and strength, while being non-hazardous.",
-        color: "bg-[#0083CB]",
-        badge: "Super Premium",
-        image: "/images/Champion Super.png",
-        features: [
-          "Best-in-Class Coverage",
-          "Superior Bond Strength",
-          "Non-hazardous & Safe",
+          "Explore where watershield fits across furniture, laminates, plywood, boards and professional woodwork applications.",
+        icon: "/images/Watershield.png",
+        products: [
+          {
+            title: "Watershield",
+            description:
+              "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+            mobileDesc:
+              "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+            color: "bg-[#0498AA]",
+            badge: "Eco Friendly",
+            image: "/images/Watershield.png",
+            features: [
+              "Best-in-Class Coverage",
+              "D3 Grade for Water Resistance",
+              "Anti-bubble Adhesive",
+            ],
+          },
+          {
+            title: "Aquabond",
+            description:
+              "Heatproof and waterproof adhesive. Aquabond kitchen ka specialist hai.",
+            mobileDesc: "Heatproof and waterproof adhesive.",
+            color: "bg-[#077937]",
+            badge: "Waterproof Grade",
+            image: "/images/Aquabond.png",
+            features: [
+              "Best-in-Class Coverage",
+              "D3 Grade for Water Resistance",
+              "Anti-bubble Adhesive",
+            ],
+          },
+          {
+            title: "Aquaprotekt",
+            description:
+              "Provides excellent water protection and moisture resistance for premium woodwork.",
+            mobileDesc:
+              "Provides excellent water protection and moisture resistance.",
+            color: "bg-[#0498AA]",
+            badge: "Eco Friendly",
+            image: "/images/Watershield.png",
+            features: [
+              "Best-in-Class Coverage",
+              "Anti-bubble Adhesive",
+              "Superior Bond Strength",
+            ],
+          },
         ],
       },
-    ],
-  },
-  {
-    name: "Speciality Adhesive",
-    title: "Speciality Adhesives by Jivanjor",
-    description:
-      "Explore our range of speciality adhesives designed for upholstery, foam, PVC, acrylic, edge banding, and other professional woodwork applications.",
-    icon: "/images/Foambond.png",
-    products: [
       {
-        title: "Foambond",
+        name: "Super Premium",
+        title: "Super Premium Adhesives by Jivanjor",
         description:
-          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        mobileDesc:
-          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        color: "bg-[#F57F26]",
-        badge: "Speciality",
-        image: "/images/Foambond.png",
-        features: [
-          "Best-in-Class Coverage",
-          "Quick Tack & Grab",
-          "Anti-bubble Adhesive",
+          "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
+        icon: "/images/Champion Super.png",
+        products: [
+          {
+            title: "Champion Super",
+            description:
+              "Provides a superior bond and strength, while being non-hazardous.",
+            mobileDesc:
+              "Provides superior bond and strength, while being non-hazardous.",
+            color: "bg-[#0083CB]",
+            badge: "Super Premium",
+            image: "/images/Champion Super.png",
+            features: [
+              "Best-in-Class Coverage",
+              "Superior Bond Strength",
+              "Non-hazardous & Safe",
+            ],
+          },
         ],
       },
-    ],
-  },
-  {
-    name: "Regular Adhesive",
-    title: "Regular Adhesives by Jivanjor",
-    description:
-      "Standard grade woodworking adhesives that offer consistent performance, reliability, and value for everyday professional applications.",
-    icon: "/images/Champion Super.png",
-    products: [
       {
-        title: "Champion Super",
+        name: "Wood Preservatives",
+        title: "Wood Preservative Adhesives",
         description:
-          "Provides a superior bond and strength, while being non-hazardous.",
-        mobileDesc:
-          "Provides superior bond and strength, while being non-hazardous.",
-        color: "bg-[#0083CB]",
-        badge: "Premium Regular",
-        image: "/images/Champion Super.png",
-        features: [
-          "Best-in-Class Coverage",
-          "Superior Bond Strength",
-          "Non-hazardous & Safe",
-        ],
-      },
-    ],
-  },
-  {
-    name: "Regular",
-    title: "Waterproof Adhesives by Jivanjor",
-    description:
-      "Explore where watershield fits across furniture, laminates, plywood, boards and professional woodwork applications.",
-    icon: "/images/Watershield.png",
-    products: [
-      {
-        title: "Watershield",
-        description: "Provides excellent water-resistance.",
-        mobileDesc:
-          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
-        badge: "Eco Friendly",
-        image: "/images/Watershield.png",
-        features: [
-          "Best-in-Class Coverage",
-          "D3 Grade for Water Resistance",
-          "Anti-bubble Adhesive",
+          "Special formulations that protect wood from termites, moisture damage, and fungal decay, ensuring lifelong durability for all wooden structures.",
+        icon: "/images/Aquabond.png",
+        products: [
+          {
+            title: "Termilok",
+            description:
+              "Protects wood from termites, moisture damage, and fungal decay, ensuring lifelong durability.",
+            mobileDesc: "Protects wood from termites and moisture damage.",
+            color: "bg-[#077937]",
+            badge: "Preservative",
+            image: "/images/Aquabond.png",
+            features: [
+              "Termite Protection",
+              "Moisture Resistant",
+              "Life Long Durability",
+            ],
+          },
         ],
       },
       {
-        title: "Aquabond",
-        description: "Heatproof and waterproof adhesive.",
-        mobileDesc: "Heatproof and waterproof adhesive.",
-        color: "bg-[#077937]",
-        badge: "Waterproof Grade",
-        image: "/images/Aquabond.png",
-        features: [
-          "Best-in-Class Coverage",
-          "D3 Grade for Water Resistance",
-          "Anti-bubble Adhesive",
-        ],
-      },
-      {
-        title: "Watershield",
-        description: "Provides excellent water-resistance.",
-        mobileDesc:
-          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
-        badge: "Eco Friendly",
-        image: "/images/Watershield.png",
-        features: [
-          "Best-in-Class Coverage",
-          "D3 Grade for Water Resistance",
-          "Anti-bubble Adhesive",
-        ],
-      },
-    ],
-  },
-  {
-    name: "Wood Ancillaries",
-    title: "Wood Ancillary Adhesives",
-    description:
-      "Explore auxiliary solutions for high-performance edge banding, veneer bonding, and other complementary furniture-making processes.",
-    icon: "/images/Foambond.png",
-    products: [
-      {
-        title: "Foambond",
+        name: "Wood Ancillaries",
+        title: "Wood Ancillary Adhesives",
         description:
-          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        mobileDesc:
-          "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        color: "bg-[#F57F26]",
-        badge: "Speciality",
-        image: "/images/Foambond.png",
-        features: [
-          "Best-in-Class Coverage",
-          "Quick Tack & Grab",
-          "Anti-bubble Adhesive",
+          "Explore auxiliary solutions for high-performance edge banding, veneer bonding, and other complementary furniture-making processes.",
+        icon: "/images/Foambond.png",
+        products: [
+          {
+            title: "Foambond",
+            description:
+              "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+            mobileDesc:
+              "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+            color: "bg-[#F57F26]",
+            badge: "Speciality",
+            image: "/images/Foambond.png",
+            features: [
+              "Best-in-Class Coverage",
+              "Quick Tack & Grab",
+              "Anti-bubble Adhesive",
+            ],
+          },
+        ],
+      },
+      {
+        name: "Speciality",
+        title: "Speciality Adhesives by Jivanjor",
+        description:
+          "Explore our range of speciality adhesives designed for upholstery, foam, PVC, acrylic, edge banding, and other professional woodwork applications.",
+        icon: "/images/Foambond.png",
+        products: [
+          {
+            title: "Foambond Specialty",
+            description:
+              "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
+            mobileDesc:
+              "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
+            color: "bg-[#F57F26]",
+            badge: "Speciality",
+            image: "/images/Foambond.png",
+            features: [
+              "Best-in-Class Coverage",
+              "Quick Tack & Grab",
+              "High Performance",
+            ],
+          },
+        ],
+      },
+      {
+        name: "Regular",
+        title: "Regular Adhesives by Jivanjor",
+        description:
+          "Standard grade woodworking adhesives that offer consistent performance, reliability, and value for everyday professional applications.",
+        icon: "/images/Champion Super.png",
+        products: [
+          {
+            title: "Champion Regular",
+            description:
+              "Standard grade woodworking adhesive offering consistent performance and value.",
+            mobileDesc:
+              "Standard grade woodworking adhesive offering consistent performance.",
+            color: "bg-[#0083CB]",
+            badge: "Regular",
+            image: "/images/Champion Super.png",
+            features: ["Standard Coverage", "Reliable Bond", "Value for Money"],
+          },
+        ],
+      },
+      {
+        name: "ECO",
+        title: "Eco-Friendly Adhesives",
+        description:
+          "Zero-VOC, low odor, and environmentally sustainable adhesive options for modern eco-friendly homes and clean workplace environments.",
+        icon: "/images/Watershield.png",
+        products: [
+          {
+            title: "Hero",
+            description:
+              "Zero-VOC, low odor, and environmentally sustainable adhesive options.",
+            mobileDesc:
+              "Zero-VOC, low odor, and environmentally sustainable adhesive.",
+            color: "bg-[#0498AA]",
+            badge: "Eco Friendly",
+            image: "/images/Watershield.png",
+            features: ["Zero-VOC", "Eco Friendly", "Low Odor"],
+          },
         ],
       },
     ],
   },
   {
-    name: "ECO",
-    title: "Eco-Friendly Adhesives",
-    description:
-      "Zero-VOC, low odor, and environmentally sustainable adhesive options for modern eco-friendly homes and clean workplace environments.",
-    icon: "/images/Watershield.png",
-    products: [
+    name: "Construction Chemicals",
+    subCategories: [
       {
-        title: "Watershield",
-        description: "Provides excellent water-resistance.",
-        mobileDesc:
-          "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
-        badge: "Eco Friendly",
-        image: "/images/Watershield.png",
-        features: [
-          "Best-in-Class Coverage",
-          "D3 Grade for Water Resistance",
-          "Anti-bubble Adhesive",
+        name: "Tile Adhesive",
+        title: "Premium Tile Adhesives",
+        description:
+          "High-strength tile adhesives for ceramic, vitrified tiles and stone cladding.",
+        icon: "/images/Champion Super.png",
+        products: [
+          {
+            title: "Tile Fix",
+            description:
+              "High performance adhesive for fixing tiles on walls and floors.",
+            mobileDesc: "Adhesive for tiles.",
+            color: "bg-[#0083CB]",
+            badge: "Tile Adhesive",
+            image: "/images/Champion Super.png",
+            features: ["Strong Grip", "Water Resistant"],
+          },
+        ],
+      },
+      {
+        name: "Grout",
+        title: "Waterproof Tile Grouts",
+        description:
+          "Durable and color-fast tile grouts to seal joints and prevent leaks.",
+        icon: "/images/Foambond.png",
+        products: [
+          {
+            title: "Premium Grout",
+            description:
+              "Water-resistant cementitious grout for tile joint filling.",
+            mobileDesc: "Tile joint filling grout.",
+            color: "bg-[#F57F26]",
+            badge: "Grout",
+            image: "/images/Foambond.png",
+            features: ["Stain Free", "Waterproof"],
+          },
+        ],
+      },
+      {
+        name: "Waterproofing",
+        title: "Advanced Waterproofing Solutions",
+        description:
+          "Liquid waterproofing membranes for roofs, balconies, and wet areas.",
+        icon: "/images/Watershield.png",
+        products: [
+          {
+            title: "Kwik Waterproof",
+            description:
+              "Advanced waterproofing liquid compound for roofs and basements.",
+            mobileDesc: "Waterproofing compound.",
+            color: "bg-[#0498AA]",
+            badge: "Waterproofing",
+            image: "/images/Watershield.png",
+            features: ["Advanced Protection", "High Elasticity"],
+          },
         ],
       },
     ],
   },
   {
-    name: "Wood Preservatives",
-    title: "Wood Preservative Adhesives",
-    description:
-      "Special formulations that protect wood from termites, moisture damage, and fungal decay, ensuring lifelong durability for all wooden structures.",
-    icon: "/images/Aquabond.png",
-    products: [
+    name: "Maintenance",
+    subCategories: [
       {
-        title: "Aquabond",
-        description: "Heatproof and waterproof adhesive.",
-        mobileDesc: "Heatproof and waterproof adhesive.",
-        color: "bg-[#077937]",
-        badge: "Waterproof Grade",
-        image: "/images/Aquabond.png",
-        features: [
-          "Best-in-Class Coverage",
-          "D3 Grade for Water Resistance",
-          "Anti-bubble Adhesive",
+        name: "Pipe Sealant",
+        title: "Leak-Proof Thread Sealants",
+        description:
+          "Anaerobic sealants for secure metal and plastic pipe joints.",
+        icon: "/images/Champion Super.png",
+        products: [
+          {
+            title: "Pipe Lock",
+            description: "Leak-proof pipe joint sealant for plumbing systems.",
+            mobileDesc: "Pipe joint sealant.",
+            color: "bg-[#0083CB]",
+            badge: "Sealant",
+            image: "/images/Champion Super.png",
+            features: ["Leak Proof", "Quick Cure"],
+          },
+        ],
+      },
+      {
+        name: "Lubricants",
+        title: "Rust & Lubrication Sprays",
+        description:
+          "Multi-purpose maintenance sprays to lubricate and prevent rust.",
+        icon: "/images/Watershield.png",
+        products: [
+          {
+            title: "Kwik Spray",
+            description: "Multi-purpose rust penetrant and lubrication spray.",
+            mobileDesc: "Lubrication spray.",
+            color: "bg-[#0498AA]",
+            badge: "Lubricant",
+            image: "/images/Watershield.png",
+            features: ["Rust Protection", "Lubrication"],
+          },
         ],
       },
     ],
@@ -231,12 +333,29 @@ const CATEGORIES_DATA: CategoryData[] = [
 ];
 
 export default function MainCategories() {
-  const [activeCategory, setActiveCategory] = useState(
-    "Water Proof Grade Adhesive",
+  const [activeMainCategory, setActiveMainCategory] = useState(
+    "Woodworking Adhesives",
   );
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeSubCategory, setActiveSubCategory] =
+    useState("Waterproof Grade");
+  const [openAccordionIndex, setOpenAccordionIndex] = useState<number | null>(
+    0,
+  );
+
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const currentMainCategoryData =
+    MAIN_CATEGORIES_DATA.find((c) => c.name === activeMainCategory) ||
+    MAIN_CATEGORIES_DATA[0];
+
+  const subCategories = currentMainCategoryData.subCategories;
+
+  const currentSubCategoryData =
+    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0];
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -267,22 +386,21 @@ export default function MainCategories() {
     }
   };
 
-  const handleNextCategory = () => {
-    const currentIndex = CATEGORIES_DATA.findIndex(
-      (c) => c.name === activeCategory,
-    );
-    const nextIndex = (currentIndex + 1) % CATEGORIES_DATA.length;
-    setActiveCategory(CATEGORIES_DATA[nextIndex].name);
-  };
-
-  const handlePrevCategory = () => {
-    const currentIndex = CATEGORIES_DATA.findIndex(
-      (c) => c.name === activeCategory,
-    );
-    const prevIndex =
-      (currentIndex - 1 + CATEGORIES_DATA.length) % CATEGORIES_DATA.length;
-    setActiveCategory(CATEGORIES_DATA[prevIndex].name);
-  };
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -299,12 +417,12 @@ export default function MainCategories() {
         window.removeEventListener("resize", checkScroll);
       };
     }
-  }, []);
+  }, [activeMainCategory]);
 
   useEffect(() => {
     if (scrollContainerRef.current) {
-      const activeIndex = CATEGORIES_DATA.findIndex(
-        (c) => c.name === activeCategory,
+      const activeIndex = subCategories.findIndex(
+        (s) => s.name === activeSubCategory,
       );
       const activeElement = scrollContainerRef.current.children[
         activeIndex
@@ -319,29 +437,79 @@ export default function MainCategories() {
     }
     const timer = setTimeout(checkScroll, 400);
     return () => clearTimeout(timer);
-  }, [activeCategory]);
+  }, [activeSubCategory, subCategories]);
 
-  const currentCategoryData =
-    CATEGORIES_DATA.find((c) => c.name === activeCategory) ||
-    CATEGORIES_DATA[3];
+  const handleMainCategoryChange = (name: string) => {
+    setActiveMainCategory(name);
+    const categoryData =
+      MAIN_CATEGORIES_DATA.find((c) => c.name === name) ||
+      MAIN_CATEGORIES_DATA[0];
+    const firstSubName = categoryData.subCategories[0]?.name || "";
+    setActiveSubCategory(firstSubName);
+    setOpenAccordionIndex(0);
+    setDropdownOpen(false);
+  };
+
+  const handleSubCategoryChange = (name: string) => {
+    setActiveSubCategory(name);
+    setOpenAccordionIndex(0);
+  };
+
+  const toggleAccordion = (index: number) => {
+    setOpenAccordionIndex(openAccordionIndex === index ? null : index);
+  };
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
+    <section className="flex flex-col lg:flex-row justify-between leading-normal max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
       {/* Sidebar Categories Panel */}
-      <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
+      <div className="hidden lg:block space-y-4 lg:w-[320px] shrink-0 sticky top-28 self-start z-30">
         <h2 className="text-2xl ">Categories</h2>
+        {/* Dropdown Selector */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={toggleDropdown}
+            className="relative w-82 max-w-full rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 py-3.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer z-20"
+          >
+            <span>{activeMainCategory}</span>
+            <ChevronDown
+              size={20}
+              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+          {dropdownOpen && (
+            <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden z-10">
+              {MAIN_CATEGORIES_DATA.map((cat) => (
+                <button
+                  key={cat.name}
+                  onClick={() => handleMainCategoryChange(cat.name)}
+                  className="flex items-center justify-between w-full px-4.5 gap-2 hover:font-bold text-base text-black transition-colors cursor-pointer"
+                >
+                  <span>{cat.name}</span>
+                  <ChevronRight
+                    size={16}
+                    className="text-primary transition-transform duration-300"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Divider */}
+        <div className="mx-auto max-w-43 border-t-[1.5px] border-[#C4C4C4] my-5" />
+        {/* Subcategories grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
-          {CATEGORIES_DATA.map((cat) => {
-            const isActive = activeCategory === cat.name;
+          {subCategories.map((sub) => {
+            const isActive = activeSubCategory === sub.name;
             return (
               <button
-                key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
-                className={`rounded-2xl p-1 w-40 min-h-24 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
-                    : "bg-white"
-                }`}
+                key={sub.name}
+                onClick={() => handleSubCategoryChange(sub.name)}
+                className={`rounded-2xl p-1 w-40 min-h-24 ${isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                  : "bg-white"
+                  }`}
                 style={{
                   boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
                 }}
@@ -349,15 +517,15 @@ export default function MainCategories() {
                 <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
                   <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                     <Image
-                      src={cat.icon}
-                      alt={cat.name}
+                      src={sub.icon}
+                      alt={sub.name}
                       width={40}
                       height={40}
                       className="object-contain max-h-full max-w-full drop-shadow-sm"
                     />
                   </div>
                   <span className="font-medium text-sm leading-normal whitespace-nowrap">
-                    {cat.name}
+                    {sub.name}
                   </span>
                 </div>
               </button>
@@ -365,178 +533,185 @@ export default function MainCategories() {
           })}
         </div>
       </div>
+
       {/* Mobile categories tabs */}
-      <div className="flex lg:hidden items-center gap-2 w-full">
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-          .scrollbar-none::-webkit-scrollbar {
-            display: none;
-          }
-        `,
-          }}
-        />
-        <button
-          onClick={scrollLeft}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showLeftArrow
+      <div className="flex flex-col lg:hidden w-full gap-4 relative z-30">
+        {/* Dropdown for Main Category on Mobile */}
+        <div className="relative w-full" ref={dropdownRef}>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="relative w-full h-13 rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden z-20"
+          >
+            <span>{activeMainCategory}</span>
+            <ChevronDown
+              size={20}
+              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+          {dropdownOpen && (
+            <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-6 pb-5 overflow-hidden z-10">
+              {MAIN_CATEGORIES_DATA.map((cat) => (
+                <button
+                  key={cat.name}
+                  onClick={() => handleMainCategoryChange(cat.name)}
+                  className="flex items-center justify-between w-full text-left px-6 py-0.5 hover:bg-gray-50 text-base font-medium text-black cursor-pointer"
+                >
+                  <span>{cat.name}</span>
+                  <ChevronRight
+                    size={16}
+                    className="text-primary transition-transform duration-300"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Divider */}
+        <div className="border-t w-full border-[#C4C4C4] mx-auto max-w-43" />
+        {/* Subcategories Horizontal Tabs */}
+        <div className="flex items-center gap-2 w-full">
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+            .scrollbar-none::-webkit-scrollbar {
+              display: none;
+            }
+          `,
+            }}
+          />
+          <button
+            onClick={scrollLeft}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
               ? "block pointer-events-auto"
               : "hidden pointer-events-none"
-          }`}
-        >
-          <ChevronLeftCircle size={24} className="text-[#FF0009]" />
-        </button>
-        <div
-          ref={scrollContainerRef}
-          className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {CATEGORIES_DATA.map((cat) => {
-            const isActive = activeCategory === cat.name;
-            return (
-              <button
-                key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
-                className={`${isActive ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"} cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
-              >
-                {cat.name}
-              </button>
-            );
-          })}
-        </div>
-        <button
-          onClick={scrollRight}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showRightArrow
+              }`}
+          >
+            <ChevronLeftCircle size={24} className="text-[#FF0009]" />
+          </button>
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1.5"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {subCategories.map((sub) => {
+              const isActive = activeSubCategory === sub.name;
+              return (
+                <button
+                  key={sub.name}
+                  onClick={() => handleSubCategoryChange(sub.name)}
+                  className={`${isActive
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                    : "bg-surface text-black"
+                    } p-1 cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)]`}
+                >
+                  {/* <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white"> */}
+                  <span className="flex flex-col items-center justify-center rounded-full transition-all duration-300 cursor-pointer font-medium text-center bg-surface truncate py-1.5">
+                    {sub.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <button
+            onClick={scrollRight}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
-          }`}
-        >
-          <ChevronRightCircle size={24} className="text-[#FF0009]" />
-        </button>
+              }`}
+          >
+            <ChevronRightCircle size={24} className="text-[#FF0009]" />
+          </button>
+        </div>
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
         <div className="space-y-5 text-center md:text-start max-w-250">
-          <h1 className="font-amethysta text-[34px] sm:text-5xl  leading-normal">
-            {currentCategoryData.title}
+          <h1 className="font-amethysta text-4xl sm:text-5xl leading-normal text-black">
+            {currentSubCategoryData.title}
           </h1>
-          <p className="text-lg sm:text-2xl leading-normal font-normal">
-            {currentCategoryData.description}
+          <p className="text-lg sm:text-2xl leading-normal font-normal text-black/80">
+            {currentSubCategoryData.description}
           </p>
         </div>
 
-        {/* Swiper Slider Wrapper with Absolute Navigation Arrows */}
-        <div className="relative px-12 overflow-visible">
-          <Swiper
-            modules={[Navigation]}
-            watchOverflow={false}
-            loop={false}
-            spaceBetween={20}
-            slidesPerView={1}
-            navigation={{
-              prevEl: ".cat-swiper-prev",
-              nextEl: ".cat-swiper-next",
-              disabledClass: "swiper-button-disabled",
-            }}
-            breakpoints={{
-              480: {
-                slidesPerView: 1,
-              },
-              640: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 2,
-              },
-            }}
-            className="overflow-visible"
-          >
-            {currentCategoryData.products.map((card, idx) => (
-              <SwiperSlide
-                key={`${card.title}-${idx}`}
-                className="overflow-visible! py-1"
+        {/* Product Accordion Container */}
+        <div className="flex flex-col shadow-inner bg-surface rounded-[20px] p-4 lg:p-8 w-full">
+          {currentSubCategoryData.products.map((product, idx) => {
+            const isOpen = openAccordionIndex === idx;
+            return (
+              <div
+                key={`${product.title}-${idx}`}
+                onClick={() => !isOpen && toggleAccordion(idx)}
+                className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
               >
-                {/* Responsive Design: Floating 3D card layout */}
-                <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">
-                  {/* Card Main Body */}
-                  <Link
-                    href={`/products`}
-                    className={`${card.color} rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform hover:scale-[1.01] duration-300 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
+                {/* <div className="flex flex-col lg:flex-row justify-between items-center gap-8 pb-8 animate-fadeIn"> */}
+                {/* Accordion Content Panel */}
+                <div className="flex flex-col gap-1.5 relative">
+                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors">
+                    {product.title}
+                  </span>
+                  {isOpen && (
+                    <>
+                      {/* Left Column: Description & Action */}
+                      <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
+                        {product.description}
+                      </p>
+                      <Link
+                        href="/products"
+                        className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
+                      >
+                        View More
+                      </Link>
+                    </>
+                  )}
+                  {/* Cross button for mobiles */}
+                  <div
+                    onClick={() => toggleAccordion(idx)}
+                    className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
                   >
-                    {/* Top Row: Floating image & Text info side-by-side */}
-                    <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
-                      {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-54 object-contain z-100">
-                        <Image
-                          src={card.image}
-                          alt={card.title}
-                          fill
-                          className="object-contain z-10"
-                          priority
-                        />
-                      </div>
-                      {/* Header content */}
-                      <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pl-12 xl:pt-0">
-                        <h3 className="text-2xl lg:text-3xl font-bold leading-normal">
-                          {card.title}
-                        </h3>
-                        {/* Custom White Divider */}
-                        <div className="w-full h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
-                        <p className="hidden xl:block text-sm leading-normal font-normal">
-                          {card.description}
-                        </p>
-                        <p className="xl:hidden text-center text-base leading-[100%] font-normal">
-                          {card.mobileDesc}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Bottom Row: Feature Bullet points */}
-                    <div className="hidden absolute bottom-6 xl:block space-y-1">
-                      {card.features.map((feature, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-3">
-                          {/* Premium SVG Custom Icons */}
-                          <div className="shrink-0 text-white opacity-95">
-                            {fIdx === 0 && (
-                              <Shield size={16} strokeWidth={2.5} />
-                            )}
-                            {fIdx === 1 && (
-                              <Gauge size={16} strokeWidth={2.5} />
-                            )}
-                            {fIdx === 2 && (
-                              <ThumbsUp size={16} strokeWidth={2.5} />
-                            )}
-                          </div>
-                          <span className="font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </Link>
+                    <Plus size={24} strokeWidth={2} />
+                  </div>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* Absolute Red Arrow Navigation Controls */}
-          <button className="cat-swiper-prev absolute left-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronLeft size={48} strokeWidth={2.5} />
-          </button>
-          <button className="cat-swiper-next absolute right-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronRight size={48} strokeWidth={2.5} />
-          </button>
+                {/* Right Column: Styled Image Display */}
+                {isOpen && (
+                  <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
+                    <Image
+                      src="/images/mega-menu.png"
+                      alt="Product Backdrop"
+                      fill
+                      className="object-cover opacity-60"
+                      priority
+                    />
+                    {/* <div className="absolute inset-0 bg-black/5" /> */}
+                    <div className="relative w-36 h-36 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
+                      <Image
+                        src={product.image}
+                        alt={product.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div
+                  onClick={() => toggleAccordion(idx)}
+                  className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                >
+                  <Plus size={24} strokeWidth={2} />
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal">
+          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal text-black">
             Superior Quality Backed by Research
           </h1>
-          <p className="text-lg md:text-2xl leading-normal max-w-3xl">
+          <p className="text-lg md:text-2xl leading-normal max-w-3xl text-black/80">
             Learn how our focus on product development, quality standards and
             market reach supports India’s woodworking needs.
           </p>
