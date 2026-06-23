@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ChevronLeft,
   ChevronRight,
   ChevronRightCircle,
   ChevronLeftCircle,
@@ -47,8 +46,10 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Watershield",
-            description: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-            mobileDesc: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+            description:
+              "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+            mobileDesc:
+              "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
             color: "bg-[#0498AA]",
             badge: "Eco Friendly",
             image: "/images/Watershield.png",
@@ -60,7 +61,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
           },
           {
             title: "Aquabond",
-            description: "Heatproof and waterproof adhesive. Aquabond kitchen ka specialist hai.",
+            description:
+              "Heatproof and waterproof adhesive. Aquabond kitchen ka specialist hai.",
             mobileDesc: "Heatproof and waterproof adhesive.",
             color: "bg-[#077937]",
             badge: "Waterproof Grade",
@@ -73,8 +75,10 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
           },
           {
             title: "Aquaprotekt",
-            description: "Provides excellent water protection and moisture resistance for premium woodwork.",
-            mobileDesc: "Provides excellent water protection and moisture resistance.",
+            description:
+              "Provides excellent water protection and moisture resistance for premium woodwork.",
+            mobileDesc:
+              "Provides excellent water protection and moisture resistance.",
             color: "bg-[#0498AA]",
             badge: "Eco Friendly",
             image: "/images/Watershield.png",
@@ -95,8 +99,10 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Champion Super",
-            description: "Provides a superior bond and strength, while being non-hazardous.",
-            mobileDesc: "Provides superior bond and strength, while being non-hazardous.",
+            description:
+              "Provides a superior bond and strength, while being non-hazardous.",
+            mobileDesc:
+              "Provides superior bond and strength, while being non-hazardous.",
             color: "bg-[#0083CB]",
             badge: "Super Premium",
             image: "/images/Champion Super.png",
@@ -117,7 +123,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Termilok",
-            description: "Protects wood from termites, moisture damage, and fungal decay, ensuring lifelong durability.",
+            description:
+              "Protects wood from termites, moisture damage, and fungal decay, ensuring lifelong durability.",
             mobileDesc: "Protects wood from termites and moisture damage.",
             color: "bg-[#077937]",
             badge: "Preservative",
@@ -139,8 +146,10 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Foambond",
-            description: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-            mobileDesc: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+            description:
+              "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+            mobileDesc:
+              "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
             color: "bg-[#F57F26]",
             badge: "Speciality",
             image: "/images/Foambond.png",
@@ -161,8 +170,10 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Foambond Specialty",
-            description: "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
-            mobileDesc: "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
+            description:
+              "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
+            mobileDesc:
+              "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
             color: "bg-[#F57F26]",
             badge: "Speciality",
             image: "/images/Foambond.png",
@@ -183,16 +194,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Champion Regular",
-            description: "Standard grade woodworking adhesive offering consistent performance and value.",
-            mobileDesc: "Standard grade woodworking adhesive offering consistent performance.",
+            description:
+              "Standard grade woodworking adhesive offering consistent performance and value.",
+            mobileDesc:
+              "Standard grade woodworking adhesive offering consistent performance.",
             color: "bg-[#0083CB]",
             badge: "Regular",
             image: "/images/Champion Super.png",
-            features: [
-              "Standard Coverage",
-              "Reliable Bond",
-              "Value for Money",
-            ],
+            features: ["Standard Coverage", "Reliable Bond", "Value for Money"],
           },
         ],
       },
@@ -205,16 +214,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         products: [
           {
             title: "Hero",
-            description: "Zero-VOC, low odor, and environmentally sustainable adhesive options.",
-            mobileDesc: "Zero-VOC, low odor, and environmentally sustainable adhesive.",
+            description:
+              "Zero-VOC, low odor, and environmentally sustainable adhesive options.",
+            mobileDesc:
+              "Zero-VOC, low odor, and environmentally sustainable adhesive.",
             color: "bg-[#0498AA]",
             badge: "Eco Friendly",
             image: "/images/Watershield.png",
-            features: [
-              "Zero-VOC",
-              "Eco Friendly",
-              "Low Odor",
-            ],
+            features: ["Zero-VOC", "Eco Friendly", "Low Odor"],
           },
         ],
       },
@@ -226,12 +233,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       {
         name: "Tile Adhesive",
         title: "Premium Tile Adhesives",
-        description: "High-strength tile adhesives for ceramic, vitrified tiles and stone cladding.",
+        description:
+          "High-strength tile adhesives for ceramic, vitrified tiles and stone cladding.",
         icon: "/images/Champion Super.png",
         products: [
           {
             title: "Tile Fix",
-            description: "High performance adhesive for fixing tiles on walls and floors.",
+            description:
+              "High performance adhesive for fixing tiles on walls and floors.",
             mobileDesc: "Adhesive for tiles.",
             color: "bg-[#0083CB]",
             badge: "Tile Adhesive",
@@ -243,12 +252,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       {
         name: "Grout",
         title: "Waterproof Tile Grouts",
-        description: "Durable and color-fast tile grouts to seal joints and prevent leaks.",
+        description:
+          "Durable and color-fast tile grouts to seal joints and prevent leaks.",
         icon: "/images/Foambond.png",
         products: [
           {
             title: "Premium Grout",
-            description: "Water-resistant cementitious grout for tile joint filling.",
+            description:
+              "Water-resistant cementitious grout for tile joint filling.",
             mobileDesc: "Tile joint filling grout.",
             color: "bg-[#F57F26]",
             badge: "Grout",
@@ -260,12 +271,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       {
         name: "Waterproofing",
         title: "Advanced Waterproofing Solutions",
-        description: "Liquid waterproofing membranes for roofs, balconies, and wet areas.",
+        description:
+          "Liquid waterproofing membranes for roofs, balconies, and wet areas.",
         icon: "/images/Watershield.png",
         products: [
           {
             title: "Kwik Waterproof",
-            description: "Advanced waterproofing liquid compound for roofs and basements.",
+            description:
+              "Advanced waterproofing liquid compound for roofs and basements.",
             mobileDesc: "Waterproofing compound.",
             color: "bg-[#0498AA]",
             badge: "Waterproofing",
@@ -282,7 +295,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       {
         name: "Pipe Sealant",
         title: "Leak-Proof Thread Sealants",
-        description: "Anaerobic sealants for secure metal and plastic pipe joints.",
+        description:
+          "Anaerobic sealants for secure metal and plastic pipe joints.",
         icon: "/images/Champion Super.png",
         products: [
           {
@@ -299,7 +313,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       {
         name: "Lubricants",
         title: "Rust & Lubrication Sprays",
-        description: "Multi-purpose maintenance sprays to lubricate and prevent rust.",
+        description:
+          "Multi-purpose maintenance sprays to lubricate and prevent rust.",
         icon: "/images/Watershield.png",
         products: [
           {
@@ -317,11 +332,16 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   },
 ];
 
-export default function ProductCategories() {
-  const [activeMainCategory, setActiveMainCategory] = useState("Woodworking Adhesives");
+export default function MainCategories() {
+  const [activeMainCategory, setActiveMainCategory] = useState(
+    "Woodworking Adhesives",
+  );
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [activeSubCategory, setActiveSubCategory] = useState("Waterproof Grade");
-  const [openAccordionIndex, setOpenAccordionIndex] = useState<number | null>(0);
+  const [activeSubCategory, setActiveSubCategory] =
+    useState("Waterproof Grade");
+  const [openAccordionIndex, setOpenAccordionIndex] = useState<number | null>(
+    0,
+  );
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -335,8 +355,7 @@ export default function ProductCategories() {
   const subCategories = currentMainCategoryData.subCategories;
 
   const currentSubCategoryData =
-    subCategories.find((s) => s.name === activeSubCategory) ||
-    subCategories[0];
+    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0];
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -370,7 +389,10 @@ export default function ProductCategories() {
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     }
@@ -419,7 +441,9 @@ export default function ProductCategories() {
 
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);
-    const categoryData = MAIN_CATEGORIES_DATA.find((c) => c.name === name) || MAIN_CATEGORIES_DATA[0];
+    const categoryData =
+      MAIN_CATEGORIES_DATA.find((c) => c.name === name) ||
+      MAIN_CATEGORIES_DATA[0];
     const firstSubName = categoryData.subCategories[0]?.name || "";
     setActiveSubCategory(firstSubName);
     setOpenAccordionIndex(0);
@@ -435,59 +459,72 @@ export default function ProductCategories() {
     setOpenAccordionIndex(openAccordionIndex === index ? null : index);
   };
 
-  return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
-      {/* Sidebar Categories Panel */}
-      <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
-        <h2 className="text-2xl font-bold">Categories</h2>
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
+  return (
+    <section className="flex flex-col lg:flex-row justify-between leading-normal max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
+      {/* Sidebar Categories Panel */}
+      <div className="hidden lg:block space-y-4 lg:w-[320px] shrink-0 sticky top-28 self-start z-30">
+        <h2 className="text-2xl ">Categories</h2>
         {/* Dropdown Selector */}
         <div className="relative" ref={dropdownRef}>
           <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="relative h-[52px] w-[329px] max-w-full rounded-[21px] bg-gradient-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-6 font-google-sans text-[18px] font-medium shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer"
+            onClick={toggleDropdown}
+            className="relative w-82 max-w-full rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 py-3.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer z-20"
           >
             <span>{activeMainCategory}</span>
-            <ChevronDown size={20} className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`} />
+            <ChevronDown
+              size={20}
+              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+            />
           </button>
           {dropdownOpen && (
-            <div className="absolute top-[60px] left-0 w-[329px] max-w-full bg-white rounded-[21px] shadow-[4px_4px_15px_rgba(0,0,0,0.15)] border border-gray-100 py-3 overflow-hidden z-50">
+            <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden z-10">
               {MAIN_CATEGORIES_DATA.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
-                  className="w-full text-left px-6 py-2.5 hover:bg-gray-50 text-[16px] font-medium text-black transition-colors cursor-pointer border-b border-gray-50 last:border-b-0"
+                  className="flex items-center justify-between w-full px-4.5 gap-2 hover:font-bold text-base text-black transition-colors cursor-pointer"
                 >
-                  {cat.name}
+                  <span>{cat.name}</span>
+                  <ChevronRight
+                    size={16}
+                    className="text-primary transition-transform duration-300"
+                  />
                 </button>
               ))}
             </div>
           )}
         </div>
-
+        {/* Divider */}
+        <div className="mx-auto max-w-43 border-t-[1.5px] border-[#C4C4C4] my-5" />
         {/* Subcategories grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
           {subCategories.map((sub) => {
             const isActive = activeSubCategory === sub.name;
             return (
               <button
                 key={sub.name}
                 onClick={() => handleSubCategoryChange(sub.name)}
-                className={`rounded-[21px] p-0.5 w-[155px] h-[90px] shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] transition-all cursor-pointer relative bg-white border-3 ${
-                  isActive ? "border-[#FF0009]" : "border-transparent hover:border-gray-200"
-                }`}
+                className={`rounded-2xl p-1 w-40 min-h-24 ${isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                  : "bg-white"
+                  }`}
+                style={{
+                  boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
+                }}
               >
-                <div className="flex flex-col items-center justify-center h-full p-2 text-center rounded-[19px] bg-white">
-                  <div className="relative w-8 h-8 mb-1 flex items-center justify-center">
+                <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
+                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                     <Image
                       src={sub.icon}
                       alt={sub.name}
-                      width={32}
-                      height={32}
+                      width={40}
+                      height={40}
                       className="object-contain max-h-full max-w-full drop-shadow-sm"
                     />
                   </div>
-                  <span className="font-medium text-xs leading-tight font-google-sans text-black">
+                  <span className="font-medium text-sm leading-normal whitespace-nowrap">
                     {sub.name}
                   </span>
                 </div>
@@ -498,31 +535,39 @@ export default function ProductCategories() {
       </div>
 
       {/* Mobile categories tabs */}
-      <div className="flex flex-col lg:hidden w-full gap-4">
+      <div className="flex flex-col lg:hidden w-full gap-4 relative z-30">
         {/* Dropdown for Main Category on Mobile */}
         <div className="relative w-full" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full h-[52px] rounded-[21px] bg-gradient-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-6 font-google-sans text-[18px] font-medium shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer"
+            className="relative w-full h-13 rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden z-20"
           >
             <span>{activeMainCategory}</span>
-            <ChevronDown size={20} className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`} />
+            <ChevronDown
+              size={20}
+              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+            />
           </button>
           {dropdownOpen && (
-            <div className="absolute top-[60px] left-0 w-full bg-white rounded-[21px] shadow-[4px_4px_15px_rgba(0,0,0,0.15)] border border-gray-100 py-3 overflow-hidden z-50">
+            <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-6 pb-5 overflow-hidden z-10">
               {MAIN_CATEGORIES_DATA.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
-                  className="w-full text-left px-6 py-2.5 hover:bg-gray-50 text-[16px] font-medium text-black cursor-pointer border-b border-gray-50 last:border-b-0"
+                  className="flex items-center justify-between w-full text-left px-6 py-0.5 hover:bg-gray-50 text-base font-medium text-black cursor-pointer"
                 >
-                  {cat.name}
+                  <span>{cat.name}</span>
+                  <ChevronRight
+                    size={16}
+                    className="text-primary transition-transform duration-300"
+                  />
                 </button>
               ))}
             </div>
           )}
         </div>
-
+        {/* Divider */}
+        <div className="border-t w-full border-[#C4C4C4] mx-auto max-w-43" />
         {/* Subcategories Horizontal Tabs */}
         <div className="flex items-center gap-2 w-full">
           <style
@@ -536,17 +581,16 @@ export default function ProductCategories() {
           />
           <button
             onClick={scrollLeft}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-              showLeftArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
-            }`}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
+              }`}
           >
             <ChevronLeftCircle size={24} className="text-[#FF0009]" />
           </button>
           <div
             ref={scrollContainerRef}
-            className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1"
+            className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1.5"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {subCategories.map((sub) => {
@@ -555,22 +599,25 @@ export default function ProductCategories() {
                 <button
                   key={sub.name}
                   onClick={() => handleSubCategoryChange(sub.name)}
-                  className={`${
-                    isActive ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"
-                  } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
+                  className={`${isActive
+                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                    : "bg-surface text-black"
+                    } p-1 cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)]`}
                 >
-                  {sub.name}
+                  {/* <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white"> */}
+                  <span className="flex flex-col items-center justify-center rounded-full transition-all duration-300 cursor-pointer font-medium text-center bg-surface truncate py-1.5">
+                    {sub.name}
+                  </span>
                 </button>
               );
             })}
           </div>
           <button
             onClick={scrollRight}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-              showRightArrow
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+              }`}
           >
             <ChevronRightCircle size={24} className="text-[#FF0009]" />
           </button>
@@ -581,7 +628,7 @@ export default function ProductCategories() {
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
         <div className="space-y-5 text-center md:text-start max-w-250">
-          <h1 className="font-amethysta text-[34px] sm:text-5xl leading-normal text-black">
+          <h1 className="font-amethysta text-4xl sm:text-5xl leading-normal text-black">
             {currentSubCategoryData.title}
           </h1>
           <p className="text-lg sm:text-2xl leading-normal font-normal text-black/80">
@@ -590,65 +637,70 @@ export default function ProductCategories() {
         </div>
 
         {/* Product Accordion Container */}
-        <div className="bg-[#f5f5f5] rounded-[21px] p-6 lg:p-[40px] w-full min-h-[464px] flex flex-col shadow-inner">
+        <div className="flex flex-col shadow-inner bg-surface rounded-[20px] p-4 lg:p-8 w-full">
           {currentSubCategoryData.products.map((product, idx) => {
             const isOpen = openAccordionIndex === idx;
             return (
               <div
                 key={`${product.title}-${idx}`}
-                className="border-b border-[#D9D9D9] last:border-b-0 flex flex-col"
+                onClick={() => !isOpen && toggleAccordion(idx)}
+                className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
               >
-                {/* Accordion Header */}
-                <div
-                  onClick={() => toggleAccordion(idx)}
-                  className="flex items-center justify-between py-6 cursor-pointer select-none group"
-                >
-                  <span className="text-[24px] lg:text-[28px] font-bold text-black font-google-sans group-hover:text-primary transition-colors">
+                {/* <div className="flex flex-col lg:flex-row justify-between items-center gap-8 pb-8 animate-fadeIn"> */}
+                {/* Accordion Content Panel */}
+                <div className="flex flex-col gap-1.5 relative">
+                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors">
                     {product.title}
                   </span>
-                  <div className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}>
-                    <Plus size={24} className="text-[#FF0009]" />
-                  </div>
-                </div>
-
-                {/* Accordion Content Panel */}
-                {isOpen && (
-                  <div className="flex flex-col lg:flex-row justify-between items-center gap-8 pb-8 animate-fadeIn">
-                    {/* Left Column: Description & Action */}
-                    <div className="flex-1 flex flex-col justify-between items-start gap-6 text-left">
-                      <p className="text-[16px] lg:text-[18px] text-black font-normal font-google-sans leading-relaxed">
+                  {isOpen && (
+                    <>
+                      {/* Left Column: Description & Action */}
+                      <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
                         {product.description}
                       </p>
                       <Link
                         href="/products"
-                        className="inline-flex items-center justify-center font-medium px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
+                        className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
                       >
                         View More
                       </Link>
-                    </div>
-
-                    {/* Right Column: Styled Image Display */}
-                    <div className="relative w-full lg:w-[425px] h-[213px] rounded-[21px] overflow-hidden shadow-md shrink-0 bg-white border border-gray-150 flex items-center justify-center">
+                    </>
+                  )}
+                  {/* Cross button for mobiles */}
+                  <div
+                    onClick={() => toggleAccordion(idx)}
+                    className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                  >
+                    <Plus size={24} strokeWidth={2} />
+                  </div>
+                </div>
+                {/* Right Column: Styled Image Display */}
+                {isOpen && (
+                  <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
+                    <Image
+                      src="/images/mega-menu.png"
+                      alt="Product Backdrop"
+                      fill
+                      className="object-cover opacity-60"
+                      priority
+                    />
+                    {/* <div className="absolute inset-0 bg-black/5" /> */}
+                    <div className="relative w-36 h-36 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
                       <Image
-                        src="/images/Rectangle 34.png"
-                        alt="Product Backdrop"
+                        src={product.image}
+                        alt={product.title}
                         fill
-                        className="object-cover opacity-60"
-                        priority
+                        className="object-contain"
                       />
-                      <div className="absolute inset-0 bg-black/5" />
-                      
-                      <div className="relative w-36 h-36 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
-                        <Image
-                          src={product.image}
-                          alt={product.title}
-                          fill
-                          className="object-contain"
-                        />
-                      </div>
                     </div>
                   </div>
                 )}
+                <div
+                  onClick={() => toggleAccordion(idx)}
+                  className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                >
+                  <Plus size={24} strokeWidth={2} />
+                </div>
               </div>
             );
           })}

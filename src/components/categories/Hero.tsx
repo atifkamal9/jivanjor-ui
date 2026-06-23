@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 export default function Hero() {
   return (
     <section className="relative">
-      <div className="flex items-center gap-1.5 md:hidden px-6 py-4 text-xs font-medium">
+      <div className="flex items-center gap-1.5 md:hidden px-6 pt-4 text-xs font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -14,35 +14,41 @@ export default function Hero() {
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="font-medium text-lg">Premium Adhesives</span>
+        <span className="font-medium text-lg">All Products</span>
       </div>
-      <div className="w-full h-67 relative hidden md:block">
+      <div className="w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
-            <div className="max-w-2xl text-white pointer-events-auto">
-              <div className="flex items-center gap-1.5 text-xs font-normal">
+            <div className="max-w-md text-black md:text-white pointer-events-auto">
+              <div className="hidden md:flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">
                   {/* Home Solid Icon */}
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                   </svg>
                 </Link>
                 {/* Chevron separator */}
                 <ChevronRight size={16} />
-                <span className="font-normal text-lg text-white/80">Premium Adhesives</span>
+                <span className="font-normal text-lg text-white/80">
+                  All Products
+                </span>
               </div>
-              <h2 className="font-amethysta font-normal text-5xl mt-6">
-                A Complete Adhesive Range for Modern Woodworking
+              <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6">
+                Our Exclusive Product Range
               </h2>
             </div>
           </div>
         </div>
         <Image
-          src="/images/category-hero.png"
+          src="/images/main-category-hero.png"
           fill
           alt="Category Hero"
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover object-center hidden md:block"
         />
       </div>
     </section>

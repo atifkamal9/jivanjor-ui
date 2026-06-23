@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Hero, MainCategories, RightChoice } from "@/components/categories";
+import { Hero, ProductCategories, RightChoice } from "@/components/categories";
 
 export default function Categories() {
   return (
@@ -14,7 +14,7 @@ export default function Categories() {
           height={682}
           className="hidden lg:block absolute top-[22%] -right-2 pointer-events-none"
         />
-        <MainCategories />
+        <ProductCategories />
       </div>
       <RightChoice />
     </main>
