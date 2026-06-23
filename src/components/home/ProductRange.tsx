@@ -38,7 +38,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
           className="w-75 sm:w-100 lg:w-240"
         />
       </div>
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-6xl px-6 lg:px-8 w-full">
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-6xl px-5 lg:px-8 w-full">
         <Image
           className="mb-4"
           src="/images/badge.png"
@@ -47,7 +47,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
           alt="badge"
         />
         <div className="max-w-5xl my-6">
-          <h2 className="font-amethysta font-normal text-5xl lg:text-6xl xl:text-7xl">
+          <h2 className="font-amethysta font-normal text-4xl lg:text-6xl">
             {title}
           </h2>
           {subtitle && (

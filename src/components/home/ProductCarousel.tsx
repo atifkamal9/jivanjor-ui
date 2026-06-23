@@ -96,21 +96,21 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
   const cards =
     items && items.length > 0
       ? items.map((item, idx) => ({
-        title: item.title || item.name || "",
-        description: item.description || "",
-        color: item.color || colors[idx % colors.length],
-        badge: item.tag || item.badge || "",
-        image: mapProductImage(
-          item.title || item.name || "",
-          item.imageUrl || item.image,
-        ),
-        ctaText: item.cta?.text || "",
-        ctaLink: item.cta?.actionPath || "",
-      }))
+          title: item.title || item.name || "",
+          description: item.description || "",
+          color: item.color || colors[idx % colors.length],
+          badge: item.tag || item.badge || "",
+          image: mapProductImage(
+            item.title || item.name || "",
+            item.imageUrl || item.image,
+          ),
+          ctaText: item.cta?.text || "",
+          ctaLink: item.cta?.actionPath || "",
+        }))
       : defaultProductCards;
 
   return (
-    <section className="relative mx-auto max-w-7xl w-full px-10 pb-12">
+    <section className="relative leading-normal mx-auto max-w-7xl w-full px-10 pb-12">
       <Swiper
         modules={[Navigation]}
         watchOverflow={false}
@@ -143,8 +143,8 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
             key={`${card.title}-${idx}`}
             className="overflow-visible! px-1"
           >
-            <div className="flex flex-col items-center relative px-4">
-              <div className="absolute aspect-44/51 -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain z-100">
+            <div className="flex flex-col items-center relative px-4 mt-8">
+              <div className="absolute aspect-44/51 top-[-30%] w-41 h-48 xl:w-55 xl:h-63 object-contain z-100">
                 {/* Floating image */}
                 <Image
                   src={card.image}
@@ -152,20 +152,21 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
                   fill
                   className="object-contain z-10"
                   priority
-                // className="absolute aspect-44/51 top-[-28%] w-60 h-65 object-contain z-100"
+                  // className="absolute aspect-44/51 top-[-28%] w-60 h-65 object-contain z-100"
                 />
               </div>
               {/* Card */}
               <div
-                className={`${card.color} rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
+                className={`${card.color} relative rounded-[28px] flex-1 w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
               >
-                <h3 className="text-2xl font-semibold text-center">
-                  {card.title}
-                </h3>
-                <div className="w-full h-px bg-white my-4" />
-                <p className="text-center text-base leading-normal max-w-60">
-                  {card.description}
-                </p>
+                <div className="absolute bottom-2.5 flex flex-col items-center justify-stretch p-6 text-white">
+                  <h3 className="text-2xl font-semibold text-center my-4 pb-4 px-12 border-b">
+                    {card.title}
+                  </h3>
+                  <p className="text-center text-base max-w-50">
+                    {card.description}
+                  </p>
+                </div>
               </div>
             </div>
           </SwiperSlide>
