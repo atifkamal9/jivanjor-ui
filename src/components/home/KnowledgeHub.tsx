@@ -55,7 +55,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto max-w-6xl justify-center px-6">
+      <div className="mx-auto max-w-6xl justify-center leading-normal px-6">
         <h2 className="font-amethysta font-normal text-center text-4xl md:text-5xl lg:text-6xl">
           {title}
         </h2>
@@ -108,7 +108,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                 </div>
               </div>
               <div className="relative flex flex-col items-start flex-1 min-h-80 px-10 md:py-10 md:px-0 md:pr-10 space-y-4">
-                <p className="text-xl max-w-124 font-google-sans leading-normal text-foreground/80">
+                <p className="text-xl max-w-124 font-google-sans text-foreground/80">
                   Hear from the carpenters, contractors and dealers who rely on
                   Jivanjor for real projects. Hear from the carpenters,
                   contractors and dealers who rely on Jivanjor for real
