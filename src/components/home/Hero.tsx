@@ -30,16 +30,25 @@ export default function Hero({ data }: HeroProps) {
   const title = data?.title || "Dependable Bonds for Indian Homes";
   const subtitle = data?.desc || data?.subtitle || "";
   const bgImage = data?.bgImage || data?.backgroundImage || "/images/hero.png";
+  const bgImagePhone =
+    data?.bgImage || data?.backgroundImage || "/images/hero-1.png";
 
-  const primaryText = data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
-  const primaryLink = data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section";
+  const primaryText =
+    data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
+  const primaryLink =
+    data?.actionButtons?.primary?.actionPath ||
+    data?.ctaLink ||
+    "#product-section";
 
-  const secondaryText = data?.actionButtons?.secondary?.text || "About Jivanjor";
-  const secondaryLink = data?.actionButtons?.secondary?.actionPath || "#about-section";
+  const secondaryText =
+    data?.actionButtons?.secondary?.text || "About Jivanjor";
+  const secondaryLink =
+    data?.actionButtons?.secondary?.actionPath || "#about-section";
 
   return (
     <section className="relative overflow-hidden bg-black text-white">
-      <div className="absolute inset-0">
+      {/* Desktop Version */}
+      <div className="absolute hidden xl:block inset-0 w-full min-h-160">
         <Image
           src={bgImage}
           alt="Jivanjor hero thumbnail"
@@ -47,12 +56,22 @@ export default function Hero({ data }: HeroProps) {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" />
+        {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
       </div>
-
-      <div className="relative mx-auto flex min-h-[calc(100vh-96px)] max-w-360 items-center px-6 py-20 lg:px-8">
-        <div className="max-w-md space-y-8 pt-80">
-          <h1 className="text-4xl font-amethysta tracking-[0%] text-white sm:text-5xl">
+      {/* Mobile Version */}
+      <div className="absolute aspect-50/73 xl:hidden inset-0 w-full">
+        <Image
+          src={bgImagePhone}
+          alt="Jivanjor hero thumbnail"
+          fill
+          className="object-contain"
+          priority
+        />
+        {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
+      </div>
+      <div className="relative mx-auto flex min-h-[calc(100vh-320px)] md:min-h-[calc(100vh-88px)] max-w-360 items-center p-5 lg:px-8">
+        <div className="absolute bottom-18 flex flex-col max-w-xs md:max-w-md space-y-8">
+          <h1 className="text-4xl font-amethysta tracking-[0%] text-white sm:text-5xl max-w-74 md:max-w-fit">
             {title}
           </h1>
           {subtitle && (

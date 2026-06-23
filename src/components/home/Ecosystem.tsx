@@ -31,16 +31,16 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
 
   return (
     <section className="relative bg-surface pt-20 leading-normal">
-      <div className="mx-auto max-w-360 justify-center px-6">
+      <div className="mx-auto max-w-360 justify-center px-5">
         <div className="mx-auto max-w-4xl space-y-6 text-center w-full">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
             {title}
           </h2>
-          <p className="text-2xl font-google-sans">{subtitle}</p>
+          <p className="text-lg md:text-2xl font-google-sans min-w-xs">{subtitle}</p>
         </div>
         <Gallery items={data?.items} />
       </div>
-      <div className="relative p-12.5 my-10 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
+      <div className="hidden xl:block relative p-12.5 my-10 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
         <div className="absolute bottom-0 right-0 pointer-events-none">
           <Image
@@ -48,7 +48,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             alt="watermark"
             width={900}
             height={450}
-            className="w-full"
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="mx-auto max-w-360 justify-center px-6 space-y-6">
