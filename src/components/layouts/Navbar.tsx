@@ -215,7 +215,7 @@ export default function Navbar() {
           />
         </Link>
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="/about" className="hover:text-primary transition-colors">
             About
           </Link>
           <div
