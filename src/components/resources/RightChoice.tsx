@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function RightChoice() {
   return (
-    <section className="leading-normal">
+    <section className="">
       <div className="relative my-10 lg:my-12 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
         <div className="hidden lg:block absolute top-px bottom-0 left-0 pointer-events-none">
@@ -24,11 +24,11 @@ export default function RightChoice() {
           />
         </div>
         <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-6 py-24 px-5 lg:px-8 lg:py-14">
-          <h2 className="font-amethysta text-[34px] md:text-[44px]">
+          <h2 className="font-amethysta text-[34px] md:text-[44px] leading-normal">
             Need Help Choosing the Right Adhesive?
           </h2>
           <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-8">
-            <p className="text-2xl max-w-3xl font-google-sans">
+            <p className="text-2xl max-w-3xl font-google-sans leading-normal">
               Share your woodwork needs, product query or application concerns.
               Our team will help you find the right Jivanjor solution.
             </p>

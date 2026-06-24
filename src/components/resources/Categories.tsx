@@ -332,7 +332,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   },
 ];
 
-export default function MainCategories() {
+export default function Categories() {
   const [activeMainCategory, setActiveMainCategory] = useState(
     "Woodworking Adhesives",
   );
@@ -525,7 +525,7 @@ export default function MainCategories() {
                       className="object-contain max-h-full max-w-full drop-shadow-sm"
                     />
                   </div>
-                  <span className="font-medium text-sm whitespace-nowrap">
+                  <span className="font-medium text-sm leading-normal whitespace-nowrap">
                     {sub.name}
                   </span>
                 </div>
@@ -646,18 +646,23 @@ export default function MainCategories() {
                     {product.title}
                   </span>
                   {isOpen && (
-                    <>
+                    <div className="space-y-6">
                       {/* Left Column: Description & Action */}
-                      <p className="text-base lg:text-lg text-black font-normal font-google-sans">
+                      <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
                         {product.description}
                       </p>
-                      <Link
-                        href="/products"
-                        className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
-                      >
-                        View More
-                      </Link>
-                    </>
+                      <div className="space-y-2">
+                        <span className="font-medium text-base md:text-lg">
+                          PDF | 1.2 MB
+                        </span>
+                        <Link
+                          href="/products"
+                          className="flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
+                        >
+                          Download
+                        </Link>
+                      </div>
+                    </div>
                   )}
                   {/* Cross button for mobiles */}
                   <div
@@ -669,21 +674,24 @@ export default function MainCategories() {
                 </div>
                 {/* Right Column: Styled Image Display */}
                 {isOpen && (
-                  <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
-                    <Image
-                      src="/images/mega-menu.png"
-                      alt="Product Backdrop"
-                      fill
-                      className="object-cover opacity-60"
-                      priority
-                    />
+                  <div className="flex items-center justify-end lg:justify-center relative animate-fadeIn -mt-22 lg:mt-0 w-full lg:w-106 overflow-hidden">
                     {/* <div className="absolute inset-0 bg-black/5" /> */}
-                    <div className="relative w-36 h-36 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
+                    <div className="relative mb-4 mr-4 lg:mr-0 w-50 h-58 z-10 transition-transform duration-300">
                       <Image
                         src={product.image}
                         alt={product.title}
                         fill
                         className="object-contain"
+                      />
+                    </div>
+                    <div
+                      className={`${product.color} absolute bottom-0 rounded-[20px] min-h-32 w-full`}
+                    >
+                      <Image
+                        src="/images/watermark pro.svg"
+                        alt={product.title}
+                        fill
+                        className="object-contain rounded-[20px] scale-x-105"
                       />
                     </div>
                   </div>
@@ -701,10 +709,10 @@ export default function MainCategories() {
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl text-black">
+          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal text-black">
             Superior Quality Backed by Research
           </h1>
-          <p className="text-lg md:text-2xl max-w-3xl text-black/80">
+          <p className="text-lg md:text-2xl leading-normal max-w-3xl text-black/80">
             Learn how our focus on product development, quality standards and
             market reach supports India’s woodworking needs.
           </p>

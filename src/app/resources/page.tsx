@@ -1,10 +1,10 @@
-import { Hero, MainCategories, RightChoice } from "@/components/categories";
+import { Hero, Categories, RightChoice } from "@/components/resources";
 
-export default function Categories() {
+export default function Resources() {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <Hero />
-      <MainCategories />
+      <Categories />
       <RightChoice />
     </main>
   );
