@@ -121,7 +121,8 @@ export default function MobileNav({ onClose }: MobileNavProps) {
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {/* About Link / Accordion */}
         <div className="border-b">
-          <button
+          <Link
+            href="/about"
             onClick={() => toggleSection("About")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -133,7 +134,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "About" ? "rotate-180" : ""
               }`}
             />
-          </button>
+          </Link>
         </div>
 
         {/* Products Accordion (Expanded by default) */}
