@@ -267,23 +267,6 @@ export default function ProductCategories() {
     }
   };
 
-  const handleNextCategory = () => {
-    const currentIndex = CATEGORIES_DATA.findIndex(
-      (c) => c.name === activeCategory,
-    );
-    const nextIndex = (currentIndex + 1) % CATEGORIES_DATA.length;
-    setActiveCategory(CATEGORIES_DATA[nextIndex].name);
-  };
-
-  const handlePrevCategory = () => {
-    const currentIndex = CATEGORIES_DATA.findIndex(
-      (c) => c.name === activeCategory,
-    );
-    const prevIndex =
-      (currentIndex - 1 + CATEGORIES_DATA.length) % CATEGORIES_DATA.length;
-    setActiveCategory(CATEGORIES_DATA[prevIndex].name);
-  };
-
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (container) {
