@@ -188,7 +188,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                               key={prod}
                               href={`/categories#${prod.toLowerCase().replace(/\s+/g, "-")}`}
                               onClick={onClose}
-                              className={`flex items-center gap-1 text-base leading-[150%] cursor-pointer ${
+                              className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${
                                 isWaterproof
                                   ? "text-[#FF0009]"
                                   : "hover:text-primary"
