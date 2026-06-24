@@ -45,7 +45,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Watershield",
+            title: "Watershield - Technical Data Sheet",
             description:
               "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
             mobileDesc:
@@ -60,7 +60,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
             ],
           },
           {
-            title: "Aquabond",
+            title: "Aquabond - Technical Data Sheet",
             description:
               "Heatproof and waterproof adhesive. Aquabond kitchen ka specialist hai.",
             mobileDesc: "Heatproof and waterproof adhesive.",
@@ -74,7 +74,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
             ],
           },
           {
-            title: "Aquaprotekt",
+            title: "Aquaprotekt - Technical Data Sheet",
             description:
               "Provides excellent water protection and moisture resistance for premium woodwork.",
             mobileDesc:
@@ -92,7 +92,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       },
       {
         name: "Super Premium",
-        title: "Super Premium Adhesives by Jivanjor",
+        title: "Super Premium Adhesives by Jivanjor - Technical Data Sheet",
         description:
           "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
         icon: "/images/Champion Super.png",
@@ -122,7 +122,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Aquabond.png",
         products: [
           {
-            title: "Termilok",
+            title: "Termilok - Technical Data Sheet",
             description:
               "Protects wood from termites, moisture damage, and fungal decay, ensuring lifelong durability.",
             mobileDesc: "Protects wood from termites and moisture damage.",
@@ -145,7 +145,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Foambond",
+            title: "Foambond - Technical Data Sheet",
             description:
               "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
             mobileDesc:
@@ -169,7 +169,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Foambond Specialty",
+            title: "Foambond Specialty - Technical Data Sheet",
             description:
               "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
             mobileDesc:
@@ -193,7 +193,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Champion Regular",
+            title: "Champion Regular - Technical Data Sheet",
             description:
               "Standard grade woodworking adhesive offering consistent performance and value.",
             mobileDesc:
@@ -213,7 +213,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Hero",
+            title: "Hero - Technical Data Sheet",
             description:
               "Zero-VOC, low odor, and environmentally sustainable adhesive options.",
             mobileDesc:
@@ -238,7 +238,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Tile Fix",
+            title: "Tile Fix - Technical Data Sheet",
             description:
               "High performance adhesive for fixing tiles on walls and floors.",
             mobileDesc: "Adhesive for tiles.",
@@ -257,7 +257,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Premium Grout",
+            title: "Premium Grout - Technical Data Sheet",
             description:
               "Water-resistant cementitious grout for tile joint filling.",
             mobileDesc: "Tile joint filling grout.",
@@ -276,7 +276,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Kwik Waterproof",
+            title: "Kwik Waterproof - Technical Data Sheet",
             description:
               "Advanced waterproofing liquid compound for roofs and basements.",
             mobileDesc: "Waterproofing compound.",
@@ -300,7 +300,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Pipe Lock",
+            title: "Pipe Lock - Technical Data Sheet",
             description: "Leak-proof pipe joint sealant for plumbing systems.",
             mobileDesc: "Pipe joint sealant.",
             color: "bg-[#0083CB]",
@@ -318,7 +318,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Kwik Spray",
+            title: "Kwik Spray - Technical Data Sheet",
             description: "Multi-purpose rust penetrant and lubrication spray.",
             mobileDesc: "Lubrication spray.",
             color: "bg-[#0498AA]",
@@ -642,11 +642,11 @@ export default function Categories() {
               >
                 {/* Accordion Content Panel */}
                 <div className="flex flex-col animate-fadeIn gap-1.5 relative">
-                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors">
+                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors max-w-60 lg:max-w-lg">
                     {product.title}
                   </span>
                   {isOpen && (
-                    <div className="space-y-6">
+                    <div className="space-y-6 max-w-xs lg:max-w-md">
                       {/* Left Column: Description & Action */}
                       <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
                         {product.description}
@@ -705,43 +705,6 @@ export default function Categories() {
               </div>
             );
           })}
-        </div>
-
-        {/* Lower Research & Development Section */}
-        <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal text-black">
-            Superior Quality Backed by Research
-          </h1>
-          <p className="text-lg md:text-2xl leading-normal max-w-3xl text-black/80">
-            Learn how our focus on product development, quality standards and
-            market reach supports India’s woodworking needs.
-          </p>
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"
-          >
-            Inside Our Labs
-          </Link>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-            <div className="hidden md:block col-span-1">
-              <Image
-                src="/images/Rectangle 110.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Research Laboratory"
-                width={400}
-                height={260}
-              />
-            </div>
-            <div className="col-span-2">
-              <Image
-                src="/images/Rectangle 111.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Adhesive Testing Laboratory"
-                width={800}
-                height={260}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </section>

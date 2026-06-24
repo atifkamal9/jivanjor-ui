@@ -698,43 +698,6 @@ export default function MainCategories() {
             );
           })}
         </div>
-
-        {/* Lower Research & Development Section */}
-        <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl text-black">
-            Superior Quality Backed by Research
-          </h1>
-          <p className="text-lg md:text-2xl max-w-3xl text-black/80">
-            Learn how our focus on product development, quality standards and
-            market reach supports India’s woodworking needs.
-          </p>
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"
-          >
-            Inside Our Labs
-          </Link>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-            <div className="hidden md:block col-span-1">
-              <Image
-                src="/images/Rectangle 110.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Research Laboratory"
-                width={400}
-                height={260}
-              />
-            </div>
-            <div className="col-span-2">
-              <Image
-                src="/images/Rectangle 111.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Adhesive Testing Laboratory"
-                width={800}
-                height={260}
-              />
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
