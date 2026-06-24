@@ -36,6 +36,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+span,
+div {
+  line-height: var(--leading-normal);
+}
+
 .swiper-button-disabled {
   opacity: 0.35;
   pointer-events: none;
