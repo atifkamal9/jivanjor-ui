@@ -16,11 +16,11 @@ export default function HeroCategory() {
         <ChevronRight size={16} />
         <span className="font-medium text-lg">Premium Adhesives</span>
       </div>
-      <div className="w-full h-30 md:h-67 relative">
+      <div className="hidden md:block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
             <div className="max-w-2xl text-black md:text-white pointer-events-auto">
-              <div className="hidden md:flex items-center gap-1.5 text-xs font-normal">
+              <div className="flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">
                   {/* Home Solid Icon */}
                   <svg
