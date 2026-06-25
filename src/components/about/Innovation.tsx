@@ -22,7 +22,7 @@ export default function Innovation() {
   return (
     <section
       id="innovation-section"
-      className="scroll-mt-36 relative w-full overflow-hidden min-h-153.75 flex items-center py-20"
+      className="scroll-mt-36 relative w-full overflow-hidden min-h-153.75 flex items-center py-6 md:py-10"
     >
       {/* Background Image with Overlay */}
       <div className="hidden md:block absolute inset-0 z-0">
@@ -38,7 +38,7 @@ export default function Innovation() {
         <div className="absolute inset-0 bg-linear-to-br from-[#772571]/20 to-black/40 mix-blend-color-burn" />
       </div>
 
-      <div className="flex flex-col items-start bg-surface md:bg-transparent relative px-0 lg:px-20 w-full z-10">
+      <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative px-5 lg:px-20 w-full z-10">
         <div className="relative md:hidden min-h-116 min-w-100 w-full h-full">
           <Image
             src="/images/about/about-innovation-bg.png"
@@ -52,7 +52,7 @@ export default function Innovation() {
           <div className="absolute inset-0 bg-linear-to-br from-[#772571]/20 to-black/40 mix-blend-color-burn" />
         </div>
         {/* Title */}
-        <h2 className="font-amethysta text-center md:text-start text-3xl sm:text-4xl lg:text-[48px] max-w-2xs md:max-w-2xl font-normal mx-10 md:mx-0 my-7 text-foreground md:text-white">
+        <h2 className="font-amethysta text-center md:text-start text-[34px] sm:text-4xl lg:text-[48px] mx-auto md:mx-0 md:px-0 max-w-full md:max-w-2xl font-normal my-7 text-foreground md:text-white">
           Built on Innovation That Drives Performance
         </h2>
 
@@ -73,7 +73,7 @@ export default function Innovation() {
           ))}
         </div>
         {/* Cards Mobile */}
-        <div className="flex flex-col gap-4 px-5 text-foreground md:hidden w-full">
+        <div className="flex flex-col gap-4 text-foreground md:hidden w-full">
           {cards.map((card, index) => (
             <div
               key={index}

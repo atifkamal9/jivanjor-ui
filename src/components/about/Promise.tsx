@@ -8,30 +8,30 @@ export default function Promise() {
     {
       title: "Quality-Led Products",
       desc: "Adhesive solutions built around consistent performance and practical use.",
-      icon: <Package className="w-10 h-10" />,
+      icon: <Package className="aspect-square w-10 h-10" strokeWidth={1.5} />,
     },
     {
       title: "Woodworking Focus",
       desc: "Products designed for furniture, interiors, laminates and everyday woodwork needs.",
-      icon: <Layers className="w-10 h-10" />,
+      icon: <Layers className="aspect-square w-10 h-10" strokeWidth={1.5} />,
     },
     {
       title: "Trade Understanding",
       desc: "A brand connected with the professionals and partners who shape adhesive choices.",
-      icon: <Wrench className="w-10 h-10" />,
+      icon: <Wrench className="aspect-square w-10 h-10" strokeWidth={1.5} />,
     },
     {
       title: "Application Confidence",
       desc: "Guidance, product information and support to help users choose and apply better.",
-      icon: <HardHat className="w-10 h-10" />,
+      icon: <HardHat className="aspect-square w-10 h-10" strokeWidth={1.5} />,
     },
   ];
 
   return (
-    <section id="promise-section" className="scroll-mt-36 py-4 md:py-12">
+    <section id="promise-section" className="scroll-mt-36 py-6 md:py-12">
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header Logo Icon */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-4 flex justify-center">
           <Image
             src="/images/badge.png"
             alt="Jivanjor Logo Icon"
@@ -41,7 +41,7 @@ export default function Promise() {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-6">
+        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-4">
           The Promise of Stronger Bonds
         </h2>
 
@@ -54,19 +54,19 @@ export default function Promise() {
 
         {/* 4 Cards Grid */}
         <div className="w-full bg-surface rounded-3xl p-6 sm:p-10 lg:p-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 md:gap-8 justify-items-center justify-center">
             {cards.map((card, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
+                className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-60.5 p-4 text-[#222]"
               >
-                <div className="rounded-2xl p-4 mb-5 flex items-center justify-center">
+                <div className="rounded-2xl mb-5 flex items-center justify-center">
                   {card.icon}
                 </div>
-                <h3 className="font-amethysta text-xl sm:text-2xl text-[#222] font-medium mb-3">
+                <h3 className="font-amethysta text-xl sm:text-2xl font-medium mb-5">
                   {card.title}
                 </h3>
-                <p className="font-google-sans text-sm sm:text-base text-[#222] leading-relaxed">
+                <p className="font-google-sans text-sm sm:text-base leading-relaxed">
                   {card.desc}
                 </p>
               </div>

@@ -57,36 +57,25 @@ export default function TVCs() {
   return (
     <section
       id="tvcs-section"
-      className="scroll-mt-36 py-4 md:py-16 bg-surface overflow-visible relative"
+      className="scroll-mt-36 py-9 md:py-16 bg-surface overflow-visible relative"
     >
       {/* Decorative Background Elements */}
-      <div className="absolute inset-0 pointer-events-none opacity-5 flex justify-end items-center">
+      {/* <div className="absolute inset-0 pointer-events-none opacity-5 flex justify-end items-center">
         <img
           src="/images/watermark-footer.png"
           alt="Jivanjor Watermark"
           className="w-1/2 h-full object-contain object-right"
         />
-      </div>
+      </div> */}
 
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center relative z-10">
-        {/* Header Icon */}
-        <div className="mb-6 flex justify-center">
-          <Image
-            src="/images/badge.png"
-            alt="Jivanjor Logo Icon"
-            width={40}
-            height={40}
-            className="aspect-square object-contain"
-          />
-        </div>
-
         {/* Section Heading */}
-        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-6">
+        <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-6 max-w-87.5 md:max-w-5xl">
           A Brand That Holds It All Together
         </h2>
 
         {/* Section Subtitle */}
-        <p className="font-google-sans text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-4xl mb-12 leading-relaxed">
+        <p className="font-google-sans text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-82.5 md:max-w-5xl mb-8">
           Jivanjor brings together product performance and professional know-how
           to support the work that happens before the final finish, inside
           workshops, homes and everyday interiors.

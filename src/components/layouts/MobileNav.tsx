@@ -159,7 +159,8 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 const isCatOpen = openCategory === cat.name;
                 return (
                   <div key={cat.name} className="space-y-1">
-                    <button
+                    <Link
+                      href={`/categories/${cat.name}`}
                       onClick={() => toggleCategory(cat.name)}
                       className="flex items-center justify-between w-full text-base font-medium cursor-pointer"
                     >
@@ -177,7 +178,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                           className="text-[#FF0009]"
                         />
                       )}
-                    </button>
+                    </Link>
 
                     {isCatOpen && (
                       <div className="space-y-1">
@@ -247,7 +248,8 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
         {/* Knowledge Hub Accordion */}
         <div className="border-b">
-          <button
+          <Link
+            href="/resources"
             onClick={() => toggleSection("KnowledgeHub")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -259,7 +261,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "KnowledgeHub" ? "rotate-180" : ""
               }`}
             />
-          </button>
+          </Link>
         </div>
 
         {/* Partner Accordion */}
