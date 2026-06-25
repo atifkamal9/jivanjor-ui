@@ -16,7 +16,7 @@ export default function Hero() {
         <ChevronRight size={16} />
         <span className="font-medium text-lg">All Products</span>
       </div>
-      <div className="hidden md:block w-full h-30 md:h-67 relative">
+      <div className="block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
             <div className="max-w-md text-black md:text-white pointer-events-auto">
@@ -37,7 +37,7 @@ export default function Hero() {
                   All Products
                 </span>
               </div>
-              <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6">
+              <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6 text-center md:text-start">
                 Our Exclusive Product Range
               </h2>
             </div>
