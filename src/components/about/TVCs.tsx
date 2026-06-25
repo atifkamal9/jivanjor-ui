@@ -24,7 +24,19 @@ export default function TVCs() {
       id: "allrounder",
       title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya",
       thumbnail: "/images/about/tvc-video-1.png",
-      youtubeId: "5F7y8l18Nrc", // Placeholder/Actual Jivanjor related ID if available
+      youtubeId: "5F7y8l18Nrc",
+    },
+    {
+      id: "champion",
+      title: "Jivanjor Champion - Multi-purpose Adhesive",
+      thumbnail: "/images/about/tvc-video-2.png",
+      youtubeId: "11mQhW3Zntk",
+    },
+    {
+      id: "allrounder",
+      title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya",
+      thumbnail: "/images/about/tvc-video-1.png",
+      youtubeId: "5F7y8l18Nrc",
     },
     {
       id: "champion",
@@ -98,15 +110,17 @@ export default function TVCs() {
             className="w-full rounded-2xl"
           >
             {videos.map((video) => (
-              <SwiperSlide key={video.id}>
+              <SwiperSlide>
                 <div
+                  key={video.id}
                   onClick={() => handleOpenVideo(video.youtubeId)}
-                  className="group relative aspect-[620/437] w-full rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01] border border-black/5 bg-black"
+                  className="group relative aspect-620/437 w-full rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01] border border-black/5 bg-black"
                 >
                   {/* Thumbnail */}
-                  <img
-                    src={video.thumbnail}
+                  <Image
+                    fill
                     alt={video.title}
+                    src={video.thumbnail}
                     className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Hover Overlay */}
@@ -120,7 +134,7 @@ export default function TVCs() {
                   </div>
 
                   {/* Title overlay bottom */}
-                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+                  <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/80 to-transparent p-6 text-white">
                     <p className="font-google-sans text-lg font-medium group-hover:text-primary transition-colors">
                       {video.title}
                     </p>
@@ -131,11 +145,14 @@ export default function TVCs() {
           </Swiper>
 
           {/* Carousel Arrows */}
-          <button className="tvc-swiper-prev absolute left-0 top-[50%] -translate-y-1/2 z-10 w-12 h-12 rounded-full border border-black/10 bg-white shadow-md text-[#222] hover:text-primary hover:border-primary flex items-center justify-center cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronLeft className="w-6 h-6" />
+          <button className="tvc-swiper-prev absolute left-0 top-[50%] -translate-y-1/2 z-10 cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronLeft className="w-6 h-6 text-[#FF0009]" strokeWidth={2.5} />
           </button>
-          <button className="tvc-swiper-next absolute right-0 top-[50%] -translate-y-1/2 z-10 w-12 h-12 rounded-full border border-black/10 bg-white shadow-md text-[#222] hover:text-primary hover:border-primary flex items-center justify-center cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronRight className="w-6 h-6" />
+          <button className="tvc-swiper-next absolute right-0 top-[50%] -translate-y-1/2 z-10 cursor-pointer transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <ChevronRight
+              className="w-6 h-6 text-[#FF0009]"
+              strokeWidth={2.5}
+            />
           </button>
         </div>
       </div>

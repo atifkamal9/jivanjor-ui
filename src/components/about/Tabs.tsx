@@ -105,37 +105,64 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
   };
 
   return (
-    <div className="sticky top-20 md:top-28 z-40 w-full transition-all duration-300">
-      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="hidden lg:flex justify-start lg:justify-center overflow-x-auto no-scrollbar scroll-smooth">
-          <div
-            className="flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
-            style={{
-              boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-          >
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.targetId, tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${
-                    isActive
-                      ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
-                      : "hover:bg-surface transition-colors"
-                  }`}
-                >
-                  <span className={isActive ? "invert" : ""}>{tab.icon}</span>
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
+    <>
+      <div className="sticky top-20 md:top-28 z-40 w-full transition-all duration-300">
+        <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="hidden lg:flex justify-start lg:justify-center overflow-x-auto no-scrollbar scroll-smooth">
+            <div
+              className="flex items-center bg-white rounded-full my-4 p-px max-w-full overflow-x-auto gap-1 md:gap-2 shrink-0 scrollbar-none"
+              style={{
+                boxShadow: `4px 4px 12.1px 4px rgba(0, 0, 0, 0.10)`,
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab.targetId, tab.id)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${
+                      isActive
+                        ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
+                        : "hover:bg-surface transition-colors"
+                    }`}
+                  >
+                    <span className={isActive ? "invert" : ""}>{tab.icon}</span>
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Mobile Sticky Bottom Tab Bar (Visible on mobile/tablet, hidden on desktop) */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-neutral-200 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around w-full">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.targetId, tab.id)}
+              className={`flex flex-col items-center justify-center gap-1 p-1.5 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${
+                isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
+                  : "hover:text-black"
+              }`}
+            >
+              <div
+                className={`w-5 h-5 flex items-center justify-center ${isActive ? "invert" : ""}`}
+              >
+                {tab.icon}
+              </div>
+              <span className="text-[10px] text-center leading-tight">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </>
   );
 }

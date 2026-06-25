@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { Leaf } from "lucide-react";
 
 export default function Responsibility() {
   const badges = [
@@ -120,8 +117,8 @@ export default function Responsibility() {
         </div>
 
         {/* Sustainability Inner Card */}
-        <div className="w-full bg-surface rounded-[20px] p-5 md:p-10 lg:p-12">
-          <div className="flex flex-col items-center text-center pb-6">
+        <div className="w-full bg-surface rounded-[20px] p-0 md:p-10 lg:p-12">
+          <div className="flex flex-col items-center text-center p-6">
             <h3 className="font-amethysta text-3xl md:text-[36px] text-[#222] font-normal mb-4 max-w-full md:max-w-md">
               A Responsible Approach to Manufacturing
             </h3>
@@ -131,37 +128,42 @@ export default function Responsibility() {
               reducing the impact of business operations.
             </p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col lg:flex-row items-center gap-6 p-6">
             {/* Left Column: Image */}
-            <div className="hidden lg:block relative w-125 h-100 rounded-2xl overflow-hidden shadow-lg">
+            <div className="hidden lg:block relative w-125 h-100 rounded-2xl overflow-hidden">
               <Image
-                src="/images/about/about-sustainability-windmill.png"
+                src="/images/about/windmill.png"
                 alt="Windmill representing sustainability"
-                fill
+                height={400}
+                width={500}
                 className="object-cover"
               />
             </div>
 
             {/* Right Column: Content list */}
-            <div className="space-y-8">
-              {/* Practices List */}
-              <div className="space-y-6">
-                {practices.map((practice, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="bg-[#FF0009]/10 rounded-full p-2.5 mt-1 shrink-0 text-[#FF0009]">
-                      <Leaf className="w-5 h-5 fill-current" />
-                    </div>
-                    <div>
-                      <h4 className="font-amethysta text-xl text-[#222] font-medium mb-1">
+            <div className="space-y-6 max-w-2xl">
+              {practices.map((practice, index) => (
+                <div key={index} className="flex flex-col gap-2.5">
+                  <div className="flex flex-col md:flex-row items-center md:items-start gap-2.5">
+                    <Image
+                      src="/images/about/Leaves.svg"
+                      className="mt-0.5 shrink-0"
+                      alt="Leaves"
+                      height={24}
+                      width={24}
+                    />
+                    <div className="flex flex-col items-center md:items-start text-center space-y-1 text-[#222]">
+                      <h4 className="font-amethysta text-xl font-medium mb-1">
                         {practice.title}
                       </h4>
-                      <p className="font-google-sans text-sm sm:text-base text-[#666] leading-relaxed">
+                      <p className="text-sm sm:text-base leading-relaxed">
                         {practice.desc}
                       </p>
                     </div>
                   </div>
-                ))}
-              </div>
+                  <span className="hidden md:block mx-8 h-px w-full border-b border-black/60" />
+                </div>
+              ))}
             </div>
           </div>
           <div className="lg:hidden relative w-full min-h-100 rounded-2xl overflow-hidden mt-10">
