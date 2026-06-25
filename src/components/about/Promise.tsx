@@ -8,22 +8,54 @@ export default function Promise() {
     {
       title: "Quality-Led Products",
       desc: "Adhesive solutions built around consistent performance and practical use.",
-      icon: <Package className="aspect-square w-10 h-10" strokeWidth={1.5} />,
+      icon: (
+        <Image
+          src="/images/about/Ad-product.svg"
+          className="aspect-square w-10 h-10"
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      ),
     },
     {
       title: "Woodworking Focus",
       desc: "Products designed for furniture, interiors, laminates and everyday woodwork needs.",
-      icon: <Layers className="aspect-square w-10 h-10" strokeWidth={1.5} />,
+      icon: (
+        <Image
+          src="/images/about/Distribute-vertically.svg"
+          className="aspect-square w-10 h-10"
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      ),
     },
     {
       title: "Trade Understanding",
       desc: "A brand connected with the professionals and partners who shape adhesive choices.",
-      icon: <Wrench className="aspect-square w-10 h-10" strokeWidth={1.5} />,
+      icon: (
+        <Image
+          src="/images/about/Spanner.svg"
+          className="aspect-square w-10 h-10"
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      ),
     },
     {
       title: "Application Confidence",
       desc: "Guidance, product information and support to help users choose and apply better.",
-      icon: <HardHat className="aspect-square w-10 h-10" strokeWidth={1.5} />,
+      icon: (
+        <Image
+          src="/images/about/Worker.svg"
+          className="aspect-square w-10 h-10"
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      ),
     },
   ];
 

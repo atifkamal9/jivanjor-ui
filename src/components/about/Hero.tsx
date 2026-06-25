@@ -19,7 +19,7 @@ export default function Hero() {
       {/* Banner Card */}
       <div className="flex flex-col items-center text-center p-6 text-white relative rounded-3xl overflow-hidden min-h-95 md:min-h-102 bg-linear-to-r from-[#E00921] to-[#772571]">
         {/* Background Logo Watermark */}
-        <div className="absolute inset-0 pointer-events-none opacity-8 select-none flex items-end justify-center">
+        <div className="absolute inset-0 pointer-events-none opacity-0 lg:opacity-100 select-none flex items-end justify-center -mt-18 xl:mt-0">
           <Image
             src="/images/about/about-hero-waterwark.svg"
             alt="watermark"
