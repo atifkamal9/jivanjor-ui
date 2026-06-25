@@ -37,7 +37,7 @@ export default function Hero() {
                   Technical Resources
                 </span>
               </div>
-              <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6">
+              <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6 text-center md:text-start">
                 Woodworking Adhesives
               </h2>
             </div>
