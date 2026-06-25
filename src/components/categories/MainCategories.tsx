@@ -346,7 +346,8 @@ export default function MainCategories() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const desktopDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   const currentMainCategoryData =
     MAIN_CATEGORIES_DATA.find((c) => c.name === activeMainCategory) ||
@@ -389,10 +390,14 @@ export default function MainCategories() {
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      const clickedOutsideDesktop =
+        !desktopDropdownRef.current ||
+        !desktopDropdownRef.current.contains(event.target as Node);
+      const clickedOutsideMobile =
+        !mobileDropdownRef.current ||
+        !mobileDropdownRef.current.contains(event.target as Node);
+
+      if (clickedOutsideDesktop && clickedOutsideMobile) {
         setDropdownOpen(false);
       }
     }
@@ -467,7 +472,7 @@ export default function MainCategories() {
       <div className="hidden lg:block space-y-4 lg:w-[320px] shrink-0 sticky top-28 self-start z-30">
         <h2 className="text-2xl ">Categories</h2>
         {/* Dropdown Selector */}
-        <div className="relative" ref={dropdownRef}>
+        <div className="relative" ref={desktopDropdownRef}>
           <button
             onClick={toggleDropdown}
             className="relative w-82 max-w-full rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 py-3.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer z-20"
@@ -479,7 +484,7 @@ export default function MainCategories() {
             />
           </button>
           {dropdownOpen && (
-            <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden z-10">
+            <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden space-y-1.5 z-10">
               {MAIN_CATEGORIES_DATA.map((cat) => (
                 <button
                   key={cat.name}
@@ -538,7 +543,7 @@ export default function MainCategories() {
       {/* Mobile categories tabs */}
       <div className="flex flex-col lg:hidden w-full gap-4 relative z-30">
         {/* Dropdown for Main Category on Mobile */}
-        <div className="relative w-full" ref={dropdownRef}>
+        <div className="relative w-full" ref={mobileDropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="relative w-full h-13 rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden z-20"
@@ -550,7 +555,7 @@ export default function MainCategories() {
             />
           </button>
           {dropdownOpen && (
-            <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-6 pb-5 overflow-hidden z-10">
+            <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-8 pb-5 overflow-hidden space-y-1.5 z-10">
               {MAIN_CATEGORIES_DATA.map((cat) => (
                 <button
                   key={cat.name}
@@ -671,18 +676,18 @@ export default function MainCategories() {
                 {isOpen && (
                   <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
                     <Image
-                      src="/images/mega-menu.png"
-                      alt="Product Backdrop"
                       fill
-                      className="object-cover opacity-60"
                       priority
+                      alt="Product Backdrop"
+                      className="object-cover object-center"
+                      src="/images/placeholder.png"
                     />
                     {/* <div className="absolute inset-0 bg-black/5" /> */}
-                    <div className="relative w-36 h-36 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
+                    <div className="relative aspect-video w-36 md:w-40 h-36 md:h-40 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
                       <Image
+                        fill
                         src={product.image}
                         alt={product.title}
-                        fill
                         className="object-contain"
                       />
                     </div>
