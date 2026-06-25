@@ -23,25 +23,25 @@ export default function TVCs() {
     {
       id: "allrounder",
       title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya",
-      thumbnail: "/images/about/tvc-video-1.png",
+      thumbnail: "/images/about/about-video-1.png",
       youtubeId: "5F7y8l18Nrc",
     },
     {
       id: "champion",
       title: "Jivanjor Champion - Multi-purpose Adhesive",
-      thumbnail: "/images/about/tvc-video-2.png",
+      thumbnail: "/images/about/about-video-2.png",
       youtubeId: "11mQhW3Zntk",
     },
     {
       id: "allrounder",
       title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya",
-      thumbnail: "/images/about/tvc-video-1.png",
+      thumbnail: "/images/about/about-video-1.png",
       youtubeId: "5F7y8l18Nrc",
     },
     {
       id: "champion",
       title: "Jivanjor Champion - Multi-purpose Adhesive",
-      thumbnail: "/images/about/tvc-video-2.png",
+      thumbnail: "/images/about/about-video-2.png",
       youtubeId: "11mQhW3Zntk",
     },
   ];
@@ -117,8 +117,8 @@ export default function TVCs() {
 
                   {/* Play Button Overlay */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-white text-primary flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                      <Play className="w-8 h-8 fill-current translate-x-0.5" />
+                    <div className="w-8 md:w-16 h-8 md:h-16 rounded-full bg-white text-black flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                      <Play className="w-4 md:w-8 h-4 md:h-8 fill-current" />
                     </div>
                   </div>
 

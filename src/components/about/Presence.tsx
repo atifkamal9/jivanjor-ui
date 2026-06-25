@@ -71,34 +71,37 @@ export default function Presence() {
           workshops, homes and everyday interiors.
         </p>
 
-        {/* Stats Row */}
         <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 items-stretch justify-items-center mb-4">
-          {stats.map((stat, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300"
-            >
-              {/* Stat Icon */}
-              <div className="aspect-square h-16 flex items-center justify-center mb-2">
-                <Image
-                  src={stat.icon}
-                  alt={stat.label}
-                  width={stat.width}
-                  height={stat.height}
-                  className="object-contain hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              {/* Stat Number & Label */}
-              <div className="flex-1 flex-col space-y-1">
-                <div className="text-[26px] md:text-[34px] font-medium text-[#222]">
-                  {stat.value}
+          {stats.map((stat, idx) => {
+            const isLast = idx === stats.length - 1;
+            return (
+              <div
+                key={idx}
+                className={`flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300 ${isLast ? "col-span-2 md:col-span-1" : ""
+                  }`}
+              >
+                {/* Stat Icon */}
+                <div className="aspect-square h-16 flex items-center justify-center mb-2">
+                  <Image
+                    src={stat.icon}
+                    alt={stat.label}
+                    width={stat.width}
+                    height={stat.height}
+                    className="object-contain hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
-                <div className="text-base md:text-xl text-[#222]">
-                  {stat.label}
+                {/* Stat Number & Label */}
+                <div className="flex-1 flex-col space-y-1">
+                  <div className="text-[26px] text-3xl xl:text-[34px] font-medium text-[#222]">
+                    {stat.value}
+                  </div>
+                  <div className="text-base md:text-xl text-[#222]">
+                    {stat.label}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Actions Row */}
