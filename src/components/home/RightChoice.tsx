@@ -31,20 +31,41 @@ export default function RightChoice({ data }: RightChoiceProps) {
 
   const defaultAdhesiveTypes = [
     { icon: "/icons/chair.png", title: "Furniture and Woodwork", link: "#" },
-    { icon: "/icons/cabinet.png", title: "Kitchen Cabinets & Storage", link: "#" },
-    { icon: "/icons/woodfloor.png", title: "Laminates & Surface Finishings", link: "#" },
-    { icon: "/icons/wooden plank.png", title: "Moisture-Prone Woodwork", link: "#" },
-    { icon: "/icons/checklist.png", title: "PVC, Acrylic & Edge Finishing", link: "#" },
-    { icon: "/icons/house.png", title: "Home Repairs & Special Fixing", link: "#" },
+    {
+      icon: "/icons/cabinet.png",
+      title: "Kitchen Cabinets & Storage",
+      link: "#",
+    },
+    {
+      icon: "/icons/woodfloor.png",
+      title: "Laminates & Surface Finishings",
+      link: "#",
+    },
+    {
+      icon: "/icons/wooden plank.png",
+      title: "Moisture-Prone Woodwork",
+      link: "#",
+    },
+    {
+      icon: "/icons/checklist.png",
+      title: "PVC, Acrylic & Edge Finishing",
+      link: "#",
+    },
+    {
+      icon: "/icons/house.png",
+      title: "Home Repairs & Special Fixing",
+      link: "#",
+    },
   ];
 
-  const types = items && items.length > 0
-    ? items.map((item, idx) => ({
-      icon: mapAdhesiveIcon(idx),
-      title: item.name || item.title || "",
-      link: item.link || "#",
-    }))
-    : defaultAdhesiveTypes;
+  const types =
+    items && items.length > 0
+      ? items.map((item, idx) => ({
+        icon: mapAdhesiveIcon(idx),
+        title: item.name || item.title || "",
+        link: item.link || "#",
+      }))
+      : defaultAdhesiveTypes;
 
   return (
     <section className="relative overflow-hidden">
@@ -77,14 +98,14 @@ export default function RightChoice({ data }: RightChoiceProps) {
             </p>
           )}
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center justify-center">
           {types.map((type) => (
             <a
               href={type.link}
               key={type.title}
-              className="flex flex-col items-center justify-between text-center group cursor-pointer bg-white hover:bg-linear-to-br from-[#FF0009] to-[#772571] min-w-40 sm:min-w-48 min-h-54 max-h-56 p-5 rounded-2xl"
+              className="flex flex-col items-center justify-between text-center group cursor-pointer bg-white hover:bg-linear-to-br from-[#FF0009] to-[#772571] w-43 md:w-48 h-42 md:h-51 p-4 md:p-5 rounded-2xl"
             >
-              <div className="flex flex-col items-center space-y-2">
+              <div className="flex flex-col items-center space-y-2 max-w-36">
                 <Image
                   src={type.icon}
                   alt={type.title}

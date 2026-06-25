@@ -54,7 +54,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
     : defaultCards;
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative pt-12 overflow-hidden">
       <div className="mx-auto max-w-6xl justify-center leading-normal px-6">
         <h2 className="font-amethysta font-normal text-center text-4xl md:text-5xl lg:text-6xl">
           {title}

@@ -24,7 +24,7 @@ export default function Gallery({ items }: GalleryProps) {
   const endorseLink = items?.[2]?.link || "#";
 
   return (
-    <section className="my-10 space-y-4">
+    <section className="py-10 space-y-4">
       <div className="hidden lg:grid grid-cols-4 gap-4 w-full">
         <div className="col-span-2 rounded-2xl h-80">
           <Image
