@@ -235,7 +235,7 @@ export default function Navbar() {
           <Link href="#" className="hover:text-primary transition-colors">
             Applications
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href="/resources" className="hover:text-primary transition-colors">
             Knowledge Hub
           </Link>
           <Link href="#" className="hover:text-primary transition-colors">
@@ -301,7 +301,7 @@ export default function Navbar() {
             <div className="flex flex-col flex-1 p-8">
               {activeCategoryData.products.map((prod) => (
                 <Link
-                  href={`/categories#${prod.name.toLowerCase().replace(/\s+/g, "-")}`}
+                  href={`/categories/${prod.name}`}
                   key={prod.name}
                   className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
                 >

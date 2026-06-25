@@ -1,10 +1,14 @@
 import Image from "next/image";
-import { Hero, ProductCategories, RightChoice } from "@/components/categories";
+import {
+  HeroCategory,
+  ProductCategories,
+  RightChoice,
+} from "@/components/categories";
 
 export default function Categories() {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <Hero />
+      <HeroCategory />
       <div className="relative w-full">
         {/* Watermark */}
         <Image

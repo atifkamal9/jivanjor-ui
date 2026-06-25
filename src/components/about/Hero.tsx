@@ -6,7 +6,7 @@ import { Home, ChevronRight } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative w-full max-w-360 mx-auto px-5 lg:px-8 pt-6 pb-12 overflow-visible">
+    <section className="relative w-full max-w-360 mx-auto px-5 lg:px-8 pt-9 pb-4 overflow-visible">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 mb-6 text-sm md:text-base font-google-sans">
         <Link href="/" className="hover:text-primary transition-colors">
