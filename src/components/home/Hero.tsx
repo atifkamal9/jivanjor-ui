@@ -56,6 +56,27 @@ export default function Hero({ data }: HeroProps) {
           className="object-cover"
           priority
         />
+        <div className="absolute bottom-6 md:bottom-18 right-6 md:right-18 w-10 md:w-14 h-10 md:h-14 bg-white rounded-full flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="61"
+            height="63"
+            viewBox="0 0 61 63"
+            fill="none"
+          >
+            <ellipse
+              cx="30.246"
+              cy="31.1158"
+              rx="30.246"
+              ry="31.1158"
+              fill="white"
+            />
+            <path
+              d="M43.6083 28.1571C45.5656 29.3197 45.5656 32.1532 43.6083 33.3158L25.3722 44.1472C23.3724 45.3349 20.8402 43.8938 20.8402 41.5678L20.8402 19.905C20.8402 17.5791 23.3724 16.1379 25.3722 17.3257L43.6083 28.1571Z"
+              fill="#2D2D2D"
+            />
+          </svg>
+        </div>
         {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
       </div>
       {/* Mobile Version */}
@@ -70,7 +91,7 @@ export default function Hero({ data }: HeroProps) {
         {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
       </div>
       <div className="relative mx-auto flex min-h-[calc(100vh-320px)] md:min-h-[calc(100vh-88px)] max-w-360 items-center p-5 lg:px-8">
-        <div className="absolute bottom-6 md:bottom-18 flex flex-col max-w-xs md:max-w-md space-y-8">
+        <div className="absolute bottom-6 md:bottom-18 flex flex-col max-w-sm md:max-w-md space-y-8">
           <h1 className="text-4xl font-amethysta tracking-[0%] text-white sm:text-5xl max-w-xs md:max-w-fit">
             {title}
           </h1>

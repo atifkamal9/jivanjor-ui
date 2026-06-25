@@ -41,16 +41,11 @@ export default function Professional({ data }: ProfessionalProps) {
       : defaultFeatures;
 
   return (
-    <section className="mx-auto max-w-360 text-center py-20 px-6">
-      <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl mb-10">
+    <section className="mx-auto max-w-360 text-center py-13 px-6">
+      <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl mb-0 md:mb-7.5">
         {title}
       </h2>
-      {data?.subtitle && (
-        <p className="mb-10 text-xl text-foreground/80 font-google-sans max-w-3xl mx-auto -mt-6">
-          {data.subtitle}
-        </p>
-      )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-surface gap-12 p-8 lg:pt-12 pb-16! lg:px-20 rounded-2xl">
+      <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-transparent lg:bg-surface gap-12 p-8 lg:pt-12 pb-16! lg:px-20 rounded-2xl">
         {features.map((f) => (
           <div
             key={f.title}

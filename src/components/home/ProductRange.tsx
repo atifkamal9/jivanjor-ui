@@ -113,23 +113,16 @@ export default function ProductRange({ data }: ProductRangeProps) {
   return (
     <section id="product-section" className="relative overflow-hidden">
       {/* watermark */}
-      <div className="absolute bottom-0 right-0 opacity-75 pointer-events-none">
+      <div className="hidden md:block absolute aspect-175/129 -bottom-50 right-0 w-238 h-175 pointer-events-none">
         <Image
-          src="/images/watermark.png"
-          alt=""
-          width={950}
-          height={500}
-          className="w-75 sm:w-100 lg:w-240"
+          fill
+          src="/images/product-watermark.svg"
+          className="w-full h-full"
+          alt="watermark"
         />
       </div>
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto my-20 max-w-6xl px-2 lg:px-8 w-full">
-        <Image
-          className="mb-4"
-          src="/images/badge.png"
-          width={40}
-          height={40}
-          alt="badge"
-        />
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-9 mb-16 md:my-16 max-w-6xl px-2 lg:px-8 w-full">
+        <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full md:max-w-5xl mx-auto my-6">
           <h2 className="font-amethysta font-normal text-4xl lg:text-6xl">
             {title}
