@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Play } from "lucide-react";
 
 interface HeroProps {
   data?: {
@@ -46,74 +47,80 @@ export default function Hero({ data }: HeroProps) {
     data?.actionButtons?.secondary?.actionPath || "#about-section";
 
   return (
-    <section className="relative overflow-hidden bg-black text-white">
-      {/* Desktop Version */}
-      <div className="absolute hidden xl:block inset-0 w-full min-h-160">
+    <section className="relative w-full h-146.75 xl:h-164.5 overflow-hidden bg-black text-white">
+      {/* Mobile Version Background */}
+      <div className="absolute inset-0 xl:hidden">
         <Image
-          src={bgImage}
-          alt="Jivanjor hero thumbnail"
+          src={bgImagePhone}
+          alt="Jivanjor hero mobile background"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute bottom-6 md:bottom-18 right-6 md:right-18 w-10 md:w-14 h-10 md:h-14 bg-white rounded-full flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="61"
-            height="63"
-            viewBox="0 0 61 63"
-            fill="none"
-          >
-            <ellipse
-              cx="30.246"
-              cy="31.1158"
-              rx="30.246"
-              ry="31.1158"
-              fill="white"
-            />
-            <path
-              d="M43.6083 28.1571C45.5656 29.3197 45.5656 32.1532 43.6083 33.3158L25.3722 44.1472C23.3724 45.3349 20.8402 43.8938 20.8402 41.5678L20.8402 19.905C20.8402 17.5791 23.3724 16.1379 25.3722 17.3257L43.6083 28.1571Z"
-              fill="#2D2D2D"
-            />
-          </svg>
-        </div>
-        {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(53.58deg, rgba(0, 0, 0, 0.63) 22.03%, rgba(0, 0, 0, 0.34) 56.11%, rgba(102, 102, 102, 0) 95.1%)",
+          }}
+        />
       </div>
-      {/* Mobile Version */}
-      <div className="absolute aspect-50/73 xl:hidden inset-0 w-full">
+
+      {/* Desktop Version Background */}
+      <div className="absolute inset-0 hidden xl:block">
         <Image
-          src={bgImagePhone}
-          alt="Jivanjor hero thumbnail"
+          src={bgImage}
+          alt="Jivanjor hero desktop background"
           fill
-          className="object-contain"
+          className="object-cover"
           priority
         />
-        {/* <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/30 to-black/90" /> */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(0, 0, 0, 0.17) 0%, rgba(0, 0, 0, 0.17) 100%), linear-gradient(41.78deg, rgba(0, 0, 0, 0.88) 6.87%, rgba(102, 102, 102, 0) 54.68%)",
+          }}
+        />
       </div>
-      <div className="relative mx-auto flex min-h-[calc(100vh-320px)] md:min-h-[calc(100vh-88px)] max-w-360 items-center p-5 lg:px-8">
-        <div className="absolute bottom-6 md:bottom-18 flex flex-col max-w-sm md:max-w-md space-y-8">
-          <h1 className="text-4xl font-amethysta tracking-[0%] text-white sm:text-5xl max-w-xs md:max-w-fit">
+
+      <div className="relative mx-auto max-w-360 h-full w-full">
+        {/* Content Wrapper */}
+        <div className="absolute bottom-26.5 xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start">
+          {/* Title */}
+          <h1 className="text-[40px] xl:text-[70px] font-amethysta tracking-[0%] text-white leading-[0.95] max-w-82.25 xl:max-w-184">
             {title}
           </h1>
+
+          {/* Subtitle */}
           {subtitle && (
-            <p className="text-lg text-white/80 leading-normal font-google-sans">
+            <p className="mt-4 xl:mt-5 text-[15px] xl:text-[18px] text-white/80 font-google-sans leading-normal max-w-82.25 xl:max-w-184">
               {subtitle}
             </p>
           )}
-          <div className="flex flex-wrap items-center gap-4">
+
+          {/* Action Buttons */}
+          <div
+            className={`${subtitle ? "mt-5" : "mt-4.25 xl:mt-1"} flex items-center gap-4.25 xl:gap-3.75`}
+          >
             <a
               href={primaryLink}
-              className="min-w-36 rounded-full bg-white px-6 py-2 text-sm font-medium text-black shadow-lg shadow-black/20 transition hover:bg-white/90 text-center"
+              className="w-37.25 h-8.25 rounded-full bg-white text-[#1c1c1c] text-[14px] font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
             >
               {primaryText}
             </a>
             <a
               href={secondaryLink}
-              className="min-w-36 rounded-full border-2 border-white px-6 py-2 text-sm font-medium text-white transition hover:border-white hover:bg-white/5 text-center"
+              className="w-37.25 xl:w-40.5 h-8.25 rounded-full border-[1.5px] border-white text-white text-[14px] font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
             >
               {secondaryText}
             </a>
           </div>
+        </div>
+
+        {/* Play Video Button */}
+        <div className="absolute bottom-6.25 right-6.25 xl:bottom-18.25 xl:right-17.25 w-9.75 h-[40.1px] xl:w-[60.5px] xl:h-[62.2px] bg-white rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 duration-300 cursor-pointer">
+          <Play className="text-[#2D2D2D] fill-[#2D2D2D] w-4 h-4 xl:w-7.5 xl:h-7.5" />
         </div>
       </div>
     </section>
