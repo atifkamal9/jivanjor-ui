@@ -120,7 +120,7 @@ export default function Hero({ data }: HeroProps) {
 
         {/* Play Video Button */}
         <div className="absolute bottom-6.25 right-6.25 xl:bottom-18.25 xl:right-17.25 w-9.75 h-[40.1px] xl:w-[60.5px] xl:h-[62.2px] bg-white rounded-full flex items-center justify-center shadow-md transition-transform hover:scale-110 duration-300 cursor-pointer">
-          <Play className="text-[#2D2D2D] fill-[#2D2D2D] w-3.5 h-3.5 xl:w-7.5 xl:h-7.5" />
+          <Play className="text-[#2D2D2D] fill-[#2D2D2D] w-4 h-4 xl:w-7.5 xl:h-7.5" />
         </div>
       </div>
     </section>
