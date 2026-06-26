@@ -122,13 +122,8 @@ export default function Responsibility() {
         <div className="sm:hidden w-full mb-8 py-4 px-2">
           <Swiper
             spaceBetween={16}
-            slidesPerView={2}
+            slidesPerView={2.5}
             grabCursor={true}
-            breakpoints={{
-              480: {
-                slidesPerView: 3,
-              },
-            }}
             className="w-full"
           >
             {badges.map((badge, idx) => (
