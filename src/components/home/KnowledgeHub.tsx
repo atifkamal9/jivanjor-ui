@@ -118,17 +118,16 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                 <h3 className="font-medium text-2xl md:text-[46px]">
                   Latest Blogs
                 </h3>
-                <div className="absolute bottom-0 left-0 pointer-events-none">
+                <div className="absolute bottom-0 left-0 pointer-events-none w-60 h-40 md:w-120 md:h-70">
                   <Image
-                    src="/images/watermark-blog.png"
+                    fill
                     alt="watermark"
-                    width={500}
-                    height={320}
+                    src="/images/watermark-blog.png"
                     className="object-cover"
                   />
                 </div>
               </div>
-              <div className="relative flex flex-col items-center text-center md:items-start md:text-start flex-1 min-h-80 px-10 md:py-12 md:px-0 md:pr-10 space-y-4">
+              <div className="relative flex flex-col items-center text-center md:items-start md:text-start flex-1 min-h-fit md:min-h-80 px-10 py-6 md:py-12 md:px-0 md:pr-10 space-y-4">
                 <p className="text-sm md:text-2xl max-w-124 font-google-sans text-foreground/80">
                   Hear from the carpenters, contractors and dealers who rely on
                   Jivanjor for real projects. Hear from the carpenters,

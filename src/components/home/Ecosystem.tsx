@@ -30,7 +30,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
   const ctaLink = ctaData?.ctaLink || "#";
 
   return (
-    <section className="relative bg-surface pt-20 leading-normal">
+    <section className="relative bg-surface pt-10 sm:pt-20 leading-normal">
       <div className="mx-auto max-w-360 justify-center px-5">
         <div className="mx-auto max-w-4xl space-y-6 text-center w-full">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">

@@ -136,7 +136,7 @@ export default function Testimonial({ data }: TestimonialProps) {
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
             {title}
           </h2>
-          <p className="text-lg md:text-2xl font-google-sans text-[#222] my-4 max-w-2xs md:max-w-full">
+          <p className="text-lg md:text-2xl text-[#222] my-4 px-6 md:px-0">
             {subtitle}
           </p>
           <a
