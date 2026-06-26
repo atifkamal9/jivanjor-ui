@@ -32,7 +32,7 @@ export default function Hero({ data }: HeroProps) {
   const subtitle = data?.desc || data?.subtitle || "";
   const bgImage = data?.bgImage || data?.backgroundImage || "/images/hero.png";
   const bgImagePhone =
-    data?.bgImage || data?.backgroundImage || "/images/hero-1.png";
+    data?.bgImage || data?.backgroundImage || "/images/hero.png";
 
   const primaryText =
     data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
