@@ -38,7 +38,7 @@ const defaultHomeSections = {
     video: "https://www.youtube.com/watch?v=mock-lab-test",
     actionButtons: {
       primary: { text: "Explore Products", actionPath: "#product-section" },
-      secondary: { text: "About Jivanjor", actionPath: "#about-section" }
+      secondary: { text: "About Jivanjor", actionPath: "/about" }
     }
   },
   productRange: {
@@ -691,7 +691,7 @@ export default function TemplatesPage() {
                           type="text"
                           value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
                           onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
-                          placeholder="Action Path (e.g. #about-section)"
+                          placeholder="Action Path (e.g. /about)"
                           className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs"
                         />
                       </div>
