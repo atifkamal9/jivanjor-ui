@@ -44,7 +44,7 @@ export default function Hero({ data }: HeroProps) {
   const secondaryText =
     data?.actionButtons?.secondary?.text || "About Jivanjor";
   const secondaryLink =
-    data?.actionButtons?.secondary?.actionPath || "#about-section";
+    data?.actionButtons?.secondary?.actionPath || "/about";
 
   return (
     <section className="relative w-full h-146.75 xl:h-164.5 overflow-hidden bg-black text-white">
