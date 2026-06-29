@@ -315,7 +315,7 @@ export default function List() {
       </div>
 
       {/* Blogs Grid and Pagination Area */}
-      <div className="flex-1 space-y-12">
+      <div className="flex-1 space-y-12 pb-8 md:pb-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-x-12 lg:gap-y-16">
           {currentBlogs.map((blog, idx) => (
             <div
@@ -351,7 +351,7 @@ export default function List() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222] pt-8">
+          <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222] pt-0 md:pt-8">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
