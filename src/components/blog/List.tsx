@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
@@ -318,8 +319,9 @@ export default function List() {
       <div className="flex-1 space-y-12 pb-8 md:pb-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-x-12 lg:gap-y-16">
           {currentBlogs.map((blog, idx) => (
-            <div
+            <Link
               key={idx}
+              href={`/blog/${blog.title.replace(/\s/g, "-") ?? ""}`}
               className="flex flex-col bg-white rounded-[21px] group"
             >
               {/* Blog Image Container */}
@@ -345,7 +347,7 @@ export default function List() {
                   Read Post
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
