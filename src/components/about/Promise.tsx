@@ -85,20 +85,20 @@ export default function Promise() {
         </p>
 
         {/* 4 Cards Grid */}
-        <div className="w-full bg-surface rounded-3xl p-6 sm:p-10 lg:p-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 md:gap-8 justify-items-center justify-center">
+        <div className="w-full bg-surface rounded-3xl p-13">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center justify-center">
             {cards.map((card, index) => (
               <div
                 key={index}
-                className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-60.5 p-4 text-[#222]"
+                className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-65 lg:max-w-60.5 text-[#222]"
               >
-                <div className="rounded-2xl mb-5 flex items-center justify-center">
+                <div className="flex items-center justify-center mb-4 md:mb-5">
                   {card.icon}
                 </div>
-                <h3 className="font-amethysta text-xl sm:text-2xl font-medium mb-5">
+                <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
                   {card.title}
                 </h3>
-                <p className="font-google-sans text-sm sm:text-base leading-relaxed">
+                <p className="text-base md:text-lg max-w-60 md:max-w-full">
                   {card.desc}
                 </p>
               </div>
