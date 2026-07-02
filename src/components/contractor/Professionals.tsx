@@ -46,7 +46,7 @@ const testimonials = [
 
 export default function Professionals() {
   return (
-    <section className="relative max-w-360 mx-auto w-full px-5 lg:px-8 pb-8 md:pb-12 text-[#222] overflow-hidden">
+    <section className="relative w-full text-[#222] overflow-hidden">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Header Title and Subtitle */}
         <div className="flex flex-col space-y-4 max-w-3xl text-center md:text-left">
@@ -128,7 +128,7 @@ export default function Professionals() {
                   </div>
                 ) : (
                   /* Text Card */
-                  <div className="w-full max-w-sm h-85 mx-auto bg-surface rounded-[20px] flex flex-col justify-end p-5 text-left shadow-xs">
+                  <div className="w-full max-w-2xs h-85 mx-auto bg-surface rounded-[20px] flex flex-col justify-end p-5 text-left shadow-xs">
                     <p className="font-normal text-[24px] mb-8">
                       "{item.quote}"
                     </p>

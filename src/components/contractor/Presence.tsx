@@ -41,7 +41,7 @@ const stats = [
 
 export default function Presence() {
   return (
-    <section className="max-w-360 mx-auto w-full px-5 lg:px-8 py-12">
+    <section className="w-full">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Title */}
         <h2 className="font-amethysta text-[36px] sm:text-4xl lg:text-[48px] font-normal text-[#222] leading-tight">
