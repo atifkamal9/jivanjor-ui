@@ -77,8 +77,9 @@ export default function Presence() {
             return (
               <div
                 key={idx}
-                className={`flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300 ${isLast ? "col-span-2 md:col-span-1" : ""
-                  }`}
+                className={`flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300 text-[#222] ${
+                  isLast ? "col-span-2 md:col-span-1" : ""
+                }`}
               >
                 {/* Stat Icon */}
                 <div className="aspect-square h-16 flex items-center justify-center mb-2">
@@ -92,12 +93,10 @@ export default function Presence() {
                 </div>
                 {/* Stat Number & Label */}
                 <div className="flex-1 flex-col space-y-1">
-                  <div className="text-[26px] text-3xl xl:text-[34px] font-medium text-[#222]">
+                  <div className="text-[26px] text-3xl xl:text-[34px] font-medium">
                     {stat.value}
                   </div>
-                  <div className="text-base md:text-xl text-[#222]">
-                    {stat.label}
-                  </div>
+                  <div className="text-base md:text-xl">{stat.label}</div>
                 </div>
               </div>
             );
