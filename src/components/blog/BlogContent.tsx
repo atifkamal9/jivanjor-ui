@@ -215,7 +215,7 @@ export default function BlogContent() {
                 To achieve a perfectly flat, secure bond on every project,
                 contractors should standardize the following practices:
               </p>
-              <ul className="list-disc pl-5 space-y-4 font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
+              <ul className="list-disc pl-5 space-y-4 font-google-sans leading-normal text-base md:text-lg lg:text-[22px] text-[#222]">
                 <li>
                   Substrate Acclimatization: Never apply laminates to plywood
                   that has just been brought in from the rain or high humidity.
