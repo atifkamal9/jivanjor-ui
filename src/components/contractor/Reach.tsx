@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck } from "lucide-react";
 
 const cards = [
@@ -148,6 +148,11 @@ export function ReachForm() {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+  const [isSticky, setIsSticky] = useState(false);
+
+  const lastScrollY = useRef(0);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,163 +178,371 @@ export function ReachForm() {
     });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (!formRef.current) return;
+
+      const formTop = formRef.current.offsetTop;
+
+      // Scrolling down and form has reached the top
+      if (currentY > lastScrollY.current && currentY >= formTop) {
+        setIsOpen(false);
+        setIsSticky(true);
+      }
+
+      // Back to original position
+      if (currentY < formTop) {
+        setIsSticky(false);
+        setIsOpen(true);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="w-full bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
-      {/* Card Header */}
-      <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-        <h3 className="text-[24px] md:text-[30px] font-medium pl-3">
-          Reach out to Us
-        </h3>
-        <ShieldCheck className="w-8 h-8" strokeWidth={1} />
-      </div>
+    <>
+      <div className="hidden relative xl:block w-full bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
+        {/* Card Header */}
+        <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
+          <h3 className="text-[24px] md:text-[30px] font-medium pl-3">
+            Reach out to Us
+          </h3>
+          <ShieldCheck className="w-8 h-8" strokeWidth={1} />
+        </div>
 
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col px-8 py-6 space-y-1"
-      >
-        {formSubmitted ? (
-          <div className="text-center py-10 space-y-4">
-            <div className="text-[#772571] text-5xl font-bold">✓</div>
-            <h4 className="text-2xl font-semibold">Thank You!</h4>
-            <p className="">
-              Your query has been submitted successfully. Our team will contact
-              you shortly.
-            </p>
-            <button
-              type="button"
-              onClick={() => setFormSubmitted(false)}
-              className="mt-4 px-6 py-2 bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-full font-medium hover:opacity-90 transition-opacity"
-            >
-              Send another query
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Full Name */}
-            <div className="flex flex-col border-b mt-1">
-              <label className="text-base lg:text-xl">Full Name*</label>
-              <input
-                type="text"
-                required
-                value={formData.fullName}
-                onChange={(e) =>
-                  setFormData({ ...formData, fullName: e.target.value })
-                }
-                className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
-              />
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col px-8 py-6 space-y-1"
+        >
+          {formSubmitted ? (
+            <div className="text-center py-10 space-y-4">
+              <div className="text-[#772571] text-5xl font-bold">✓</div>
+              <h4 className="text-2xl font-semibold">Thank You!</h4>
+              <p className="">
+                Your query has been submitted successfully. Our team will
+                contact you shortly.
+              </p>
+              <button
+                type="button"
+                onClick={() => setFormSubmitted(false)}
+                className="mt-4 px-6 py-2 bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-full font-medium hover:opacity-90 transition-opacity"
+              >
+                Send another query
+              </button>
             </div>
-
-            {/* Mobile Number */}
-            <div className="flex flex-col border-b mt-1">
-              <label className="text-base lg:text-xl">Mobile Number*</label>
-              <input
-                type="tel"
-                required
-                value={formData.mobileNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, mobileNumber: e.target.value })
-                }
-                className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
-              />
-            </div>
-
-            {/* City & Pin Code */}
-            <div className="grid grid-cols-2 gap-4">
+          ) : (
+            <>
+              {/* Full Name */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">City</label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
-                />
-              </div>
-              <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Pin Code*</label>
+                <label className="text-base lg:text-xl">Full Name*</label>
                 <input
                   type="text"
                   required
-                  value={formData.pinCode}
+                  value={formData.fullName}
                   onChange={(e) =>
-                    setFormData({ ...formData, pinCode: e.target.value })
+                    setFormData({ ...formData, fullName: e.target.value })
                   }
                   className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
                 />
               </div>
-            </div>
 
-            {/* Type of Query */}
-            <div className="flex flex-col border-b mt-1 relative">
-              <label className="text-base lg:text-xl">Type of Query</label>
-              <div className="flex items-center justify-between">
-                <select
-                  value={formData.queryType}
+              {/* Mobile Number */}
+              <div className="flex flex-col border-b mt-1">
+                <label className="text-base lg:text-xl">Mobile Number*</label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.mobileNumber}
                   onChange={(e) =>
-                    setFormData({ ...formData, queryType: e.target.value })
+                    setFormData({ ...formData, mobileNumber: e.target.value })
                   }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
-                >
-                  <option value="" disabled className="">
-                    Select option
-                  </option>
-                  <option value="Product Range">Product Range Query</option>
-                  <option value="Dealer Enrolment">Dealer Enrolment</option>
-                  <option value="Contractor Connect App">
-                    Contractor Club App
-                  </option>
-                  <option value="Other">Other Query</option>
-                </select>
-                <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                />
               </div>
-            </div>
 
-            {/* Message */}
-            <div className="flex flex-col border-b mt-1">
-              <label className="text-base lg:text-xl">Message</label>
-              <textarea
-                rows={2}
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none resize-none"
-              />
-            </div>
+              {/* City & Pin Code */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col border-b mt-1">
+                  <label className="text-base lg:text-xl">City</label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  />
+                </div>
+                <div className="flex flex-col border-b mt-1">
+                  <label className="text-base lg:text-xl">Pin Code*</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.pinCode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, pinCode: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  />
+                </div>
+              </div>
 
-            {/* Consent Checkbox */}
-            <div className="flex items-start gap-2.5 pt-2">
-              <input
-                type="checkbox"
-                id="consent-checkbox"
-                required
-                checked={formData.consent}
-                onChange={(e) =>
-                  setFormData({ ...formData, consent: e.target.checked })
-                }
-                className="mt-px w-4 h-4 text-[#772571] focus:ring-[#772571]"
-              />
-              <label htmlFor="consent-checkbox" className="text-sm select-none">
-                I consent that Jivanjor can use this information to reach out to
-                me.
-              </label>
-            </div>
+              {/* Type of Query */}
+              <div className="flex flex-col border-b mt-1 relative">
+                <label className="text-base lg:text-xl">Type of Query</label>
+                <div className="flex items-center justify-between">
+                  <select
+                    value={formData.queryType}
+                    onChange={(e) =>
+                      setFormData({ ...formData, queryType: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                  >
+                    <option value="" disabled className="">
+                      Select option
+                    </option>
+                    <option value="Product Range">Product Range Query</option>
+                    <option value="Dealer Enrolment">Dealer Enrolment</option>
+                    <option value="Contractor Connect App">
+                      Contractor Club App
+                    </option>
+                    <option value="Other">Other Query</option>
+                  </select>
+                  <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                </div>
+              </div>
 
-            {/* Submit Button */}
-            <div className="mt-0.5 text-center md:text-start">
-              <button
-                type="submit"
-                className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
-              >
-                Submit
-              </button>
-            </div>
-          </>
+              {/* Message */}
+              <div className="flex flex-col border-b mt-1">
+                <label className="text-base lg:text-xl">Message</label>
+                <textarea
+                  rows={2}
+                  value={formData.message}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
+                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none resize-none"
+                />
+              </div>
+
+              {/* Consent Checkbox */}
+              <div className="flex items-start gap-2.5 pt-2">
+                <input
+                  type="checkbox"
+                  id="consent-checkbox"
+                  required
+                  checked={formData.consent}
+                  onChange={(e) =>
+                    setFormData({ ...formData, consent: e.target.checked })
+                  }
+                  className="mt-px w-4 h-4 text-[#772571] focus:ring-[#772571]"
+                />
+                <label
+                  htmlFor="consent-checkbox"
+                  className="text-sm select-none"
+                >
+                  I consent that Jivanjor can use this information to reach out
+                  to me.
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <div className="mt-0.5 text-center md:text-start">
+                <button
+                  type="submit"
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                >
+                  Submit
+                </button>
+              </div>
+            </>
+          )}
+        </form>
+      </div>
+      <div
+        ref={formRef}
+        className={`xl:hidden max-w-md md:max-w-lg mx-5 md:mx-10 bg-white z-50 rounded-[20px] ${isSticky ? "fixed top-24 w-full max-w-sm" : "shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden"}`}
+      >
+        {/* Card Header */}
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className={`
+            cursor-pointer flex items-center justify-between px-5 py-4 bg-white
+            ${
+              isOpen
+                ? "border-none bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
+                : "border-2 border-red-500 rounded-[20px]"
+            }
+          `}
+        >
+          <h3 className="text-[24px] md:text-[30px] font-medium">
+            Reach out to Us
+          </h3>
+          <ChevronDown
+            className={`transition-transform duration-300" ${isOpen && "rotate-180"}`}
+          />
+        </div>
+        {/* Form */}
+        {isOpen && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col px-8 py-6 space-y-1"
+          >
+            {formSubmitted ? (
+              <div className="text-center py-10 space-y-4">
+                <div className="text-[#772571] text-5xl font-bold">✓</div>
+                <h4 className="text-2xl font-semibold">Thank You!</h4>
+                <p className="">
+                  Your query has been submitted successfully. Our team will
+                  contact you shortly.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFormSubmitted(false)}
+                  className="mt-4 px-6 py-2 bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-full font-medium hover:opacity-90 transition-opacity"
+                >
+                  Send another query
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Full Name */}
+                <div className="flex flex-col border-b mt-1">
+                  <label className="text-base lg:text-xl">Full Name*</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  />
+                </div>
+
+                {/* Mobile Number */}
+                <div className="flex flex-col border-b mt-1">
+                  <label className="text-base lg:text-xl">Mobile Number*</label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.mobileNumber}
+                    onChange={(e) =>
+                      setFormData({ ...formData, mobileNumber: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  />
+                </div>
+
+                {/* City & Pin Code */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col border-b mt-1">
+                    <label className="text-base lg:text-xl">City</label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) =>
+                        setFormData({ ...formData, city: e.target.value })
+                      }
+                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col border-b mt-1">
+                    <label className="text-base lg:text-xl">Pin Code*</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.pinCode}
+                      onChange={(e) =>
+                        setFormData({ ...formData, pinCode: e.target.value })
+                      }
+                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Type of Query */}
+                <div className="flex flex-col border-b mt-1 relative">
+                  <label className="text-base lg:text-xl">Type of Query</label>
+                  <div className="flex items-center justify-between">
+                    <select
+                      value={formData.queryType}
+                      onChange={(e) =>
+                        setFormData({ ...formData, queryType: e.target.value })
+                      }
+                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                    >
+                      <option value="" disabled className="">
+                        Select option
+                      </option>
+                      <option value="Product Range">Product Range Query</option>
+                      <option value="Dealer Enrolment">Dealer Enrolment</option>
+                      <option value="Contractor Connect App">
+                        Contractor Club App
+                      </option>
+                      <option value="Other">Other Query</option>
+                    </select>
+                    <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div className="flex flex-col border-b mt-1">
+                  <label className="text-base lg:text-xl">Message</label>
+                  <textarea
+                    rows={2}
+                    value={formData.message}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none resize-none"
+                  />
+                </div>
+
+                {/* Consent Checkbox */}
+                <div className="flex items-start gap-2.5 pt-2">
+                  <input
+                    type="checkbox"
+                    id="consent-checkbox"
+                    required
+                    checked={formData.consent}
+                    onChange={(e) =>
+                      setFormData({ ...formData, consent: e.target.checked })
+                    }
+                    className="mt-px w-4 h-4 text-[#772571] focus:ring-[#772571]"
+                  />
+                  <label
+                    htmlFor="consent-checkbox"
+                    className="text-sm select-none"
+                  >
+                    I consent that Jivanjor can use this information to reach
+                    out to me.
+                  </label>
+                </div>
+
+                {/* Submit Button */}
+                <div className="mt-0.5 text-center md:text-start">
+                  <button
+                    type="submit"
+                    className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </>
+            )}
+          </form>
         )}
-      </form>
-    </div>
+      </div>
+    </>
   );
 }
 
