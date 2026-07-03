@@ -11,7 +11,7 @@ export default function ContractorPage() {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <Hero />
-      <div className="xl:hidden">
+      <div className="xl:hidden md:mt-10">
         <ReachForm />
       </div>
       {/* Main Grid Wrapper */}
