@@ -153,6 +153,7 @@ export function ReachForm() {
 
   const lastScrollY = useRef(0);
   const formRef = useRef<HTMLDivElement>(null);
+  const initialTop = useRef<number | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,16 +185,24 @@ export function ReachForm() {
 
       if (!formRef.current) return;
 
-      const formTop = formRef.current.offsetTop;
+      if (initialTop.current === null && !isSticky) {
+        const rect = formRef.current.getBoundingClientRect();
+        if (rect.top > 96) {
+          initialTop.current = rect.top + window.scrollY;
+        }
+      }
 
-      // Scrolling down and form has reached the top
-      if (currentY > lastScrollY.current && currentY >= formTop) {
+      const formTop = initialTop.current || 350;
+      const stickyThreshold = formTop - 96;
+
+      // Scrolling down and form has reached the top-24 point (96px)
+      if (currentY > lastScrollY.current && currentY >= stickyThreshold) {
         setIsOpen(false);
         setIsSticky(true);
       }
 
-      // Back to original position
-      if (currentY < formTop) {
+      // Back to original position when scrolling up past the threshold
+      if (currentY < stickyThreshold) {
         setIsSticky(false);
         setIsOpen(true);
       }
@@ -204,7 +213,7 @@ export function ReachForm() {
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isSticky]);
 
   return (
     <>
@@ -367,15 +376,19 @@ export function ReachForm() {
           )}
         </form>
       </div>
-      <div
-        ref={formRef}
-        className={`xl:hidden max-w-md md:max-w-lg bg-white z-50 rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] ${isSticky ? "fixed top-24 left-5 right-5 md:left-10 md:right-10 mx-auto" : "mx-5 md:mx-10 overflow-hidden"}`}
+      <div 
+        className="xl:hidden w-full transition-all duration-300"
+        style={{ height: isSticky ? "60px" : "auto" }}
       >
+        <div
+          ref={formRef}
+          className={`xl:hidden max-w-md md:max-w-lg bg-white z-50 rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] ${isSticky ? "fixed top-24 left-5 right-5 md:left-10 md:right-10 mx-auto" : "mx-5 md:mx-10 overflow-hidden"}`}
+        >
         {/* Card Header */}
         <div
           onClick={() => setIsOpen(!isOpen)}
           className={`
-            cursor-pointer flex items-center justify-between px-5 py-4 bg-white
+            cursor-pointer flex items-center justify-between px-5 py-4 bg-white transition-all duration-500 ease-in-out
             ${
               isOpen
                 ? "border-none bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
@@ -387,11 +400,15 @@ export function ReachForm() {
             Reach out to Us
           </h3>
           <ChevronDown
-            className={`transition-transform duration-300" ${isOpen && "rotate-180"}`}
+            className={`transition-transform duration-500 ease-in-out ${isOpen ? "rotate-180" : ""}`}
           />
         </div>
-        {/* Form */}
-        {isOpen && (
+        {/* Form Container with Smooth Height Transition */}
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            isOpen ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+          }`}
+        >
           <form
             onSubmit={handleSubmit}
             className="flex flex-col px-8 py-6 space-y-1"
@@ -540,7 +557,8 @@ export function ReachForm() {
               </>
             )}
           </form>
-        )}
+        </div>
+      </div>
       </div>
     </>
   );
