@@ -369,7 +369,7 @@ export function ReachForm() {
       </div>
       <div
         ref={formRef}
-        className={`xl:hidden max-w-md md:max-w-lg mx-5 md:mx-10 bg-white z-50 rounded-[20px] ${isSticky ? "fixed top-24 w-full max-w-sm" : "shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden"}`}
+        className={`xl:hidden max-w-md md:max-w-lg bg-white z-50 rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] ${isSticky ? "fixed top-24 left-5 right-5 md:left-10 md:right-10 mx-auto" : "mx-5 md:mx-10 overflow-hidden"}`}
       >
         {/* Card Header */}
         <div
