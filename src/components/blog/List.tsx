@@ -321,7 +321,7 @@ export default function List() {
           {currentBlogs.map((blog, idx) => (
             <Link
               key={idx}
-              href={`/blog/${blog.title.replace(/\s/g, "-") ?? ""}`}
+              href={`/blog/${blog.title.replace(/\s/g, "-").toLowerCase() ?? ""}`}
               className="flex flex-col bg-white rounded-[21px] group"
             >
               {/* Blog Image Container */}
@@ -336,14 +336,14 @@ export default function List() {
               </div>
 
               {/* Blog Info */}
-              <div className="flex flex-col flex-1 pt-6 pb-2">
-                <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors leading-[1.2] cursor-pointer">
+              <div className="flex flex-col flex-1 pt-6 pb-2 space-y-4">
+                <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
                   {blog.title}
                 </h3>
-                <p className="font-google-sans text-base lg:text-xl text-[#222] mb-6 leading-[1.3] line-clamp-2">
+                <p className="text-base lg:text-xl text-[#222] leading-normal line-clamp-2">
                   {blog.desc}
                 </p>
-                <button className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-[16px] w-34.5 h-9 rounded-[19px] flex items-center justify-center cursor-pointer mt-auto">
+                <button className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
                   Read Post
                 </button>
               </div>

@@ -406,7 +406,7 @@ export function ReachForm() {
         {/* Form Container with Smooth Height Transition */}
         <div
           className={`transition-all duration-500 ease-in-out overflow-hidden ${
-            isOpen ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+            isOpen ? "max-h-200 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
           }`}
         >
           <form
