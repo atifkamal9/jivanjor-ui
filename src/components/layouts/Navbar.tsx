@@ -301,7 +301,7 @@ export default function Navbar() {
             <div className="flex flex-col flex-1 p-8">
               {activeCategoryData.products.map((prod) => (
                 <Link
-                  href={`/categories/${prod.name}`}
+                  href={`/categories/${prod.name.replace(/\s/g, "-").toLowerCase()}`}
                   key={prod.name}
                   className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
                 >

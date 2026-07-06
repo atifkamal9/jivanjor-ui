@@ -69,9 +69,20 @@ export default function BlogContent() {
     <div className="w-full">
       {/* Hero Image Section */}
       <section className="max-w-360 mx-auto px-5 mb-10 md:mb-16">
-        <div className="relative w-full h-55 sm:h-87.5 md:h-106.25 rounded-[20px] overflow-hidden bg-surface shadow-md">
+        <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-106.25 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
             src="/images/blog/Rectangle 125.png"
+            alt="Mastering Laminate Bonding"
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width: 1440px) 100vw, 1295px"
+          />
+          <div className="absolute inset-0 bg-black/10" />
+        </div>
+        <div className="relative w-full h-47 sm:hidden rounded-[20px] overflow-hidden bg-surface shadow-md">
+          <Image
+            src="/images/blog/Rectangle 125 (1).png"
             alt="Mastering Laminate Bonding"
             fill
             priority
@@ -89,7 +100,7 @@ export default function BlogContent() {
           <h3 className="text-2xl font-google-sans font-bold text-[#222]">
             Table of Contents
           </h3>
-          <nav className="flex flex-col gap-4 font-google-sans text-lg text-[#222] max-w-3xs">
+          <nav className="flex flex-col gap-3 font-google-sans text-lg text-[#222] max-w-3xs px-2">
             {sections.map((section) => {
               const isActive = activeSection === section.id;
               return (
@@ -356,9 +367,10 @@ export default function BlogContent() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {relatedArticles.map((article, idx) => (
-              <div
+              <Link
                 key={idx}
-                className="flex flex-col bg-white rounded-[20px] group overflow-hidden border border-transparent hover:border-border hover:shadow-lg transition-all duration-300 p-2"
+                href={`/blog/${article.title.replace(/\s/g, "-").toLowerCase()}`}
+                className="flex flex-col bg-white rounded-[20px] group overflow-hidden hover:shadow-lg transition-all duration-300 p-2"
               >
                 {/* Article Image Container */}
                 <div className="relative w-full h-61.5 rounded-[20px] overflow-hidden bg-surface">
@@ -372,21 +384,18 @@ export default function BlogContent() {
                 </div>
 
                 {/* Article Info */}
-                <div className="flex flex-col flex-1 pt-6 pb-2 px-2">
-                  <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors leading-[1.2] min-h-15.5 line-clamp-2">
+                <div className="flex flex-col flex-1 pt-6 pb-2 px-2 gap-4">
+                  <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal hover:text-[#ff0009] transition-colors leading-normal">
                     {article.title}
                   </h3>
-                  <p className="font-google-sans text-base text-[#222] mb-6 leading-[1.3] line-clamp-2">
+                  <p className="text-base leading-normal text-[#222] line-clamp-2">
                     {article.desc}
                   </p>
-                  <Link
-                    href={`/blog/${article.title.replace(/\s/g, "-")}`}
-                    className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-[16px] w-34.5 h-9 rounded-[19px] flex items-center justify-center cursor-pointer mt-auto"
-                  >
+                  <button className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
                     Read Post
-                  </Link>
+                  </button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

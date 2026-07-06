@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function BlogHero() {
   return (
-    <section className="flex flex-col justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-10 px-5 gap-4 md:gap-8 z-50">
+    <section className="flex flex-col justify-between max-w-360 mx-auto my-4 sm:my-6 px-5 gap-4 md:gap-8 z-50">
       <div className="flex items-center gap-1.5 text-xs sm:text-sm md:text-lg font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
