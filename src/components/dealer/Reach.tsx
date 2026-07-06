@@ -83,10 +83,12 @@ export function ReachLeft() {
 export function ReachForm() {
   const [formData, setFormData] = useState({
     fullName: "",
+    firmName: "",
     mobileNumber: "",
     city: "",
     pinCode: "",
-    queryType: "",
+    interestedIn: "",
+    lineOfBusiness: "",
     message: "",
     consent: false,
   });
@@ -114,10 +116,12 @@ export function ReachForm() {
     setFormSubmitted(true);
     setFormData({
       fullName: "",
+      firmName: "",
       mobileNumber: "",
       city: "",
       pinCode: "",
-      queryType: "",
+      interestedIn: "",
+      lineOfBusiness: "",
       message: "",
       consent: false,
     });
@@ -173,7 +177,7 @@ export function ReachForm() {
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col px-8 py-6 space-y-1"
+          className="flex flex-col px-8 py-4 space-y-1"
         >
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
@@ -195,7 +199,7 @@ export function ReachForm() {
             <>
               {/* Full Name */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Full Name*</label>
+                <label className="text-base">Full Name*</label>
                 <input
                   type="text"
                   required
@@ -207,9 +211,23 @@ export function ReachForm() {
                 />
               </div>
 
+              {/* Firm Name */}
+              <div className="flex flex-col border-b mt-1">
+                <label className="text-base">Firm Name*</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.firmName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firmName: e.target.value })
+                  }
+                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                />
+              </div>
+
               {/* Mobile Number */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Mobile Number*</label>
+                <label className="text-base">Mobile Number*</label>
                 <input
                   type="tel"
                   required
@@ -224,7 +242,7 @@ export function ReachForm() {
               {/* City & Pin Code */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col border-b mt-1">
-                  <label className="text-base lg:text-xl">City</label>
+                  <label className="text-base">City</label>
                   <input
                     type="text"
                     value={formData.city}
@@ -235,7 +253,7 @@ export function ReachForm() {
                   />
                 </div>
                 <div className="flex flex-col border-b mt-1">
-                  <label className="text-base lg:text-xl">Pin Code*</label>
+                  <label className="text-base">Pin Code*</label>
                   <input
                     type="text"
                     required
@@ -248,26 +266,52 @@ export function ReachForm() {
                 </div>
               </div>
 
-              {/* Type of Query */}
+              {/* Interested In */}
               <div className="flex flex-col border-b mt-1 relative">
-                <label className="text-base lg:text-xl">Type of Query</label>
+                <label className="text-base">Interested In</label>
                 <div className="flex items-center justify-between">
                   <select
-                    value={formData.queryType}
+                    value={formData.interestedIn}
                     onChange={(e) =>
-                      setFormData({ ...formData, queryType: e.target.value })
+                      setFormData({ ...formData, interestedIn: e.target.value })
                     }
-                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                    className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
                   >
                     <option value="" disabled className="">
-                      Select option
+                      Select
                     </option>
-                    <option value="Product Range">Product Range Query</option>
-                    <option value="Dealer Enrolment">Dealer Enrolment</option>
-                    <option value="Contractor Connect App">
-                      Contractor Club App
+                    <option value="Dealership">Dealership</option>
+                  </select>
+                  <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Line of Business */}
+              <div className="flex flex-col border-b mt-1 relative">
+                <label className="text-base">Line of Business</label>
+                <div className="flex items-center justify-between">
+                  <select
+                    value={formData.lineOfBusiness}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        lineOfBusiness: e.target.value,
+                      })
+                    }
+                    className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                  >
+                    <option value="" disabled className="">
+                      Select
                     </option>
-                    <option value="Other">Other Query</option>
+                    <option value="Plywood & Laminate">
+                      Plywood & Laminate
+                    </option>
+                    <option value="Hardware & tools">Hardware & tools</option>
+                    <option value="Paints">Paints</option>
+                    <option value="Cement & Steel">Cement & Steel</option>
+                    <option value="Marble & Stone Dealer">
+                      Marble & Stone Dealer
+                    </option>
                   </select>
                   <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
                 </div>
@@ -275,7 +319,7 @@ export function ReachForm() {
 
               {/* Message */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Message</label>
+                <label className="text-base">Message</label>
                 <textarea
                   rows={2}
                   value={formData.message}
@@ -357,7 +401,7 @@ export function ReachForm() {
           >
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col px-8 py-6 space-y-1"
+              className="flex flex-col px-8 py-4 space-y-1"
             >
               {formSubmitted ? (
                 <div className="text-center py-10 space-y-4">
@@ -379,7 +423,7 @@ export function ReachForm() {
                 <>
                   {/* Full Name */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">Full Name*</label>
+                    <label className="text-base">Full Name*</label>
                     <input
                       type="text"
                       required
@@ -391,11 +435,23 @@ export function ReachForm() {
                     />
                   </div>
 
+                  {/* Firm Name */}
+                  <div className="flex flex-col border-b mt-1">
+                    <label className="text-base">Firm Name*</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.firmName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firmName: e.target.value })
+                      }
+                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    />
+                  </div>
+
                   {/* Mobile Number */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">
-                      Mobile Number*
-                    </label>
+                    <label className="text-base">Mobile Number*</label>
                     <input
                       type="tel"
                       required
@@ -413,7 +469,7 @@ export function ReachForm() {
                   {/* City & Pin Code */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col border-b mt-1">
-                      <label className="text-base lg:text-xl">City</label>
+                      <label className="text-base">City</label>
                       <input
                         type="text"
                         value={formData.city}
@@ -424,7 +480,7 @@ export function ReachForm() {
                       />
                     </div>
                     <div className="flex flex-col border-b mt-1">
-                      <label className="text-base lg:text-xl">Pin Code*</label>
+                      <label className="text-base">Pin Code*</label>
                       <input
                         type="text"
                         required
@@ -437,35 +493,57 @@ export function ReachForm() {
                     </div>
                   </div>
 
-                  {/* Type of Query */}
+                  {/* Interested In */}
                   <div className="flex flex-col border-b mt-1 relative">
-                    <label className="text-base lg:text-xl">
-                      Type of Query
-                    </label>
+                    <label className="text-base">Interested In</label>
                     <div className="flex items-center justify-between">
                       <select
-                        value={formData.queryType}
+                        value={formData.interestedIn}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            queryType: e.target.value,
+                            interestedIn: e.target.value,
                           })
                         }
-                        className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                        className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
                       >
                         <option value="" disabled className="">
-                          Select option
+                          Select
                         </option>
-                        <option value="Product Range">
-                          Product Range Query
+                        <option value="Dealership">Dealership</option>
+                      </select>
+                      <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Line of Business */}
+                  <div className="flex flex-col border-b mt-1 relative">
+                    <label className="text-base">Line of Business</label>
+                    <div className="flex items-center justify-between">
+                      <select
+                        value={formData.lineOfBusiness}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            lineOfBusiness: e.target.value,
+                          })
+                        }
+                        className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                      >
+                        <option value="" disabled className="">
+                          Select
                         </option>
-                        <option value="Dealer Enrolment">
-                          Dealer Enrolment
+                        <option value="Plywood & Laminate">
+                          Plywood & Laminate
                         </option>
-                        <option value="Contractor Connect App">
-                          Contractor Club App
+                        <option value="Hardware & tools">
+                          Hardware & tools
                         </option>
-                        <option value="Other">Other Query</option>
+                        <option value="Paints">Paints</option>
+                        <option value="Cement & Steel">Cement & Steel</option>
+                        <option value="Marble & Stone Dealer">
+                          Marble & Stone Dealer
+                        </option>
                       </select>
                       <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
                     </div>
@@ -473,7 +551,7 @@ export function ReachForm() {
 
                   {/* Message */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">Message</label>
+                    <label className="text-base">Message</label>
                     <textarea
                       rows={2}
                       value={formData.message}

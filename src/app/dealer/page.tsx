@@ -25,7 +25,7 @@ export default function DealerPage() {
           </div>
 
           {/* Right Column (Sticky Form) */}
-          <div className="hidden xl:block xl:col-span-4 w-full xl:sticky xl:top-28 xl:self-start z-30">
+          <div className="hidden xl:block xl:col-span-4 w-full xl:sticky xl:top-22 xl:self-start z-30">
             <ReachForm />
           </div>
         </div>
