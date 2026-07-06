@@ -3,11 +3,11 @@ import {
   ReachLeft,
   ReachForm,
   Presence,
-  Professionals,
-} from "@/components/contractor";
+  Gallery,
+} from "@/components/dealer";
 import { RightChoice } from "@/components/categories";
 
-export default function ContractorPage() {
+export default function DealerPage() {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <Hero />
@@ -21,7 +21,7 @@ export default function ContractorPage() {
           <div className="xl:col-span-8 flex flex-col space-y-12 xl:space-y-18">
             <ReachLeft />
             <Presence />
-            <Professionals />
+            <Gallery />
           </div>
 
           {/* Right Column (Sticky Form) */}
