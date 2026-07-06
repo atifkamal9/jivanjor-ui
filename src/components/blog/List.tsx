@@ -337,7 +337,7 @@ export default function List() {
 
               {/* Blog Info */}
               <div className="flex flex-col flex-1 pt-6 pb-2 space-y-4">
-                <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer">
+                <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
                   {blog.title}
                 </h3>
                 <p className="text-base lg:text-xl text-[#222] leading-normal line-clamp-2">

@@ -384,8 +384,8 @@ export default function BlogContent() {
                 </div>
 
                 {/* Article Info */}
-                <div className="flex flex-col flex-1 pt-6 pb-2 px-2 gap-4">
-                  <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal hover:text-[#ff0009] transition-colors leading-normal">
+                <div className="flex flex-col flex-1 pt-6 pb-2 px-2 space-y-4">
+                  <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal hover:text-[#ff0009] transition-colors line-clamp-2 pb-0.5">
                     {article.title}
                   </h3>
                   <p className="text-base leading-normal text-[#222] line-clamp-2">
