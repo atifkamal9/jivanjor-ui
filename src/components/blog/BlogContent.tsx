@@ -126,7 +126,7 @@ export default function BlogContent() {
             <div className="font-google-sans font-bold text-xl text-[#222] list-none flex items-center justify-between cursor-pointer">
               <span>Table of Contents</span>
             </div>
-            <nav className="flex flex-col gap-2 font-google-sans text-base text-[#222] mt-4">
+            <nav className="flex flex-col space-y-3 font-google-sans text-base text-[#222] mt-4 max-w-65">
               {sections.map((section) => {
                 const isActive = activeSection === section.id;
                 return (
@@ -135,7 +135,7 @@ export default function BlogContent() {
                     onClick={() => {
                       scrollToSection(section.id);
                     }}
-                    className={`text-left py-1 transition-all cursor-pointer ${
+                    className={`text-left transition-all cursor-pointer ${
                       isActive ? "underline" : "hover:font-medium"
                     }`}
                   >
