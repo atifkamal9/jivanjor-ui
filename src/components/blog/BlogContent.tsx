@@ -278,51 +278,43 @@ export default function BlogContent() {
             </div>
 
             {/* Share on Socials */}
-            <div className="flex flex-col gap-4">
-              <p className="font-google-sans font-medium text-[18px] text-[#222]">
-                Share on Socials
-              </p>
-              <div className="flex items-center gap-4">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-surface hover:bg-[#e4e4e7] transition-colors cursor-pointer"
-                >
+            <div className="flex flex-col gap-2">
+              <p className="text-lg text-[#222]">Share on Socials</p>
+              <div className="flex items-center gap-1">
+                <a href="#" target="_blank" rel="noopener noreferrer">
                   <Image
-                    src="/images/facebook.svg"
+                    src="/images/blog/facebook.png"
                     alt="Facebook"
                     width={20}
                     height={20}
-                    className="w-5 h-5 object-contain"
+                    className="aspect-square w-6 h-6 object-contain"
                   />
                 </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-surface hover:bg-[#e4e4e7] transition-colors cursor-pointer"
-                >
+                <a href="#" target="_blank" rel="noopener noreferrer">
                   <Image
-                    src="/images/instagram.svg"
+                    src="/images/blog/x.png"
+                    alt="Twitter"
+                    width={20}
+                    height={20}
+                    className="aspect-square w-6 h-6 object-contain"
+                  />
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <Image
+                    src="/images/blog/instagram.png"
                     alt="Instagram"
                     width={20}
                     height={20}
-                    className="w-5 h-5 object-contain"
+                    className="aspect-square w-6 h-6 object-contain"
                   />
                 </a>
-                <a
-                  href="https://youtube.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-surface hover:bg-[#e4e4e7] transition-colors cursor-pointer"
-                >
+                <a href="#" target="_blank" rel="noopener noreferrer">
                   <Image
-                    src="/images/youtube.svg"
-                    alt="YouTube"
+                    src="/images/blog/whatsapp.png"
+                    alt="WhatsApp"
                     width={20}
                     height={20}
-                    className="w-5 h-5 object-contain"
+                    className="aspect-square w-6 h-6 object-contain"
                   />
                 </a>
               </div>
