@@ -266,7 +266,8 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
         {/* Partner Accordion */}
         <div className="border-b">
-          <button
+          <Link
+            href="/partner"
             onClick={() => toggleSection("Partner")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -278,13 +279,13 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "Partner" ? "rotate-180" : ""
               }`}
             />
-          </button>
+          </Link>
         </div>
 
         {/* Contact Pill Button (Centered at bottom of scroll area) */}
         <div className="flex justify-center pt-6 pb-4">
           <Link
-            href="#"
+            href="/contact"
             onClick={onClose}
             className="min-w-28 px-6 py-1 rounded-full text-white text-lg font-bold bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-md whitespace-nowrap"
           >
