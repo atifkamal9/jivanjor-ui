@@ -129,7 +129,9 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
                         : "hover:bg-surface transition-colors"
                     }`}
                   >
-                    <span className={isActive ? "invert" : ""}>{tab.icon}</span>
+                    <span className={isActive ? "invert brightness-0" : ""}>
+                      {tab.icon}
+                    </span>
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -154,7 +156,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
               }`}
             >
               <div
-                className={`flex items-center justify-center w-5 h-5 ${isActive ? "invert" : ""}`}
+                className={`flex items-center justify-center w-5 h-5 ${isActive ? "invert brightness-0" : ""}`}
               >
                 {tab.icon}
               </div>
