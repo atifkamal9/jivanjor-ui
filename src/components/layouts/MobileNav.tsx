@@ -81,6 +81,17 @@ const applications = [
   "OEM & Bulk Woodwork",
 ];
 
+const aboutItems = [
+  { name: "About Jivanjor", link: "/about" },
+  { name: "Research and Innovation", link: "/about#innovation-section" },
+  {
+    name: "Quality & Performance Promise",
+    link: "/about#responsibility-section",
+  },
+  { name: "TVC", link: "/about#tvcs-section" },
+  { name: "Market Presence", link: "/about#presence-section" },
+];
+
 export default function MobileNav({ onClose }: MobileNavProps) {
   const [openSection, setOpenSection] = useState<string | null>("Products");
   const [openCategory, setOpenCategory] = useState<string | null>(
@@ -119,10 +130,9 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
       {/* Main Nav Content */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
-        {/* About Link / Accordion */}
+        {/* About Accordion */}
         <div className="border-b">
-          <Link
-            href="/about"
+          <button
             onClick={() => toggleSection("About")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -134,7 +144,22 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "About" ? "rotate-180" : ""
               }`}
             />
-          </Link>
+          </button>
+
+          {openSection === "About" && (
+            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
+              {aboutItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.link}
+                  onClick={onClose}
+                  className="block text-base hover:text-primary cursor-pointer"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Products Accordion (Expanded by default) */}
