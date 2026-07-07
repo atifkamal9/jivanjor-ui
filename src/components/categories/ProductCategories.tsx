@@ -231,9 +231,7 @@ const CATEGORIES_DATA: CategoryData[] = [
 ];
 
 export default function ProductCategories() {
-  const [activeCategory, setActiveCategory] = useState(
-    "Water Proof Grade Adhesive",
-  );
+  const [activeCategory, setActiveCategory] = useState("Waterproof Grade");
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -320,29 +318,25 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`rounded-2xl p-1 w-40 min-h-24 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
-                    : "bg-white"
+                className={`rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer ${
+                  isActive ? "active-gradient-border" : "bg-white"
                 }`}
                 style={{
                   boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
                 }}
               >
-                <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
-                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
-                    <Image
-                      src={cat.icon}
-                      alt={cat.name}
-                      width={40}
-                      height={40}
-                      className="object-contain max-h-full max-w-full drop-shadow-sm"
-                    />
-                  </div>
-                  <span className="font-medium text-sm leading-normal whitespace-nowrap">
-                    {cat.name}
-                  </span>
+                <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
+                  <Image
+                    src={cat.icon}
+                    alt={cat.name}
+                    width={40}
+                    height={40}
+                    className="object-contain max-h-full max-w-full drop-shadow-sm"
+                  />
                 </div>
+                <span className="font-medium text-sm leading-normal whitespace-nowrap">
+                  {cat.name}
+                </span>
               </button>
             );
           })}

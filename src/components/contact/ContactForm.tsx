@@ -309,11 +309,11 @@ export default function ContactForm() {
           <div
             onClick={() => setIsOpen(!isOpen)}
             className={`
-            cursor-pointer flex items-center justify-between px-5 py-4 bg-white transition-all duration-500 ease-in-out
+            cursor-pointer flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out
             ${
               isOpen
-                ? "border-none bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
-                : "border-2 border-red-500 rounded-[20px]"
+                ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
+                : "active-gradient-border rounded-[20px]"
             }
           `}
           >

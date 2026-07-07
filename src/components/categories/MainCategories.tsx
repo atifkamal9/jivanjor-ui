@@ -511,29 +511,25 @@ export default function MainCategories() {
               <button
                 key={sub.name}
                 onClick={() => handleSubCategoryChange(sub.name)}
-                className={`rounded-2xl p-1 w-40 min-h-24 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
-                    : "bg-white"
+                className={`rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer ${
+                  isActive ? "active-gradient-border" : "bg-white"
                 }`}
                 style={{
                   boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
                 }}
               >
-                <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white">
-                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
-                    <Image
-                      src={sub.icon}
-                      alt={sub.name}
-                      width={40}
-                      height={40}
-                      className="object-contain max-h-full max-w-full drop-shadow-sm"
-                    />
-                  </div>
-                  <span className="font-medium text-sm whitespace-nowrap">
-                    {sub.name}
-                  </span>
+                <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
+                  <Image
+                    src={sub.icon}
+                    alt={sub.name}
+                    width={40}
+                    height={40}
+                    className="object-contain max-h-full max-w-full drop-shadow-sm"
+                  />
                 </div>
+                <span className="font-medium text-sm whitespace-nowrap">
+                  {sub.name}
+                </span>
               </button>
             );
           })}
@@ -606,16 +602,13 @@ export default function MainCategories() {
                 <button
                   key={sub.name}
                   onClick={() => handleSubCategoryChange(sub.name)}
-                  className={`${
+                  className={`cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center py-2 px-1.5 font-medium transition-all duration-300 truncate ${
                     isActive
-                      ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
+                      ? "active-gradient-border-surface"
                       : "bg-surface text-black"
-                  } p-1 cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)]`}
+                  }`}
                 >
-                  {/* <div className="flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-300 cursor-pointer text-center bg-white"> */}
-                  <span className="flex flex-col items-center justify-center rounded-full transition-all duration-300 cursor-pointer font-medium text-center bg-surface truncate py-1.5">
-                    {sub.name}
-                  </span>
+                  {sub.name}
                 </button>
               );
             })}

@@ -226,29 +226,25 @@ export default function List() {
                   setActiveList(list.name);
                   setCurrentPage(1);
                 }}
-                className={`rounded-[20px] p-0.75 w-43 min-h-23.5 cursor-pointer transition-all duration-300 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571]"
-                    : "bg-white"
+                className={`rounded-[20px] w-43 min-h-23.5 flex flex-col items-center justify-center px-4 py-3 text-center transition-all duration-300 cursor-pointer ${
+                  isActive ? "active-gradient-border" : "bg-white"
                 }`}
                 style={{
                   boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.08)`,
                 }}
               >
-                <div className="flex flex-col items-center justify-center px-4 py-3 rounded-[18px] transition-all duration-300 text-center bg-white h-full">
-                  <div className="relative w-9 h-9 mb-2 flex items-center justify-center mix-blend-hard-light">
-                    <Image
-                      src={list.icon}
-                      alt={list.name}
-                      width={36}
-                      height={36}
-                      className="object-contain max-h-full max-w-full"
-                    />
-                  </div>
-                  <span className="font-google-sans font-medium text-[16px] text-[#181818] leading-tight">
-                    {list.name}
-                  </span>
+                <div className="relative w-9 h-9 mb-2 flex items-center justify-center mix-blend-hard-light">
+                  <Image
+                    src={list.icon}
+                    alt={list.name}
+                    width={36}
+                    height={36}
+                    className="object-contain max-h-full max-w-full"
+                  />
                 </div>
+                <span className="font-google-sans font-medium text-[16px] text-[#181818] leading-tight">
+                  {list.name}
+                </span>
               </button>
             );
           })}
