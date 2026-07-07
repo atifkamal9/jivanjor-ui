@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import MobileNav from "./MobileNav";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 
 interface ProductItem {
   name: string;
@@ -16,6 +16,22 @@ interface CategoryItem {
   products: ProductItem[];
   categoryImage: string;
 }
+
+interface AboutItem {
+  name: string;
+  link: string;
+}
+
+const aboutItems: AboutItem[] = [
+  { name: "About Jivanjor", link: "/about" },
+  { name: "Research and Innovation", link: "/about#innovation-section" },
+  {
+    name: "Quality & Performance Promise",
+    link: "/about#responsibility-section",
+  },
+  { name: "TVC", link: "/about#tvcs-section" },
+  { name: "Market Presence", link: "/about#presence-section" },
+];
 
 const productCategories: CategoryItem[] = [
   {
@@ -172,8 +188,10 @@ export default function Navbar() {
   const toggleMenu = () => setOpen(!open);
 
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const aboutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -189,9 +207,24 @@ export default function Navbar() {
     }, 200);
   };
 
+  const handleAboutMouseEnter = () => {
+    if (aboutTimeoutRef.current) {
+      clearTimeout(aboutTimeoutRef.current);
+      aboutTimeoutRef.current = null;
+    }
+    setIsAboutOpen(true);
+  };
+
+  const handleAboutMouseLeave = () => {
+    aboutTimeoutRef.current = setTimeout(() => {
+      setIsAboutOpen(false);
+    }, 200);
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (aboutTimeoutRef.current) clearTimeout(aboutTimeoutRef.current);
     };
   }, []);
 
@@ -215,9 +248,42 @@ export default function Navbar() {
           />
         </Link>
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
-          <Link href="/about" className="hover:text-primary transition-colors">
-            About
-          </Link>
+          <div
+            className="relative"
+            onMouseEnter={handleAboutMouseEnter}
+            onMouseLeave={handleAboutMouseLeave}
+          >
+            <Link
+              href="/about"
+              className={`cursor-pointer transition-colors ${
+                isAboutOpen ? "text-primary" : "hover:text-primary"
+              }`}
+            >
+              About
+            </Link>
+            {/* About Dropdown */}
+            <div
+              className={`absolute top-full -left-1/2 mx-auto mt-2 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
+                isAboutOpen
+                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
+              }`}
+            >
+              <div className="flex flex-col bg-surface p-6 space-y-1">
+                {aboutItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={() => setIsAboutOpen(false)}
+                    className="text-lg hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
+            </div>
+          </div>
           <div
             className="relative py-4"
             onMouseEnter={handleMouseEnter}
