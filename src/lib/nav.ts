@@ -10,12 +10,12 @@ export interface CategoryItem {
   categoryImage: string;
 }
 
-export interface AboutItem {
+export interface NavItem {
   name: string;
   link: string;
 }
 
-export const aboutItems: AboutItem[] = [
+export const aboutItems: NavItem[] = [
   { name: "About Jivanjor", link: "/about" },
   { name: "Research and Innovation", link: "/about#innovation-section" },
   {
@@ -26,7 +26,7 @@ export const aboutItems: AboutItem[] = [
   { name: "Market Presence", link: "/about#presence-section" },
 ];
 
-export const knowledgeItems: AboutItem[] = [
+export const knowledgeItems: NavItem[] = [
   { name: "Choosing The Right Adhesive", link: "/blog" },
   { name: "Application Tips", link: "/blog" },
   { name: "Fix Common Issues", link: "/blog" },
@@ -182,4 +182,9 @@ export const productCategories: CategoryItem[] = [
     ],
     categoryImage: "/images/mega-menu.png",
   },
+];
+
+export const partnerItems: NavItem[] = [
+  { name: "Become a Dealer / Partner", link: "/partner" },
+  { name: "Contractor / Carpenter Connect", link: "/contractor" },
 ];

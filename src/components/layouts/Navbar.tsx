@@ -2,7 +2,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
-import { aboutItems, knowledgeItems, productCategories } from "@/lib/nav";
+import {
+  aboutItems,
+  knowledgeItems,
+  partnerItems,
+  productCategories,
+} from "@/lib/nav";
 import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
 
@@ -10,13 +15,15 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const toggleMenu = () => setOpen(!open);
 
-  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isAOpen, setIsAOpen] = useState(false);
   const [iskOpen, setIskOpen] = useState(false);
+  const [isPOpen, setIsPOpen] = useState(false);
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const aTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const kTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -60,11 +67,26 @@ export default function Navbar() {
     }, 200);
   };
 
+  const handlePMouseEnter = () => {
+    if (pTimeoutRef.current) {
+      clearTimeout(pTimeoutRef.current);
+      pTimeoutRef.current = null;
+    }
+    setIsPOpen(true);
+  };
+
+  const handlePMouseLeave = () => {
+    pTimeoutRef.current = setTimeout(() => {
+      setIsPOpen(false);
+    }, 200);
+  };
+
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (aTimeoutRef.current) clearTimeout(aTimeoutRef.current);
       if (kTimeoutRef.current) clearTimeout(kTimeoutRef.current);
+      if (pTimeoutRef.current) clearTimeout(pTimeoutRef.current);
     };
   }, []);
 
@@ -177,12 +199,42 @@ export default function Navbar() {
               <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
             </div>
           </div>
-          <Link
-            href="/partner"
-            className="hover:text-primary transition-colors"
+          <div
+            className="relative"
+            onMouseEnter={handlePMouseEnter}
+            onMouseLeave={handlePMouseLeave}
           >
-            Partner
-          </Link>
+            <Link
+              href="/partner"
+              className={`cursor-pointer transition-colors ${
+                isPOpen ? "text-primary" : "hover:text-primary"
+              }`}
+            >
+              Partner
+            </Link>
+            {/* Partner Dropdown */}
+            <div
+              className={`absolute top-full right-[-150%] mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
+                isPOpen
+                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
+              }`}
+            >
+              <div className="flex flex-col bg-surface p-6 space-y-1">
+                {partnerItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={() => setIsPOpen(false)}
+                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
+            </div>
+          </div>
           <Link
             href="/contact"
             className="hover:text-primary transition-colors"
