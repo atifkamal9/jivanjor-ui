@@ -235,13 +235,22 @@ export default function Navbar() {
           <Link href="#" className="hover:text-primary transition-colors">
             Applications
           </Link>
-          <Link href="/resources" className="hover:text-primary transition-colors">
+          <Link
+            href="/resources"
+            className="hover:text-primary transition-colors"
+          >
             Knowledge Hub
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link
+            href="/partner"
+            className="hover:text-primary transition-colors"
+          >
             Partner
           </Link>
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link
+            href="/contact"
+            className="hover:text-primary transition-colors"
+          >
             Contact
           </Link>
           <Link href="#" className="hover:scale-110 transition-colors">
@@ -291,7 +300,11 @@ export default function Navbar() {
                 >
                   <span className="leading-[200%]!">{cat.name}</span>
                   {activeCategory === cat.name && (
-                    <ChevronRight size={16} strokeWidth={2} className="text-primary" />
+                    <ChevronRight
+                      size={16}
+                      strokeWidth={2}
+                      className="text-primary"
+                    />
                   )}
                 </button>
               ))}

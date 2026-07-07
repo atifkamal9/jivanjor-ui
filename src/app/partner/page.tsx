@@ -4,10 +4,10 @@ import {
   ReachForm,
   Presence,
   Gallery,
-} from "@/components/dealer";
+} from "@/components/partner";
 import { RightChoice } from "@/components/categories";
 
-export default function DealerPage() {
+export default function PartnerPage() {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <Hero />
