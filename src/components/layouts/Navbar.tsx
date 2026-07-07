@@ -2,196 +2,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import { aboutItems, knowledgeItems, productCategories } from "@/lib/nav";
+import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
-import { ChevronRight, ChevronDown } from "lucide-react";
-
-interface ProductItem {
-  name: string;
-  image: string;
-  bgColor: string;
-}
-
-interface CategoryItem {
-  name: string;
-  products: ProductItem[];
-  categoryImage: string;
-}
-
-interface AboutItem {
-  name: string;
-  link: string;
-}
-
-const aboutItems: AboutItem[] = [
-  { name: "About Jivanjor", link: "/about" },
-  { name: "Research and Innovation", link: "/about#innovation-section" },
-  {
-    name: "Quality & Performance Promise",
-    link: "/about#responsibility-section",
-  },
-  { name: "TVC", link: "/about#tvcs-section" },
-  { name: "Market Presence", link: "/about#presence-section" },
-];
-
-const productCategories: CategoryItem[] = [
-  {
-    name: "Woodworking Adhesives",
-    products: [
-      {
-        name: "Super Premium Adhesive",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Specialty Adhesive",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "Regular Adhesive",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Waterproof Grade Adhesive",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-      {
-        name: "Wood Ancillaries",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "ECO",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-      {
-        name: "Wood Preservative",
-        image: "/images/Aquabond.png",
-        bgColor: "bg-[#1CB6F6]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-  {
-    name: "Construction Chemicals",
-    products: [
-      {
-        name: "Tile Adhesive",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      { name: "Grout", image: "/images/Foambond.png", bgColor: "bg-[#F57F26]" },
-      {
-        name: "Waterproofing Compound",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-      {
-        name: "Epoxy Grout",
-        image: "/images/Aquabond.png",
-        bgColor: "bg-[#1CB6F6]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-  {
-    name: "Maintenance",
-    products: [
-      {
-        name: "Pipe Sealant",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Thread Seal Tape",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "Maintenance Spray",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-  {
-    name: "Wood Finish Products",
-    products: [
-      {
-        name: "Wood Polish",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Wood Stain",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "Lacquer",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-  {
-    name: "Packaging Adhesives",
-    products: [
-      {
-        name: "Box Sealing Adhesive",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Lamination Adhesive",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "Carton Adhesive",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-  {
-    name: "Footwear Adhesives",
-    products: [
-      {
-        name: "Sole Bonding Adhesive",
-        image: "/images/Champion Super.png",
-        bgColor: "bg-[#0083CB]",
-      },
-      {
-        name: "Leather Adhesive",
-        image: "/images/Foambond.png",
-        bgColor: "bg-[#F57F26]",
-      },
-      {
-        name: "Synthetic Adhesive",
-        image: "/images/Watershield.png",
-        bgColor: "bg-[#3190A5]",
-      },
-    ],
-    categoryImage: "/images/mega-menu.png",
-  },
-];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const toggleMenu = () => setOpen(!open);
 
   const [isProductsOpen, setIsProductsOpen] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isAOpen, setIsAOpen] = useState(false);
+  const [iskOpen, setIskOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const aboutTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const aTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const kTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -207,24 +32,39 @@ export default function Navbar() {
     }, 200);
   };
 
-  const handleAboutMouseEnter = () => {
-    if (aboutTimeoutRef.current) {
-      clearTimeout(aboutTimeoutRef.current);
-      aboutTimeoutRef.current = null;
+  const handleAMouseEnter = () => {
+    if (aTimeoutRef.current) {
+      clearTimeout(aTimeoutRef.current);
+      aTimeoutRef.current = null;
     }
-    setIsAboutOpen(true);
+    setIsAOpen(true);
   };
 
-  const handleAboutMouseLeave = () => {
-    aboutTimeoutRef.current = setTimeout(() => {
-      setIsAboutOpen(false);
+  const handleAMouseLeave = () => {
+    aTimeoutRef.current = setTimeout(() => {
+      setIsAOpen(false);
+    }, 200);
+  };
+
+  const handleKMouseEnter = () => {
+    if (kTimeoutRef.current) {
+      clearTimeout(kTimeoutRef.current);
+      kTimeoutRef.current = null;
+    }
+    setIskOpen(true);
+  };
+
+  const handleKMouseLeave = () => {
+    kTimeoutRef.current = setTimeout(() => {
+      setIskOpen(false);
     }, 200);
   };
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (aboutTimeoutRef.current) clearTimeout(aboutTimeoutRef.current);
+      if (aTimeoutRef.current) clearTimeout(aTimeoutRef.current);
+      if (kTimeoutRef.current) clearTimeout(kTimeoutRef.current);
     };
   }, []);
 
@@ -250,13 +90,13 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
           <div
             className="relative"
-            onMouseEnter={handleAboutMouseEnter}
-            onMouseLeave={handleAboutMouseLeave}
+            onMouseEnter={handleAMouseEnter}
+            onMouseLeave={handleAMouseLeave}
           >
             <Link
               href="/about"
               className={`cursor-pointer transition-colors ${
-                isAboutOpen ? "text-primary" : "hover:text-primary"
+                isAOpen ? "text-primary" : "hover:text-primary"
               }`}
             >
               About
@@ -264,7 +104,7 @@ export default function Navbar() {
             {/* About Dropdown */}
             <div
               className={`absolute top-full -left-1/2 mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
-                isAboutOpen
+                isAOpen
                   ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
                   : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
               }`}
@@ -274,7 +114,7 @@ export default function Navbar() {
                   <Link
                     key={item.name}
                     href={item.link}
-                    onClick={() => setIsAboutOpen(false)}
+                    onClick={() => setIsAOpen(false)}
                     className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                   >
                     {item.name}
@@ -301,12 +141,42 @@ export default function Navbar() {
           <Link href="#" className="hover:text-primary transition-colors">
             Applications
           </Link>
-          <Link
-            href="/resources"
-            className="hover:text-primary transition-colors"
+          <div
+            className="relative"
+            onMouseEnter={handleKMouseEnter}
+            onMouseLeave={handleKMouseLeave}
           >
-            Knowledge Hub
-          </Link>
+            <Link
+              href="/resources"
+              className={`cursor-pointer transition-colors ${
+                iskOpen ? "text-primary" : "hover:text-primary"
+              }`}
+            >
+              Knowledge Hub
+            </Link>
+            {/* Knowledge Dropdown */}
+            <div
+              className={`absolute top-full -left-1/2 mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
+                iskOpen
+                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
+              }`}
+            >
+              <div className="flex flex-col bg-surface p-6 space-y-1">
+                {knowledgeItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={() => setIskOpen(false)}
+                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
+            </div>
+          </div>
           <Link
             href="/partner"
             className="hover:text-primary transition-colors"
