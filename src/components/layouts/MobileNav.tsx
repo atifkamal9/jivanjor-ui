@@ -2,16 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { X, ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
-
-interface NavItem {
-  label: string;
-  href?: string;
-}
-
-interface ProductItem {
-  name: string;
-}
+import { ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
+import { aboutItems, knowledgeItems, partnerItems } from "@/lib/nav";
 
 interface CategoryItem {
   name: string;
@@ -79,17 +71,6 @@ const applications = [
   "Home Repairs & DIY",
   "Foam & Acoustic Bonding",
   "OEM & Bulk Woodwork",
-];
-
-const aboutItems = [
-  { name: "About Jivanjor", link: "/about" },
-  { name: "Research and Innovation", link: "/about#innovation-section" },
-  {
-    name: "Quality & Performance Promise",
-    link: "/about#responsibility-section",
-  },
-  { name: "TVC", link: "/about#tvcs-section" },
-  { name: "Market Presence", link: "/about#presence-section" },
 ];
 
 export default function MobileNav({ onClose }: MobileNavProps) {
@@ -273,8 +254,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
         {/* Knowledge Hub Accordion */}
         <div className="border-b">
-          <Link
-            href="/resources"
+          <button
             onClick={() => toggleSection("KnowledgeHub")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -286,13 +266,27 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "KnowledgeHub" ? "rotate-180" : ""
               }`}
             />
-          </Link>
+          </button>
+
+          {openSection === "KnowledgeHub" && (
+            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
+              {knowledgeItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.link}
+                  onClick={onClose}
+                  className="block text-base hover:text-primary cursor-pointer"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Partner Accordion */}
         <div className="border-b">
-          <Link
-            href="/partner"
+          <button
             onClick={() => toggleSection("Partner")}
             className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
           >
@@ -304,7 +298,22 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 openSection === "Partner" ? "rotate-180" : ""
               }`}
             />
-          </Link>
+          </button>
+
+          {openSection === "Partner" && (
+            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
+              {partnerItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.link}
+                  onClick={onClose}
+                  className="block text-base hover:text-primary cursor-pointer"
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Contact Pill Button (Centered at bottom of scroll area) */}
