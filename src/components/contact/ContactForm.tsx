@@ -191,7 +191,9 @@ export default function ContactForm() {
               </div>
 
               {/* Type of Query */}
-              <div className={`flex flex-col mt-1 relative ${desktopQueryOpen ? "" : "border-b"}`}>
+              <div
+                className={`flex flex-col mt-1 relative ${desktopQueryOpen ? "" : "border-b"}`}
+              >
                 <label className="text-base lg:text-xl">Type of Query</label>
                 <div
                   onClick={() => setDesktopQueryOpen(!desktopQueryOpen)}
@@ -199,18 +201,20 @@ export default function ContactForm() {
                 >
                   <span
                     className={`text-base pl-1.5 ${
-                      formData.queryType ? "text-foreground" : "text-foreground/60"
+                      formData.queryType
+                        ? "text-foreground"
+                        : "text-foreground/60"
                     }`}
                   >
                     {formData.queryType
-                      ? (formData.queryType === "Product Range"
-                          ? "Product Range Query"
-                          : formData.queryType === "Contractor Connect App"
+                      ? formData.queryType === "Product Range"
+                        ? "Product Range Query"
+                        : formData.queryType === "Contractor Connect App"
                           ? "Contractor Club App"
                           : formData.queryType === "Other"
-                          ? "Other Query"
-                          : formData.queryType)
-                      : "Select option"}
+                            ? "Other Query"
+                            : formData.queryType
+                      : "Select"}
                   </span>
                   <ChevronDown
                     className={`w-5 h-5 transition-transform duration-200 ${
@@ -224,7 +228,10 @@ export default function ContactForm() {
                     {[
                       { val: "Product Range", label: "Product Range Query" },
                       { val: "Dealer Enrolment", label: "Dealer Enrolment" },
-                      { val: "Contractor Connect App", label: "Contractor Club App" },
+                      {
+                        val: "Contractor Connect App",
+                        label: "Contractor Club App",
+                      },
                       { val: "Other", label: "Other Query" },
                     ].map((opt) => (
                       <button
@@ -361,6 +368,20 @@ export default function ContactForm() {
                     />
                   </div>
 
+                  {/* Firm Name */}
+                  <div className="flex flex-col border-b mt-1">
+                    <label className="text-base lg:text-xl">Firm Name*</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.firmName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, firmName: e.target.value })
+                      }
+                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    />
+                  </div>
+
                   {/* Mobile Number */}
                   <div className="flex flex-col border-b mt-1">
                     <label className="text-base lg:text-xl">
@@ -408,26 +429,32 @@ export default function ContactForm() {
                   </div>
 
                   {/* Type of Query */}
-                  <div className={`flex flex-col mt-1 relative ${mobileQueryOpen ? "" : "border-b"}`}>
-                    <label className="text-base lg:text-xl">Type of Query</label>
+                  <div
+                    className={`flex flex-col mt-1 relative ${mobileQueryOpen ? "" : "border-b"}`}
+                  >
+                    <label className="text-base lg:text-xl">
+                      Type of Query
+                    </label>
                     <div
                       onClick={() => setMobileQueryOpen(!mobileQueryOpen)}
                       className="flex items-center justify-between pb-1 cursor-pointer select-none"
                     >
                       <span
                         className={`text-base pl-1.5 ${
-                          formData.queryType ? "text-foreground" : "text-foreground/60"
+                          formData.queryType
+                            ? "text-foreground"
+                            : "text-foreground/60"
                         }`}
                       >
                         {formData.queryType
-                          ? (formData.queryType === "Product Range"
-                              ? "Product Range Query"
-                              : formData.queryType === "Contractor Connect App"
+                          ? formData.queryType === "Product Range"
+                            ? "Product Range Query"
+                            : formData.queryType === "Contractor Connect App"
                               ? "Contractor Club App"
                               : formData.queryType === "Other"
-                              ? "Other Query"
-                              : formData.queryType)
-                          : "Select option"}
+                                ? "Other Query"
+                                : formData.queryType
+                          : "Select"}
                       </span>
                       <ChevronDown
                         className={`w-5 h-5 transition-transform duration-200 ${
@@ -439,9 +466,18 @@ export default function ContactForm() {
                     {mobileQueryOpen && (
                       <div className="flex flex-col w-full bg-surface py-2 z-20">
                         {[
-                          { val: "Product Range", label: "Product Range Query" },
-                          { val: "Dealer Enrolment", label: "Dealer Enrolment" },
-                          { val: "Contractor Connect App", label: "Contractor Club App" },
+                          {
+                            val: "Product Range",
+                            label: "Product Range Query",
+                          },
+                          {
+                            val: "Dealer Enrolment",
+                            label: "Dealer Enrolment",
+                          },
+                          {
+                            val: "Contractor Connect App",
+                            label: "Contractor Club App",
+                          },
                           { val: "Other", label: "Other Query" },
                         ].map((opt) => (
                           <button
