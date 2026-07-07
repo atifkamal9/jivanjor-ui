@@ -52,3 +52,12 @@ div {
   pointer-events: none;
   cursor: not-allowed;
 }
+
+.active-gradient-border {
+  border: 3px solid transparent;
+  background-image:
+    linear-gradient(white, white),
+    linear-gradient(to bottom right, #ff0009, #772571);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
