@@ -263,7 +263,7 @@ export default function Navbar() {
             </Link>
             {/* About Dropdown */}
             <div
-              className={`absolute top-full -left-1/2 mx-auto mt-2 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
+              className={`absolute top-full -left-1/2 mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
                 isAboutOpen
                   ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
                   : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
@@ -275,7 +275,7 @@ export default function Navbar() {
                     key={item.name}
                     href={item.link}
                     onClick={() => setIsAboutOpen(false)}
-                    className="text-lg hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                   >
                     {item.name}
                   </Link>
