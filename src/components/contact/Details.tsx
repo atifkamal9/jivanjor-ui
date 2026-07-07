@@ -1,4 +1,5 @@
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const contactSections = [
   {
@@ -7,17 +8,41 @@ const contactSections = [
       {
         label: "Phone",
         value: "1800-XXX-XXX",
-        icon: <Phone className="w-6 h-6 text-black shrink-0" strokeWidth={1} />,
+        icon: (
+          <Image
+            src="/images/Phone-call.svg"
+            className="aspect-square"
+            alt="Phone"
+            width={30}
+            height={30}
+          />
+        ),
       },
       {
         label: "Email",
         value: "support@jivanjor.com",
-        icon: <Mail className="w-6 h-6 text-black shrink-0" strokeWidth={1} />,
+        icon: (
+          <Image
+            src="/images/Mail-one.svg"
+            className="aspect-square"
+            alt="Email"
+            width={30}
+            height={30}
+          />
+        ),
       },
       {
         label: "Hours",
         value: "Mon-Sat, 9:00 AM – 6:00 PM",
-        icon: <Clock className="w-6 h-6 text-black shrink-0" strokeWidth={1} />,
+        icon: (
+          <Image
+            src="/images/Alarm-clock.svg"
+            className="aspect-square"
+            alt="Timing"
+            width={30}
+            height={30}
+          />
+        ),
       },
     ],
   },
@@ -28,13 +53,27 @@ const contactSections = [
         label: "Address",
         value: "1234, Address Street",
         icon: (
-          <MapPin className="w-6 h-6 text-black shrink-0" strokeWidth={1} />
+          <Image
+            src="/images/Pin.svg"
+            className="aspect-square"
+            alt="Address"
+            width={30}
+            height={30}
+          />
         ),
       },
       {
         label: "Hours",
         value: "Mon-Sat, 9:00 AM – 6:00 PM",
-        icon: <Clock className="w-6 h-6 text-black shrink-0" strokeWidth={1} />,
+        icon: (
+          <Image
+            src="/images/Alarm-clock.svg"
+            className="aspect-square"
+            alt="Timing"
+            width={30}
+            height={30}
+          />
+        ),
       },
     ],
   },
@@ -57,10 +96,10 @@ export default function Details() {
               {section.details.map((item, itemIdx) => (
                 <div
                   key={itemIdx}
-                  className="flex items-start text-lg lg:text-2xl"
+                  className="flex items-start text-lg lg:text-2xl w-full"
                 >
                   {/* Icon */}
-                  <div className="mr-4 mt-1 shrink-0 w-6.5 h-6.5 flex items-center justify-center">
+                  <div className="flex items-center w-6.5 h-6.5 pr-2 shrink-0">
                     {item.icon}
                   </div>
                   {/* Label & Value Container */}
