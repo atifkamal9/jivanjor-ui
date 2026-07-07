@@ -150,6 +150,8 @@ export function ReachForm() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [isSticky, setIsSticky] = useState(false);
+  const [desktopQueryOpen, setDesktopQueryOpen] = useState(false);
+  const [mobileQueryOpen, setMobileQueryOpen] = useState(false);
 
   const lastScrollY = useRef(0);
   const formRef = useRef<HTMLDivElement>(null);
@@ -177,6 +179,8 @@ export function ReachForm() {
       message: "",
       consent: false,
     });
+    setDesktopQueryOpen(false);
+    setMobileQueryOpen(false);
   };
 
   useEffect(() => {
@@ -305,28 +309,56 @@ export function ReachForm() {
               </div>
 
               {/* Type of Query */}
-              <div className="flex flex-col border-b mt-1 relative">
+              <div className={`flex flex-col mt-1 relative ${desktopQueryOpen ? "" : "border-b"}`}>
                 <label className="text-base lg:text-xl">Type of Query</label>
-                <div className="flex items-center justify-between">
-                  <select
-                    value={formData.queryType}
-                    onChange={(e) =>
-                      setFormData({ ...formData, queryType: e.target.value })
-                    }
-                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                <div
+                  onClick={() => setDesktopQueryOpen(!desktopQueryOpen)}
+                  className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                >
+                  <span
+                    className={`text-base pl-1.5 ${
+                      formData.queryType ? "text-foreground" : "text-foreground/60"
+                    }`}
                   >
-                    <option value="" disabled className="">
-                      Select option
-                    </option>
-                    <option value="Product Range">Product Range Query</option>
-                    <option value="Dealer Enrolment">Dealer Enrolment</option>
-                    <option value="Contractor Connect App">
-                      Contractor Club App
-                    </option>
-                    <option value="Other">Other Query</option>
-                  </select>
-                  <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                    {formData.queryType
+                      ? (formData.queryType === "Product Range"
+                          ? "Product Range Query"
+                          : formData.queryType === "Contractor Connect App"
+                          ? "Contractor Club App"
+                          : formData.queryType === "Other"
+                          ? "Other Query"
+                          : formData.queryType)
+                      : "Select option"}
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      desktopQueryOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </div>
+
+                {desktopQueryOpen && (
+                  <div className="flex flex-col w-full bg-surface py-2 z-20">
+                    {[
+                      { val: "Product Range", label: "Product Range Query" },
+                      { val: "Dealer Enrolment", label: "Dealer Enrolment" },
+                      { val: "Contractor Connect App", label: "Contractor Club App" },
+                      { val: "Other", label: "Other Query" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.val}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, queryType: opt.val });
+                          setDesktopQueryOpen(false);
+                        }}
+                        className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Message */}
@@ -486,30 +518,58 @@ export function ReachForm() {
                   </div>
                 </div>
 
-                {/* Type of Query */}
-                <div className="flex flex-col border-b mt-1 relative">
-                  <label className="text-base lg:text-xl">Type of Query</label>
-                  <div className="flex items-center justify-between">
-                    <select
-                      value={formData.queryType}
-                      onChange={(e) =>
-                        setFormData({ ...formData, queryType: e.target.value })
-                      }
-                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
-                    >
-                      <option value="" disabled className="">
-                        Select option
-                      </option>
-                      <option value="Product Range">Product Range Query</option>
-                      <option value="Dealer Enrolment">Dealer Enrolment</option>
-                      <option value="Contractor Connect App">
-                        Contractor Club App
-                      </option>
-                      <option value="Other">Other Query</option>
-                    </select>
-                    <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
-                  </div>
-                </div>
+                 {/* Type of Query */}
+                 <div className={`flex flex-col mt-1 relative ${mobileQueryOpen ? "" : "border-b"}`}>
+                   <label className="text-base lg:text-xl">Type of Query</label>
+                   <div
+                     onClick={() => setMobileQueryOpen(!mobileQueryOpen)}
+                     className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                   >
+                     <span
+                       className={`text-base pl-1.5 ${
+                         formData.queryType ? "text-foreground" : "text-foreground/60"
+                       }`}
+                     >
+                       {formData.queryType
+                         ? (formData.queryType === "Product Range"
+                             ? "Product Range Query"
+                             : formData.queryType === "Contractor Connect App"
+                             ? "Contractor Club App"
+                             : formData.queryType === "Other"
+                             ? "Other Query"
+                             : formData.queryType)
+                         : "Select option"}
+                     </span>
+                     <ChevronDown
+                       className={`w-5 h-5 transition-transform duration-200 ${
+                         mobileQueryOpen ? "rotate-180" : ""
+                       }`}
+                     />
+                   </div>
+
+                   {mobileQueryOpen && (
+                     <div className="flex flex-col w-full bg-surface py-2 z-20">
+                       {[
+                         { val: "Product Range", label: "Product Range Query" },
+                         { val: "Dealer Enrolment", label: "Dealer Enrolment" },
+                         { val: "Contractor Connect App", label: "Contractor Club App" },
+                         { val: "Other", label: "Other Query" },
+                       ].map((opt) => (
+                         <button
+                           key={opt.val}
+                           type="button"
+                           onClick={() => {
+                             setFormData({ ...formData, queryType: opt.val });
+                             setMobileQueryOpen(false);
+                           }}
+                           className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                         >
+                           {opt.label}
+                         </button>
+                       ))}
+                     </div>
+                   )}
+                 </div>
 
                 {/* Message */}
                 <div className="flex flex-col border-b mt-1">
