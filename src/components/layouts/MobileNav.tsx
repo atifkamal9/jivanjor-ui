@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
 import { aboutItems, knowledgeItems, partnerItems } from "@/lib/nav";
 
@@ -74,9 +75,36 @@ const applications = [
 ];
 
 export default function MobileNav({ onClose }: MobileNavProps) {
-  const [openSection, setOpenSection] = useState<string | null>("Products");
+  const pathname = usePathname();
+
+  // Determine initial open section based on current path
+  const getInitialSection = () => {
+    if (pathname?.includes("/about")) return "About";
+    if (pathname?.includes("/categories")) return "Products";
+    if (pathname?.includes("/resources")) return "KnowledgeHub";
+    if (pathname?.includes("/blog")) return "KnowledgeHub";
+    if (pathname?.includes("/partner")) return "Partner";
+    if (pathname?.includes("/contractor")) return "Partner";
+    return "Products";
+  };
+
+  // Determine initial open category based on current path
+  const getInitialCategory = () => {
+    for (const cat of productCategories) {
+      const match = cat.products.some((prod) => {
+        const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
+        return pathname === productLink;
+      });
+      if (match) return cat.name;
+    }
+    return "Woodworking Adhesive";
+  };
+
+  const [openSection, setOpenSection] = useState<string | null>(
+    getInitialSection(),
+  );
   const [openCategory, setOpenCategory] = useState<string | null>(
-    "Woodworking Adhesive",
+    getInitialCategory(),
   );
 
   useEffect(() => {
@@ -95,7 +123,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
   };
 
   return (
-    <section className="fixed inset-0 bg-white z-50 flex flex-col h-screen w-screen overflow-hidden font-google-sans animate-in fade-in duration-300">
+    <section className="fixed inset-0 bg-white z-50 flex flex-col h-dvh w-screen overflow-hidden font-google-sans animate-in fade-in duration-300">
       {/* Header bar inside Mobile Menu */}
       <div className="flex items-center justify-between px-6 py-4">
         <Link href="/" onClick={onClose} className="shrink-0">
@@ -129,16 +157,23 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "About" && (
             <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {aboutItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.link}
-                  onClick={onClose}
-                  className="block text-base hover:text-primary cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {aboutItems.map((item) => {
+                const isActive = pathname === item.link;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={onClose}
+                    className={`block text-base cursor-pointer ${
+                      isActive
+                        ? "text-[#FF0009] font-bold"
+                        : "hover:text-primary"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
@@ -165,10 +200,9 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                 const isCatOpen = openCategory === cat.name;
                 return (
                   <div key={cat.name} className="space-y-1">
-                    <Link
-                      href={`/categories/${cat.name}`}
+                    <button
                       onClick={() => toggleCategory(cat.name)}
-                      className="flex items-center justify-between w-full text-base font-medium cursor-pointer"
+                      className="flex items-center justify-between w-full text-base font-medium cursor-pointer text-left focus:outline-none"
                     >
                       <span className="">{cat.name}</span>
                       {isCatOpen ? (
@@ -184,20 +218,20 @@ export default function MobileNav({ onClose }: MobileNavProps) {
                           className="text-[#FF0009]"
                         />
                       )}
-                    </Link>
+                    </button>
 
                     {isCatOpen && (
                       <div className="space-y-1">
                         {cat.products.map((prod) => {
-                          const isWaterproof =
-                            prod === "Waterproof Grade Adhesive";
+                          const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
+                          const isActive = pathname === productLink;
                           return (
                             <Link
                               key={prod}
-                              href={`/categories#${prod.toLowerCase().replace(/\s+/g, "-")}`}
+                              href={productLink}
                               onClick={onClose}
                               className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${
-                                isWaterproof
+                                isActive
                                   ? "text-[#FF0009]"
                                   : "hover:text-primary"
                               }`}
@@ -270,16 +304,23 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "KnowledgeHub" && (
             <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {knowledgeItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.link}
-                  onClick={onClose}
-                  className="block text-base hover:text-primary cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {knowledgeItems.map((item) => {
+                const isActive = pathname === item.link;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={onClose}
+                    className={`block text-base cursor-pointer ${
+                      isActive
+                        ? "text-[#FF0009] font-bold"
+                        : "hover:text-primary"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
@@ -302,16 +343,23 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "Partner" && (
             <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {partnerItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.link}
-                  onClick={onClose}
-                  className="block text-base hover:text-primary cursor-pointer"
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {partnerItems.map((item) => {
+                const isActive = pathname === item.link;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={onClose}
+                    className={`block text-base cursor-pointer ${
+                      isActive
+                        ? "text-[#FF0009] font-bold"
+                        : "hover:text-primary"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
