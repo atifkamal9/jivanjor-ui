@@ -97,6 +97,11 @@ export function ReachForm() {
   const [isOpen, setIsOpen] = useState(true);
   const [isSticky, setIsSticky] = useState(false);
 
+  const [desktopInterestedOpen, setDesktopInterestedOpen] = useState(false);
+  const [desktopBusinessOpen, setDesktopBusinessOpen] = useState(false);
+  const [mobileInterestedOpen, setMobileInterestedOpen] = useState(false);
+  const [mobileBusinessOpen, setMobileBusinessOpen] = useState(false);
+
   const lastScrollY = useRef(0);
   const formRef = useRef<HTMLDivElement>(null);
   const initialTop = useRef<number | null>(null);
@@ -125,6 +130,10 @@ export function ReachForm() {
       message: "",
       consent: false,
     });
+    setDesktopInterestedOpen(false);
+    setDesktopBusinessOpen(false);
+    setMobileInterestedOpen(false);
+    setMobileBusinessOpen(false);
   };
 
   useEffect(() => {
@@ -267,54 +276,91 @@ export function ReachForm() {
               </div>
 
               {/* Interested In */}
-              <div className="flex flex-col border-b mt-1 relative">
+              <div
+                className={`flex flex-col mt-1 relative ${desktopInterestedOpen ? "" : "border-b"}`}
+              >
                 <label className="text-base">Interested In</label>
-                <div className="flex items-center justify-between">
-                  <select
-                    value={formData.interestedIn}
-                    onChange={(e) =>
-                      setFormData({ ...formData, interestedIn: e.target.value })
-                    }
-                    className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                <div
+                  onClick={() => {
+                    setDesktopInterestedOpen(!desktopInterestedOpen);
+                    setDesktopBusinessOpen(false);
+                  }}
+                  className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                >
+                  <span
+                    className={`text-base pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
                   >
-                    <option value="" disabled className="">
-                      Select
-                    </option>
-                    <option value="Dealership">Dealership</option>
-                  </select>
-                  <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                    {formData.interestedIn || "Select"}
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform duration-200 ${desktopInterestedOpen ? "rotate-180" : ""}`}
+                  />
                 </div>
+
+                {desktopInterestedOpen && (
+                  <div className="flex flex-col w-full bg-surface z-20 py-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          interestedIn: "Dealership",
+                        });
+                        setDesktopInterestedOpen(false);
+                      }}
+                      className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                    >
+                      Dealership
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Line of Business */}
-              <div className="flex flex-col border-b mt-1 relative">
+              <div
+                className={`flex flex-col mt-1 relative ${desktopBusinessOpen ? "" : "border-b"}`}
+              >
                 <label className="text-base">Line of Business</label>
-                <div className="flex items-center justify-between">
-                  <select
-                    value={formData.lineOfBusiness}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        lineOfBusiness: e.target.value,
-                      })
-                    }
-                    className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                <div
+                  onClick={() => {
+                    setDesktopBusinessOpen(!desktopBusinessOpen);
+                    setDesktopInterestedOpen(false);
+                  }}
+                  className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                >
+                  <span
+                    className={`text-base pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
                   >
-                    <option value="" disabled className="">
-                      Select
-                    </option>
-                    <option value="Plywood & Laminate">
-                      Plywood & Laminate
-                    </option>
-                    <option value="Hardware & tools">Hardware & tools</option>
-                    <option value="Paints">Paints</option>
-                    <option value="Cement & Steel">Cement & Steel</option>
-                    <option value="Marble & Stone Dealer">
-                      Marble & Stone Dealer
-                    </option>
-                  </select>
-                  <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                    {formData.lineOfBusiness || "Select"}
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform duration-200 ${desktopBusinessOpen ? "rotate-180" : ""}`}
+                  />
                 </div>
+
+                {desktopBusinessOpen && (
+                  <div className="flex flex-col w-full bg-surface py-2 z-20">
+                    {[
+                      "Plywood & Laminate",
+                      "Hardware & tools",
+                      "Paints",
+                      "Cement & Steel",
+                      "Marble & Stone Dealer",
+                    ].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, lineOfBusiness: opt });
+                          setDesktopBusinessOpen(false);
+                        }}
+                        className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Message */}
@@ -355,7 +401,7 @@ export function ReachForm() {
               <div className="mt-0.5 text-center md:text-start">
                 <button
                   type="submit"
-                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
                 >
                   Submit
                 </button>
@@ -494,59 +540,91 @@ export function ReachForm() {
                   </div>
 
                   {/* Interested In */}
-                  <div className="flex flex-col border-b mt-1 relative">
+                  <div
+                    className={`flex flex-col mt-1 relative ${mobileInterestedOpen ? "" : "border-b"}`}
+                  >
                     <label className="text-base">Interested In</label>
-                    <div className="flex items-center justify-between">
-                      <select
-                        value={formData.interestedIn}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            interestedIn: e.target.value,
-                          })
-                        }
-                        className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                    <div
+                      onClick={() => {
+                        setMobileInterestedOpen(!mobileInterestedOpen);
+                        setMobileBusinessOpen(false);
+                      }}
+                      className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                    >
+                      <span
+                        className={`text-base pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
                       >
-                        <option value="" disabled className="">
-                          Select
-                        </option>
-                        <option value="Dealership">Dealership</option>
-                      </select>
-                      <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                        {formData.interestedIn || "Select"}
+                      </span>
+                      <ChevronDown
+                        className={`w-5 h-5 transition-transform duration-200 ${mobileInterestedOpen ? "rotate-180" : ""}`}
+                      />
                     </div>
+
+                    {mobileInterestedOpen && (
+                      <div className="flex flex-col w-full bg-surface py-2 z-20">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              interestedIn: "Dealership",
+                            });
+                            setMobileInterestedOpen(false);
+                          }}
+                          className="w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                        >
+                          Dealership
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Line of Business */}
-                  <div className="flex flex-col border-b mt-1 relative">
+                  <div
+                    className={`flex flex-col mt-1 relative ${mobileBusinessOpen ? "" : "border-b"}`}
+                  >
                     <label className="text-base">Line of Business</label>
-                    <div className="flex items-center justify-between">
-                      <select
-                        value={formData.lineOfBusiness}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            lineOfBusiness: e.target.value,
-                          })
-                        }
-                        className="w-full bg-transparent border-0 p-0 text-foreground/60 text-base focus:ring-0 focus:outline-none appearance-none cursor-pointer pr-6"
+                    <div
+                      onClick={() => {
+                        setMobileBusinessOpen(!mobileBusinessOpen);
+                        setMobileInterestedOpen(false);
+                      }}
+                      className="flex items-center justify-between pb-1 cursor-pointer select-none"
+                    >
+                      <span
+                        className={`text-base pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
                       >
-                        <option value="" disabled className="">
-                          Select
-                        </option>
-                        <option value="Plywood & Laminate">
-                          Plywood & Laminate
-                        </option>
-                        <option value="Hardware & tools">
-                          Hardware & tools
-                        </option>
-                        <option value="Paints">Paints</option>
-                        <option value="Cement & Steel">Cement & Steel</option>
-                        <option value="Marble & Stone Dealer">
-                          Marble & Stone Dealer
-                        </option>
-                      </select>
-                      <ChevronDown className="w-5 h-5 absolute right-0 pointer-events-none" />
+                        {formData.lineOfBusiness || "Select"}
+                      </span>
+                      <ChevronDown
+                        className={`w-5 h-5 transition-transform duration-200 ${mobileBusinessOpen ? "rotate-180" : ""}`}
+                      />
                     </div>
+
+                    {mobileBusinessOpen && (
+                      <div className="flex flex-col w-full bg-surface py-2 z-20">
+                        {[
+                          "Plywood & Laminate",
+                          "Hardware & tools",
+                          "Paints",
+                          "Cement & Steel",
+                          "Marble & Stone Dealer",
+                        ].map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setFormData({ ...formData, lineOfBusiness: opt });
+                              setMobileBusinessOpen(false);
+                            }}
+                            className="w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Message */}
@@ -587,7 +665,7 @@ export function ReachForm() {
                   <div className="mt-0.5 text-center md:text-start">
                     <button
                       type="submit"
-                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
                     >
                       Submit
                     </button>
