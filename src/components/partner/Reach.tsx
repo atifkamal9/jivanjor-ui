@@ -120,6 +120,16 @@ export function ReachForm({
   const [desktopBusinessOpen, setDesktopBusinessOpen] = useState(false);
   const [mobileInterestedOpen, setMobileInterestedOpen] = useState(false);
   const [mobileBusinessOpen, setMobileBusinessOpen] = useState(false);
+  const [measuredHeight, setMeasuredHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (formRef.current && !isSticky) {
+      const height = formRef.current.offsetHeight;
+      if (height > 0) {
+        setMeasuredHeight(height);
+      }
+    }
+  }, [isSticky, isOpen]);
 
   const lastScrollY = useRef(0);
   const formRef = useRef<HTMLDivElement>(null);
@@ -431,7 +441,7 @@ export function ReachForm({
       </div>
       <div
         className="xl:hidden w-full transition-all duration-300"
-        style={{ height: isSticky ? "320px" : "auto" }}
+        style={{ height: isSticky ? `${measuredHeight}px` : "auto" }}
       >
         <div
           ref={formRef}
@@ -439,7 +449,10 @@ export function ReachForm({
         >
           {/* Card Header */}
           <div
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              window.scrollTo(0, 0);
+            }}
             className={`
             cursor-pointer flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out
             ${
