@@ -52,7 +52,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden font-google-sans">
+    <footer className="relative overflow-hidden font-google-sans bg-white">
       <section className="hidden md:block">
         {/* watermark */}
         <div className="absolute bottom-0 right-0 opacity-50 pointer-events-none">
@@ -64,7 +64,7 @@ export default function Footer() {
             className="h-95 w-210"
           />
         </div>
-        <div className="relative z-10 max-w-360 mx-auto px-6 py-10">
+        <div className="relative z-10 max-w-360 mx-auto px-6 py-10 lg:py-12.5">
           <div className="flex flex-wrap justify-between gap-12">
             {/* Left section */}
             <div className="shrink-0">
