@@ -339,7 +339,7 @@ export default function List() {
                 <p className="text-base lg:text-xl text-[#222] leading-normal line-clamp-2">
                   {blog.desc}
                 </p>
-                <button className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
+                <button className="active-gradient-border text-[#ff0009] hover:bg-[#ff0009] transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
                   Read Post
                 </button>
               </div>

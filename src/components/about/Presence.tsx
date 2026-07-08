@@ -113,7 +113,7 @@ export default function Presence() {
           </Link>
           <Link
             href="/partner"
-            className="hidden md:inline-flex items-center justify-center font-medium text-sm sm:text-base rounded-full min-w-44 px-6 py-2 border-2 border-[#FF0009] text-[#FF0009] hover:bg-[#FF0009]/5 hover:scale-105 transition-all duration-200"
+            className="hidden md:inline-flex items-center justify-center font-medium text-sm sm:text-base rounded-full min-w-44 px-6 py-2 active-gradient-border-surface text-[#FF0009] hover:bg-[#FF0009]/5 hover:scale-105 transition-all duration-200"
           >
             Partner With Us
           </Link>

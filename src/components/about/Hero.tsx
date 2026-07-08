@@ -6,11 +6,13 @@ import { Home, ChevronRight } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative w-full max-w-360 mx-auto px-5 lg:px-8 pt-9 pb-4 overflow-visible">
+    <section className="relative w-full max-w-360 mx-auto px-5 lg:px-8 pt-2 sm:pt-9 pb-0.5 overflow-visible">
       {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 mb-6 text-sm md:text-base font-google-sans">
+      <div className="flex items-center gap-1.5 md:gap-2 mb-6 text-sm md:text-base">
         <Link href="/" className="hover:text-primary transition-colors">
-          <Home className="w-5 h-5" />
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
         </Link>
         <ChevronRight className="w-4 h-4" />
         <span className="font-medium text-sm md:text-lg">About Us</span>

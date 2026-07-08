@@ -93,7 +93,7 @@ export default function Responsibility() {
 
         {/* Badges Slider (Mobile & Desktop) */}
         <div
-          className="w-full mb-8 py-4 px-2 overflow-hidden"
+          className="w-full mb-8 pt-1 sm:p-2 overflow-hidden"
           style={{
             maskImage:
               "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",

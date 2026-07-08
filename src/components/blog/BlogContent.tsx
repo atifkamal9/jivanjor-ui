@@ -68,8 +68,8 @@ export default function BlogContent() {
   return (
     <div className="w-full">
       {/* Hero Image Section */}
-      <section className="max-w-360 mx-auto px-5 mb-10 md:mb-16">
-        <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-106.25 rounded-[20px] overflow-hidden bg-surface shadow-md">
+      <section className="max-w-360 mx-auto px-5 mb-10">
+        <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
             src="/images/blog/Rectangle 125.png"
             alt="Mastering Laminate Bonding"
@@ -148,7 +148,7 @@ export default function BlogContent() {
         </div>
         <div className="flex flex-col space-y-6 md:space-y-10">
           {/* TLDR Summary */}
-          <div className="hidden md:block bg-surface p-5 md:p-10 border-l-[5px] border-[#FF0009]">
+          <div className="hidden md:block bg-surface p-5 md:px-10 md:py-6 border-l-[5px] border-[#FF0009]">
             <h4 className="font-google-sans font-bold text-xl md:text-[22px] text-[#222] mb-3">
               TLDR :
             </h4>
@@ -383,7 +383,7 @@ export default function BlogContent() {
                   <p className="text-base leading-normal text-[#222] line-clamp-2">
                     {article.desc}
                   </p>
-                  <button className="border-2 border-[#ff0009] text-[#ff0009] hover:bg-[#ff0009] hover:text-white transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
+                  <button className="active-gradient-border text-[#ff0009] hover:bg-[#ff0009] transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
                     Read Post
                   </button>
                 </div>
