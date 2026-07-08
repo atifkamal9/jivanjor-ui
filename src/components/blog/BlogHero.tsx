@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 
 export default function BlogHero() {
   return (
-    <section className="flex flex-col justify-between max-w-360 mx-auto my-4 sm:my-6 px-5 gap-4 md:gap-8 z-50">
+    <section className="flex flex-col justify-between max-w-360 mx-auto my-4 px-5 gap-4 z-50">
       <div className="flex items-center gap-1.5 text-xs sm:text-sm md:text-lg font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
@@ -21,7 +21,7 @@ export default function BlogHero() {
         <ChevronRight size={16} />
         <span className="">Preventing Laminate Bubbling</span>
       </div>
-      <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-5xl max-w-80 md:max-w-292.5">
+      <h2 className="font-amethysta text-2xl sm:text-3xl max-w-80 md:max-w-188">
         Mastering Laminate Bonding: Preventing Bubbles in High-Humidity
         Environments
       </h2>
