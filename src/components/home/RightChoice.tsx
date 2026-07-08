@@ -87,7 +87,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
       </div>
-      <div className="flex flex-col items-stretch justify-center xl:justify-between lg:flex-row self-stretch relative mx-auto max-w-360 px-2.5 xl:px-0 py-25">
+      <div className="flex flex-col items-stretch justify-center xl:justify-between lg:flex-row self-stretch relative mx-auto max-w-360 px-2.5 py-25">
         <div className="max-w-xl text-center lg:text-start pl-0 lg:pl-6 xl:pl-0 py-12 lg:p-0 mx-auto">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl text-white">
             {title}
