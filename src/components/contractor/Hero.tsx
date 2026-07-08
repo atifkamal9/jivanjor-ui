@@ -2,7 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  hideText?: boolean;
+}
+
+export default function Hero({ hideText = false }: HeroProps) {
   return (
     <section className="relative w-full">
       <div className="hidden md:block relative h-67 bg-black/60">
@@ -41,7 +45,9 @@ export default function Hero() {
       </div>
 
       {/* Mobile Content */}
-      <div className="flex flex-col justify-center relative mx-auto w-full h-full p-5 md:hidden">
+      <div
+        className={`flex-col justify-center relative mx-auto w-full h-full p-5 md:hidden transition-opacity duration-300 ${hideText ? "hidden pointer-events-none" : "flex"}`}
+      >
         {/* Breadcrumbs */}
         <div className="flex items-center gap-1.5 text-xs md:text-sm font-medium mb-6">
           <Link
