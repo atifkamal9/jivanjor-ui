@@ -318,12 +318,9 @@ export default function ProductCategories() {
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer ${
+                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
                   isActive ? "active-gradient-border" : "bg-white"
                 }`}
-                style={{
-                  boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
-                }}
               >
                 <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                   <Image
@@ -331,7 +328,7 @@ export default function ProductCategories() {
                     alt={cat.name}
                     width={40}
                     height={40}
-                    className="object-contain max-h-full max-w-full drop-shadow-sm"
+                    className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
                 <span className="font-medium text-sm leading-normal whitespace-nowrap">
@@ -441,7 +438,7 @@ export default function ProductCategories() {
                   {/* Card Main Body */}
                   <Link
                     href={`/products`}
-                    className={`${card.color} rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform hover:scale-[1.01] duration-300 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
+                    className={`${card.color} group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
@@ -451,7 +448,7 @@ export default function ProductCategories() {
                           src={card.image}
                           alt={card.title}
                           fill
-                          className="object-contain z-10"
+                          className="object-contain z-10 group-hover:scale-95 transition-all duration-300"
                           priority
                         />
                       </div>
