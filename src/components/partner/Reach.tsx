@@ -80,7 +80,19 @@ export function ReachLeft() {
   );
 }
 
-export function ReachForm() {
+interface ReachFormProps {
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
+  isSticky?: boolean;
+  setIsSticky?: (isSticky: boolean) => void;
+}
+
+export function ReachForm({
+  isOpen: propIsOpen,
+  setIsOpen: propSetIsOpen,
+  isSticky: propIsSticky,
+  setIsSticky: propSetIsSticky,
+}: ReachFormProps = {}) {
   const [formData, setFormData] = useState({
     fullName: "",
     firmName: "",
@@ -94,8 +106,15 @@ export function ReachForm() {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
-  const [isSticky, setIsSticky] = useState(false);
+  const [localIsOpen, setLocalIsOpen] = useState(true);
+  const [localIsSticky, setLocalIsSticky] = useState(false);
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : localIsOpen;
+  const setIsOpen =
+    propSetIsOpen !== undefined ? propSetIsOpen : setLocalIsOpen;
+  const isSticky = propIsSticky !== undefined ? propIsSticky : localIsSticky;
+  const setIsSticky =
+    propSetIsSticky !== undefined ? propSetIsSticky : setLocalIsSticky;
 
   const [desktopInterestedOpen, setDesktopInterestedOpen] = useState(false);
   const [desktopBusinessOpen, setDesktopBusinessOpen] = useState(false);

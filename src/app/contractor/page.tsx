@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Hero,
   ReachLeft,
@@ -8,11 +11,19 @@ import {
 import { RightChoice } from "@/components/categories";
 
 export default function ContractorPage() {
+  const [isOpen, setIsOpen] = useState(true);
+  const [isSticky, setIsSticky] = useState(false);
+
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <Hero />
+      <Hero hideText={isSticky || !isOpen} />
       <div className="xl:hidden md:mt-10">
-        <ReachForm />
+        <ReachForm
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          isSticky={isSticky}
+          setIsSticky={setIsSticky}
+        />
       </div>
       {/* Main Grid Wrapper */}
       <div className="max-w-360 mx-auto w-full px-5 lg:px-8 py-10 lg:py-13">
