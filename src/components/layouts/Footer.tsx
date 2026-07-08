@@ -9,37 +9,49 @@ const footerSections = [
     id: "products",
     title: "Products",
     links: [
-      "Super Premium Adhesive",
-      "Speciality Adhesive",
-      "Regular Adhesive",
-      "Water Proof Grade Adhesive",
-      "Wood Ancillaries",
-      "ECO",
-      "Wood Preservative",
+      {
+        text: "Super Premium Adhesive",
+        href: "/products?category=super-premium",
+      },
+      { text: "Speciality Adhesive", href: "/products?category=speciality" },
+      { text: "Regular Adhesive", href: "/products?category=regular" },
+      {
+        text: "Water Proof Grade Adhesive",
+        href: "/products?category=waterproof",
+      },
+      { text: "Wood Ancillaries", href: "/products?category=wood-ancillaries" },
+      { text: "ECO", href: "/products?category=eco" },
+      {
+        text: "Wood Preservative",
+        href: "/products?category=wood-preservative",
+      },
     ],
   },
   {
     id: "about",
     title: "About Jivanjor",
     links: [
-      "About Jivanjor",
-      "Research & Innovation",
-      "Quality & Performance Promise",
-      "TVCs",
-      "Market Presence",
+      { text: "About Jivanjor", href: "/about" },
+      { text: "Research & Innovation", href: "/about#research-innovation" },
+      {
+        text: "Quality & Performance Promise",
+        href: "/about#quality-performance",
+      },
+      { text: "TVCs", href: "/about#tvcs-section" },
+      { text: "Market Presence", href: "/about#market-presence" },
     ],
   },
   {
     id: "support",
     title: "Support & Compliance",
     links: [
-      "Technical Resources",
-      "Become a Dealer",
-      "Contractor Connect",
-      "Privacy Policy",
-      "Terms of Use",
-      "Sitemap",
-      "Contact Us",
+      { text: "Technical Resources", href: "/resources" },
+      { text: "Become a Dealer", href: "/partner" },
+      { text: "Contractor Connect", href: "/contractor" },
+      { text: "Privacy Policy", href: "/privacy" },
+      { text: "Terms of Use", href: "/privacy#terms" },
+      { text: "Sitemap", href: "/" },
+      { text: "Contact Us", href: "/contact" },
     ],
   },
 ];
@@ -117,12 +129,12 @@ export default function Footer() {
 
                   <ul className="space-y-1">
                     {section.links.map((link) => (
-                      <li key={link}>
+                      <li key={link.text}>
                         <Link
-                          href="/"
+                          href={link.href}
                           className="text-lg text-foreground hover:text-primary transition"
                         >
-                          {link}
+                          {link.text}
                         </Link>
                       </li>
                     ))}
@@ -177,8 +189,13 @@ export default function Footer() {
                 >
                   <ul className="space-y-1">
                     {fs.links.map((item) => (
-                      <li key={item} className="text-lg">
-                        {item}
+                      <li key={item.text} className="text-lg">
+                        <Link
+                          href={item.href}
+                          className="text-foreground hover:text-primary transition"
+                        >
+                          {item.text}
+                        </Link>
                       </li>
                     ))}
                   </ul>
