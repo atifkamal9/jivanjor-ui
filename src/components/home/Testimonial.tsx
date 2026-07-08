@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { Heading } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -133,9 +134,7 @@ export default function Testimonial({ data }: TestimonialProps) {
             height={40}
             alt="badge"
           />
-          <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
-            {title}
-          </h2>
+          <Heading>{title}</Heading>
           <p className="text-lg md:text-2xl text-[#222] my-4 px-6 md:px-0">
             {subtitle}
           </p>
