@@ -1,9 +1,9 @@
-import { RightChoice } from "@/components/categories";
+import Image from "next/image";
 import { ContactForm, Details, Hero } from "@/components/contact";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
+    <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip lg:mb-33">
       <Hero />
       <div className="lg:hidden md:mt-10">
         <ContactForm />
@@ -22,7 +22,15 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-      <RightChoice />
+      {/* Watermark */}
+      <div className="hidden lg:block absolute translate-x-[-15%] -bottom-50 left-0 pointer-events-none min-h-120 min-w-3xl max-w-4xl">
+        <Image
+          fill
+          alt="watermark"
+          src="/images/watermark-contact.svg"
+          className="object-contain h-full w-full"
+        />
+      </div>
     </main>
   );
 }
