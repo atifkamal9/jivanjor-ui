@@ -157,7 +157,7 @@ export default function ProductInfo() {
   return (
     <section className="max-w-360 mx-auto p-5 lg:px-8">
       {/* Desktop Tab bar header pill container - Sticky with Scroll Spy */}
-      <div className="hidden lg:flex sticky top-22 z-40 py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full">
+      <div className="hidden lg:flex sticky top-18 z-40 py-2 -mx-6 px-6 md:mx-0 md:px-0 items-center justify-center w-full">
         <style
           dangerouslySetInnerHTML={{
             __html: `
