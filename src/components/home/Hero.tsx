@@ -174,7 +174,7 @@ export default function Hero({ data }: HeroProps) {
                   <video
                     ref={videoRef}
                     src="/videos/hero-background.mp4"
-                    className="w-full h-full object-center object-cover"
+                    className="w-full h-full object-center object-fill"
                     autoPlay
                     playsInline
                     muted={isMuted}
