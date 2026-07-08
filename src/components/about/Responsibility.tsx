@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 export default function Responsibility() {
@@ -30,6 +31,16 @@ export default function Responsibility() {
       src: "/images/about/badge-iso-sprite.png",
       isCustom: true,
       crop: "right",
+    },
+    {
+      title: "EcoVadis Awards 2023 (1)",
+      src: "/images/about/badge-ecovadis.png",
+      isCustom: false,
+    },
+    {
+      title: "Chairman's Annual Award 24-25 (1)",
+      src: "/images/about/badge-chairman.png",
+      isCustom: false,
     },
   ];
 
@@ -80,51 +91,51 @@ export default function Responsibility() {
           responsible manufacturing.
         </p>
 
-        {/* 5 Badges Row */}
-        <div className="hidden sm:flex w-full flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16 mb-8 p-4 md:py-8">
-          {badges.map((badge, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center text-center max-w-45"
-            >
-              {/* Badge Image */}
-              <div className="relative w-22.5 h-22.5 mb-4 flex items-center justify-center">
-                {!badge.isCustom ? (
-                  <Image
-                    src={badge.src}
-                    alt={badge.title}
-                    width={90}
-                    height={90}
-                    className="object-contain hover:scale-110 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="relative w-22 h-22 overflow-hidden rounded-md border border-black/5 bg-white hover:scale-110 transition-transform duration-300">
-                    <img
-                      src={badge.src}
-                      alt={badge.title}
-                      className="absolute h-full max-w-none top-0 w-[200%] object-cover"
-                      style={{
-                        left: badge.crop === "left" ? "0%" : "-100%",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-              {/* Badge Label */}
-              <p className="text-sm md:text-base font-medium text-[#333]">
-                {badge.title}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile 5 Badges Slider */}
-        <div className="sm:hidden w-full mb-8 py-4 px-2">
+        {/* Badges Slider (Mobile & Desktop) */}
+        <div
+          className="w-full mb-8 py-4 px-2 overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+          }}
+        >
+          <style>{`
+            .responsibility-swiper .swiper-wrapper {
+              transition-timing-function: linear !important;
+            }
+          `}</style>
           <Swiper
-            spaceBetween={16}
-            slidesPerView={2.5}
-            grabCursor={true}
-            className="w-full"
+            modules={[Autoplay]}
+            loop={true}
+            autoplay={{
+              delay: 0,
+              disableOnInteraction: false,
+            }}
+            speed={4000}
+            spaceBetween={24}
+            slidesPerView={2}
+            breakpoints={{
+              480: {
+                slidesPerView: 2.5,
+                spaceBetween: 24,
+              },
+              640: {
+                slidesPerView: 3.5,
+                spaceBetween: 32,
+              },
+              768: {
+                slidesPerView: 4.5,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 6,
+                spaceBetween: 48,
+              },
+            }}
+            allowTouchMove={false}
+            className="w-full responsibility-swiper"
           >
             {badges.map((badge, idx) => (
               <SwiperSlide key={idx} className="flex justify-center">
@@ -153,7 +164,7 @@ export default function Responsibility() {
                     )}
                   </div>
                   {/* Badge Label */}
-                  <p className="text-sm font-medium text-[#333]">
+                  <p className="text-sm md:text-base font-medium text-[#333]">
                     {badge.title}
                   </p>
                 </div>
