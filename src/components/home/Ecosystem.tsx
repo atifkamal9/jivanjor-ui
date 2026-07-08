@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Gallery from "./Gallery";
+import { Heading } from "@/components/ui";
 
 interface EcosystemProps {
   data?: {
@@ -33,10 +34,10 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
     <section className="relative bg-surface pt-10 sm:pt-20 leading-normal">
       <div className="mx-auto max-w-360 justify-center px-5">
         <div className="mx-auto max-w-4xl space-y-6 text-center w-full">
-          <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl">
-            {title}
-          </h2>
-          <p className="text-lg md:text-2xl font-google-sans min-w-xs">{subtitle}</p>
+          <Heading>{title}</Heading>
+          <p className="text-lg md:text-2xl font-google-sans min-w-xs">
+            {subtitle}
+          </p>
         </div>
         <Gallery items={data?.items} />
       </div>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Heading } from "@/components/ui";
 
 interface ProfessionalProps {
   data?: {
@@ -42,9 +43,7 @@ export default function Professional({ data }: ProfessionalProps) {
 
   return (
     <section className="mx-auto max-w-360 text-center py-13 px-6">
-      <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl mb-0 md:mb-7.5">
-        {title}
-      </h2>
+      <Heading className="mb-0 md:mb-7.5">{title}</Heading>
       <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-transparent lg:bg-surface gap-12 p-8 lg:pt-12 pb-16! lg:px-20 rounded-2xl">
         {features.map((f) => (
           <div

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Heading } from "@/components/ui";
 
 interface KnowledgeHubProps {
   data?: {
@@ -66,9 +67,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
   return (
     <section className="relative pt-12 overflow-hidden">
       <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
-        <h2 className="font-amethysta font-normal text-center text-4xl md:text-5xl lg:text-6xl">
-          {title}
-        </h2>
+        <Heading className="text-center">{title}</Heading>
         {data?.subtitle && (
           <p className="mt-4 text-center text-xl text-foreground/80 font-google-sans max-w-3xl mx-auto">
             {data.subtitle}

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ProductCarousel from "./ProductCarousel";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
+import { Heading } from "@/components/ui";
 
 interface ProductRangeProps {
   data?: {
@@ -124,9 +125,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
       <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-9 mb-16 md:my-16 max-w-6xl px-2 lg:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full md:max-w-5xl mx-auto my-6">
-          <h2 className="font-amethysta font-normal text-4xl lg:text-6xl">
-            {title}
-          </h2>
+          <Heading className="max-w-full md:max-w-3xl">{title}</Heading>
           {subtitle && (
             <p className="mt-4 text-xl text-foreground/85 max-w-3xl mx-auto font-google-sans">
               {subtitle}
