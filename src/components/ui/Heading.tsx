@@ -12,7 +12,7 @@ export default function Heading({
 }: HeadingProps) {
   return (
     <h1
-      className={`font-amethysta font-normal leading-normal text-[34px] xl:text-[56px] ${className}`}
+      className={`font-amethysta font-normal leading-normal text-[34px] xl:text-[52px] ${className}`}
       {...props}
     >
       {children}
