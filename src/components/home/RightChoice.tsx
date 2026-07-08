@@ -61,14 +61,14 @@ export default function RightChoice({ data }: RightChoiceProps) {
   const types =
     items && items.length > 0
       ? items.map((item, idx) => ({
-        icon: mapAdhesiveIcon(idx),
-        title: item.name || item.title || "",
-        link: item.link || "#",
-      }))
+          icon: mapAdhesiveIcon(idx),
+          title: item.name || item.title || "",
+          link: item.link || "#",
+        }))
       : defaultAdhesiveTypes;
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden min-h-217 lg:min-h-150">
       <div className="absolute inset-0 bg-linear-to-r from-[#772571] to-[#FF0009] h-21 lg:hidden" />
       <div className="absolute inset-0 top-21 lg:top-0">
         <Image
@@ -87,8 +87,8 @@ export default function RightChoice({ data }: RightChoiceProps) {
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
       </div>
-      <div className="flex flex-col items-center justify-between lg:flex-row relative mx-auto min-h-screen max-w-360 px-6 py-25 lg:px-12">
-        <div className="max-w-xl text-center md:text-start py-12 lg:pb-80">
+      <div className="flex flex-col items-stretch justify-center xl:justify-between lg:flex-row self-stretch relative mx-auto max-w-360 px-2.5 xl:px-0 py-25">
+        <div className="max-w-xl text-center lg:text-start pl-0 lg:pl-6 xl:pl-0 py-12 lg:p-0 mx-auto">
           <h2 className="font-amethysta text-4xl md:text-5xl lg:text-6xl text-white">
             {title}
           </h2>
@@ -98,35 +98,37 @@ export default function RightChoice({ data }: RightChoiceProps) {
             </p>
           )}
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center justify-center">
+        <div className="flex flex-wrap gap-4 justify-items-center justify-center max-w-full xl:max-w-153">
           {types.map((type) => (
-            <a
-              href={type.link}
+            <button
               key={type.title}
-              className="flex flex-col items-center justify-between text-center group cursor-pointer bg-white hover:bg-linear-to-br from-[#FF0009] to-[#772571] w-43 md:w-48 h-42 md:h-51 p-4 md:p-5 rounded-2xl"
+              className="relative flex flex-col items-center justify-between text-center group cursor-pointer bg-white w-43 md:w-48 h-42 md:h-51 p-4 md:p-5 rounded-2xl overflow-hidden transition-all duration-300 ease-out transform hover:-translate-y-1"
             >
-              <div className="flex flex-col items-center space-y-2 max-w-36">
+              {/* Graceful Hover Gradient Overlay */}
+              <div className="absolute inset-0 bg-linear-to-br from-[#FF0009] to-[#772571] opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out z-0" />
+
+              <div className="flex flex-col items-center space-y-2 max-w-36 relative z-10">
                 <Image
                   src={type.icon}
                   alt={type.title}
-                  className="aspect-square bg-transparent! invert group-hover:invert-0!"
+                  className="aspect-square bg-transparent! invert group-hover:invert-0! transition-all duration-300"
                   height={48}
                   width={48}
                 />
-                <p className="font-medium text-base lg:text-lg group-hover:text-white">
+                <p className="font-medium text-base lg:text-lg group-hover:text-white transition-colors duration-300">
                   {type.title}
                 </p>
               </div>
-              <div className="">
+              <div className="relative z-10 w-full h-8 flex items-center justify-center">
                 <PlusCircle
                   size={24}
-                  className="text-primary group-hover:hidden"
+                  className="text-primary absolute transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-50 group-hover:rotate-90"
                 />
-                <button className="cursor-pointer font-medium text-center text-xs rounded-full px-4 py-1 border-2 border-white text-white hidden group-hover:block">
+                <button className="absolute cursor-pointer font-medium text-center text-xs rounded-full px-4 py-1.5 border-2 border-white text-white opacity-0 scale-75 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-all duration-300 ease-out">
                   Learn More
                 </button>
               </div>
-            </a>
+            </button>
           ))}
         </div>
       </div>
