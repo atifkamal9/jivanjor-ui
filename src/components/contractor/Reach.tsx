@@ -436,7 +436,7 @@ export function ReachForm({
       </div>
       <div
         className="xl:hidden w-full transition-all duration-300"
-        style={{ height: isSticky ? "60px" : "auto" }}
+        style={{ height: isSticky ? "256px" : "auto" }}
       >
         <div
           ref={formRef}
