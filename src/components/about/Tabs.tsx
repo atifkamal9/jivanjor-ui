@@ -106,7 +106,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
 
   return (
     <>
-      <div className="sticky top-20 md:top-28 z-40 w-full transition-all duration-300">
+      <div className="sticky top-20 z-40 w-full transition-all duration-300">
         <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="hidden lg:flex justify-start lg:justify-center overflow-x-auto no-scrollbar scroll-smooth">
             <div
