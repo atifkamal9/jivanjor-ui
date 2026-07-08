@@ -65,7 +65,7 @@ div {
 .active-gradient-border-surface {
   border: 2px solid transparent;
   background-image:
-    linear-gradient(#f5f5f5, #f5f5f5),
+    linear-gradient(white, white),
     linear-gradient(to bottom right, #ff0009, #772571);
   background-origin: border-box;
   background-clip: padding-box, border-box;
