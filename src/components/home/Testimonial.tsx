@@ -1,13 +1,22 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Heading } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/free-mode";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
+
+function getYouTubeId(url: string) {
+  if (!url) return null;
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+}
 
 interface TestimonialProps {
   data?: {
@@ -25,7 +34,7 @@ const defaultTestimonials = [
     role: "Contractor Carpenter",
     videoUrl: "#",
     image: "/images/2.jpeg",
-    showPlayButton: false,
+    showPlayButton: true,
   },
   {
     type: "video",
@@ -116,6 +125,7 @@ const defaultTestimonials = [
 ];
 
 export default function Testimonial({ data }: TestimonialProps) {
+  const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const title = data?.title || "Trusted by People Who Know the Work";
   const subtitle =
     data?.subtitle ||
@@ -180,7 +190,10 @@ export default function Testimonial({ data }: TestimonialProps) {
               <SwiperSlide key={idx} className="overflow-visible!">
                 {item.type === "video" ? (
                   // Video Card
-                  <div className="relative overflow-hidden w-full max-w-78 h-85 mx-auto rounded-[20px] flex flex-col group">
+                  <div
+                    onClick={() => setActiveVideoUrl(item.videoUrl || "#")}
+                    className="relative overflow-hidden w-full max-w-78 h-85 mx-auto rounded-[20px] flex flex-col group cursor-pointer"
+                  >
                     <Image
                       src={item.image || ""}
                       alt={item.name}
@@ -242,6 +255,53 @@ export default function Testimonial({ data }: TestimonialProps) {
           </button>
         </div>
       </div>
+
+      {/* Modal View */}
+      {activeVideoUrl !== null && (
+        <div
+          onClick={() => setActiveVideoUrl(null)}
+          className="fixed inset-0 z-999 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
+        >
+          {/* Modal Container */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setActiveVideoUrl(null)}
+              className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 hover:text-[#ed1c24] transition-all cursor-pointer shadow-md"
+              title="Close Video"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Video Player */}
+            <div className="w-full h-full flex items-center justify-center">
+              {getYouTubeId(activeVideoUrl) ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${getYouTubeId(activeVideoUrl)}?autoplay=1`}
+                  className="w-full h-full border-0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  src={
+                    activeVideoUrl && activeVideoUrl !== "#"
+                      ? activeVideoUrl
+                      : "/videos/testimonial-placeholder.mp4"
+                  }
+                  className="w-full h-full object-cover bg-black"
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
