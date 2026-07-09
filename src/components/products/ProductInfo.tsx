@@ -223,7 +223,7 @@ export default function ProductInfo() {
       </div>
 
       {/* Main content body container */}
-      <div id="tech-specs" className="space-y-12">
+      <div id="tech-specs" className="space-y-12 mt-2">
         {/* ==================== Technical Specifications ==================== */}
         <div className="lg:bg-surface rounded-3xl transition-all duration-300 scroll-mt-40">
           <div>
