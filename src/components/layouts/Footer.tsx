@@ -11,19 +11,22 @@ const footerSections = [
     links: [
       {
         text: "Super Premium Adhesive",
-        href: "/products?category=super-premium",
+        href: "/categories/super-premium",
       },
-      { text: "Speciality Adhesive", href: "/products?category=speciality" },
-      { text: "Regular Adhesive", href: "/products?category=regular" },
+      { text: "Speciality Adhesive", href: "/categories/speciality" },
+      { text: "Regular Adhesive", href: "/categories/regular" },
       {
         text: "Water Proof Grade Adhesive",
-        href: "/products?category=waterproof",
+        href: "/categories/waterproof",
       },
-      { text: "Wood Ancillaries", href: "/products?category=wood-ancillaries" },
-      { text: "ECO", href: "/products?category=eco" },
+      {
+        text: "Wood Ancillaries",
+        href: "/categories/wood-ancillaries",
+      },
+      { text: "ECO", href: "/categories/eco" },
       {
         text: "Wood Preservative",
-        href: "/products?category=wood-preservative",
+        href: "/categories/wood-preservative",
       },
     ],
   },

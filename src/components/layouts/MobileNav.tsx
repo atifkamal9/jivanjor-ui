@@ -128,10 +128,11 @@ export default function MobileNav({ onClose }: MobileNavProps) {
       <div className="flex items-center justify-between px-6 py-4">
         <Link href="/" onClick={onClose} className="shrink-0">
           <Image
+            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto"
             src="/images/logo.png"
             alt="Jivanjor Logo"
-            width={120}
-            height={72}
+            width={112}
+            height={56}
             priority
           />
         </Link>
