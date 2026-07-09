@@ -173,7 +173,7 @@ export default function Navbar() {
 
         {/* Backdrop Overlay with Blur */}
         <div
-          className={`fixed top-22 inset-x-0 bottom-0 bg-black/10 backdrop-blur-sm transition-all duration-300 z-40 ${
+          className={`fixed top-22 inset-x-0 bottom-0 bg-black/30 backdrop-blur-md transition-all duration-300 z-100 ${
             activeMenu !== null
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
@@ -290,8 +290,8 @@ export default function Navbar() {
               </div>
 
               {/* Right Column: Image */}
-              <div className="flex flex-col py-6 min-w-65 pr-8 justify-center">
-                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden shadow-md">
+              <div className="flex flex-col py-6 min-w-65 pr-8">
+                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
                   <Image
                     src={
                       activeMenu === "about"
@@ -299,8 +299,8 @@ export default function Navbar() {
                         : activeMenu === "applications"
                           ? "/images/mega-menu.png"
                           : activeMenu === "knowledge"
-                            ? "/images/video-thumbnail.png"
-                            : "/images/contractor/Rectangle 2.png"
+                            ? "/images/blog/Rectangle 142.png"
+                            : "/images/contractor/contractor-app-promo.png"
                     }
                     alt={activeMenu}
                     fill
