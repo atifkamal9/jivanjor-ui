@@ -134,7 +134,7 @@ export default function Testimonial({ data }: TestimonialProps) {
   const ctaLink = data?.ctaLink || "#";
 
   return (
-    <section className="relative overflow-hidden my-13 leading-normal">
+    <section className="relative overflow-hidden mt-8 md:mt-12 leading-normal">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto max-w-360 w-full space-y-6">
         <div className="flex flex-col items-center justify-center text-center relative max-w-xs sm:max-w-180">
           <Image

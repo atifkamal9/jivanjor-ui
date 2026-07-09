@@ -65,7 +65,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
       : defaultCards;
 
   return (
-    <section className="relative pt-12 overflow-hidden">
+    <section className="relative py-8 md:py-12 overflow-hidden">
       <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
         <Heading className="text-center">{title}</Heading>
         {data?.subtitle && (
@@ -73,7 +73,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
             {data.subtitle}
           </p>
         )}
-        <div className="flex flex-col gap-6 py-12">
+        <div className="flex flex-col gap-6 py-6">
           {cards.map((c, idx) => (
             <div
               key={`${c.title}-${idx}`}

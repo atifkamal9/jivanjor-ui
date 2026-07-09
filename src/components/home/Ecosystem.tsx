@@ -31,17 +31,23 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
   const ctaLink = ctaData?.ctaLink || "#";
 
   return (
-    <section className="relative bg-surface pt-10 sm:pt-20 leading-normal">
-      <div className="mx-auto max-w-360 justify-center px-5">
-        <div className="mx-auto max-w-4xl space-y-6 text-center w-full">
+    <section className="relative bg-surface mt-8 sm:mt-12 leading-normal">
+      <div className="mx-auto max-w-360 justify-center px-5 pt-4">
+        <div className="mx-auto max-w-full sm:max-w-4xl space-y-4 md:space-y-6 text-center w-full px-4 py-6">
           <Heading>{title}</Heading>
           <p className="text-lg md:text-2xl font-google-sans min-w-xs">
             {subtitle}
           </p>
+          <a
+            href={ctaLink}
+            className="md:hidden inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
+          >
+            {ctaText}
+          </a>
         </div>
         <Gallery items={data?.items} />
       </div>
-      <div className="hidden xl:block relative p-12.5 my-10 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
+      <div className="hidden xl:block relative p-12.5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
         <div className="absolute bottom-0 right-0 pointer-events-none">
           <Image
