@@ -511,12 +511,9 @@ export default function Categories() {
               <button
                 key={sub.name}
                 onClick={() => handleSubCategoryChange(sub.name)}
-                className={`rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer ${
+                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
                   isActive ? "active-gradient-border" : "bg-white"
                 }`}
-                style={{
-                  boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.10)`,
-                }}
               >
                 <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                   <Image
@@ -524,7 +521,7 @@ export default function Categories() {
                     alt={sub.name}
                     width={40}
                     height={40}
-                    className="object-contain max-h-full max-w-full drop-shadow-sm"
+                    className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
                 <span className="font-medium text-sm leading-normal whitespace-nowrap">
