@@ -295,7 +295,7 @@ export default function Navbar() {
                   <Image
                     src={
                       activeMenu === "about"
-                        ? "/images/about/about-hero.png"
+                        ? "/images/hero (1).png"
                         : activeMenu === "applications"
                           ? "/images/mega-menu.png"
                           : activeMenu === "knowledge"
