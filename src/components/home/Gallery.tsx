@@ -24,7 +24,7 @@ export default function Gallery({ items }: GalleryProps) {
   const endorseLink = items?.[2]?.link || "#";
 
   return (
-    <section className="py-10 space-y-4">
+    <section className="pb-6 space-y-4">
       <div className="hidden lg:grid grid-cols-4 gap-4 w-full">
         <div className="col-span-2 rounded-2xl h-80">
           <Image
@@ -35,7 +35,10 @@ export default function Gallery({ items }: GalleryProps) {
             height={800}
           />
         </div>
-        <a href={techLink} className="relative bg-[#232323] h-80 rounded-2xl block hover:bg-[#2e2e2e] transition-colors">
+        <a
+          href={techLink}
+          className="relative bg-[#232323] h-80 rounded-2xl block hover:bg-[#2e2e2e] transition-colors"
+        >
           <p className="absolute inset-4 flex items-end text-3xl text-white font-amethysta">
             {techTitle} <MoveUpRight size={40} className="ml-2 shrink-0" />
           </p>
@@ -61,7 +64,10 @@ export default function Gallery({ items }: GalleryProps) {
           />
         </div>
         <div className="space-y-4">
-          <a href={marketLink} className="relative bg-[#232323] h-40 rounded-2xl block hover:bg-[#2e2e2e] transition-colors">
+          <a
+            href={marketLink}
+            className="relative bg-[#232323] h-40 rounded-2xl block hover:bg-[#2e2e2e] transition-colors"
+          >
             <p className="absolute inset-4 flex items-end text-3xl text-white font-amethysta">
               {marketTitle} <MoveUpRight size={40} className="ml-2 shrink-0" />
             </p>
@@ -106,7 +112,10 @@ export default function Gallery({ items }: GalleryProps) {
             height={800}
           />
         </div>
-        <a href={techLink} className="relative bg-[#232323] rounded-2xl min-h-30 block">
+        <a
+          href={techLink}
+          className="relative bg-[#232323] rounded-2xl min-h-30 block"
+        >
           <p className="absolute inset-2.5 sm:inset-6 flex items-end text-xl sm:text-2xl md:text-4xl text-white font-amethysta">
             {techTitle}
           </p>
@@ -124,7 +133,10 @@ export default function Gallery({ items }: GalleryProps) {
             height={800}
           />
         </div>
-        <a href={marketLink} className="relative bg-[#232323] rounded-2xl min-h-30 block">
+        <a
+          href={marketLink}
+          className="relative bg-[#232323] rounded-2xl min-h-30 block"
+        >
           <p className="absolute inset-2.5 sm:inset-6 flex items-end text-xl sm:text-2xl md:text-4xl text-white font-amethysta">
             {marketTitle}
           </p>

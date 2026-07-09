@@ -41,12 +41,12 @@ export default function ProductFaq() {
   return (
     <section
       id="faqs"
-      className="bg-surface max-w-324 mx-auto p-8 xl:p-16 space-y-16 xl:space-y-20 rounded-3xl"
+      className="bg-surface max-w-324 mx-auto mb-4 md:mb-8 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
     >
       {/* ========================================== */}
       {/* 1. FAQS ACCORDION SECTION */}
       {/* ========================================== */}
-      <div className="space-y-8">
+      <div className="">
         {/* Header content with link icon */}
         <div className="text-center space-y-3 max-w-4xl mx-auto">
           <div className="flex justify-center">
@@ -68,18 +68,21 @@ export default function ProductFaq() {
         </div>
 
         {/* FAQs Container Card */}
-        <div className="max-w-full mx-auto mt-20">
+        <div className="max-w-full mx-auto mt-6">
           <div className="w-full">
             {FAQ_ITEMS.map((item, idx) => {
               const isOpen = openIndex === idx;
               return (
-                <div key={item.question} className="border-t overflow-hidden first:border-t-0">
+                <div
+                  key={item.question}
+                  className="border-t overflow-hidden first:border-t-0"
+                >
                   {/* Accordion header button */}
                   <button
                     onClick={() => toggleAccordion(idx)}
-                    className="w-full text-left py-6 flex justify-between items-center cursor-pointer group select-none gap-4"
+                    className="w-full text-left py-6 flex justify-between items-center cursor-pointer group select-none gap-4 lg:px-4"
                   >
-                    <span className="font-amethysta text-lg sm:text-2xl lg:text-3xl group-hover:text-primary transition-colors duration-200 leading-normal">
+                    <span className="font-amethysta text-lg sm:text-2xl lg:text-[32px] group-hover:text-primary transition-colors duration-200 leading-normal lg:px-2">
                       {item.question}
                     </span>
 
@@ -103,7 +106,7 @@ export default function ProductFaq() {
                         : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                   >
-                    <p className="text-sm md:text-lg leading-normal font-normal max-w-2xl">
+                    <p className="text-sm md:text-lg leading-normal font-normal max-w-2xl lg:px-6">
                       {item.answer}
                     </p>
                   </div>

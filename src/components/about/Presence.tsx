@@ -45,11 +45,11 @@ export default function Presence() {
   return (
     <section
       id="presence-section"
-      className="scroll-mt-36 py-5 md:py-16 bg-white"
+      className="scroll-mt-36 my-6 md:my-12 bg-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header Icon */}
-        <div className="mb-6 flex justify-center">
+        <div className="mb-4 flex justify-center">
           <Image
             src="/images/badge.png"
             alt="Jivanjor Logo Icon"
@@ -60,18 +60,18 @@ export default function Presence() {
         </div>
 
         {/* Section Heading */}
-        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-6">
+        <h2 className="font-amethysta text-[34px] sm:text-4xl md:text-5xl text-center text-[#222] font-normal mb-5">
           A Presence Built Through Trust
         </h2>
 
         {/* Section Subtitle */}
-        <p className="text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-83 md:max-w-5xl mb-4 md:mb-12">
+        <p className="text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-83 md:max-w-5xl mb-4 md:mb-6">
           Jivanjor brings together product performance and professional know-how
           to support the work that happens before the final finish, inside
           workshops, homes and everyday interiors.
         </p>
 
-        <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 items-stretch justify-items-center mb-4">
+        <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 items-stretch justify-items-center mb-0 md:mb-4">
           {stats.map((stat, idx) => {
             const isLast = idx === stats.length - 1;
             return (

@@ -57,10 +57,7 @@ export default function ProductFeatures() {
   };
 
   return (
-    <section
-      id="applications"
-      className="max-w-360 mx-auto pt-12 space-y-16 lg:space-y-24"
-    >
+    <section id="applications" className="max-w-360 mx-auto pt-12 space-y-10">
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
       {/* ========================================== */}
@@ -174,11 +171,11 @@ export default function ProductFeatures() {
       {/* ========================================== */}
       {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
       {/* ========================================== */}
-      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto pt-6">
+      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto">
         {/* On Mobile: text goes top. On Desktop: text goes right */}
         {/* Text Details Column */}
-        <div className="order-1 md:order-2 flex-1 text-center md:text-left space-y-4 min-w-xs max-w-3xl">
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
+        <div className="order-1 md:order-2 flex-1 text-center xl:text-left space-y-4 min-w-xs max-w-85 md:max-w-3xl">
+          <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal px-12 sm:px-0">
             See Supremo in Action
           </h2>
           <p className="text-lg sm:text-2xl leading-normal">

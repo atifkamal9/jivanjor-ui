@@ -60,7 +60,7 @@ export default function AboutUs() {
   return (
     <div
       id="about-jivanjor"
-      className="flex flex-col min-h-screen bg-background font-google-sans text-foreground"
+      className="flex flex-col min-h-screen bg-background font-google-sans text-foreground overflow-x-hidden xl:overflow-x-visible"
     >
       <Hero />
       {/* Navigation Tabs */}
