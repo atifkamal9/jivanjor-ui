@@ -315,10 +315,10 @@ export default function List() {
             <Link
               key={idx}
               href={`/blog/${blog.title.replace(/\s/g, "-").toLowerCase() ?? ""}`}
-              className="flex flex-col bg-white rounded-[21px] group"
+              className="flex flex-col items-center bg-white rounded-[20px] group"
             >
               {/* Blog Image Container */}
-              <div className="relative w-full h-50 sm:h-61.5 rounded-[21px] overflow-hidden bg-surface">
+              <div className="relative w-full h-50 sm:h-61.5 rounded-[20px] overflow-hidden bg-surface">
                 <Image
                   src={blog.image}
                   alt={blog.title}
@@ -329,7 +329,7 @@ export default function List() {
               </div>
 
               {/* Blog Info */}
-              <div className="flex flex-col flex-1 pt-6 pb-2 space-y-4">
+              <div className="flex flex-col items-center text-center md:items-start md:text-start flex-1 pt-6 pb-2 space-y-4">
                 <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
                   {blog.title}
                 </h3>
