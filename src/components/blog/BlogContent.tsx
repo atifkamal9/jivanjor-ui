@@ -29,7 +29,38 @@ const relatedArticles = [
   },
 ];
 
-export default function BlogContent() {
+export interface BlogContentProps {
+  publishDate?: string;
+  lastUpdated?: string;
+}
+
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr;
+  const day = String(date.getDate()).padStart(2, "0");
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+};
+
+export default function BlogContent({
+  publishDate = "2026-07-01",
+  lastUpdated,
+}: BlogContentProps) {
   const [activeSection, setActiveSection] = useState("science");
 
   useEffect(() => {
@@ -69,8 +100,29 @@ export default function BlogContent() {
 
   return (
     <div className="w-full">
+      {/* Schema.org BlogPosting Structured Data
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "Mastering Laminate Bonding: Preventing Bubbles in High-Humidity Environments",
+            "image": [
+              "https://jivanjor.in/images/blog/Rectangle%20125.png"
+            ],
+            "datePublished": publishDate,
+            "dateModified": lastUpdated || publishDate,
+            "author": {
+              "@type": "Organization",
+              "name": "Jivanjor Product Experts",
+              "url": "https://jivanjor.in/"
+            }
+          })
+        }}
+      /> */}
       {/* Hero Image Section */}
-      <section className="max-w-360 mx-auto px-5 mb-10">
+      <section className="max-w-360 mx-auto px-5 mb-6">
         <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
             src="/images/blog/Rectangle 125.png"
@@ -94,7 +146,16 @@ export default function BlogContent() {
           <div className="absolute inset-0 bg-black/10" />
         </div>
       </section>
-
+      {/* Article Metadata Strip */}
+      <div className="lg:hidden bg-surface max-w-fit text-xs flex flex-wrap items-center gap-1.5 border-l-2 border-[#FF0009] p-2 m-5">
+        <span>Published on: {formatDate(publishDate)}</span>
+        {lastUpdated && (
+          <>
+            <span>|</span>
+            <span>Last updated: {formatDate(lastUpdated)}</span>
+          </>
+        )}
+      </div>
       {/* Main Grid: Sidebar + Content */}
       <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto px-5 gap-5 lg:gap-10 relative">
         {/* Table of Contents Sidebar (Desktop) */}
@@ -148,7 +209,17 @@ export default function BlogContent() {
             </nav>
           </div>
         </div>
-        <div className="flex flex-col space-y-6 md:space-y-10">
+        <div className="flex flex-col flex-1 space-y-6 lg:space-y-10">
+          {/* Article Metadata Strip */}
+          <div className="hidden bg-surface max-w-fit text-xs md:text-sm lg:flex flex-wrap items-center gap-1.5 border-l-2 border-[#FF0009] p-2 self-end">
+            <span>Published on: {formatDate(publishDate)}</span>
+            {lastUpdated && (
+              <>
+                <span>|</span>
+                <span>Last updated: {formatDate(lastUpdated)}</span>
+              </>
+            )}
+          </div>
           {/* TLDR Summary */}
           <div className="hidden md:block bg-surface p-5 md:px-10 md:py-6 border-l-[5px] border-[#FF0009]">
             <h4 className="font-google-sans font-bold text-xl md:text-[22px] text-[#222] mb-3">
@@ -359,15 +430,15 @@ export default function BlogContent() {
       {/* Related Articles Section */}
       <section className="bg-white">
         <div className="max-w-360 mx-auto p-5 py-12 md:py-18 space-y-6">
-          <h2 className="font-amethysta text-3xl md:text-[56px] text-center text-[#222] font-normal leading-tight">
+          <h2 className="font-amethysta text-[34px] md:text-[56px] text-center text-[#222] font-normal leading-tight">
             Related Articles
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7">
             {relatedArticles.map((article, idx) => (
               <Link
                 key={idx}
                 href={`/blog/${article.title.replace(/\s/g, "-").toLowerCase()}`}
-                className="flex flex-col bg-white rounded-[20px] group overflow-hidden hover:shadow-lg transition-all duration-300 p-2"
+                className="flex flex-col items-center bg-white rounded-[20px] group overflow-hidden hover:shadow-lg transition-all duration-300 p-2"
               >
                 {/* Article Image Container */}
                 <div className="relative w-full h-61.5 rounded-[20px] overflow-hidden bg-surface">
@@ -381,7 +452,7 @@ export default function BlogContent() {
                 </div>
 
                 {/* Article Info */}
-                <div className="flex flex-col flex-1 pt-6 pb-2 px-2 space-y-4">
+                <div className="flex flex-col items-center text-center md:items-start md:text-start flex-1 pt-6 pb-2 px-2 space-y-4">
                   <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal hover:text-[#ff0009] transition-colors line-clamp-2 pb-0.5">
                     {article.title}
                   </h3>
