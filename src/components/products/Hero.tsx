@@ -26,7 +26,7 @@ export default function Hero() {
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
-      <div className="w-full relative flex flex-col lg:flex-row lg:h-162.5 overflow-hidden">
+      <div className="w-full relative flex flex-col lg:flex-row lg:h-140 overflow-hidden">
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}

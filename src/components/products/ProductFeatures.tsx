@@ -57,10 +57,7 @@ export default function ProductFeatures() {
   };
 
   return (
-    <section
-      id="applications"
-      className="max-w-360 mx-auto pt-12 space-y-16 lg:space-y-24"
-    >
+    <section id="applications" className="max-w-360 mx-auto pt-12 space-y-10">
       {/* ========================================== */}
       {/* 1. ACCORDION SECTION (TASK AT HAND) */}
       {/* ========================================== */}

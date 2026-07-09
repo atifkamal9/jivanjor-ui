@@ -49,7 +49,7 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
 
 export default function RelatedProducts() {
   return (
-    <section id="related-products" className="relative overflow-hidden">
+    <section id="related-products" className="relative overflow-hidden mt-6">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto my-6 max-w-330 px-5 lg:px-8 w-full">
         <div className="text-center space-y-3 max-w-4xl mx-auto mb-6">
           <div className="flex justify-center">
