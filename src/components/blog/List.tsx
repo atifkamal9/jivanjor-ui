@@ -230,7 +230,7 @@ export default function List() {
                   isActive ? "active-gradient-border" : "bg-white"
                 }`}
               >
-                <div className="relative w-9 h-9 mb-2 flex items-center justify-center mix-blend-hard-light">
+                <div className="relative w-9 h-9 mb-2 flex items-center justify-center">
                   <Image
                     src={list.icon}
                     alt={list.name}
