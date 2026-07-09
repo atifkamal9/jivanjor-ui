@@ -22,10 +22,10 @@ export default function Innovation() {
   return (
     <section
       id="innovation-section"
-      className="scroll-mt-36 relative w-full overflow-hidden min-h-153.75 flex items-center py-6 md:py-10"
+      className="scroll-mt-36 relative w-full overflow-hidden min-h-153.75 flex items-center pt-6 md:pt-10"
     >
       {/* Background Image with Overlay */}
-      <div className="hidden md:block absolute inset-0 z-0">
+      <div className="hidden md:block absolute inset-0 z-0 mt-12">
         <Image
           src="/images/about/about-innovation-bg.png"
           alt="R&D Lab background"
@@ -38,7 +38,7 @@ export default function Innovation() {
         <div className="absolute inset-0 bg-linear-to-br from-[#772571]/20 to-black/40 mix-blend-color-burn" />
       </div>
 
-      <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative w-full z-10">
+      <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative w-full z-10 pb-4 md:pb-0">
         <div className="relative md:hidden min-h-116 min-w-100 w-full h-full">
           <Image
             src="/images/about/about-innovation-bg.png"
@@ -89,7 +89,7 @@ export default function Innovation() {
           </div>
 
           {/* Explore Applications Button */}
-          <div className="p-5 md:p-0">
+          <div className="p-5 md:p-0 text-center md:text-start">
             <Link
               href="/applications"
               className="inline-flex items-center justify-center font-medium text-base md:text-lg rounded-full px-8 py-2 bg-linear-to-r from-[#FF0009] to-[#772571] text-white hover:scale-105 transition-transform duration-200"

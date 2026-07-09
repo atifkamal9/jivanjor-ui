@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Package, Layers, Wrench, HardHat } from "lucide-react";
 
 export default function Promise() {
   const cards = [
@@ -60,7 +59,10 @@ export default function Promise() {
   ];
 
   return (
-    <section id="promise-section" className="scroll-mt-36 py-6 md:py-12">
+    <section
+      id="promise-section"
+      className="scroll-mt-36 mt-6 md:mt-8 text-[#222]"
+    >
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Header Logo Icon */}
         <div className="mb-4 flex justify-center">
@@ -73,29 +75,29 @@ export default function Promise() {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[48px] text-center text-[#222] font-normal mb-4">
+        <h2 className="font-amethysta text-[34px] lg:text-[48px] text-center font-normal mb-4">
           The Promise of Stronger Bonds
         </h2>
 
         {/* Section Subtitle */}
-        <p className="font-google-sans text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-4xl mb-12 leading-relaxed">
+        <p className="text-xl lg:text-[24px] text-center max-w-4xl mb-7">
           Jivanjor is built around the needs of woodworking professionals,
           channel partners and end users who look for dependable adhesive
           solutions.
         </p>
 
         {/* 4 Cards Grid */}
-        <div className="w-full bg-surface rounded-3xl p-13">
+        <div className="w-full bg-surface rounded-3xl p-12 sm:p-12.5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center justify-center">
             {cards.map((card, index) => (
               <div
                 key={index}
-                className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-65 lg:max-w-60.5 text-[#222]"
+                className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-65 lg:max-w-60.5"
               >
-                <div className="flex items-center justify-center mb-4 md:mb-5">
+                <div className="flex items-center justify-center mb-2.5 md:mb-5">
                   {card.icon}
                 </div>
-                <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
+                <h3 className="font-amethysta text-[22px] md:text-[32px] mb-2.5 md:mb-5">
                   {card.title}
                 </h3>
                 <p className="text-base md:text-lg max-w-60 md:max-w-full">
