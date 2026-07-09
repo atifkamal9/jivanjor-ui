@@ -268,24 +268,26 @@ export default function Hero({ data }: HeroProps) {
       </Swiper>
 
       {/* Custom Pagination (inside section, but outside Swiper so it's statically placed) */}
-      <div className="absolute inset-x-0 bottom-8 flex items-center justify-center gap-2.5 z-30">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              if (swiperInstance) {
-                swiperInstance.slideToLoop(idx);
-              }
-            }}
-            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-              idx === activeIndex
-                ? "w-8 bg-white"
-                : "w-2 bg-white/40 hover:bg-white/60"
-            }`}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
+      {slides.length > 1 && (
+        <div className="absolute inset-x-0 bottom-8 flex items-center justify-center gap-2.5 z-30">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                if (swiperInstance) {
+                  swiperInstance.slideToLoop(idx);
+                }
+              }}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                idx === activeIndex
+                  ? "w-8 bg-white"
+                  : "w-2 bg-white/40 hover:bg-white/60"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Play Video / Audio Controls */}
       {showPlayButton && (
