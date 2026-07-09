@@ -34,13 +34,14 @@ export default function BlogContent() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
+      const scrollPosition = window.scrollY + 220;
 
       for (const section of sections) {
         const el = document.getElementById(section.id);
         if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
+          const rect = el.getBoundingClientRect();
+          const top = rect.top + window.scrollY;
+          const height = rect.height;
           if (scrollPosition >= top && scrollPosition < top + height) {
             setActiveSection(section.id);
             break;
@@ -49,7 +50,8 @@ export default function BlogContent() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -165,6 +167,9 @@ export default function BlogContent() {
           <article className="flex-1 space-y-12 min-w-0 border-l-0 md:border-l border-[#00000099] px-0 md:px-10">
             {/* Section 1: The Science of Air Entrapment */}
             <div id="science" className="space-y-6 scroll-mt-28">
+              <h3 className="font-amethysta text-2xl md:text-[36px] text-[#222] leading-tight font-normal">
+                The Science of Air Entrapment
+              </h3>
               <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
                 Bubbles in laminate applications rarely happen by chance; they
                 are the direct result of trapped air or moisture expanding

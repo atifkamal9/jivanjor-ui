@@ -226,12 +226,9 @@ export default function List() {
                   setActiveList(list.name);
                   setCurrentPage(1);
                 }}
-                className={`rounded-[20px] w-43 min-h-23.5 flex flex-col items-center justify-center px-4 py-3 text-center transition-all duration-300 cursor-pointer ${
+                className={`group rounded-[20px] w-43 min-h-23.5 flex flex-col items-center justify-center px-4 py-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
                   isActive ? "active-gradient-border" : "bg-white"
                 }`}
-                style={{
-                  boxShadow: `4px 4px 6.9px 4px rgba(0, 0, 0, 0.08)`,
-                }}
               >
                 <div className="relative w-9 h-9 mb-2 flex items-center justify-center mix-blend-hard-light">
                   <Image
@@ -239,7 +236,7 @@ export default function List() {
                     alt={list.name}
                     width={36}
                     height={36}
-                    className="object-contain max-h-full max-w-full"
+                    className="object-contain max-h-full max-w-full group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
                 <span className="font-google-sans font-medium text-[16px] text-[#181818] leading-tight">
@@ -312,16 +309,16 @@ export default function List() {
       </div>
 
       {/* Blogs Grid and Pagination Area */}
-      <div className="flex-1 space-y-12 pb-8 md:pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-x-12 lg:gap-y-16">
+      <div className="flex-1 space-y-12 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
           {currentBlogs.map((blog, idx) => (
             <Link
               key={idx}
               href={`/blog/${blog.title.replace(/\s/g, "-").toLowerCase() ?? ""}`}
-              className="flex flex-col bg-white rounded-[21px] group"
+              className="flex flex-col items-center bg-white rounded-[20px] group"
             >
               {/* Blog Image Container */}
-              <div className="relative w-full h-50 sm:h-61.5 rounded-[21px] overflow-hidden bg-surface">
+              <div className="relative w-full h-50 sm:h-61.5 rounded-[20px] overflow-hidden bg-surface">
                 <Image
                   src={blog.image}
                   alt={blog.title}
@@ -332,7 +329,7 @@ export default function List() {
               </div>
 
               {/* Blog Info */}
-              <div className="flex flex-col flex-1 pt-6 pb-2 space-y-4">
+              <div className="flex flex-col items-center text-center md:items-start md:text-start flex-1 pt-6 pb-2 space-y-4">
                 <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
                   {blog.title}
                 </h3>
@@ -349,7 +346,7 @@ export default function List() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222] pt-0 md:pt-8">
+          <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222]">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
