@@ -18,6 +18,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 
+interface Props {
+  category?: string;
+}
+
 interface ProductCard {
   title: string;
   description: string;
@@ -230,7 +234,7 @@ const CATEGORIES_DATA: CategoryData[] = [
   },
 ];
 
-export default function ProductCategories() {
+export default function ProductCategories({ category }: Props) {
   const [activeCategory, setActiveCategory] = useState("Waterproof Grade");
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);

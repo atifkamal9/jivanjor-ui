@@ -11,82 +11,50 @@ import {
 import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
 
+const applicationItems = [
+  { name: "Furniture & Woodwork", link: "/blog" },
+  { name: "Laminates & Finishing", link: "/blog" },
+  { name: "Kitchen & Storage Units", link: "/blog" },
+  { name: "Moisture-Prone Woodwork", link: "/blog" },
+  { name: "PVC & Edge Finishing", link: "/blog" },
+  { name: "Foam & Acoustic Bonding", link: "/blog" },
+];
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const toggleMenu = () => setOpen(!open);
 
-  const [isAOpen, setIsAOpen] = useState(false);
-  const [iskOpen, setIskOpen] = useState(false);
-  const [isPOpen, setIsPOpen] = useState(false);
-  const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<
+    "about" | "products" | "applications" | "knowledge" | "partner" | null
+  >(null);
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const aTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const kTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const pTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
+  const handleMenuEnter = (
+    menu:
+      | "about"
+      | "products"
+      | "applications"
+      | "knowledge"
+      | "partner"
+      | null,
+  ) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    setIsProductsOpen(true);
+    setActiveMenu(menu);
   };
 
-  const handleMouseLeave = () => {
+  const handleMenuLeave = () => {
     timeoutRef.current = setTimeout(() => {
-      setIsProductsOpen(false);
-    }, 200);
-  };
-
-  const handleAMouseEnter = () => {
-    if (aTimeoutRef.current) {
-      clearTimeout(aTimeoutRef.current);
-      aTimeoutRef.current = null;
-    }
-    setIsAOpen(true);
-  };
-
-  const handleAMouseLeave = () => {
-    aTimeoutRef.current = setTimeout(() => {
-      setIsAOpen(false);
-    }, 200);
-  };
-
-  const handleKMouseEnter = () => {
-    if (kTimeoutRef.current) {
-      clearTimeout(kTimeoutRef.current);
-      kTimeoutRef.current = null;
-    }
-    setIskOpen(true);
-  };
-
-  const handleKMouseLeave = () => {
-    kTimeoutRef.current = setTimeout(() => {
-      setIskOpen(false);
-    }, 200);
-  };
-
-  const handlePMouseEnter = () => {
-    if (pTimeoutRef.current) {
-      clearTimeout(pTimeoutRef.current);
-      pTimeoutRef.current = null;
-    }
-    setIsPOpen(true);
-  };
-
-  const handlePMouseLeave = () => {
-    pTimeoutRef.current = setTimeout(() => {
-      setIsPOpen(false);
+      setActiveMenu(null);
     }, 200);
   };
 
   useEffect(() => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      if (aTimeoutRef.current) clearTimeout(aTimeoutRef.current);
-      if (kTimeoutRef.current) clearTimeout(kTimeoutRef.current);
-      if (pTimeoutRef.current) clearTimeout(pTimeoutRef.current);
     };
   }, []);
 
@@ -102,6 +70,7 @@ export default function Navbar() {
       <nav className="flex items-center justify-between max-w-360 mx-auto w-full px-6 font-google-sans relative">
         <Link href="/" className="shrink-0">
           <Image
+            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto"
             src="/images/logo.png"
             alt="Jivanjor Logo"
             loading="eager"
@@ -111,137 +80,88 @@ export default function Navbar() {
         </Link>
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
           <div
-            className="relative"
-            onMouseEnter={handleAMouseEnter}
-            onMouseLeave={handleAMouseLeave}
+            className="relative py-4"
+            onMouseEnter={() => handleMenuEnter("about")}
+            onMouseLeave={handleMenuLeave}
           >
             <Link
               href="/about"
               className={`cursor-pointer transition-colors ${
-                isAOpen ? "text-primary" : "hover:text-primary"
+                activeMenu === "about" ? "text-primary" : "hover:text-primary"
               }`}
             >
               About
             </Link>
-            {/* About Dropdown */}
-            <div
-              className={`absolute top-full -left-1/2 mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
-                isAOpen
-                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
-              }`}
-            >
-              <div className="flex flex-col bg-surface p-6 space-y-1">
-                {aboutItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={() => setIsAOpen(false)}
-                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
-            </div>
           </div>
           <div
             className="relative py-4"
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => handleMenuEnter("products")}
+            onMouseLeave={handleMenuLeave}
           >
             <Link
               href="/categories"
               className={`flex items-center gap-1 cursor-pointer transition-colors ${
-                isProductsOpen ? "text-[#FF0009]" : "hover:text-primary"
+                activeMenu === "products"
+                  ? "text-[#FF0009]"
+                  : "hover:text-[#FF0009]"
               }`}
             >
               Products
             </Link>
           </div>
-          <Link href="#" className="hover:text-primary transition-colors">
-            Applications
-          </Link>
           <div
-            className="relative"
-            onMouseEnter={handleKMouseEnter}
-            onMouseLeave={handleKMouseLeave}
+            className="relative py-4"
+            onMouseEnter={() => handleMenuEnter("applications")}
+            onMouseLeave={handleMenuLeave}
+          >
+            <Link
+              href="#"
+              className={`cursor-pointer transition-colors ${
+                activeMenu === "applications"
+                  ? "text-primary"
+                  : "hover:text-primary"
+              }`}
+            >
+              Applications
+            </Link>
+          </div>
+          <div
+            className="relative py-4"
+            onMouseEnter={() => handleMenuEnter("knowledge")}
+            onMouseLeave={handleMenuLeave}
           >
             <Link
               href="/resources"
               className={`cursor-pointer transition-colors ${
-                iskOpen ? "text-primary" : "hover:text-primary"
+                activeMenu === "knowledge"
+                  ? "text-primary"
+                  : "hover:text-primary"
               }`}
             >
               Knowledge Hub
             </Link>
-            {/* Knowledge Dropdown */}
-            <div
-              className={`absolute top-full -left-1/2 mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
-                iskOpen
-                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
-              }`}
-            >
-              <div className="flex flex-col bg-surface p-6 space-y-1">
-                {knowledgeItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={() => setIskOpen(false)}
-                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
-            </div>
           </div>
           <div
-            className="relative"
-            onMouseEnter={handlePMouseEnter}
-            onMouseLeave={handlePMouseLeave}
+            className="relative py-4"
+            onMouseEnter={() => handleMenuEnter("partner")}
+            onMouseLeave={handleMenuLeave}
           >
             <Link
               href="/partner"
               className={`cursor-pointer transition-colors ${
-                isPOpen ? "text-primary" : "hover:text-primary"
+                activeMenu === "partner" ? "text-primary" : "hover:text-primary"
               }`}
             >
               Partner
             </Link>
-            {/* Partner Dropdown */}
-            <div
-              className={`absolute top-full right-[-150%] mx-auto mt-14 min-w-80 w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col transition-all duration-300 ease-out origin-top ${
-                isPOpen
-                  ? "opacity-100 translate-y-2 scale-100 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
-              }`}
-            >
-              <div className="flex flex-col bg-surface p-6 space-y-1">
-                {partnerItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={() => setIsPOpen(false)}
-                    className="text-base hover:font-semibold py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-              <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
-            </div>
           </div>
           <Link
             href="/contact"
-            className="hover:text-primary transition-colors"
+            className="hover:text-primary transition-colors py-4"
           >
             Contact
           </Link>
-          <Link href="#" className="hover:scale-110 transition-colors">
+          <Link href="#" className="hover:scale-110 transition-colors py-4">
             <Image
               src="/images/whatsapp-icon.svg"
               alt="Enquire Now"
@@ -254,84 +174,145 @@ export default function Navbar() {
         {/* Backdrop Overlay with Blur */}
         <div
           className={`fixed top-22 inset-x-0 bottom-0 bg-black/10 backdrop-blur-sm transition-all duration-300 z-40 ${
-            isProductsOpen
+            activeMenu !== null
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
           }`}
-          onMouseEnter={handleMouseLeave}
+          onMouseEnter={handleMenuLeave}
         />
 
         {/* Desktop Mega Dropdown Menu */}
         <div
-          className={`absolute top-full right-0 mx-auto mt-2 mr-20 max-w-4xl w-full min-h-max bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col font-google-sans transition-all duration-300 ease-out origin-top ${
-            isProductsOpen
+          className={`absolute top-full right-0 mx-auto mt-2 mr-20 max-w-4xl w-full min-h-75 bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col font-google-sans transition-all duration-300 ease-out origin-top ${
+            activeMenu !== null
               ? "opacity-100 translate-y-8 scale-100 pointer-events-auto"
               : "opacity-0 -translate-y-4 scale-95 pointer-events-none"
           }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onMouseEnter={() => handleMenuEnter(activeMenu)}
+          onMouseLeave={handleMenuLeave}
         >
-          {/* Three-column dropdown body */}
-          <div className="flex">
-            {/* Left Column: Top-level Category List */}
-            <div className="flex flex-col min-w-75 p-6 bg-surface">
-              {productCategories.map((cat) => (
-                <button
-                  key={cat.name}
-                  onMouseEnter={() => setActiveCategory(cat.name)}
-                  onClick={() => setActiveCategory(cat.name)}
-                  className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${
-                    activeCategory === cat.name
-                      ? "font-bold"
-                      : "font-normal hover:font-bold"
-                  }`}
-                >
-                  <span className="leading-[200%]!">{cat.name}</span>
-                  {activeCategory === cat.name && (
-                    <ChevronRight
-                      size={16}
-                      strokeWidth={2}
-                      className="text-primary"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Middle Column: Sub-products list */}
-            <div className="flex flex-col flex-1 p-8">
-              {activeCategoryData.products.map((prod) => (
-                <Link
-                  href={`/categories/${prod.name.replace(/\s/g, "-").toLowerCase()}`}
-                  key={prod.name}
-                  className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
-                >
-                  {prod.name}
-                </Link>
-              ))}
-            </div>
-
-            {/* Right Column: Category Image + View All Button */}
-            <div className="flex flex-col py-6 min-w-65 pr-8">
-              <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
-                <Image
-                  src={activeCategoryData.categoryImage}
-                  alt={activeCategoryData.name}
-                  fill
-                  className="object-cover"
-                />
+          {activeMenu === "products" && (
+            <div className="flex">
+              {/* Left Column: Top-level Category List */}
+              <div className="flex flex-col min-w-75 p-6 bg-surface">
+                {productCategories.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onMouseEnter={() => setActiveCategory(cat.name)}
+                    onClick={() => setActiveCategory(cat.name)}
+                    className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${
+                      activeCategory === cat.name
+                        ? "font-bold"
+                        : "font-normal hover:font-bold"
+                    }`}
+                  >
+                    <span className="leading-[200%]!">{cat.name}</span>
+                    {activeCategory === cat.name && (
+                      <ChevronRight
+                        size={16}
+                        strokeWidth={2}
+                        className="text-primary"
+                      />
+                    )}
+                  </button>
+                ))}
               </div>
-              <Link
-                href="/categories"
-                className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
-              >
-                View All Products
-              </Link>
+
+              {/* Middle Column: Sub-products list */}
+              <div className="flex flex-col flex-1 p-8">
+                {activeCategoryData.products.map((prod) => (
+                  <Link
+                    href={`/categories/${prod.name.replace(/\s/g, "-").toLowerCase()}`}
+                    key={prod.name}
+                    className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
+                    onClick={() => setActiveMenu(null)}
+                  >
+                    {prod.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Right Column: Category Image + View All Button */}
+              <div className="flex flex-col py-6 min-w-65 pr-8">
+                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                  <Image
+                    src={activeCategoryData.categoryImage}
+                    alt={activeCategoryData.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <Link
+                  href="/categories"
+                  onClick={() => setActiveMenu(null)}
+                  className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
+                >
+                  View All Products
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
+
+          {activeMenu !== "products" && activeMenu !== null && (
+            <div className="flex">
+              {/* Left Column: Links */}
+              <div className="flex flex-col min-w-75 min-h-75 p-6 bg-surface">
+                {(activeMenu === "about"
+                  ? aboutItems
+                  : activeMenu === "applications"
+                    ? applicationItems
+                    : activeMenu === "knowledge"
+                      ? knowledgeItems
+                      : partnerItems
+                ).map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={() => setActiveMenu(null)}
+                    className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Middle Column: Copy */}
+              <div className="flex flex-col flex-1 p-8">
+                <p className="text-lg text-foreground">
+                  {activeMenu === "about"
+                    ? "Jivanjor is a leading manufacturer of premium adhesives in India, delivering unmatched bonding strength and durability for diverse woodworking and interior applications."
+                    : activeMenu === "applications"
+                      ? "Explore where Jivanjor fits across furniture, laminates, plywood, boards, and professional woodwork applications. Get application guidance for best results."
+                      : activeMenu === "knowledge"
+                        ? "Unlock expert woodworking advice, tips for choosing the right adhesive, fixing common bonding issues, and stay updated with latest Jivanjor blogs and resources."
+                        : "Partner with Jivanjor, India's most trusted adhesive partner. Become a dealer, or download the Achievers Club app to access contractor rewards and tracking benefits."}
+                </p>
+              </div>
+
+              {/* Right Column: Image */}
+              <div className="flex flex-col py-6 min-w-65 pr-8 justify-center">
+                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden shadow-md">
+                  <Image
+                    src={
+                      activeMenu === "about"
+                        ? "/images/about/about-hero.png"
+                        : activeMenu === "applications"
+                          ? "/images/mega-menu.png"
+                          : activeMenu === "knowledge"
+                            ? "/images/video-thumbnail.png"
+                            : "/images/contractor/Rectangle 2.png"
+                    }
+                    alt={activeMenu}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Bottom brand gradient strip */}
-          <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
+          <div className="absolute bottom-0 w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
         </div>
         <div className="flex items-center gap-2 lg:hidden mr-2">
           <Link href="#" className="hover:scale-110 transition-colors">
