@@ -307,22 +307,16 @@ export default function ContactForm() {
         >
           {/* Card Header */}
           <div
-            onClick={() => setIsOpen(!isOpen)}
-            className={`
-            cursor-pointer flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out
-            ${
+            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${
               isOpen
                 ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
                 : "active-gradient-border rounded-[20px]"
-            }
-          `}
+            }`}
           >
             <h3 className="text-[24px] md:text-[30px] font-medium">
               Reach out to Us
             </h3>
-            <ChevronDown
-              className={`transition-transform duration-500 ease-in-out ${isOpen ? "rotate-180" : ""}`}
-            />
+            <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
           </div>
           {/* Form Container with Smooth Height Transition */}
           <div
