@@ -435,7 +435,7 @@ export default function ProductCategories({ category }: Props) {
             {currentCategoryData.products.map((card, idx) => (
               <SwiperSlide
                 key={`${card.title}-${idx}`}
-                className="overflow-visible! py-1"
+                className="overflow-visible! pt-2 md:pt-4"
               >
                 {/* Responsive Design: Floating 3D card layout */}
                 <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">

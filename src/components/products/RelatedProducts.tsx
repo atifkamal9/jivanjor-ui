@@ -102,15 +102,14 @@ export default function RelatedProducts() {
                   href="/products#overview"
                   className="flex flex-col items-center relative px-4"
                 >
-                  <div className="absolute aspect-44/51 -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain z-100">
+                  <div className="absolute aspect-44/51 group -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain transition-opacity duration-300 ease-out z-100">
                     {/* Floating image */}
                     <Image
+                      fill
+                      priority
                       src={card.image}
                       alt={card.title}
-                      fill
-                      className="object-contain z-10"
-                      priority
-                      // className="absolute aspect-44/51 top-[-28%] w-60 h-65 object-contain z-100"
+                      className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
                     />
                   </div>
                   {/* Card */}
