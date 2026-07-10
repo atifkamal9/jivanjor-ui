@@ -289,7 +289,7 @@ export default function Navbar() {
                       activeMenu === "about"
                         ? "/images/hero (1).png"
                         : activeMenu === "applications"
-                          ? "/images/mega-menu.png"
+                          ? "/images/applications/Rectangle 150.png"
                           : activeMenu === "knowledge"
                             ? "/images/blog/Rectangle 142.png"
                             : "/images/contractor/contractor-app-promo.png"
