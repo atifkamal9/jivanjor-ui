@@ -111,7 +111,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
       : defaultProductCards;
 
   return (
-    <section className="relative leading-normal mx-auto max-w-7xl w-full px-10 pb-12">
+    <section className="relative leading-normal mx-auto max-w-7xl w-full px-10 pt-6 pb-12">
       <Swiper
         modules={[Navigation]}
         watchOverflow={false}
