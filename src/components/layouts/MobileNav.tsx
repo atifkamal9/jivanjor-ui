@@ -4,7 +4,12 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
-import { aboutItems, knowledgeItems, partnerItems } from "@/lib/nav";
+import {
+  aboutItems,
+  applicationItems,
+  knowledgeItems,
+  partnerItems,
+} from "@/lib/nav";
 
 interface CategoryItem {
   name: string;
@@ -61,17 +66,6 @@ const productCategories: CategoryItem[] = [
       "Synthetic Adhesive",
     ],
   },
-];
-
-const applications = [
-  "Furniture & Woodwork",
-  "Laminates & Finishing",
-  "Kitchen & Storage Units",
-  "Moisture-Prone Woodwork",
-  "PVC & Edge Finishing",
-  "Home Repairs & DIY",
-  "Foam & Acoustic Bonding",
-  "OEM & Bulk Woodwork",
 ];
 
 export default function MobileNav({ onClose }: MobileNavProps) {
@@ -273,16 +267,23 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "Applications" && (
             <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
-              {applications.map((app) => (
-                <Link
-                  key={app}
-                  href="#"
-                  onClick={onClose}
-                  className="block text-base hover:text-primary cursor-pointer"
-                >
-                  {app}
-                </Link>
-              ))}
+              {applicationItems.map((item) => {
+                const isActive = pathname === item.link;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.link}
+                    onClick={onClose}
+                    className={`block text-base cursor-pointer ${
+                      isActive
+                        ? "text-[#FF0009] font-bold"
+                        : "hover:text-primary"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
