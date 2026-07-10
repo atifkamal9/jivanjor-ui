@@ -147,7 +147,7 @@ export default function List() {
               {currentApplications.map((app, idx) => (
                 <Link
                   key={idx}
-                  href={`/applications/${app.title.replace(/\s+/g, "-").toLowerCase()}`}
+                  href={`/applications?article=${app.title.replace(/\s+/g, "-").toLowerCase()}`}
                   className="flex flex-col group"
                 >
                   <div className="relative w-full h-45 sm:h-60 rounded-[20px] overflow-hidden bg-surface">
@@ -277,13 +277,13 @@ export default function List() {
                     />
                   </div>
                   {/* Title */}
-                  <div className="flex-1 flex flex-col justify-between h-full gap-3 pt-1">
+                  <div className="flex-1 flex flex-col h-full gap-3 pt-1">
                     <p className="font-amethysta font-normal text-sm xl:text-lg text-black group-hover:text-[#ff0009] transition-colors">
                       {article.title}
                     </p>
                     {/* Gradient arrow circle */}
                     <div
-                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-1"
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
                       style={{
                         backgroundImage:
                           "linear-gradient(94.9359deg, rgb(255, 0, 9) 2.7536%, rgb(119, 37, 113) 105.91%)",
@@ -298,7 +298,7 @@ export default function List() {
             {/* View All button */}
             <Link
               href="/blog"
-              className="self-start min-w-37 p-1.5 rounded-[20px] flex items-center justify-center font-medium text-lg text-white hover:opacity-90 transition-opacity"
+              className="self-center sm:self-start min-w-37 p-1.5 rounded-[20px] flex items-center justify-center font-medium text-lg text-white hover:opacity-90 transition-opacity"
               style={{
                 backgroundImage:
                   "linear-gradient(106.993deg, rgb(255, 0, 9) 2.7536%, rgb(119, 37, 113) 105.91%)",

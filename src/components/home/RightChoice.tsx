@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Heading } from "@/components/ui";
 import { PlusCircle } from "lucide-react";
+import Link from "next/link";
 
 interface RightChoiceProps {
   data?: {
@@ -99,7 +100,8 @@ export default function RightChoice({ data }: RightChoiceProps) {
         </div>
         <div className="flex flex-wrap gap-4 justify-items-center justify-center max-w-full xl:max-w-153">
           {types.map((type) => (
-            <button
+            <Link
+              href="/applications"
               key={type.title}
               className="relative flex flex-col items-center justify-between text-center group cursor-pointer bg-white w-43 md:w-48 h-42 md:h-51 p-4 md:p-5 rounded-2xl overflow-hidden transition-all duration-300 ease-out transform hover:-translate-y-1"
             >
@@ -127,7 +129,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
                   Learn More
                 </button>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>
