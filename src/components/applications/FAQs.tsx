@@ -39,7 +39,7 @@ export default function FQAs() {
   return (
     <section
       id="faqs"
-      className="bg-surface max-w-324 mx-5 sm:mx-auto mb-12 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
+      className="bg-surface max-w-324 mx-5 xl:mx-auto mb-12 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
     >
       {/* ========================================== */}
       {/* 1. FAQS ACCORDION SECTION */}
