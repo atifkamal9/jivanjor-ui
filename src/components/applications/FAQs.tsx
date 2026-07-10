@@ -9,28 +9,27 @@ interface FaqItem {
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: "How long does Supremo take to set?",
+    question: "Which adhesive should I use for furniture and woodwork?",
     answer:
-      "Supremo boasts a superfast setting time of just 1 hour, though this may vary slightly depending on environmental temperature and humidity.",
+      "The right adhesive depends on the surface, type of furniture work, expected strength and application condition. For furniture assembly, plywood work, lamination, veneering and joinery, choose a Jivanjor product based on the specific use case and performance need.",
   },
   {
-    question: "What is the coverage area for 1 Kg of Supremo?",
+    question: "Can Jivanjor adhesives be used for plywood and boards?",
     answer:
-      "Jivanjor Supremo provides coverage of approximately 60-70 sq.ft per kg, depending on the thickness of application and porosity of the substrate.",
+      "Yes, Jivanjor offers a range of adhesives specifically formulated for plywood, MDF and boards. Products like Supremo and Watershield provide excellent bonding strength for lamination, veneering and surface bonding on boards.",
   },
   {
-    question: "Is Supremo waterproof?",
+    question: "What should I check before applying adhesive on wood?",
     answer:
-      "Supremo is standard premium white adhesive offering excellent heat and general moisture resistance. For high exposure water areas, Jivanjor Watershield or Aquabond is recommended.",
+      "Ensure the surface is clean, dry and free from dust, oil or moisture. Wood should be properly acclimatized to room temperature. For best results, lightly sand the surface before application to improve adhesion.",
   },
   {
-    question: "What pack sizes are available for commercial use?",
+    question: "How can I avoid bubbles or weak bonding in furniture work?",
     answer:
-      "Supremo is available in various packaging formats including 1 Kg, 2 Kg, 5 Kg, 10 Kg, 20 Kg, 30 Kg, 50 Kg, and 60 Kg to meet diverse commercial project requirements.",
+      "Apply adhesive evenly using a notched trowel, press from the center outward to expel trapped air, and apply adequate clamping pressure during the open time. Avoid applying on humid surfaces or in extreme temperatures.",
   },
 ];
-
-export default function ProductFaq() {
+export default function FQAs() {
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   const toggleAccordion = (index: number) => {
@@ -40,7 +39,7 @@ export default function ProductFaq() {
   return (
     <section
       id="faqs"
-      className="bg-surface max-w-324 mx-auto mb-4 md:mb-8 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
+      className="bg-surface max-w-324 mx-5 xl:mx-auto mb-12 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
     >
       {/* ========================================== */}
       {/* 1. FAQS ACCORDION SECTION */}
@@ -105,7 +104,7 @@ export default function ProductFaq() {
                         : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                   >
-                    <p className="text-sm md:text-lg leading-normal font-normal max-w-2xl lg:px-6">
+                    <p className="text-sm md:text-lg leading-normal font-normal max-w-4xl lg:px-6">
                       {item.answer}
                     </p>
                   </div>

@@ -4,21 +4,13 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import {
   aboutItems,
+  applicationItems,
   knowledgeItems,
   partnerItems,
   productCategories,
 } from "@/lib/nav";
 import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
-
-const applicationItems = [
-  { name: "Furniture & Woodwork", link: "/blog" },
-  { name: "Laminates & Finishing", link: "/blog" },
-  { name: "Kitchen & Storage Units", link: "/blog" },
-  { name: "Moisture-Prone Woodwork", link: "/blog" },
-  { name: "PVC & Edge Finishing", link: "/blog" },
-  { name: "Foam & Acoustic Bonding", link: "/blog" },
-];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);

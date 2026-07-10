@@ -26,6 +26,15 @@ export const aboutItems: NavItem[] = [
   { name: "Market Presence", link: "/about#presence-section" },
 ];
 
+export const applicationItems = [
+  { name: "Furniture & Woodwork", link: "/applications" },
+  { name: "Laminates & Finishing", link: "/applications" },
+  { name: "Kitchen & Storage Units", link: "/applications" },
+  { name: "Moisture-Prone Woodwork", link: "/applications" },
+  { name: "PVC & Edge Finishing", link: "/applications" },
+  { name: "Foam & Acoustic Bonding", link: "/applications" },
+];
+
 export const knowledgeItems: NavItem[] = [
   { name: "Choosing The Right Adhesive", link: "/blog" },
   { name: "Application Tips", link: "/blog" },
