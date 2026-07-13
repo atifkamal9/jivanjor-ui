@@ -125,24 +125,13 @@ export default function List() {
       <div className="flex flex-col lg:flex-row justify-between gap-6 lg:gap-12 z-50">
         <div className="flex flex-col">
           <div className="flex flex-col items-center text-center md:items-start md:text-start">
-            <Image
-              src="/images/badge.png"
-              width={39}
-              height={23}
-              alt="badge"
-              aria-hidden
-              className="mb-6"
-            />
             <p className="font-normal text-lg lg:text-2xl max-w-170">
               Explore Jivanjor adhesives for furniture assembly, plywood work,
               joinery, cabinets, tables, chairs, boards and everyday wood
               bonding needs.
             </p>
-            <h2 className="font-amethysta font-normal text-[34px] my-8 mx-auto md:mx-0 max-w-xs md:max-w-4xl w-full">
-              Key Applications in Furniture &amp; Woodwork
-            </h2>
           </div>
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-6 mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {currentApplications.map((app, idx) => (
                 <Link
