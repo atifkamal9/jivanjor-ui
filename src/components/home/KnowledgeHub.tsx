@@ -86,7 +86,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                   </h3>
                   <a
                     href={c.link}
-                    className="inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-4 py-1 border border-spacing-1.5 border-primary text-primary hover:bg-primary/5 transition-colors"
+                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-4 py-1 text-primary hover:bg-primary/5 transition-colors"
                   >
                     Learn More
                   </a>
