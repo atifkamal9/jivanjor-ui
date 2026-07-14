@@ -101,7 +101,12 @@ export interface PageTemplate {
 }
 
 // Set up Axios Client
-export const API_BASE = "https://jivanjor-server.up.railway.app/api";
+export const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "https://jivanjor-server.onrender.com/api"
+    : process.env.NODE_ENV === "production"
+      ? "https://jivanjor-server.up.railway.app/api"
+      : "http://localhost:5000/api";
 
 const client = axios.create({
   baseURL: API_BASE,
@@ -595,8 +600,6 @@ export const api = {
   getActiveTemplateForPage: async (
     pageSlug: string,
   ): Promise<PageTemplate | undefined> => {
-    console.log("client--------->", client.getUri());
-
     try {
       const res = await client.get(`/templates/active/page/${pageSlug}`);
       const temp = res.data?.data?.template || res.data?.data;
