@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, BlogPost } from "@/lib/api";
+import ImageUpload from "@/components/admin/ImageUpload";
 import {
   Plus,
   Search,
@@ -481,18 +482,12 @@ export default function BlogPage() {
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Header Banner URL
-                        </label>
-                        <input
-                          type="url"
-                          value={formData.image}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
-                          placeholder="https://images.unsplash.com/photo-..."
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                        />
-                      </div>
+                      <ImageUpload
+                        label="Header Banner Image"
+                        value={formData.image}
+                        onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+                        folder="blogs"
+                      />
                     </div>
 
                     {/* Rich WYSIWYG Composer Actions Bar */}

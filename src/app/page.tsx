@@ -20,6 +20,7 @@ export default async function Home() {
   }
 
   const sections = template?.rawSections || {};
+  console.log("data-------->", template, sections, sections?.findAdhesive);
 
   return (
     <div className="font-google-sans min-h-screen bg-background text-foreground">

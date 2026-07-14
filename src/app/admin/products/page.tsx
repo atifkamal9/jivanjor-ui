@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Product, Category, Material } from "@/lib/api";
+import ImageUpload from "@/components/admin/ImageUpload";
 import {
   Plus,
   Search,
@@ -436,21 +437,12 @@ export default function ProductsPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                    Illustration Image URL
-                  </label>
-                  <div className="relative">
-                    <ImageIcon className="absolute left-3.5 top-3.5 h-4.5 w-4.5 text-gray-400" />
-                    <input
-                      type="url"
-                      value={formData.image}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
-                      placeholder="https://images.unsplash.com/photo-..."
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                    />
-                  </div>
-                </div>
+                <ImageUpload
+                  label="Illustration Image"
+                  value={formData.image}
+                  onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+                  folder="products"
+                />
 
                 <div>
                   <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
