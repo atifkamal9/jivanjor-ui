@@ -101,7 +101,7 @@ export interface PageTemplate {
 }
 
 // Set up Axios Client
-const API_BASE = "https://jivanjor-server.up.railway.app/api";
+const API_BASE = "https://jivanjor-server.onrender.com/api";
 
 const client = axios.create({
   baseURL: API_BASE,
@@ -121,7 +121,7 @@ client.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Mappers for backward compatibility with UI schemas
@@ -155,7 +155,9 @@ function mapProductFromBackend(prod: any): Product {
         metadataStr = prod.metadata.list.join(", ");
       } else {
         metadataStr = Object.entries(prod.metadata)
-          .map(([k, v]) => Array.isArray(v) ? `${k}: ${v.join("/")}` : `${k}: ${v}`)
+          .map(([k, v]) =>
+            Array.isArray(v) ? `${k}: ${v.join("/")}` : `${k}: ${v}`,
+          )
           .join(", ");
       }
     }
@@ -168,7 +170,9 @@ function mapProductFromBackend(prod: any): Product {
     category_id: prod.categoryId,
     material_id: prod.materialId || "",
     metadata: metadataStr,
-    image: prod.image || "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop",
+    image:
+      prod.image ||
+      "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop",
   };
 }
 
@@ -201,17 +205,24 @@ function mapBlogPostFromBackend(post: any): BlogPost {
     category: post.category || "",
     tags: tagsArray,
     author: post.author || "",
-    publish_date: post.publishDate ? new Date(post.publishDate).toISOString().split("T")[0] : "",
-    image: post.image || "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400&auto=format&fit=crop",
+    publish_date: post.publishDate
+      ? new Date(post.publishDate).toISOString().split("T")[0]
+      : "",
+    image:
+      post.image ||
+      "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400&auto=format&fit=crop",
   };
 }
 
 function mapSeoFromBackend(seo: any): SeoMetadata {
-  const isHome = seo.pageType === "STATIC" && (seo.pageId === "STATIC_PAGE" || !seo.pageId);
+  const isHome =
+    seo.pageType === "STATIC" && (seo.pageId === "STATIC_PAGE" || !seo.pageId);
   return {
     id: seo.id,
-    page_type: isHome ? "home" : (seo.pageType || "").toLowerCase().replace("_", "-"),
-    page_id: isHome ? "home" : (seo.pageId || ""),
+    page_type: isHome
+      ? "home"
+      : (seo.pageType || "").toLowerCase().replace("_", "-"),
+    page_id: isHome ? "home" : seo.pageId || "",
     meta_title: seo.metaTitle || "",
     meta_description: seo.metaDescription || "",
     canonical_url: seo.canonicalUrl || "",
@@ -223,17 +234,19 @@ function mapTemplateFromBackend(temp: any): PageTemplate {
   if (Array.isArray(temp.sections)) {
     sectionsArray = temp.sections;
   } else if (temp.sections && typeof temp.sections === "object") {
-    sectionsArray = Object.entries(temp.sections).map(([key, val]: [string, any], idx) => ({
-      id: val.id || `sec-${key}-${idx}`,
-      type: (val.type || key) as any,
-      title: val.title || "",
-      subtitle: val.subtitle || val.subtitleText || "",
-      content: val.content || val.description || "",
-      image: val.image || val.backgroundImage || val.imageUrl || "",
-      ctaText: val.ctaText || "",
-      ctaLink: val.ctaLink || "",
-      order: val.order || (idx + 1),
-    }));
+    sectionsArray = Object.entries(temp.sections).map(
+      ([key, val]: [string, any], idx) => ({
+        id: val.id || `sec-${key}-${idx}`,
+        type: (val.type || key) as any,
+        title: val.title || "",
+        subtitle: val.subtitle || val.subtitleText || "",
+        content: val.content || val.description || "",
+        image: val.image || val.backgroundImage || val.imageUrl || "",
+        ctaText: val.ctaText || "",
+        ctaLink: val.ctaLink || "",
+        order: val.order || idx + 1,
+      }),
+    );
   }
   return {
     id: temp.id,
@@ -258,7 +271,9 @@ export const api = {
     const product = res.data?.data?.product;
     return product ? mapProductFromBackend(product) : undefined;
   },
-  saveProduct: async (product: Omit<Product, "id"> & { id?: string }): Promise<Product> => {
+  saveProduct: async (
+    product: Omit<Product, "id"> & { id?: string },
+  ): Promise<Product> => {
     const payload = {
       name: product.name,
       description: product.description,
@@ -283,14 +298,18 @@ export const api = {
   getCategories: async (): Promise<Category[]> => {
     const res = await client.get("/categories");
     const categories = res.data?.data?.categories || [];
-    return Array.isArray(categories) ? categories.map(mapCategoryFromBackend) : [];
+    return Array.isArray(categories)
+      ? categories.map(mapCategoryFromBackend)
+      : [];
   },
   getCategoryById: async (id: string): Promise<Category | undefined> => {
     const res = await client.get(`/categories/${id}`);
     const category = res.data?.data?.category;
     return category ? mapCategoryFromBackend(category) : undefined;
   },
-  saveCategory: async (category: Omit<Category, "id"> & { id?: string }): Promise<Category> => {
+  saveCategory: async (
+    category: Omit<Category, "id"> & { id?: string },
+  ): Promise<Category> => {
     const payload = {
       name: category.name,
       parentId: category.parent_category || null,
@@ -320,7 +339,9 @@ export const api = {
     const material = res.data?.data?.material;
     return material ? mapMaterialFromBackend(material) : undefined;
   },
-  saveMaterial: async (material: Omit<Material, "id"> & { id?: string }): Promise<Material> => {
+  saveMaterial: async (
+    material: Omit<Material, "id"> & { id?: string },
+  ): Promise<Material> => {
     const payload = {
       materialName: material.name,
       description: material.description || "",
@@ -348,7 +369,9 @@ export const api = {
     const res = await client.get(`/use-cases/${id}`);
     return res.data?.data?.useCase;
   },
-  saveUseCase: async (useCase: Omit<UseCase, "id"> & { id?: string }): Promise<UseCase> => {
+  saveUseCase: async (
+    useCase: Omit<UseCase, "id"> & { id?: string },
+  ): Promise<UseCase> => {
     const payload = {
       title: useCase.title,
       description: useCase.description,
@@ -377,7 +400,9 @@ export const api = {
     const issue = res.data?.data?.issue;
     return issue ? mapIssueFromBackend(issue) : undefined;
   },
-  saveIssue: async (issue: Omit<Issue, "id"> & { id?: string }): Promise<Issue> => {
+  saveIssue: async (
+    issue: Omit<Issue, "id"> & { id?: string },
+  ): Promise<Issue> => {
     const payload = {
       issueTitle: issue.issue_title,
       problem: issue.problem,
@@ -407,14 +432,18 @@ export const api = {
     const blog = res.data?.data?.blog;
     return blog ? mapBlogPostFromBackend(blog) : undefined;
   },
-  saveBlogPost: async (blogPost: Omit<BlogPost, "id"> & { id?: string }): Promise<BlogPost> => {
+  saveBlogPost: async (
+    blogPost: Omit<BlogPost, "id"> & { id?: string },
+  ): Promise<BlogPost> => {
     const payload = {
       title: blogPost.title,
       content: blogPost.content,
       category: blogPost.category,
       tags: blogPost.tags,
       author: blogPost.author,
-      publishDate: blogPost.publish_date ? new Date(blogPost.publish_date).toISOString() : new Date().toISOString(),
+      publishDate: blogPost.publish_date
+        ? new Date(blogPost.publish_date).toISOString()
+        : new Date().toISOString(),
     };
     if (blogPost.id) {
       const res = await client.put(`/blogs/${blogPost.id}`, payload);
@@ -440,11 +469,15 @@ export const api = {
     const seo = res.data?.data?.seo;
     return seo ? mapSeoFromBackend(seo) : undefined;
   },
-  saveSeoMetadata: async (seo: Omit<SeoMetadata, "id"> & { id?: string }): Promise<SeoMetadata> => {
+  saveSeoMetadata: async (
+    seo: Omit<SeoMetadata, "id"> & { id?: string },
+  ): Promise<SeoMetadata> => {
     const isHome = seo.page_type === "home";
     const payload = {
-      pageType: isHome ? "STATIC" : seo.page_type.toUpperCase().replace("-", "_"),
-      pageId: isHome ? null : (seo.page_id || null),
+      pageType: isHome
+        ? "STATIC"
+        : seo.page_type.toUpperCase().replace("-", "_"),
+      pageId: isHome ? null : seo.page_id || null,
       metaTitle: seo.meta_title,
       metaDescription: seo.meta_description,
       canonicalUrl: seo.canonical_url || null,
@@ -499,14 +532,18 @@ export const api = {
   getTemplates: async (): Promise<PageTemplate[]> => {
     const res = await client.get("/templates");
     const templates = res.data?.data?.templates || res.data?.templates || [];
-    return Array.isArray(templates) ? templates.map(mapTemplateFromBackend) : [];
+    return Array.isArray(templates)
+      ? templates.map(mapTemplateFromBackend)
+      : [];
   },
   getTemplateById: async (id: string): Promise<PageTemplate | undefined> => {
     const res = await client.get(`/templates/${id}`);
     const temp = res.data?.data?.template || res.data?.data;
     return temp ? mapTemplateFromBackend(temp) : undefined;
   },
-  saveTemplate: async (template: Omit<PageTemplate, "id" | "isActive"> & { id?: string }): Promise<PageTemplate> => {
+  saveTemplate: async (
+    template: Omit<PageTemplate, "id" | "isActive"> & { id?: string },
+  ): Promise<PageTemplate> => {
     const payload = {
       name: template.name,
       sections: template.sections,
@@ -528,7 +565,9 @@ export const api = {
     const temp = res.data?.data?.template || res.data?.data;
     return temp ? mapTemplateFromBackend(temp) : undefined;
   },
-  getActiveTemplateForPage: async (pageSlug: string): Promise<PageTemplate | undefined> => {
+  getActiveTemplateForPage: async (
+    pageSlug: string,
+  ): Promise<PageTemplate | undefined> => {
     try {
       const res = await client.get(`/templates/active/page/${pageSlug}`);
       const temp = res.data?.data?.template || res.data?.data;
@@ -537,5 +576,5 @@ export const api = {
       console.error(`Failed to get active template for page ${pageSlug}`, err);
       return undefined;
     }
-  }
+  },
 };
