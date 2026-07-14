@@ -101,7 +101,10 @@ export interface PageTemplate {
 }
 
 // Set up Axios Client
-const API_BASE = "https://jivanjor-server.onrender.com/api";
+export const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000/api"
+    : "https://jivanjor-server.onrender.com/api";
 
 const client = axios.create({
   baseURL: API_BASE,
