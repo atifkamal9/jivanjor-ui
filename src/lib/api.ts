@@ -101,7 +101,7 @@ export interface PageTemplate {
 }
 
 // Set up Axios Client
-const API_BASE = "https://jivanjor-server.onrender.com/api";
+export const API_BASE = "https://jivanjor-server.up.railway.app/api";
 
 const client = axios.create({
   baseURL: API_BASE,
@@ -260,6 +260,31 @@ function mapTemplateFromBackend(temp: any): PageTemplate {
 
 // API methods calling axios
 export const api = {
+  // UPLOADS
+  uploadFile: async (
+    file: File,
+    folder?: string,
+    bucket?: string,
+  ): Promise<{
+    url: string;
+    path: string;
+    bucket: string;
+    size: number;
+    mimeType: string;
+  }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    if (folder) formData.append("folder", folder);
+    if (bucket) formData.append("bucket", bucket);
+
+    const res = await client.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data?.data;
+  },
+
   // PRODUCTS
   getProducts: async (): Promise<Product[]> => {
     const res = await client.get("/products");
@@ -280,6 +305,7 @@ export const api = {
       categoryId: product.category_id,
       materialId: product.material_id || null,
       metadata: { tags: product.metadata },
+      image: product.image || null,
     };
     if (product.id) {
       const res = await client.put(`/products/${product.id}`, payload);
@@ -444,6 +470,7 @@ export const api = {
       publishDate: blogPost.publish_date
         ? new Date(blogPost.publish_date).toISOString()
         : new Date().toISOString(),
+      image: blogPost.image || null,
     };
     if (blogPost.id) {
       const res = await client.put(`/blogs/${blogPost.id}`, payload);
@@ -568,6 +595,8 @@ export const api = {
   getActiveTemplateForPage: async (
     pageSlug: string,
   ): Promise<PageTemplate | undefined> => {
+    console.log("client--------->", client.getUri());
+
     try {
       const res = await client.get(`/templates/active/page/${pageSlug}`);
       const temp = res.data?.data?.template || res.data?.data;

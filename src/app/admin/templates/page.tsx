@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate } from "@/lib/api";
+import ImageUpload from "@/components/admin/ImageUpload";
 import {
   Plus,
   Search,
@@ -629,18 +630,12 @@ export default function TemplatesPage() {
                         className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                        Hero Background Image Link
-                      </label>
-                      <input
-                        type="text"
-                        value={homeSections.hero.bgImage}
-                        onChange={(e) => updateSectionField("hero", "bgImage", e.target.value)}
-                        placeholder="/images/hero.png"
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                      />
-                    </div>
+                    <ImageUpload
+                      label="Hero Background Image"
+                      value={homeSections.hero.bgImage}
+                      onChange={(url) => updateSectionField("hero", "bgImage", url)}
+                      folder="templates"
+                    />
                     <div>
                       <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
                         Watch Video CTA URL (Optional)
@@ -783,13 +778,15 @@ export default function TemplatesPage() {
                                 placeholder="Badge tag (e.g. Best Seller)"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
                               />
-                              <input
-                                type="text"
-                                value={item.image || ""}
-                                onChange={(e) => updateItemField("productRange", idx, "image", e.target.value)}
-                                placeholder="Image link"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("productRange", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                               <input
@@ -1251,13 +1248,15 @@ export default function TemplatesPage() {
                               placeholder="Guide Name"
                               className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
                             />
-                            <input
-                              type="text"
-                              value={item.image || ""}
-                              onChange={(e) => updateItemField("knowledgeBase", idx, "image", e.target.value)}
-                              placeholder="/images/hero.png"
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
-                            />
+                            <div className="space-y-1">
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Image</span>
+                              <ImageUpload
+                                value={item.image || ""}
+                                onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
+                                folder="templates"
+                                size="compact"
+                              />
+                            </div>
                             <textarea
                               rows={2}
                               value={item.summary || ""}

@@ -1,10 +1,11 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE } from "@/lib/api";
 import { signIn } from "@/lib/auth";
 import { Lock, Mail, AlertTriangle, ArrowRight } from "lucide-react";
-import axios from "axios";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://jivanjor-server.up.railway.app/api/auth/login", {
+      const res = await axios.post(`${API_BASE}/auth/login`, {
         email,
         password,
       });
@@ -34,7 +35,7 @@ export default function LoginPage() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-        "Failed to authenticate with backend server. Make sure the database is running."
+          "Failed to authenticate with backend server. Make sure the database is running.",
       );
       setLoading(false);
     }
@@ -45,7 +46,6 @@ export default function LoginPage() {
     setPassword("Admin123!");
     setError("");
   };
-
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 dark:bg-zinc-950 sm:px-6 lg:px-8 transition-colors duration-300">
@@ -139,7 +139,8 @@ export default function LoginPage() {
                   Reviewer Credentials Quick Access
                 </span>
                 <p className="text-xs text-foreground/60 dark:text-zinc-5050 leading-normal">
-                  Click below to automatically pre-fill the approved credentials for immediate CMS access.
+                  Click below to automatically pre-fill the approved credentials
+                  for immediate CMS access.
                 </p>
                 <button
                   type="button"

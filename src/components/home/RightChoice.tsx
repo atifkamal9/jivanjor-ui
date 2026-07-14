@@ -92,11 +92,6 @@ export default function RightChoice({ data }: RightChoiceProps) {
       <div className="flex flex-col items-stretch justify-center xl:justify-between lg:flex-row self-stretch relative mx-auto max-w-360 px-1.5 sm:px-5 py-25">
         <div className="max-w-xl text-center lg:text-start pl-0 lg:pl-6 xl:pl-0 py-12 lg:p-0 mx-auto">
           <Heading className="text-white">{title}</Heading>
-          {data?.subtitle && (
-            <p className="mt-4 text-lg text-white/80 font-google-sans leading-normal">
-              {data.subtitle}
-            </p>
-          )}
         </div>
         <div className="flex flex-wrap gap-4 justify-items-center justify-center max-w-full xl:max-w-153">
           {types.map((type) => (
