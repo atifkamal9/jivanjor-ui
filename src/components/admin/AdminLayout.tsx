@@ -105,15 +105,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ==================== DESKTOP SIDEBAR ==================== */}
       <aside className={`hidden lg:flex flex-col bg-background border-r border-border shrink-0 transition-all duration-300 ${isCollapsed ? "w-20" : "w-68"
         }`}>
-        {/* Brand Header: Collapsed shows ONLY the panel open icon */}
         {isCollapsed ? (
-          <div className="h-20 flex items-center justify-center shrink-0 animate-[fadeIn_0.2s_ease-out]">
+          <div className="h-20 flex items-center justify-center shrink-0 border-b border-border animate-[fadeIn_0.2s_ease-out]">
             <button
               onClick={toggleCollapse}
-              className="p-2.5 rounded-xl bg-surface text-foreground/75 hover:bg-surface/85 border border-border cursor-pointer transition-all hover:scale-105"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30 shrink-0 cursor-pointer hover:scale-105 transition-all relative group"
               title="Expand Sidebar"
             >
-              <PanelLeftOpen className="h-5 w-5 text-primary" />
+              <span className="text-lg font-black text-white group-hover:opacity-0 transition-opacity duration-200">JJ</span>
+              <PanelLeftOpen className="h-5 w-5 text-white absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             </button>
           </div>
         ) : (
@@ -142,33 +142,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         )}
 
         {/* Navigation Links */}
-        {!isCollapsed && (
-          <nav className="flex-1 py-6 space-y-1.5 overflow-y-auto px-4">
-            {SIDEBAR_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 ${isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground/75 hover:bg-surface hover:text-foreground"
-                    }`}
-                >
-                  <Icon
-                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-primary" : "text-foreground/45"
-                      }`}
-                  />
+        <nav className={`flex-1 py-6 space-y-1.5 overflow-y-auto no-scrollbar px-4 ${isCollapsed ? "flex flex-col items-center" : ""}`}>
+          {SIDEBAR_ITEMS.map((item) => {
+            const isActive = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${
+                  isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
+                } ${isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-foreground/75 hover:bg-surface hover:text-foreground"
+                }`}
+                title={isCollapsed ? item.name : undefined}
+              >
+                <Icon
+                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
+                    isActive ? "text-primary" : "text-foreground/45"
+                  }`}
+                />
+                {!isCollapsed && (
                   <span className="animate-[fadeIn_0.2s_ease-out] truncate">{item.name}</span>
-                  {isActive && (
-                    <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        )}
+                )}
+                {!isCollapsed && isActive && (
+                  <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
 
         {/* Footer Info */}
         <div className={`p-4 border-t border-border bg-surface/55 transition-all duration-300 ${isCollapsed ? "flex flex-col items-center gap-3" : ""
@@ -226,7 +230,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </button>
             </div>
 
-            <nav className="flex-1 space-y-1 overflow-y-auto">
+            <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar">
               {SIDEBAR_ITEMS.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;

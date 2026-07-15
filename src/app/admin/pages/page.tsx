@@ -47,11 +47,7 @@ export default function PagesPage() {
   };
 
   const handleTitleChange = (title: string) => {
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "");
-    setFormData((prev) => ({ ...prev, title, slug }));
+    setFormData((prev) => ({ ...prev, title }));
   };
 
   const handleOpenAdd = () => {
@@ -299,18 +295,26 @@ export default function PagesPage() {
                 <div>
                   <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2 flex items-center justify-between">
                     <span>Page Slug Path Reference</span>
-                    <span className="text-[10px] text-primary flex items-center gap-1">
-                      <Sparkles className="h-3 w-3" /> Auto
-                    </span>
+                    {formData.slug === "home" && (
+                      <span className="text-[10px] text-primary font-bold uppercase tracking-wider animate-[fadeIn_0.2s_ease-out]">
+                        Fixed / Landing Page
+                      </span>
+                    )}
                   </label>
                   <input
                     type="text"
                     required
+                    disabled={formData.slug === "home"}
                     value={formData.slug}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "") }))}
                     placeholder="partner-portal"
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary disabled:opacity-60 disabled:cursor-not-allowed transition-all"
                   />
+                  {formData.slug === "home" && (
+                    <p className="mt-1.5 text-[11px] font-semibold text-primary animate-[fadeIn_0.2s_ease-out]">
+                      ⚠️ The home page pathway is locked and cannot be modified.
+                    </p>
+                  )}
                 </div>
 
                 <div>

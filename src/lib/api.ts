@@ -541,6 +541,7 @@ export const api = {
     if (page.id) {
       const payload = {
         title: page.title,
+        slug: page.slug,
         description: page.description || "",
         activeTemplateId: page.activeTemplateId,
       };
@@ -549,6 +550,7 @@ export const api = {
     } else {
       const payload = {
         title: page.title,
+        slug: page.slug,
         description: page.description || "",
       };
       const res = await client.post("/pages", payload);
