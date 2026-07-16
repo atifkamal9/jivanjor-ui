@@ -77,6 +77,7 @@ export interface Page {
   slug: string;
   description?: string;
   activeTemplateId?: string | null;
+  sections?: any;
 }
 
 export interface PageTemplateSection {
@@ -537,13 +538,14 @@ export const api = {
     const res = await client.get(`/pages/${id}`);
     return res.data?.data?.page;
   },
-  savePage: async (page: Omit<Page, "id"> & { id?: string }): Promise<Page> => {
+  savePage: async (page: Omit<Page, "id"> & { id?: string; sections?: any }): Promise<Page> => {
     if (page.id) {
       const payload = {
         title: page.title,
         slug: page.slug,
         description: page.description || "",
         activeTemplateId: page.activeTemplateId,
+        sections: page.sections,
       };
       const res = await client.put(`/pages/${page.id}`, payload);
       return res.data?.data?.page;
@@ -552,6 +554,8 @@ export const api = {
         title: page.title,
         slug: page.slug,
         description: page.description || "",
+        activeTemplateId: page.activeTemplateId,
+        sections: page.sections,
       };
       const res = await client.post("/pages", payload);
       return res.data?.data?.page;

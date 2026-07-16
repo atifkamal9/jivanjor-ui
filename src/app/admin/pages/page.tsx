@@ -3,7 +3,276 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate } from "@/lib/api";
-import { Plus, Search, Edit2, Trash2, X, Sparkles, FileText, LayoutTemplate, AlertCircle, ArrowLeft } from "lucide-react";
+import ImageUpload from "@/components/admin/ImageUpload";
+import MediaUpload from "@/components/admin/MediaUpload";
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  X,
+  Sparkles,
+  FileText,
+  LayoutTemplate,
+  AlertCircle,
+  ArrowLeft,
+  Sliders,
+  Layout,
+  Grid,
+  Shield,
+  MessageSquare,
+  Bookmark,
+  Award,
+  Layers,
+} from "lucide-react";
+
+const isVideo = (url: string) =>
+  /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
+
+const defaultHomeSections = {
+  hero: {
+    title: "Dependable Bonds for Indian Homes",
+    desc: "Superior strength adhesives crafted with state-of-the-art polymer chemistry to safeguard your woodworking and furniture creations for a lifetime.",
+    actionButtons: {
+      primary: { text: "Explore Products", actionPath: "#product-section" },
+      secondary: { text: "About Jivanjor", actionPath: "/about" },
+    },
+    media: [
+      "/images/hero.png",
+      "/images/hero (1).png",
+      "/videos/hero-background.mp4",
+    ],
+  },
+  productRange: {
+    title: "A Complete Adhesive Range for Modern Woodworking",
+    subtitle: "From premium wood glues to water-resistant formulations, explore adhesives trusted by master carpenters across India.",
+    items: [
+      {
+        title: "Champion Super",
+        description: "Premium white carpentry adhesive providing superior initial grab and high bonding strength.",
+        tag: "Best Seller",
+        image: "/images/Champion Super.png",
+        cta: { text: "Learn More", actionPath: "#" }
+      },
+      {
+        title: "Aquabond",
+        description: "Heatproof and waterproof adhesive made with Cross Linking Polymer.",
+        tag: "Waterproof Grade",
+        image: "/images/Aquabond.png",
+        cta: { text: "Learn More", actionPath: "#" }
+      },
+      {
+        title: "Foambond",
+        description: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        tag: "Speciality",
+        image: "/images/Foambond.png",
+        cta: { text: "Learn More", actionPath: "#" }
+      },
+      {
+        title: "Watershield",
+        description: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+        tag: "Eco Friendly",
+        image: "/images/Watershield.png",
+        cta: { text: "Learn More", actionPath: "#" }
+      }
+    ]
+  },
+  findAdhesive: {
+    title: "Find The Right Adhesive",
+    subtitle: "Select your application category to discover matched adhesives engineered for maximum hold.",
+    items: [
+      { name: "Furniture and Woodwork", link: "#" },
+      { name: "Kitchen Cabinets & Storage", link: "#" },
+      { name: "Laminates & Surface Finishings", link: "#" },
+      { name: "Moisture-Prone Woodwork", link: "#" },
+      { name: "PVC, Acrylic & Edge Finishing", link: "#" },
+      { name: "Home Repairs & Special Fixing", link: "#" }
+    ]
+  },
+  whyTrustUs: {
+    title: "Why Professionals Trust Jivanjor",
+    subtitle: "Over decades, builders and contractors have endorsed Jivanjor for quality, innovation, and support.",
+    items: [
+      { title: "Consistent Quality", description: "Every batch is rigorously tested in our labs to ensure matching bonding performance." },
+      { title: "Ease of Application", description: "Engineered viscosity allows smooth, even spreading with minimal effort." },
+      { title: "Range of Products", description: "A tailored product for every surface—from solid wood to rigid PVC and terrace concrete." },
+      { title: "Preferred by Experts", description: "Loved by leading interior designers, architects, and professional carpentry guilds." }
+    ]
+  },
+  showcaseGrid: {
+    title: "Built Around India’s Woodworking Professionals",
+    subtitle: "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.",
+    items: [
+      { title: "Technical Resources", description: "Step-by-step tutorials, safety datasheets, and best practices for modern carpenter guilds.", link: "#" },
+      { title: "Our Market Presence", description: "Available at 15,000+ retail outlets across India, backed by robust distribution networks.", link: "#" },
+      { title: "Industry Endorsed", description: "Recognized by woodworking associations for superior chemical safety and durability.", link: "#" }
+    ]
+  },
+  ctaPromo: {
+    title: "Grow Your Business With a Trusted Adhesive",
+    subtitle: "Work with a growing brand trusted by woodworking professionals, dealers and channel partners.",
+    ctaText: "Partner With Us",
+    ctaLink: "#"
+  },
+  testimonials: {
+    title: "Trusted by People Who Know the Work",
+    subtitle: "Hear from carpenters, contractors and dealers who rely on Jivanjor for real projects.",
+    ctaText: "Partner With Us",
+    ctaLink: "#"
+  },
+  knowledgeBase: {
+    title: "Knowledge Base & Guides",
+    subtitle: "Explore insights, tips, and chemistry guides from our experts to optimize your bonding applications.",
+    items: [
+      { title: "Choosing the Right Adhesive", summary: "A masterclass on selecting between standard PVA, quick-drying fast bonds, and high-performance polyurethanes.", link: "#" },
+      { title: "Application Tips", summary: "Pro tips for surface preparation, wood moisture content checks, clamping times, and curing environment controls.", link: "#" },
+      { title: "Fix Common Issues", summary: "Learn how to easily prevent wood laminate bubbling, edge peeling, and joint cracking in high-humidity climates.", link: "#" }
+    ]
+  }
+};
+
+const defaultAboutSections = {
+  hero: {
+    title: "About Jivanjor",
+    desc: "Crafting bonds of trust, strength, and innovation across generations.",
+    actionButtons: {
+      primary: { text: "Contact Us", actionPath: "/contact" },
+      secondary: { text: "Learn More", actionPath: "#story" }
+    },
+    media: [
+      "/images/hero.png"
+    ]
+  },
+  story: {
+    title: "Our Woodworking Legacy",
+    subtitle: "From a single product line to India's most trusted carpentry adhesives.",
+    paragraphs: [
+      "Jivanjor has been a pioneer in premium wood glues, providing master carpenters and interior design professionals with dependable adhesives tailored for the diverse climatic conditions of India.",
+      "Our continuous investment in polymer research and state-of-the-art manufacturing ensures every container of Jivanjor adhesive holds the highest standard of initial grab, coverage, and bond strength."
+    ],
+    image: "/images/Champion Super.png"
+  },
+  values: {
+    title: "Our Core Pillars",
+    subtitle: "The principles that define Jivanjor’s legacy and future innovations.",
+    items: [
+      { title: "Ultimate Strength", description: "Engineered bonding that exceeds standard industry benchmarks." },
+      { title: "Carpenter Safety", description: "Eco-friendly, water-based formulations with zero toxic emissions." },
+      { title: "Continuous Innovation", description: "Pioneering cross-linking technology for waterproof joints." }
+    ]
+  },
+  team: {
+    title: "Leadership Team",
+    subtitle: "The experts and visionaries driving Jivanjor forward.",
+    items: [
+      { name: "Mr. Ramesh Sharma", designation: "Managing Director", bio: "25+ years of experience in specialty chemicals.", image: "/images/Champion Super.png" },
+      { name: "Dr. Ananya Roy", designation: "Head of R&D", bio: "Led development of Jivanjor's patented Aquabond technology.", image: "/images/Aquabond.png" }
+    ]
+  },
+  milestones: {
+    title: "Corporate Milestones",
+    subtitle: "Key moments in Jivanjor's path of excellence.",
+    items: [
+      { year: "1998", title: "Brand Foundation", description: "First batch of Champion Super white carpentry glue launched." },
+      { year: "2010", title: "Eco-Grade Launch", description: "Formulated zero-VOC adhesives for premium commercial woodworking." },
+      { year: "2020", title: "Aquabond Breakthrough", description: "Introduced cross-linking polymer waterproof wood glues." }
+    ]
+  },
+  ctaPromo: {
+    title: "Explore the Jivanjor Experience",
+    subtitle: "Connect with our distribution network or request custom technical assistance.",
+    ctaText: "Get in Touch",
+    ctaLink: "/contact"
+  }
+};
+
+const defaultProductSections = {
+  hero: {
+    title: "Premium Carpentry Adhesive Specs",
+    desc: "Detailed technical sheets, packaging sizes, application steps, and key specifications.",
+    actionButtons: {
+      primary: { text: "Download TDS", actionPath: "#" },
+      secondary: { text: "Request Sample", actionPath: "/contact" }
+    },
+    media: [
+      "/images/hero (1).png"
+    ]
+  },
+  specifications: {
+    title: "Technical Specifications",
+    subtitle: "Accurate specifications tested under standardized laboratory conditions.",
+    items: [
+      { label: "Adhesive Base", value: "Polyvinyl Acetate (PVA) Emulsion" },
+      { label: "Viscosity", value: "200 to 250 Poise at 30°C" },
+      { label: "Coverage", value: "Approx. 8-10 sq.m per kg" },
+      { label: "Clamping Time", value: "2 to 3 hours under normal humidity" }
+    ]
+  },
+  features: {
+    title: "Key Performance Features",
+    subtitle: "Why Jivanjor outperforms ordinary carpentry glues.",
+    items: [
+      { title: "Extra Sticky Grab", description: "Prevents sliding of laminate sheets during initial alignment." },
+      { title: "Micro-Polymer Crosslinking", description: "Deep wood fiber penetration for unbreakable bonds." },
+      { title: "Anti-Bubble Action", description: "Formulated to minimize bubbles under laminate surfaces." }
+    ]
+  },
+  applicationGuide: {
+    title: "Step-by-Step Application Guide",
+    subtitle: "Follow these simple steps for professional bonding results.",
+    items: [
+      { title: "Surface Preparation", description: "Ensure both wood and laminate surfaces are clean, dry, and free from grease or dust.", image: "/images/Champion Super.png" },
+      { title: "Adhesive Spreading", description: "Spread Jivanjor adhesive evenly using a spreader or brush on one surface.", image: "/images/Aquabond.png" },
+      { title: "Pressing & Clamping", description: "Align the laminate on the wood and press firmly. Clamp for at least 2 hours.", image: "/images/Foambond.png" }
+    ]
+  },
+  faqs: {
+    title: "Troubleshooting & FAQs",
+    subtitle: "Common application questions answered by Jivanjor engineers.",
+    items: [
+      { question: "What is the recommended clamping duration?", answer: "We recommend clamping for 2 to 3 hours. Full curing takes 24 hours." },
+      { question: "Can it be used on exterior doors?", answer: "Yes, our waterproof Aquabond grade is highly recommended for exterior doors." }
+    ]
+  }
+};
+
+const defaultCategorySections = {
+  hero: {
+    title: "Woodworking Applications",
+    desc: "Explore specific adhesives engineered for laminates, solid wood, edge banding, and high-moisture environments.",
+    actionButtons: {
+      primary: { text: "Selector Tool", actionPath: "#category-showcase" },
+      secondary: { text: "Guides", actionPath: "/resources" }
+    },
+    media: [
+      "/images/hero.png"
+    ]
+  },
+  categoriesShowcase: {
+    title: "Application Sub-Categories",
+    subtitle: "Navigate through specialized category segments to find custom formulas.",
+    items: [
+      { name: "Laminates & Veneers", description: "Water-based glues with high coverage and zero bubbling.", image: "/images/Champion Super.png", link: "#" },
+      { name: "PVC Edge Banding", description: "Fast setting glues designed to bond wood panels with plastic edge strips.", image: "/images/Aquabond.png", link: "#" }
+    ]
+  },
+  applicationsGrid: {
+    title: "Common Construction & Assembly Areas",
+    subtitle: "Where Jivanjor adhesives are applied daily by Indian carpenters.",
+    items: [
+      { title: "Modular Kitchen Cabinets", description: "Demands moisture-proof Aquabond grade to resist steam and humidity.", image: "/images/Foambond.png" },
+      { title: "Solid Wood Joints", description: "Requires high-viscosity Champion Super for high-stress tenon joints.", image: "/images/Watershield.png" }
+    ]
+  },
+  substrates: {
+    title: "Substrates Compatibility Matrix",
+    subtitle: "Check substrate compatibility rating for modern interior woodworking boards.",
+    items: [
+      { name: "Plywood to Laminate", suitability: "Excellent", comment: "Highly recommended with all Jivanjor grades." },
+      { name: "MDF to Acrylic Sheet", suitability: "Good", comment: "Use Foambond or specialized edge formulations." }
+    ]
+  }
+};
 
 export default function PagesPage() {
   const [pages, setPages] = useState<Page[]>([]);
@@ -15,15 +284,17 @@ export default function PagesPage() {
   // Form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("general");
+
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
     description: "",
     activeTemplateId: "" as string | null,
+    sections: null as any,
   });
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,7 +318,15 @@ export default function PagesPage() {
   };
 
   const handleTitleChange = (title: string) => {
-    setFormData((prev) => ({ ...prev, title }));
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
+    setFormData((prev) => ({
+      ...prev,
+      title,
+      slug: prev.slug === "home" ? "home" : slug,
+    }));
   };
 
   const handleOpenAdd = () => {
@@ -57,19 +336,238 @@ export default function PagesPage() {
       slug: "",
       description: "",
       activeTemplateId: null,
+      sections: null,
     });
+    setActiveTab("general");
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (page: Page) => {
     setEditingId(page.id);
+    
+    // Identify selected template layout type and bootstrap defaults
+    let pageSections = page.sections;
+    if (page.activeTemplateId) {
+      const selectedTemp = templates.find((t) => t.id === page.activeTemplateId);
+      if (selectedTemp) {
+        const rawData = page.sections || selectedTemp.rawSections || selectedTemp.sections || {};
+        const type = rawData.layoutType || "home";
+
+        if (type === "about") {
+          pageSections = {
+            layoutType: "about",
+            hero: { ...defaultAboutSections.hero, ...rawData.hero },
+            story: { ...defaultAboutSections.story, ...rawData.story },
+            values: { ...defaultAboutSections.values, ...rawData.values },
+            team: { ...defaultAboutSections.team, ...rawData.team },
+            milestones: { ...defaultAboutSections.milestones, ...rawData.milestones },
+            ctaPromo: { ...defaultAboutSections.ctaPromo, ...rawData.ctaPromo }
+          };
+        } else if (type === "products") {
+          pageSections = {
+            layoutType: "products",
+            hero: { ...defaultProductSections.hero, ...rawData.hero },
+            specifications: { ...defaultProductSections.specifications, ...rawData.specifications },
+            features: { ...defaultProductSections.features, ...rawData.features },
+            applicationGuide: { ...defaultProductSections.applicationGuide, ...rawData.applicationGuide },
+            faqs: { ...defaultProductSections.faqs, ...rawData.faqs }
+          };
+        } else if (type === "categories") {
+          pageSections = {
+            layoutType: "categories",
+            hero: { ...defaultCategorySections.hero, ...rawData.hero },
+            categoriesShowcase: { ...defaultCategorySections.categoriesShowcase, ...rawData.categoriesShowcase },
+            applicationsGrid: { ...defaultCategorySections.applicationsGrid, ...rawData.applicationsGrid },
+            substrates: { ...defaultCategorySections.substrates, ...rawData.substrates }
+          };
+        } else {
+          const rawHero = rawData.hero || {};
+          let heroMedia = rawHero.media;
+          if (!heroMedia) {
+            if (rawHero.slides) {
+              heroMedia = rawHero.slides.map((s: any) => s.video || s.bgImage).filter(Boolean);
+            } else if (rawHero.bgImage || rawHero.video) {
+              heroMedia = [rawHero.bgImage, rawHero.video].filter(Boolean);
+            }
+          }
+          if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
+            heroMedia = [...defaultHomeSections.hero.media];
+          }
+
+          pageSections = {
+            layoutType: "home",
+            hero: {
+              title: rawHero.title || defaultHomeSections.hero.title,
+              desc: rawHero.desc || defaultHomeSections.hero.desc,
+              actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
+              media: heroMedia
+            },
+            productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+            findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
+            whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
+            showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
+            ctaPromo: { ...defaultHomeSections.ctaPromo, ...rawData.ctaPromo },
+            testimonials: { ...defaultHomeSections.testimonials, ...rawData.testimonials },
+            knowledgeBase: { ...defaultHomeSections.knowledgeBase, ...rawData.knowledgeBase }
+          };
+        }
+      }
+    }
+
     setFormData({
       title: page.title,
       slug: page.slug,
       description: page.description || "",
       activeTemplateId: page.activeTemplateId || null,
+      sections: pageSections || null,
     });
+    setActiveTab("general");
     setIsModalOpen(true);
+  };
+
+  const handleTemplateChange = (templateId: string | null) => {
+    let pageSections = null;
+    if (templateId) {
+      const selectedTemp = templates.find((t) => t.id === templateId);
+      if (selectedTemp) {
+        const rawData = selectedTemp.rawSections || selectedTemp.sections || {};
+        const type = rawData.layoutType || "home";
+
+        if (type === "about") {
+          pageSections = {
+            layoutType: "about",
+            hero: { ...defaultAboutSections.hero, ...rawData.hero },
+            story: { ...defaultAboutSections.story, ...rawData.story },
+            values: { ...defaultAboutSections.values, ...rawData.values },
+            team: { ...defaultAboutSections.team, ...rawData.team },
+            milestones: { ...defaultAboutSections.milestones, ...rawData.milestones },
+            ctaPromo: { ...defaultAboutSections.ctaPromo, ...rawData.ctaPromo }
+          };
+        } else if (type === "products") {
+          pageSections = {
+            layoutType: "products",
+            hero: { ...defaultProductSections.hero, ...rawData.hero },
+            specifications: { ...defaultProductSections.specifications, ...rawData.specifications },
+            features: { ...defaultProductSections.features, ...rawData.features },
+            applicationGuide: { ...defaultProductSections.applicationGuide, ...rawData.applicationGuide },
+            faqs: { ...defaultProductSections.faqs, ...rawData.faqs }
+          };
+        } else if (type === "categories") {
+          pageSections = {
+            layoutType: "categories",
+            hero: { ...defaultCategorySections.hero, ...rawData.hero },
+            categoriesShowcase: { ...defaultCategorySections.categoriesShowcase, ...rawData.categoriesShowcase },
+            applicationsGrid: { ...defaultCategorySections.applicationsGrid, ...rawData.applicationsGrid },
+            substrates: { ...defaultCategorySections.substrates, ...rawData.substrates }
+          };
+        } else {
+          const rawHero = rawData.hero || {};
+          let heroMedia = rawHero.media;
+          if (!heroMedia) {
+            if (rawHero.slides) {
+              heroMedia = rawHero.slides.map((s: any) => s.video || s.bgImage).filter(Boolean);
+            } else if (rawHero.bgImage || rawHero.video) {
+              heroMedia = [rawHero.bgImage, rawHero.video].filter(Boolean);
+            }
+          }
+          if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
+            heroMedia = [...defaultHomeSections.hero.media];
+          }
+
+          pageSections = {
+            layoutType: "home",
+            hero: {
+              title: rawHero.title || defaultHomeSections.hero.title,
+              desc: rawHero.desc || defaultHomeSections.hero.desc,
+              actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
+              media: heroMedia
+            },
+            productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+            findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
+            whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
+            showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
+            ctaPromo: { ...defaultHomeSections.ctaPromo, ...rawData.ctaPromo },
+            testimonials: { ...defaultHomeSections.testimonials, ...rawData.testimonials },
+            knowledgeBase: { ...defaultHomeSections.knowledgeBase, ...rawData.knowledgeBase }
+          };
+        }
+      }
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      activeTemplateId: templateId,
+      sections: pageSections,
+    }));
+    setActiveTab("general");
+  };
+
+  const handleResetToTemplateDefaults = () => {
+    if (!formData.activeTemplateId) return;
+    if (!confirm("Are you sure you want to discard your customizations and reset this page's sections content to template defaults?")) return;
+    
+    const selectedTemp = templates.find((t) => t.id === formData.activeTemplateId);
+    if (selectedTemp) {
+      const rawData = selectedTemp.rawSections || selectedTemp.sections || {};
+      const type = rawData.layoutType || "home";
+
+      let resetSections: any = null;
+      if (type === "about") {
+        resetSections = {
+          layoutType: "about",
+          hero: { ...defaultAboutSections.hero, ...rawData.hero },
+          story: { ...defaultAboutSections.story, ...rawData.story },
+          values: { ...defaultAboutSections.values, ...rawData.values },
+          team: { ...defaultAboutSections.team, ...rawData.team },
+          milestones: { ...defaultAboutSections.milestones, ...rawData.milestones },
+          ctaPromo: { ...defaultAboutSections.ctaPromo, ...rawData.ctaPromo }
+        };
+      } else if (type === "products") {
+        resetSections = {
+          layoutType: "products",
+          hero: { ...defaultProductSections.hero, ...rawData.hero },
+          specifications: { ...defaultProductSections.specifications, ...rawData.specifications },
+          features: { ...defaultProductSections.features, ...rawData.features },
+          applicationGuide: { ...defaultProductSections.applicationGuide, ...rawData.applicationGuide },
+          faqs: { ...defaultProductSections.faqs, ...rawData.faqs }
+        };
+      } else if (type === "categories") {
+        resetSections = {
+          layoutType: "categories",
+          hero: { ...defaultCategorySections.hero, ...rawData.hero },
+          categoriesShowcase: { ...defaultCategorySections.categoriesShowcase, ...rawData.categoriesShowcase },
+          applicationsGrid: { ...defaultCategorySections.applicationsGrid, ...rawData.applicationsGrid },
+          substrates: { ...defaultCategorySections.substrates, ...rawData.substrates }
+        };
+      } else {
+        const rawHero = rawData.hero || {};
+        let heroMedia = rawHero.media || [];
+        if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
+          heroMedia = [...defaultHomeSections.hero.media];
+        }
+        resetSections = {
+          layoutType: "home",
+          hero: {
+            title: rawHero.title || defaultHomeSections.hero.title,
+            desc: rawHero.desc || defaultHomeSections.hero.desc,
+            actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
+            media: heroMedia
+          },
+          productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+          findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
+          whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
+          showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
+          ctaPromo: { ...defaultHomeSections.ctaPromo, ...rawData.ctaPromo },
+          testimonials: { ...defaultHomeSections.testimonials, ...rawData.testimonials },
+          knowledgeBase: { ...defaultHomeSections.knowledgeBase, ...rawData.knowledgeBase }
+        };
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        sections: resetSections,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,12 +594,155 @@ export default function PagesPage() {
     }
   };
 
+  // State Update Helpers for dynamic sections
+  const updateSectionField = (sectionKey: string, fieldKey: string, value: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [sectionKey]: {
+          ...prev.sections?.[sectionKey],
+          [fieldKey]: value,
+        },
+      },
+    }));
+  };
+
+  const updateNestedField = (sectionKey: string, subKey: string, fieldKey: string, value: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [sectionKey]: {
+          ...prev.sections?.[sectionKey],
+          [subKey]: {
+            ...prev.sections?.[sectionKey]?.[subKey],
+            [fieldKey]: value,
+          },
+        },
+      },
+    }));
+  };
+
+  const updateItemField = (sectionKey: string, idx: number, fieldKey: string, value: any) => {
+    setFormData((prev: any) => {
+      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      items[idx] = { ...items[idx], [fieldKey]: value };
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...prev.sections?.[sectionKey],
+            items,
+          },
+        },
+      };
+    });
+  };
+
+  const updateNestedItemField = (sectionKey: string, idx: number, subKey: string, fieldKey: string, value: any) => {
+    setFormData((prev: any) => {
+      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      items[idx] = {
+        ...items[idx],
+        [subKey]: {
+          ...items[idx]?.[subKey],
+          [fieldKey]: value
+        }
+      };
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...prev.sections?.[sectionKey],
+            items,
+          },
+        },
+      };
+    });
+  };
+
+  const addItem = (sectionKey: string, defaultItem: any) => {
+    setFormData((prev: any) => {
+      const items = [...(prev.sections?.[sectionKey]?.items || []), defaultItem];
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...prev.sections?.[sectionKey],
+            items,
+          },
+        },
+      };
+    });
+  };
+
+  const removeItem = (sectionKey: string, idx: number) => {
+    setFormData((prev: any) => {
+      const items = (prev.sections?.[sectionKey]?.items || []).filter((_: any, i: number) => i !== idx);
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...prev.sections?.[sectionKey],
+            items,
+          },
+        },
+      };
+    });
+  };
+
   // Filter Pages
   const filteredPages = pages.filter((p) => {
     const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
                           (p.description && p.description.toLowerCase().includes(search.toLowerCase()));
     return matchesSearch;
   });
+
+  const layoutType = formData.sections?.layoutType || "home";
+
+  // Build Dynamic tabs list based on Layout Type
+  const tabsList = [
+    { id: "general", label: "General Properties", icon: Sliders },
+    ...(layoutType === "about"
+      ? [
+          { id: "hero", label: "Hero Banner", icon: Layout },
+          { id: "story", label: "Company Story", icon: FileText },
+          { id: "values", label: "Core Values", icon: Shield },
+          { id: "team", label: "Leadership Team", icon: Sliders },
+          { id: "milestones", label: "Milestones Timeline", icon: Award },
+          { id: "ctaPromo", label: "CTA Promo Banner", icon: MessageSquare },
+        ]
+      : layoutType === "products"
+      ? [
+          { id: "hero", label: "Hero Banner", icon: Layout },
+          { id: "specifications", label: "Technical Specs", icon: Sliders },
+          { id: "features", label: "Key Features", icon: Shield },
+          { id: "applicationGuide", label: "Application Steps", icon: Grid },
+          { id: "faqs", label: "Troubleshooting FAQs", icon: Award },
+        ]
+      : layoutType === "categories"
+      ? [
+          { id: "hero", label: "Hero Banner", icon: Layout },
+          { id: "categoriesShowcase", label: "Sub-Categories Showcase", icon: Grid },
+          { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
+          { id: "substrates", label: "Substrates Matrix", icon: Shield },
+        ]
+      : [
+          { id: "hero", label: "Hero Banner", icon: Layout },
+          { id: "productRange", label: "Products Range", icon: Grid },
+          { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
+          { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
+          { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
+          { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
+          { id: "testimonials", label: "Testimonials", icon: Bookmark },
+          { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+        ])
+  ];
 
   // Pagination
   const totalPages = Math.ceil(filteredPages.length / itemsPerPage) || 1;
@@ -263,7 +904,8 @@ export default function PagesPage() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] max-w-3xl">
+        // ==================== FULL-PAGE SECTION FORM WORKSPACE ====================
+        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] flex flex-col min-h-[80vh]">
           {/* Header Workspace Title Bar */}
           <div className="flex items-center gap-3 border-b border-border pb-5 shrink-0">
             <button
@@ -276,97 +918,1804 @@ export default function PagesPage() {
             </button>
             <div>
               <h1 className="text-2xl font-black text-foreground flex items-center gap-2">
-                <FileText className="h-6 w-6 text-primary" />
-                <span>{editingId ? "Modify Dynamic Page Details" : "Configure Custom Dynamic Page"}</span>
+                <Layers className="h-6 w-6 text-primary" />
+                <span>{editingId ? "Dynamic Page Layout Studio" : "Configure Custom Dynamic Page"}</span>
               </h1>
               <p className="text-sm font-semibold text-foreground/45 uppercase tracking-wider">
-                Establish layout templates pathways, customized descriptions, slugs paths, and drafts attributes
+                Establish custom configurations and edit layout section contents specifically for this page
               </p>
             </div>
           </div>
 
-          <div className="bg-background border border-border rounded-3xl p-6 shadow-sm">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                  Page Title Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="e.g. Partner Portal Consultation"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
+            {/* Sidebar tabs */}
+            <div className="w-full lg:w-1/4 flex flex-col gap-1.5 shrink-0 bg-surface/30 p-3 border border-border rounded-2xl h-fit">
+              {tabsList.map((tab) => {
+                const TabIcon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm font-bold transition-all cursor-pointer border ${activeTab === tab.id
+                      ? "bg-primary text-white border-primary shadow-sm"
+                      : "bg-background/40 hover:bg-surface text-foreground/80 border-border"
+                      }`}
+                  >
+                    <TabIcon className={`h-4.5 w-4.5 ${activeTab === tab.id ? "text-white" : "text-primary"}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+              
+              {formData.activeTemplateId && (
+                <button
+                  type="button"
+                  onClick={handleResetToTemplateDefaults}
+                  className="flex items-center justify-center gap-2 mt-4 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 dark:bg-red-955/20 dark:hover:bg-red-955/35 dark:border-red-900/40 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                >
+                  Reset to Defaults
+                </button>
+              )}
+            </div>
 
-              <div>
-                <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2 flex items-center justify-between">
-                  <span>Page Slug Path Reference</span>
-                  {formData.slug === "home" && (
-                    <span className="text-[10px] text-primary font-bold uppercase tracking-wider animate-[fadeIn_0.2s_ease-out]">
-                      Fixed / Landing Page
-                    </span>
-                  )}
-                </label>
-                <input
-                  type="text"
-                  required
-                  disabled={formData.slug === "home"}
-                  value={formData.slug}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "") }))}
-                  placeholder="partner-portal"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary disabled:opacity-60 disabled:cursor-not-allowed transition-all"
-                />
-                {formData.slug === "home" && (
-                  <p className="mt-1.5 text-[11px] font-semibold text-primary animate-[fadeIn_0.2s_ease-out]">
-                    ⚠️ The home page pathway is locked and cannot be modified.
-                  </p>
+            {/* Input Canvas Panels */}
+            <div className="flex-1 bg-background border border-border p-6 rounded-3xl shadow-sm min-h-[60vh] flex flex-col justify-between">
+              <div className="space-y-6">
+                {activeTab === "general" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Sliders className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">General Properties</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Page Title Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.title}
+                        onChange={(e) => handleTitleChange(e.target.value)}
+                        placeholder="e.g. Partner Portal Consultation"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span>Page Slug Path Reference</span>
+                        {formData.slug === "home" && (
+                          <span className="text-[10px] text-primary font-bold uppercase tracking-wider animate-[fadeIn_0.2s_ease-out]">
+                            Fixed / Landing Page
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        disabled={formData.slug === "home"}
+                        value={formData.slug}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "") }))}
+                        placeholder="partner-portal"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                      />
+                      {formData.slug === "home" && (
+                        <p className="mt-1.5 text-[11px] font-semibold text-primary animate-[fadeIn_0.2s_ease-out]">
+                          ⚠️ The home page pathway is locked and cannot be modified.
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Page Description & Details
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.description}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                        placeholder="Write the general outline or target intent of this custom dynamic layout..."
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Active Layout Template
+                      </label>
+                      {templates.length > 0 ? (
+                        <select
+                          value={formData.activeTemplateId || ""}
+                          onChange={(e) => handleTemplateChange(e.target.value || null)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary text-foreground cursor-pointer"
+                        >
+                          <option value="">-- No Active Template (Draft Mode) --</option>
+                          {templates.map((t) => (
+                            <option key={t.id} value={t.id}>
+                              {t.name} ({t.slug})
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <div className="p-4 bg-surface/30 border border-border rounded-xl text-xs text-foreground/50 font-semibold flex items-center gap-2">
+                          <LayoutTemplate className="h-4.5 w-4.5 text-foreground/45" />
+                          <span>No layout templates assembled in the system yet. Build one in the Templates Manager first.</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "hero" && formData.sections?.hero && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Layout className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Global Hero Settings</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Hero Banner Title Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.hero.title || ""}
+                          onChange={(e) => updateSectionField("hero", "title", e.target.value)}
+                          placeholder="Dependable Bonds for Indian Homes"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Hero Description Paragraph
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={formData.sections.hero.desc || ""}
+                          onChange={(e) => updateSectionField("hero", "desc", e.target.value)}
+                          placeholder="Explain premium quality formulations..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Hero Action Buttons */}
+                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                      <h4 className="text-xs font-black uppercase text-primary tracking-wider">CTA Action Buttons Setup</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Primary Button */}
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Primary Call-to-action</span>
+                          <input
+                            type="text"
+                            value={formData.sections.hero.actionButtons?.primary?.text || ""}
+                            onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...formData.sections.hero.actionButtons?.primary, text: e.target.value })}
+                            placeholder="Button Text"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                          <input
+                            type="text"
+                            value={formData.sections.hero.actionButtons?.primary?.actionPath || ""}
+                            onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...formData.sections.hero.actionButtons?.primary, actionPath: e.target.value })}
+                            placeholder="Action Path (e.g. #product-section)"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                        </div>
+                        {/* Secondary Button */}
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
+                          <input
+                            type="text"
+                            value={formData.sections.hero.actionButtons?.secondary?.text || ""}
+                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, text: e.target.value })}
+                            placeholder="Button Text"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                          <input
+                            type="text"
+                            value={formData.sections.hero.actionButtons?.secondary?.actionPath || ""}
+                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, actionPath: e.target.value })}
+                            placeholder="Action Path (e.g. /about)"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col border-t border-border pt-6 mt-4 gap-3">
+                      <div className="flex items-center gap-2">
+                        <Layout className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Hero Background Media (Images/Videos)</h3>
+                      </div>
+                      <p className="text-xs text-foreground/50 font-medium">
+                        At least one background image or video is mandatory for the hero slideshow.
+                      </p>
+                    </div>
+
+                    {/* Media Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {(formData.sections.hero.media || []).map((mediaUrl: string, idx: number) => {
+                        const isVid = isVideo(mediaUrl);
+                        return (
+                          <div key={idx} className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface group">
+                            {isVid ? (
+                              <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline />
+                            ) : (
+                              <img src={mediaUrl} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                            )}
+                            
+                            {/* Remove button (only if more than 1 item) */}
+                            {(formData.sections.hero.media || []).length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const newMedia = (formData.sections.hero.media || []).filter((_: any, i: number) => i !== idx);
+                                  updateSectionField("hero", "media", newMedia);
+                                }}
+                                className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer shadow-md border border-red-700"
+                                title="Delete media file"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                            
+                            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white uppercase tracking-wider">
+                              {isVid ? "Video" : "Image"}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Add Media upload zone */}
+                    <div className="mt-4">
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Upload New Image or Video
+                      </label>
+                      <MediaUpload
+                        value=""
+                        onChange={(url) => {
+                          if (url) {
+                            const newMedia = [...(formData.sections.hero.media || [])];
+                            newMedia.push(url);
+                            updateSectionField("hero", "media", newMedia);
+                          }
+                        }}
+                        folder="templates"
+                        accept="any"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Homepage Layout Only Tabs */}
+                {activeTab === "productRange" && formData.sections?.productRange && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Product Range Section</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Product Range Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.productRange.title}
+                          onChange={(e) => updateSectionField("productRange", "title", e.target.value)}
+                          placeholder="A Complete Adhesive Range for Modern Woodworking"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Product Range Description/Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.productRange.subtitle || ""}
+                          onChange={(e) => updateSectionField("productRange", "subtitle", e.target.value)}
+                          placeholder="From premium wood glues to waterproof formulas..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* List of Dynamic Product Cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dynamic Products Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("productRange", { title: "New Product", description: "Excellent setting...", tag: "New", image: "/images/Champion Super.png", cta: { text: "Learn More", actionPath: "#" } })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Product Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.productRange.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("productRange", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <div className="pr-10">
+                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Card #{idx + 1}</span>
+                            </div>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("productRange", idx, "title", e.target.value)}
+                                placeholder="Product Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("productRange", idx, "description", e.target.value)}
+                                placeholder="Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <div className="grid grid-cols-2 gap-2 mb-2">
+                                <input
+                                  type="text"
+                                  value={item.tag || ""}
+                                  onChange={(e) => updateItemField("productRange", idx, "tag", e.target.value)}
+                                  placeholder="Badge tag (e.g. Best Seller)"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                />
+                                <div className="space-y-1">
+                                  <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Image</span>
+                                  <ImageUpload
+                                    value={item.image || ""}
+                                    onChange={(url) => updateItemField("productRange", idx, "image", url)}
+                                    folder="templates"
+                                    size="compact"
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <input
+                                  type="text"
+                                  value={item.cta?.text || ""}
+                                  onChange={(e) => updateNestedItemField("productRange", idx, "cta", "text", e.target.value)}
+                                  placeholder="CTA Text"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                />
+                                <input
+                                  type="text"
+                                  value={item.cta?.actionPath || ""}
+                                  onChange={(e) => updateNestedItemField("productRange", idx, "cta", "actionPath", e.target.value)}
+                                  placeholder="CTA Link"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "findAdhesive" && formData.sections?.findAdhesive && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Search className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Right Choice Categories</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.findAdhesive.title}
+                          onChange={(e) => updateSectionField("findAdhesive", "title", e.target.value)}
+                          placeholder="Find The Right Adhesive"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.findAdhesive.subtitle || ""}
+                          onChange={(e) => updateSectionField("findAdhesive", "subtitle", e.target.value)}
+                          placeholder="Select your application category..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Categories Links */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Application Pathways Categories</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("findAdhesive", { name: "New Category Pathway", link: "#" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Category Link
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.findAdhesive.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative flex flex-col gap-2">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("findAdhesive", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Link #{idx + 1}</span>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                              <input
+                                type="text"
+                                value={item.name}
+                                onChange={(e) => updateItemField("findAdhesive", idx, "name", e.target.value)}
+                                placeholder="Category Name"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
+                              />
+                              <input
+                                type="text"
+                                value={item.link || ""}
+                                onChange={(e) => updateItemField("findAdhesive", idx, "link", e.target.value)}
+                                placeholder="Link Target (e.g. #)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "whyTrustUs" && formData.sections?.whyTrustUs && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Why Professionals Trust Jivanjor</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.whyTrustUs.title}
+                          onChange={(e) => updateSectionField("whyTrustUs", "title", e.target.value)}
+                          placeholder="Why Professionals Trust Jivanjor"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.whyTrustUs.subtitle || ""}
+                          onChange={(e) => updateSectionField("whyTrustUs", "subtitle", e.target.value)}
+                          placeholder="Over decades, builders have endorsed..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Trust Items */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Trust Factors Checklist</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("whyTrustUs", { title: "Consistent Quality", description: "Batch checked..." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Trust Factor
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.whyTrustUs.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("whyTrustUs", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Item #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("whyTrustUs", idx, "title", e.target.value)}
+                                placeholder="Factor Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("whyTrustUs", idx, "description", e.target.value)}
+                                placeholder="Factor Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "showcaseGrid" && formData.sections?.showcaseGrid && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Resource Showcase Grid</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.showcaseGrid.title}
+                          onChange={(e) => updateSectionField("showcaseGrid", "title", e.target.value)}
+                          placeholder="Built Around India's Woodworking Professionals"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.showcaseGrid.subtitle || ""}
+                          onChange={(e) => updateSectionField("showcaseGrid", "subtitle", e.target.value)}
+                          placeholder="Jivanjor continues to grow..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Showcase Items */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Showcase Grid Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("showcaseGrid", { title: "Technical Resources", description: "Pro guides...", link: "#" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Showcase Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.showcaseGrid.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("showcaseGrid", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("showcaseGrid", idx, "title", e.target.value)}
+                                placeholder="Card Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("showcaseGrid", idx, "description", e.target.value)}
+                                placeholder="Card Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <input
+                                type="text"
+                                value={item.link || ""}
+                                onChange={(e) => updateItemField("showcaseGrid", idx, "link", e.target.value)}
+                                placeholder="Link Target (e.g. #)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "ctaPromo" && formData.sections?.ctaPromo && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">CTA Promotion Banner</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Banner Heading Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.ctaPromo.title}
+                          onChange={(e) => updateSectionField("ctaPromo", "title", e.target.value)}
+                          placeholder="Grow Your Business With a Trusted Adhesive"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Banner Subtitle/Description
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.ctaPromo.subtitle || ""}
+                          onChange={(e) => updateSectionField("ctaPromo", "subtitle", e.target.value)}
+                          placeholder="Work with a growing brand..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          CTA Button Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.ctaPromo.ctaText || ""}
+                          onChange={(e) => updateSectionField("ctaPromo", "ctaText", e.target.value)}
+                          placeholder="Partner With Us"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          CTA Button Action Path/URL
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.ctaPromo.ctaLink || ""}
+                          onChange={(e) => updateSectionField("ctaPromo", "ctaLink", e.target.value)}
+                          placeholder="e.g. /contact"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "testimonials" && formData.sections?.testimonials && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Bookmark className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Testimonials Section</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.testimonials.title}
+                          onChange={(e) => updateSectionField("testimonials", "title", e.target.value)}
+                          placeholder="Trusted by People Who Know the Work"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.testimonials.subtitle || ""}
+                          onChange={(e) => updateSectionField("testimonials", "subtitle", e.target.value)}
+                          placeholder="Hear from carpenters..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "knowledgeBase" && formData.sections?.knowledgeBase && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Award className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Knowledge Articles Section</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.knowledgeBase.title}
+                          onChange={(e) => updateSectionField("knowledgeBase", "title", e.target.value)}
+                          placeholder="Knowledge Base & Guides"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.knowledgeBase.subtitle || ""}
+                          onChange={(e) => updateSectionField("knowledgeBase", "subtitle", e.target.value)}
+                          placeholder="Explore insights..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Articles items */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Featured Guides/Articles</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("knowledgeBase", { title: "New Guide Article", summary: "Learn about...", link: "#" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Guide Link
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.knowledgeBase.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("knowledgeBase", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Article #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("knowledgeBase", idx, "title", e.target.value)}
+                                placeholder="Article Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.summary}
+                                onChange={(e) => updateItemField("knowledgeBase", idx, "summary", e.target.value)}
+                                placeholder="Article Summary"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <input
+                                type="text"
+                                value={item.link || ""}
+                                onChange={(e) => updateItemField("knowledgeBase", idx, "link", e.target.value)}
+                                placeholder="Link Target (e.g. #)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* About Layout Tabs */}
+                {activeTab === "story" && formData.sections?.story && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Company Story Section</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Story Title Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.story.title || ""}
+                          onChange={(e) => updateSectionField("story", "title", e.target.value)}
+                          placeholder="Our Woodworking Legacy"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Story Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.story.subtitle || ""}
+                          onChange={(e) => updateSectionField("story", "subtitle", e.target.value)}
+                          placeholder="From a single product line..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+
+                      <div className="md:col-span-2 space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Showcase Image</span>
+                        <ImageUpload
+                          value={formData.sections.story.image || ""}
+                          onChange={(url) => updateSectionField("story", "image", url)}
+                          folder="templates"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Story Paragraphs List */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Story Narrative Paragraphs</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newParas = [...(formData.sections.story.paragraphs || []), ""];
+                            updateSectionField("story", "paragraphs", newParas);
+                          }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Paragraph
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {(formData.sections.story.paragraphs || []).map((para: string, idx: number) => (
+                          <div key={idx} className="relative flex gap-3 items-start">
+                            <span className="text-xs font-bold text-foreground/40 mt-3">#{idx + 1}</span>
+                            <textarea
+                              rows={3}
+                              value={para}
+                              onChange={(e) => {
+                                const newParas = [...(formData.sections.story.paragraphs || [])];
+                                newParas[idx] = e.target.value;
+                                updateSectionField("story", "paragraphs", newParas);
+                              }}
+                              placeholder="Write company story detail narrative..."
+                              className="flex-1 px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                            />
+                            <button
+                              type="button"
+                              disabled={(formData.sections.story.paragraphs || []).length <= 1}
+                              onClick={() => {
+                                const newParas = (formData.sections.story.paragraphs || []).filter((_: any, i: number) => i !== idx);
+                                updateSectionField("story", "paragraphs", newParas);
+                              }}
+                              className="p-2.5 mt-1 bg-surface hover:bg-red-50 text-foreground/40 hover:text-red-500 rounded-xl cursor-pointer border border-border disabled:opacity-40"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "values" && formData.sections?.values && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Core Pillars / Values</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Values Heading Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.values.title}
+                          onChange={(e) => updateSectionField("values", "title", e.target.value)}
+                          placeholder="Our Core Pillars"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Values Subtitle description
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.values.subtitle || ""}
+                          onChange={(e) => updateSectionField("values", "subtitle", e.target.value)}
+                          placeholder="Principles driving our innovation..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Values Checklist Cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dynamic Values Checklist</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("values", { title: "New Core Value", description: "Explain this standard..." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Core Value Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.values.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("values", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Value #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("values", idx, "title", e.target.value)}
+                                placeholder="Value Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("values", idx, "description", e.target.value)}
+                                placeholder="Value Description detail text"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "team" && formData.sections?.team && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Sliders className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Leadership Team Profiles</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Main Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.team.title}
+                          onChange={(e) => updateSectionField("team", "title", e.target.value)}
+                          placeholder="Leadership Team"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle details
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.team.subtitle || ""}
+                          onChange={(e) => updateSectionField("team", "subtitle", e.target.value)}
+                          placeholder="The experts and visionaries driving us..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Team Members List */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Executive Board Members</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("team", { name: "New Executive", designation: "Director", bio: "Bio details...", image: "/images/Champion Super.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Team Member
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.team.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("team", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Profile #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.name}
+                                onChange={(e) => updateItemField("team", idx, "name", e.target.value)}
+                                placeholder="Member Full Name"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <input
+                                type="text"
+                                value={item.designation}
+                                onChange={(e) => updateItemField("team", idx, "designation", e.target.value)}
+                                placeholder="Corporate Title / Role"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.bio}
+                                onChange={(e) => updateItemField("team", idx, "bio", e.target.value)}
+                                placeholder="Professional background details..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Executive Portrait Portrait</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("team", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "milestones" && formData.sections?.milestones && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Award className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Company Milestones timeline</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Milestones Heading Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.milestones.title}
+                          onChange={(e) => updateSectionField("milestones", "title", e.target.value)}
+                          placeholder="Corporate Milestones"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Milestones Description details
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.milestones.subtitle || ""}
+                          onChange={(e) => updateSectionField("milestones", "subtitle", e.target.value)}
+                          placeholder="Key moments in Jivanjor's path..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Timeline Milestones Cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Company History Timeline</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("milestones", { year: "2026", title: "Launch Studio", description: "Began digital portals..." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Milestone Timeline Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.milestones.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("milestones", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Milestone #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.year}
+                                onChange={(e) => updateItemField("milestones", idx, "year", e.target.value)}
+                                placeholder="Year (e.g. 1998)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-black mb-2 uppercase text-primary"
+                              />
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("milestones", idx, "title", e.target.value)}
+                                placeholder="Milestone Header Name"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("milestones", idx, "description", e.target.value)}
+                                placeholder="Brief historical timeline description..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Product Layout Only Tabs */}
+                {activeTab === "specifications" && formData.sections?.specifications && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Sliders className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Technical Specifications</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.specifications.title}
+                          onChange={(e) => updateSectionField("specifications", "title", e.target.value)}
+                          placeholder="Technical Specifications"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Description/Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.specifications.subtitle || ""}
+                          onChange={(e) => updateSectionField("specifications", "subtitle", e.target.value)}
+                          placeholder="Accurate specifications tested under normal lab conditions..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Specifications key-value table */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Specifications properties</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("specifications", { label: "Adhesive Viscosity", value: "220 Poise" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Property row
+                        </button>
+                      </div>
+
+                      <div className="space-y-3 bg-surface/10 p-4 border border-border rounded-2xl">
+                        {formData.sections.specifications.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="flex gap-4 items-center">
+                            <span className="text-xs text-foreground/40 font-bold shrink-0">#{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={item.label}
+                              onChange={(e) => updateItemField("specifications", idx, "label", e.target.value)}
+                              placeholder="Property (e.g. Viscosity)"
+                              className="flex-1 px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-bold"
+                            />
+                            <input
+                              type="text"
+                              value={item.value}
+                              onChange={(e) => updateItemField("specifications", idx, "value", e.target.value)}
+                              placeholder="Value (e.g. 200 Poise)"
+                              className="flex-1 px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-medium"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeItem("specifications", idx)}
+                              className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "features" && formData.sections?.features && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Performance Features</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Features Heading Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.features.title}
+                          onChange={(e) => updateSectionField("features", "title", e.target.value)}
+                          placeholder="Key Performance Features"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Features Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.features.subtitle || ""}
+                          onChange={(e) => updateSectionField("features", "subtitle", e.target.value)}
+                          placeholder="Why Jivanjor outperforms ordinary carpentry glues..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Features checklist cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Product features features</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("features", { title: "Extra Sticky Grab", description: "Align laminates easily..." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Feature Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.features.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("features", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Feature #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("features", idx, "title", e.target.value)}
+                                placeholder="Feature Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("features", idx, "description", e.target.value)}
+                                placeholder="Feature Details Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "applicationGuide" && formData.sections?.applicationGuide && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Step-by-Step Application Guide</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Guide Title Main Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.applicationGuide.title}
+                          onChange={(e) => updateSectionField("applicationGuide", "title", e.target.value)}
+                          placeholder="Step-by-Step Application Guide"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Guide Subtitle details
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.applicationGuide.subtitle || ""}
+                          onChange={(e) => updateSectionField("applicationGuide", "subtitle", e.target.value)}
+                          placeholder="Follow these simple steps for professional results..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Guide Steps list */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Application Steps Workflow</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("applicationGuide", { title: "Next Prep Step", description: "Ensure surface dry...", image: "/images/Champion Super.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Guide Step
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.applicationGuide.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("applicationGuide", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Step #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("applicationGuide", idx, "title", e.target.value)}
+                                placeholder="Step Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("applicationGuide", idx, "description", e.target.value)}
+                                placeholder="Step Guidelines detail..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Illustration Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("applicationGuide", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "faqs" && formData.sections?.faqs && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Award className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Troubleshooting & FAQs</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          FAQ Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.faqs.title}
+                          onChange={(e) => updateSectionField("faqs", "title", e.target.value)}
+                          placeholder="Troubleshooting & FAQs"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          FAQ Section Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.faqs.subtitle || ""}
+                          onChange={(e) => updateSectionField("faqs", "subtitle", e.target.value)}
+                          placeholder="Common application questions answered..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* FAQ Q&A cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Troubleshooting FAQ cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("faqs", { question: "What is the clamping time?", answer: "Normally 2 to 3 hours." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Q&A Item
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.faqs.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("faqs", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">FAQ #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.question}
+                                onChange={(e) => updateItemField("faqs", idx, "question", e.target.value)}
+                                placeholder="Question Text"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.answer}
+                                onChange={(e) => updateItemField("faqs", idx, "answer", e.target.value)}
+                                placeholder="Detailed Answer description..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Categories Layout Only Tabs */}
+                {activeTab === "categoriesShowcase" && formData.sections?.categoriesShowcase && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Application Sub-Categories Showcase</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Showcase Main Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.categoriesShowcase.title}
+                          onChange={(e) => updateSectionField("categoriesShowcase", "title", e.target.value)}
+                          placeholder="Application Sub-Categories"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Showcase Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.categoriesShowcase.subtitle || ""}
+                          onChange={(e) => updateSectionField("categoriesShowcase", "subtitle", e.target.value)}
+                          placeholder="Navigate through specialized category segments..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Sub-category showcase cards */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Sub-category cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("categoriesShowcase", { name: "Laminates & Veneers", description: "Water-based glues...", image: "/images/Champion Super.png", link: "#" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Category Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.categoriesShowcase.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("categoriesShowcase", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.name}
+                                onChange={(e) => updateItemField("categoriesShowcase", idx, "name", e.target.value)}
+                                placeholder="Subcategory Name"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("categoriesShowcase", idx, "description", e.target.value)}
+                                placeholder="Subcategory description detail..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <input
+                                type="text"
+                                value={item.link || ""}
+                                onChange={(e) => updateItemField("categoriesShowcase", idx, "link", e.target.value)}
+                                placeholder="Link Target (e.g. /products?cat=laminates)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Showcase Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("categoriesShowcase", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "applicationsGrid" && formData.sections?.applicationsGrid && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Common Assembly & Applications Areas</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Grid Heading Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.applicationsGrid.title}
+                          onChange={(e) => updateSectionField("applicationsGrid", "title", e.target.value)}
+                          placeholder="Common Construction & Assembly Areas"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Grid Description details
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.applicationsGrid.subtitle || ""}
+                          onChange={(e) => updateSectionField("applicationsGrid", "subtitle", e.target.value)}
+                          placeholder="Where Jivanjor adhesives are applied daily..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Applications cards lists */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Assembly grids</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("applicationsGrid", { title: "Kitchen Assembly", description: "Demands moisture proof...", image: "/images/Champion Super.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Assembly Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {formData.sections.applicationsGrid.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("applicationsGrid", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Area #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title}
+                                onChange={(e) => updateItemField("applicationsGrid", idx, "title", e.target.value)}
+                                placeholder="Area Name"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) => updateItemField("applicationsGrid", idx, "description", e.target.value)}
+                                placeholder="Substrate requirements description..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Area Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("applicationsGrid", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "substrates" && formData.sections?.substrates && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Shield className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Substrates Compatibility Matrix</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Matrix Title
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.substrates.title}
+                          onChange={(e) => updateSectionField("substrates", "title", e.target.value)}
+                          placeholder="Substrates Compatibility Matrix"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Description Subtitle
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.substrates.subtitle || ""}
+                          onChange={(e) => updateSectionField("substrates", "subtitle", e.target.value)}
+                          placeholder="Check substrate compatibility ratings..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Substrates list rows */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Substrate Boards Rows</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("substrates", { name: "Plywood to Laminate", suitability: "Excellent", comment: "Perfect bonding grab." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Substrate board
+                        </button>
+                      </div>
+
+                      <div className="space-y-3 bg-surface/10 p-4 border border-border rounded-2xl">
+                        {formData.sections.substrates.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 bg-background border border-border rounded-xl space-y-3 relative">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("substrates", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Row #{idx + 1}</span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              <input
+                                type="text"
+                                value={item.name}
+                                onChange={(e) => updateItemField("substrates", idx, "name", e.target.value)}
+                                placeholder="Substrate (e.g. MDF to Acrylic)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-bold"
+                              />
+                              <select
+                                value={item.suitability}
+                                onChange={(e) => updateItemField("substrates", idx, "suitability", e.target.value)}
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold text-foreground cursor-pointer"
+                              >
+                                <option value="Excellent">Excellent Compatibility</option>
+                                <option value="Good">Good Compatibility</option>
+                                <option value="Fair">Fair Compatibility</option>
+                                <option value="Poor">Poor / Unsupported</option>
+                              </select>
+                              <input
+                                type="text"
+                                value={item.comment || ""}
+                                onChange={(e) => updateItemField("substrates", idx, "comment", e.target.value)}
+                                placeholder="Recommendations details comments..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-medium"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                  Page Description & Details
-                </label>
-                <textarea
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Write the general outline or target intent of this custom dynamic layout..."
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary resize-none"
-                />
-              </div>
-
-              {editingId && (
-                <div>
-                  <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                    Active Layout Template
-                  </label>
-                  {templates.length > 0 ? (
-                    <select
-                      value={formData.activeTemplateId || ""}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, activeTemplateId: e.target.value || null }))}
-                      className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:focus:border-primary text-foreground cursor-pointer"
-                    >
-                      <option value="">-- No Active Template (Draft Mode) --</option>
-                      {templates.map((t) => (
-                        <option key={t.id} value={t.id}>
-                          {t.name} ({t.slug})
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <div className="p-4 bg-surface/30 border border-border rounded-xl text-xs text-foreground/50 font-semibold flex items-center gap-2">
-                      <LayoutTemplate className="h-4.5 w-4.5 text-foreground/45" />
-                      <span>No layout templates assembled in the system yet. Build one in the Templates Manager first.</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              {/* Form submit/cancel bar */}
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-border mt-6 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -381,8 +2730,8 @@ export default function PagesPage() {
                   {editingId ? "Save Custom Page" : "Configure Page"}
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       )}
 
