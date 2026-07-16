@@ -3,7 +3,19 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
-import { Plus, Search, Edit2, Trash2, X, Sparkles, FolderTree, ArrowLeft } from "lucide-react";
+import ImageUpload from "@/components/admin/ImageUpload";
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  X,
+  Sparkles,
+  FolderTree,
+  ArrowLeft,
+  Sliders,
+  Layers,
+} from "lucide-react";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -14,6 +26,8 @@ export default function CategoriesPage() {
   // Form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("general");
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -21,8 +35,15 @@ export default function CategoriesPage() {
     description: "",
   });
 
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  // SEO metadata states
+  const [seos, setSeos] = useState<any[]>([]);
+  const [seoMetaTitle, setSeoMetaTitle] = useState("");
+  const [seoMetaDescription, setSeoMetaDescription] = useState("");
+  const [seoCanonicalUrl, setSeoCanonicalUrl] = useState("");
+  const [seoImage, setSeoImage] = useState("");
+  const [existingSeoId, setExistingSeoId] = useState<string | null>(null);
 
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,10 +53,14 @@ export default function CategoriesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await api.getCategories();
-      setCategories(data);
+      const [catsList, seosList] = await Promise.all([
+        api.getCategories(),
+        api.getSeoMetadata()
+      ]);
+      setCategories(catsList);
+      setSeos(seosList);
     } catch (err) {
-      console.error("Failed to load categories", err);
+      console.error("Failed to load categories/SEO", err);
     } finally {
       setLoading(false);
     }
@@ -57,6 +82,12 @@ export default function CategoriesPage() {
       parent_category: "",
       description: "",
     });
+    setSeoMetaTitle("");
+    setSeoMetaDescription("");
+    setSeoCanonicalUrl("https://jivanjor.com/categories");
+    setSeoImage("");
+    setExistingSeoId(null);
+    setActiveTab("general");
     setIsModalOpen(true);
   };
 
@@ -68,20 +99,51 @@ export default function CategoriesPage() {
       parent_category: category.parent_category || "",
       description: category.description,
     });
+
+    const matchedSeo = seos.find(
+      (s) => s.page_type === "category" && s.page_id === category.id
+    );
+    if (matchedSeo) {
+      setExistingSeoId(matchedSeo.id);
+      setSeoMetaTitle(matchedSeo.meta_title);
+      setSeoMetaDescription(matchedSeo.meta_description);
+      setSeoCanonicalUrl(matchedSeo.canonical_url);
+      setSeoImage(matchedSeo.image || "");
+    } else {
+      setExistingSeoId(null);
+      setSeoMetaTitle("");
+      setSeoMetaDescription("");
+      setSeoCanonicalUrl(`https://jivanjor.com/categories/${category.slug}`);
+      setSeoImage("");
+    }
+
+    setActiveTab("general");
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.saveCategory({
+      const savedCat = await api.saveCategory({
         id: editingId || undefined,
         ...formData,
       });
+
+      // Save SEO metadata record in context
+      await api.saveSeoMetadata({
+        id: existingSeoId || undefined,
+        page_type: "category",
+        page_id: savedCat.id,
+        meta_title: seoMetaTitle || savedCat.name,
+        meta_description: seoMetaDescription || savedCat.description || "",
+        canonical_url: seoCanonicalUrl || `https://jivanjor.com/categories/${savedCat.slug}`,
+        image: seoImage || undefined,
+      });
+
       setIsModalOpen(false);
       await loadData();
     } catch (err) {
-      console.error("Failed to save category", err);
+      console.error("Failed to save category & SEO", err);
     }
   };
 
@@ -97,14 +159,11 @@ export default function CategoriesPage() {
 
   // Filter Categories
   const filteredMainCategories = categories.filter((c) => {
-    // Only display/paginate main (root) categories at the top level
     if (c.parent_category) return false;
     
-    // Check if the main category itself matches search
     const mainMatches = c.name.toLowerCase().includes(search.toLowerCase()) || 
                         c.description.toLowerCase().includes(search.toLowerCase());
     
-    // Check if any of its subcategories match search
     const subMatches = categories.some(
       (sub) =>
         sub.parent_category === c.id &&
@@ -115,11 +174,15 @@ export default function CategoriesPage() {
     return mainMatches || subMatches;
   });
 
-  // Pagination based on Main Categories
   const totalPages = Math.ceil(filteredMainCategories.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentMainCategories = filteredMainCategories.slice(indexOfFirstItem, indexOfLastItem);
+
+  const tabsList = [
+    { id: "general", label: "General Properties", icon: Sliders },
+    { id: "seo", label: "SEO Metadata", icon: Search },
+  ];
 
   return (
     <AdminLayout>
@@ -131,15 +194,15 @@ export default function CategoriesPage() {
                 Product Categories
               </h1>
               <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-                Define the classification structure for catalog filtering
+                Define classification structures for nested catalog layout filters
               </p>
             </div>
             <button
               onClick={handleOpenAdd}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg self-start sm:self-auto"
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all self-start sm:self-auto"
             >
               <Plus className="h-5 w-5" />
-              <span>Add Category</span>
+              <span>Add Category Classification</span>
             </button>
           </div>
 
@@ -149,7 +212,7 @@ export default function CategoriesPage() {
               <Search className="absolute left-3 top-3.5 h-4.5 w-4.5 text-gray-400 dark:text-zinc-500" />
               <input
                 type="text"
-                placeholder="Search categories..."
+                placeholder="Search classifications..."
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
@@ -199,30 +262,29 @@ export default function CategoriesPage() {
                                 <div>
                                   <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                     <span>{mainCat.name}</span>
-                                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-blue-50 text-blue-600 dark:bg-blue-950/25 dark:text-blue-400">
-                                      Main Category
-                                    </span>
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Root</span>
                                   </p>
-                                  <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">{mainCat.slug}</p>
+                                  <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{mainCat.slug}</p>
                                 </div>
                               </div>
                             </td>
                             <td className="p-5 text-sm text-gray-500 dark:text-zinc-400 max-w-xs truncate">
-                              {mainCat.description}
+                              {mainCat.description || "No description provided."}
                             </td>
                             <td className="p-5 text-right">
                               <div className="flex items-center justify-end gap-2">
                                 <button
                                   onClick={() => handleOpenEdit(mainCat)}
-                                  className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer"
+                                  className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
                                   title="Edit category"
                                 >
                                   <Edit2 className="h-4 w-4" />
                                 </button>
                                 <button
+                                  disabled={subCats.length > 0}
                                   onClick={() => setDeleteConfirmId(mainCat.id)}
-                                  className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer"
-                                  title="Delete category"
+                                  className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer disabled:opacity-40 border border-gray-100 dark:border-zinc-800"
+                                  title={subCats.length > 0 ? "Cannot delete category containing nested sub-categories" : "Delete category"}
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>
@@ -230,42 +292,34 @@ export default function CategoriesPage() {
                             </td>
                           </tr>
 
-                          {/* Subcategories (Child Rows) */}
-                          {subCats.map((subCat) => (
-                            <tr key={subCat.id} className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20 transition-colors bg-white dark:bg-zinc-900/50">
+                          {/* Child categories loop */}
+                          {subCats.map((sub) => (
+                            <tr key={sub.id} className="hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-colors bg-white dark:bg-zinc-900">
                               <td className="p-5 pl-14">
-                                <div className="flex items-center gap-3">
-                                  <span className="text-gray-300 dark:text-zinc-700 font-mono text-sm select-none">└──</span>
-                                  <div className="h-7 w-7 rounded-md bg-amber-50 dark:bg-amber-950/15 text-amber-600 dark:text-amber-500 flex items-center justify-center">
-                                    <FolderTree className="h-4 w-4" />
-                                  </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
                                   <div>
-                                    <p className="font-bold text-xs text-gray-800 dark:text-zinc-200 flex items-center gap-2">
-                                      <span>{subCat.name}</span>
-                                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-amber-50 text-amber-600 dark:bg-amber-950/25 dark:text-amber-400">
-                                        Sub-Category
-                                      </span>
-                                    </p>
-                                    <p className="text-[9px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">{subCat.slug}</p>
+                                    <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50">{sub.name}</p>
+                                    <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
                                   </div>
                                 </div>
                               </td>
-                              <td className="p-5 text-xs text-gray-500 dark:text-zinc-400 max-w-xs truncate">
-                                {subCat.description}
+                              <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
+                                {sub.description || "No description provided."}
                               </td>
                               <td className="p-5 text-right">
                                 <div className="flex items-center justify-end gap-2">
                                   <button
-                                    onClick={() => handleOpenEdit(subCat)}
-                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer"
-                                    title="Edit category"
+                                    onClick={() => handleOpenEdit(sub)}
+                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
+                                    title="Edit sub-category"
                                   >
                                     <Edit2 className="h-4 w-4" />
                                   </button>
                                   <button
-                                    onClick={() => setDeleteConfirmId(subCat.id)}
-                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer"
-                                    title="Delete category"
+                                    onClick={() => setDeleteConfirmId(sub.id)}
+                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
+                                    title="Delete sub-category"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </button>
@@ -278,8 +332,8 @@ export default function CategoriesPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={3} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500">
-                        No categories found.
+                      <td colSpan={3} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                        No category structures configured.
                       </td>
                     </tr>
                   )}
@@ -289,7 +343,7 @@ export default function CategoriesPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-zinc-800">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-zinc-800 bg-gray-50/20">
                 <span className="text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
                   Page {currentPage} of {totalPages}
                 </span>
@@ -314,94 +368,230 @@ export default function CategoriesPage() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] max-w-3xl">
+        // ==================== FULL-PAGE SECTION FORM WORKSPACE ====================
+        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] flex flex-col min-h-[80vh]">
           {/* Header Workspace Title Bar */}
           <div className="flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
               title="Discard changes"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
               <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 flex items-center gap-2">
-                <FolderTree className="h-6 w-6 text-red-600" />
-                <span>{editingId ? "Modify Category Classification" : "Create Classification Category"}</span>
+                <Layers className="h-6 w-6 text-red-600" />
+                <span>{editingId ? "Modify Classification Details" : "Configure Custom Category"}</span>
               </h1>
               <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-                Establish hierarchical classification names, unique URL slugs, and structural associations
+                Establish custom parameters and edit linked SEO settings in context
               </p>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl p-6 shadow-sm">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                  Category Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="e.g. Marine Sealants"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                />
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
+            {/* Sidebar tabs */}
+            <div className="w-full lg:w-1/4 flex flex-col gap-1.5 shrink-0 bg-surface/30 p-3 border border-gray-200 dark:border-zinc-800 rounded-2xl h-fit">
+              {tabsList.map((tab) => {
+                const TabIcon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm font-bold transition-all cursor-pointer border ${activeTab === tab.id
+                      ? "bg-red-600 text-white border-red-600 shadow-sm"
+                      : "bg-background/40 hover:bg-surface text-foreground/80 border-gray-200 dark:border-zinc-800"
+                      }`}
+                  >
+                    <TabIcon className={`h-4.5 w-4.5 ${activeTab === tab.id ? "text-white" : "text-red-600"}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Input Canvas Panels */}
+            <div className="flex-1 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 p-6 rounded-3xl shadow-sm min-h-[60vh] flex flex-col justify-between">
+              <div className="space-y-6">
+                {activeTab === "general" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Sliders className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">General Properties</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Category Classification Name
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={(e) => handleNameChange(e.target.value)}
+                          placeholder="e.g. Waterproof PVA Glues"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex items-center justify-between">
+                          <span>Category URL Path Reference</span>
+                          <span className="text-[10px] text-red-500 flex items-center gap-1 font-bold uppercase tracking-wider">
+                            <Sparkles className="h-3 w-3" /> Auto
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.slug}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "") }))}
+                          placeholder="waterproof-pva-glues"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Nest Under Parent Category (Optional)
+                      </label>
+                      <select
+                        value={formData.parent_category}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, parent_category: e.target.value }))}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 cursor-pointer"
+                      >
+                        <option value="">-- No Parent (Treat as Root Category) --</option>
+                        {categories
+                          .filter((c) => !c.parent_category && c.id !== editingId)
+                          .map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Category Classification description
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={formData.description}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                        placeholder="Write dynamic description overview details..."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "seo" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Search className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">SEO Metadata Settings</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex justify-between items-center">
+                        <span>Meta Title</span>
+                        <span className={`text-[10px] font-bold ${seoMetaTitle.length > 60 || seoMetaTitle.length < 50 ? "text-amber-500" : "text-green-500"}`}>
+                          {seoMetaTitle.length} / 60 chars (Recommended: 50-60)
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        value={seoMetaTitle}
+                        onChange={(e) => setSeoMetaTitle(e.target.value)}
+                        placeholder="e.g. Waterproof PVA Wood Glues | Jivanjor"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex justify-between items-center">
+                        <span>Meta Description</span>
+                        <span className={`text-[10px] font-bold ${seoMetaDescription.length > 160 || seoMetaDescription.length < 120 ? "text-amber-500" : "text-green-500"}`}>
+                          {seoMetaDescription.length} / 160 chars (Recommended: 120-160)
+                        </span>
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={seoMetaDescription}
+                        onChange={(e) => setSeoMetaDescription(e.target.value)}
+                        placeholder="e.g. Shop waterproof wood carpentry white glues. High grab, excellent viscosity, anti-bubble cross-linking polymers."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Canonical URL
+                      </label>
+                      <input
+                        type="text"
+                        value={seoCanonicalUrl}
+                        onChange={(e) => setSeoCanonicalUrl(e.target.value)}
+                        placeholder="https://jivanjor.com/categories/..."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
+                    </div>
+
+                    <ImageUpload
+                      label="SEO Feature Image (Open Graph)"
+                      value={seoImage}
+                      onChange={(url) => setSeoImage(url)}
+                      folder="seo"
+                    />
+
+                    {/* Google Snippet Search Engine Live Preview */}
+                    <div className="p-5 border border-gray-100 dark:border-zinc-800 bg-gray-50/30 rounded-2xl space-y-3">
+                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Search Engine Result Preview</span>
+                      <div className="p-4 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl font-sans text-left space-y-1 max-w-xl shadow-inner">
+                        {seoImage ? (
+                          <div className="flex gap-4">
+                            <div className="flex-1 space-y-1 min-w-0">
+                              <div className="text-xs text-gray-400 truncate">
+                                {seoCanonicalUrl || "https://jivanjor.com/categories"}
+                              </div>
+                              <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer truncate">
+                                {seoMetaTitle || "Please specify a Meta Title..."}
+                              </div>
+                              <p className="text-xs text-gray-500 dark:text-zinc-400 leading-normal line-clamp-2">
+                                {seoMetaDescription || "Please write a Meta Description overview snippet..."}
+                              </p>
+                            </div>
+                            <div className="w-16 h-16 rounded-xl bg-gray-50 dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 overflow-hidden shrink-0 flex items-center justify-center">
+                              <img src={seoImage} alt="SEO Preview" className="w-full h-full object-cover" />
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="text-xs text-gray-400 truncate">
+                              {seoCanonicalUrl || "https://jivanjor.com/categories"}
+                            </div>
+                            <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer truncate">
+                              {seoMetaTitle || "Please specify a Meta Title..."}
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-zinc-400 leading-normal line-clamp-2">
+                              {seoMetaDescription || "Please write a Meta Description overview snippet..."}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex items-center justify-between">
-                  <span>Slug Identifier</span>
-                  <span className="text-[10px] text-red-500 flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" /> Auto
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.slug}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
-                  placeholder="marine-sealants"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                  Parent Category (If this is a Sub-Category)
-                </label>
-                <select
-                  value={formData.parent_category}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, parent_category: e.target.value }))}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                >
-                  <option value="">None (Treat as Main Category)</option>
-                  {categories
-                    .filter((c) => c.id !== editingId && !c.parent_category) // Prevent nesting deeper than 1 level, prevent cycles
-                    .map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                  Brief Description
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Provide a general description of this category classification..."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
+              {/* Form submit/cancel buttons */}
+              <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 dark:border-zinc-800 mt-6 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -413,11 +603,11 @@ export default function CategoriesPage() {
                   type="submit"
                   className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg"
                 >
-                  {editingId ? "Save Classification" : "Create Category"}
+                  {editingId ? "Save Modifications" : "Publish Category"}
                 </button>
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       )}
 
@@ -429,7 +619,7 @@ export default function CategoriesPage() {
               Confirm Deletion
             </h3>
             <p className="text-sm text-gray-500 dark:text-zinc-400 leading-normal font-medium">
-              Are you absolutely sure you want to delete this category? Removing a parent category may leave subcategories unassociated.
+              Are you absolutely sure you want to delete this category classification? This will erase its sub-category classifications permanently.
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
@@ -439,10 +629,7 @@ export default function CategoriesPage() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  handleDelete(deleteConfirmId);
-                  setDeleteConfirmId(null);
-                }}
+                onClick={() => handleDelete(deleteConfirmId)}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
               >
                 Confirm Delete
@@ -451,15 +638,6 @@ export default function CategoriesPage() {
           </div>
         </div>
       )}
-
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes modalShow {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
-          }
-        `
-      }} />
     </AdminLayout>
   );
 }

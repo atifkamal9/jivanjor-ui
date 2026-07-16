@@ -68,6 +68,7 @@ export interface SeoMetadata {
   meta_title: string;
   meta_description: string;
   canonical_url: string;
+  image?: string;
 }
 
 // Mapped to jivanjor-server Zod specs
@@ -232,6 +233,7 @@ function mapSeoFromBackend(seo: any): SeoMetadata {
     meta_title: seo.metaTitle || "",
     meta_description: seo.metaDescription || "",
     canonical_url: seo.canonicalUrl || "",
+    image: seo.image || "",
   };
 }
 
@@ -514,6 +516,7 @@ export const api = {
       metaTitle: seo.meta_title,
       metaDescription: seo.meta_description,
       canonicalUrl: seo.canonical_url || null,
+      image: seo.image || null,
     };
     if (seo.id) {
       const res = await client.put(`/seo/${seo.id}`, payload);

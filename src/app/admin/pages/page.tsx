@@ -294,6 +294,13 @@ export default function PagesPage() {
     sections: null as any,
   });
 
+  const [seos, setSeos] = useState<any[]>([]);
+  const [seoMetaTitle, setSeoMetaTitle] = useState("");
+  const [seoMetaDescription, setSeoMetaDescription] = useState("");
+  const [seoCanonicalUrl, setSeoCanonicalUrl] = useState("");
+  const [seoImage, setSeoImage] = useState("");
+  const [existingSeoId, setExistingSeoId] = useState<string | null>(null);
+
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -304,12 +311,14 @@ export default function PagesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [pagesList, tempsList] = await Promise.all([
+      const [pagesList, tempsList, seosList] = await Promise.all([
         api.getPages(),
-        api.getTemplates()
+        api.getTemplates(),
+        api.getSeoMetadata()
       ]);
       setPages(pagesList);
       setTemplates(tempsList);
+      setSeos(seosList);
     } catch (err) {
       console.error("Failed to load pages/templates", err);
     } finally {
@@ -338,6 +347,11 @@ export default function PagesPage() {
       activeTemplateId: null,
       sections: null,
     });
+    setSeoMetaTitle("");
+    setSeoMetaDescription("");
+    setSeoCanonicalUrl("https://jivanjor.com");
+    setSeoImage("");
+    setExistingSeoId(null);
     setActiveTab("general");
     setIsModalOpen(true);
   };
@@ -421,6 +435,28 @@ export default function PagesPage() {
       activeTemplateId: page.activeTemplateId || null,
       sections: pageSections || null,
     });
+
+    const matchedSeo = seos.find((s) =>
+      s.page_type === "static" &&
+      (s.page_id === page.id ||
+        s.page_id === page.slug ||
+        (page.slug === "home" && s.page_id === "HOME_PAGE") ||
+        (page.slug === "about" && s.page_id === "ABOUT_PAGE"))
+    );
+    if (matchedSeo) {
+      setExistingSeoId(matchedSeo.id);
+      setSeoMetaTitle(matchedSeo.meta_title);
+      setSeoMetaDescription(matchedSeo.meta_description);
+      setSeoCanonicalUrl(matchedSeo.canonical_url);
+      setSeoImage(matchedSeo.image || "");
+    } else {
+      setExistingSeoId(null);
+      setSeoMetaTitle("");
+      setSeoMetaDescription("");
+      setSeoCanonicalUrl(`https://jivanjor.com/${page.slug === "home" ? "" : page.slug}`);
+      setSeoImage("");
+    }
+
     setActiveTab("general");
     setIsModalOpen(true);
   };
@@ -573,10 +609,22 @@ export default function PagesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.savePage({
+      const savedPage = await api.savePage({
         id: editingId || undefined,
         ...formData,
       });
+
+      const targetPageId = savedPage.slug === "home" ? "HOME_PAGE" : (savedPage.id || savedPage.slug);
+      await api.saveSeoMetadata({
+        id: existingSeoId || undefined,
+        page_type: "static",
+        page_id: targetPageId,
+        meta_title: seoMetaTitle || savedPage.title,
+        meta_description: seoMetaDescription || savedPage.description || "",
+        canonical_url: seoCanonicalUrl || `https://jivanjor.com/${savedPage.slug === "home" ? "" : savedPage.slug}`,
+        image: seoImage || undefined,
+      });
+
       setIsModalOpen(false);
       await loadData();
     } catch (err) {
@@ -703,11 +751,12 @@ export default function PagesPage() {
     return matchesSearch;
   });
 
-  const layoutType = formData.sections?.layoutType || "home";
+  const layoutType = formData.activeTemplateId ? (formData.sections?.layoutType || "home") : "";
 
   // Build Dynamic tabs list based on Layout Type
   const tabsList = [
     { id: "general", label: "General Properties", icon: Sliders },
+    { id: "seo", label: "SEO Metadata", icon: Search },
     ...(layoutType === "about"
       ? [
           { id: "hero", label: "Hero Banner", icon: Layout },
@@ -732,7 +781,8 @@ export default function PagesPage() {
           { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
           { id: "substrates", label: "Substrates Matrix", icon: Shield },
         ]
-      : [
+      : layoutType === "home"
+      ? [
           { id: "hero", label: "Hero Banner", icon: Layout },
           { id: "productRange", label: "Products Range", icon: Grid },
           { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
@@ -741,7 +791,8 @@ export default function PagesPage() {
           { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
           { id: "testimonials", label: "Testimonials", icon: Bookmark },
           { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
-        ])
+        ]
+      : [])
   ];
 
   // Pagination
@@ -1044,6 +1095,104 @@ export default function PagesPage() {
                           <span>No layout templates assembled in the system yet. Build one in the Templates Manager first.</span>
                         </div>
                       )}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "seo" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Search className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">SEO Metadata Settings</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2 flex justify-between items-center">
+                        <span>Meta Title</span>
+                        <span className={`text-[10px] font-bold ${seoMetaTitle.length > 60 || seoMetaTitle.length < 50 ? "text-amber-500" : "text-green-500"}`}>
+                          {seoMetaTitle.length} / 60 chars (Recommended: 50-60)
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        value={seoMetaTitle}
+                        onChange={(e) => setSeoMetaTitle(e.target.value)}
+                        placeholder="Premium White Glue Carpentry Adhesives | Jivanjor"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2 flex justify-between items-center">
+                        <span>Meta Description</span>
+                        <span className={`text-[10px] font-bold ${seoMetaDescription.length > 160 || seoMetaDescription.length < 120 ? "text-amber-500" : "text-green-500"}`}>
+                          {seoMetaDescription.length} / 160 chars (Recommended: 120-160)
+                        </span>
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={seoMetaDescription}
+                        onChange={(e) => setSeoMetaDescription(e.target.value)}
+                        placeholder="Discover Jivanjor white carpentry glues formulated with polymer innovations..."
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Canonical URL
+                      </label>
+                      <input
+                        type="text"
+                        value={seoCanonicalUrl}
+                        onChange={(e) => setSeoCanonicalUrl(e.target.value)}
+                        placeholder="https://jivanjor.com/..."
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <ImageUpload
+                      label="SEO Feature Image (Open Graph)"
+                      value={seoImage}
+                      onChange={(url) => setSeoImage(url)}
+                      folder="seo"
+                    />
+
+                    {/* Google Snippet Search Engine Live Preview */}
+                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-3">
+                      <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Search Engine Result Preview</span>
+                      <div className="p-4 bg-background border border-border rounded-xl font-sans text-left space-y-1 max-w-xl shadow-inner">
+                        {seoImage ? (
+                          <div className="flex gap-4">
+                            <div className="flex-1 space-y-1 min-w-0">
+                              <div className="text-xs text-foreground/40 truncate">
+                                {seoCanonicalUrl || "https://jivanjor.com"}
+                              </div>
+                              <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer truncate">
+                                {seoMetaTitle || "Please specify a Meta Title..."}
+                              </div>
+                              <p className="text-xs text-foreground/60 leading-normal line-clamp-2">
+                                {seoMetaDescription || "Please write a Meta Description page overview snippet..."}
+                              </p>
+                            </div>
+                            <div className="w-16 h-16 rounded-xl bg-surface border border-border overflow-hidden shrink-0 flex items-center justify-center">
+                              <img src={seoImage} alt="SEO Preview" className="w-full h-full object-cover" />
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="text-xs text-foreground/40 truncate">
+                              {seoCanonicalUrl || "https://jivanjor.com"}
+                            </div>
+                            <div className="text-base text-[#1a0dab] dark:text-[#8ab4f8] font-medium hover:underline cursor-pointer truncate">
+                              {seoMetaTitle || "Please specify a Meta Title..."}
+                            </div>
+                            <p className="text-xs text-foreground/60 leading-normal line-clamp-2">
+                              {seoMetaDescription || "Please write a Meta Description page overview snippet..."}
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

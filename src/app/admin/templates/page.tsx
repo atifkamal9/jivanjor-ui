@@ -288,7 +288,7 @@ export default function TemplatesPage() {
   const [templateName, setTemplateName] = useState("");
   const [templateSlug, setTemplateSlug] = useState("");
   const [activeTab, setActiveTab] = useState("general");
-  const [homeSections, setHomeSections] = useState<any>({ layoutType: "home", ...defaultHomeSections });
+  const [homeSections, setHomeSections] = useState<any>({ layoutType: "" });
 
   // Deletion confirm state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -340,7 +340,7 @@ export default function TemplatesPage() {
     setEditingId(null);
     setTemplateName("");
     setTemplateSlug("");
-    setHomeSections({ layoutType: "home", ...defaultHomeSections });
+    setHomeSections({ layoutType: "" });
     setActiveTab("general");
     setIsFormView(true);
   };
@@ -504,6 +504,10 @@ export default function TemplatesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!homeSections.layoutType) {
+      alert("Please select a Template Layout Style Type.");
+      return;
+    }
     try {
       await api.saveTemplate({
         id: editingId || undefined,
@@ -528,7 +532,7 @@ export default function TemplatesPage() {
     }
   };
 
-  const currentLayoutType = homeSections.layoutType || "home";
+  const currentLayoutType = homeSections.layoutType || "";
 
   // Build Dynamic tabs list based on Layout Type
   const tabsList = [
@@ -557,7 +561,8 @@ export default function TemplatesPage() {
           { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
           { id: "substrates", label: "Substrates Matrix", icon: Shield },
         ]
-      : [
+      : currentLayoutType === "home"
+      ? [
           { id: "hero", label: "Hero Banner", icon: Layout },
           { id: "productRange", label: "Products Range", icon: Grid },
           { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
@@ -566,7 +571,8 @@ export default function TemplatesPage() {
           { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
           { id: "testimonials", label: "Testimonials", icon: Bookmark },
           { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
-        ])
+        ]
+      : [])
   ];
 
   // Filter templates
@@ -833,10 +839,12 @@ export default function TemplatesPage() {
                         </label>
                         <select
                           disabled={!!editingId}
-                          value={homeSections.layoutType || "home"}
+                          value={homeSections.layoutType || ""}
                           onChange={(e) => handleLayoutTypeChange(e.target.value)}
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary text-foreground cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                          required
                         >
+                          <option value="" disabled>-- Select Template Layout Style --</option>
                           <option value="home">Homepage Layout System</option>
                           <option value="about">About Page Layout System</option>
                           <option value="products">Product Specification Layout System</option>

@@ -39,7 +39,6 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Blog", href: "/admin/blog", icon: BookOpen },
   { name: "Use Case", href: "/admin/use-cases", icon: Lightbulb },
   { name: "Issue", href: "/admin/issues", icon: HelpCircle },
-  { name: "SEO Metadata", href: "/admin/seo", icon: Search },
   { name: "Dynamic Page", href: "/admin/pages", icon: FileText },
   { name: "Page Template", href: "/admin/templates", icon: Layers },
 ];
