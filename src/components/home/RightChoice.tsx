@@ -17,12 +17,12 @@ interface RightChoiceProps {
 
 function mapAdhesiveIcon(index: number) {
   const icons = [
-    "/images/image 4.svg",
-    "/images/image 5.svg",
-    "/images/image 6.svg",
-    "/images/image 7.svg",
-    "/images/image 8.svg",
-    "/images/image 9.svg",
+    "/icons/chair.png",
+    "/icons/cabinet.png",
+    "/icons/woodfloor.png",
+    "/icons/wooden plank.png",
+    "/icons/checklist.png",
+    "/icons/house.png",
   ];
   return icons[index % icons.length];
 }
@@ -63,10 +63,10 @@ export default function RightChoice({ data }: RightChoiceProps) {
   const types =
     items && items.length > 0
       ? items.map((item, idx) => ({
-          icon: mapAdhesiveIcon(idx),
-          title: item.name || item.title || "",
-          link: item.link || "#",
-        }))
+        icon: mapAdhesiveIcon(idx),
+        title: item.name || item.title || "",
+        link: item.link || "#",
+      }))
       : defaultAdhesiveTypes;
 
   return (

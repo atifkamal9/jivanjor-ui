@@ -56,23 +56,18 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
   const cards =
     items && items.length > 0
       ? items.map((item, idx) => ({
-          title: item.title || "",
-          image: item.imageUrl || item.image || mapKnowledgeImage(idx),
-          mobileImage:
-            item.imageUrl || item.mobileImage || mapKnowledgeImage(idx),
-          link: item.link || "#",
-        }))
+        title: item.title || "",
+        image: item.imageUrl || item.image || mapKnowledgeImage(idx),
+        mobileImage:
+          item.imageUrl || item.mobileImage || mapKnowledgeImage(idx),
+        link: item.link || "#",
+      }))
       : defaultCards;
 
   return (
     <section className="relative py-8 md:py-12 overflow-hidden">
       <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
         <Heading className="text-center">{title}</Heading>
-        {data?.subtitle && (
-          <p className="mt-4 text-center text-xl text-foreground/80 font-google-sans max-w-3xl mx-auto">
-            {data.subtitle}
-          </p>
-        )}
         <div className="flex flex-col gap-6 py-6">
           {cards.map((c, idx) => (
             <div

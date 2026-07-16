@@ -9,6 +9,9 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
+const isVideo = (url: string) =>
+  /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
+
 interface HeroProps {
   data?: {
     title?: string;
@@ -30,19 +33,16 @@ interface HeroProps {
         actionPath?: string;
       };
     };
+    media?: string[];
   };
 }
 
 interface SlideItem {
   id: string;
-  title: string;
   bgImage: string;
   bgImagePhone: string;
-  primaryText: string;
-  primaryLink: string;
-  secondaryText: string;
-  secondaryLink: string;
   hasVideo: boolean;
+  videoUrl?: string;
 }
 
 export default function Hero({ data }: HeroProps) {
@@ -52,63 +52,46 @@ export default function Hero({ data }: HeroProps) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const slides: SlideItem[] = [
-    {
-      id: "slide-1",
-      title: data?.title || "Dependable Bonds for Indian Homes",
-      bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
-      bgImagePhone:
-        data?.bgImage || data?.backgroundImage || "/images/hero.png",
-      primaryText:
-        data?.actionButtons?.primary?.text ||
-        data?.ctaText ||
-        "Explore Products",
-      primaryLink:
-        data?.actionButtons?.primary?.actionPath ||
-        data?.ctaLink ||
-        "#product-section",
-      secondaryText: data?.actionButtons?.secondary?.text || "About Jivanjor",
-      secondaryLink: data?.actionButtons?.secondary?.actionPath || "/about",
-      hasVideo: false,
-    },
-    {
-      id: "slide-2",
-      title: "Dependable Bonds for Indian Homes",
-      bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
-      bgImagePhone:
-        data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
-      primaryText:
-        data?.actionButtons?.primary?.text ||
-        data?.ctaText ||
-        "Explore Products",
-      primaryLink:
-        data?.actionButtons?.primary?.actionPath ||
-        data?.ctaLink ||
-        "#product-section",
-      secondaryText: data?.actionButtons?.secondary?.text || "About Jivanjor",
-      secondaryLink: data?.actionButtons?.secondary?.actionPath || "/about",
-      hasVideo: false,
-    },
-    {
-      id: "slide-3",
-      title: "Dependable Bonds for Indian Homes",
-      bgImage:
-        data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-      bgImagePhone:
-        data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-      primaryText:
-        data?.actionButtons?.primary?.text ||
-        data?.ctaText ||
-        "Explore Products",
-      primaryLink:
-        data?.actionButtons?.primary?.actionPath ||
-        data?.ctaLink ||
-        "#product-section",
-      secondaryText: data?.actionButtons?.secondary?.text || "About Jivanjor",
-      secondaryLink: data?.actionButtons?.secondary?.actionPath || "/about",
-      hasVideo: true,
-    },
-  ];
+  console.log("data--------->", data);
+
+  const slides: SlideItem[] = data?.media && data.media.length > 0
+    ? data.media.map((url, idx) => {
+        const isVid = isVideo(url);
+        return {
+          id: `slide-${idx}`,
+          bgImage: isVid ? "/images/video-thumbnail.png" : url,
+          bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+          hasVideo: isVid,
+          videoUrl: isVid ? url : "",
+        };
+      })
+    : [
+        {
+          id: "slide-1",
+          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+          bgImagePhone:
+            data?.bgImage || data?.backgroundImage || "/images/hero.png",
+          hasVideo: false,
+          videoUrl: "",
+        },
+        {
+          id: "slide-2",
+          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
+          bgImagePhone:
+            data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
+          hasVideo: false,
+          videoUrl: "",
+        },
+        {
+          id: "slide-3",
+          bgImage:
+            data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+          bgImagePhone:
+            data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+          hasVideo: true,
+          videoUrl: "/videos/hero-background.mp4",
+        },
+      ];
 
   const handlePlayVideo = () => {
     if (isPlayingVideo) {
@@ -173,7 +156,7 @@ export default function Hero({ data }: HeroProps) {
                 <div className="absolute inset-0 z-0 bg-black">
                   <video
                     ref={videoRef}
-                    src="/videos/hero-background.mp4"
+                    src={slide.videoUrl || "/videos/hero-background.mp4"}
                     className="w-full h-full object-center object-fill"
                     autoPlay
                     playsInline
@@ -236,36 +219,38 @@ export default function Hero({ data }: HeroProps) {
                   </div>
                 </>
               )}
-
-              {/* Content Wrapper */}
-              <div className="relative mx-auto max-w-360 h-full w-full z-20">
-                <div className="absolute bottom-26.5 xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start">
-                  {/* Title */}
-                  <h1 className="text-[40px] xl:text-[70px] font-amethysta tracking-[0%] text-white leading-[0.95] max-w-82.25 xl:max-w-184">
-                    {slide.title}
-                  </h1>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center mt-4.25 xl:mt-1 gap-4.25 xl:gap-3.75">
-                    <a
-                      href={slide.primaryLink}
-                      className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
-                    >
-                      {slide.primaryText}
-                    </a>
-                    <a
-                      href={slide.secondaryLink}
-                      className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
-                    >
-                      {slide.secondaryText}
-                    </a>
-                  </div>
-                </div>
-              </div>
             </SwiperSlide>
           );
         })}
       </Swiper>
+
+      {/* Content Wrapper - Static overlay over background slides */}
+      <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
+        <div className="relative mx-auto max-w-360 h-full w-full">
+          <div className="absolute bottom-26.5 xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto">
+            {/* Title */}
+            <h1 className="text-[40px] xl:text-[70px] font-amethysta tracking-[0%] text-white leading-[0.95] max-w-82.25 xl:max-w-184">
+              {data?.title || "Dependable Bonds for Indian Homes"}
+            </h1>
+
+            {/* Action Buttons */}
+            <div className="flex items-center mt-4.25 xl:mt-1 gap-4.25 xl:gap-3.75">
+              <a
+                href={data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section"}
+                className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
+              >
+                {data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products"}
+              </a>
+              <a
+                href={data?.actionButtons?.secondary?.actionPath || "/about"}
+                className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
+              >
+                {data?.actionButtons?.secondary?.text || "About Jivanjor"}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Custom Pagination (inside section, but outside Swiper so it's statically placed) */}
       {slides.length > 1 && (
@@ -278,11 +263,10 @@ export default function Hero({ data }: HeroProps) {
                   swiperInstance.slideToLoop(idx);
                 }
               }}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === activeIndex
-                  ? "w-8 bg-white"
-                  : "w-2 bg-white/40 hover:bg-white/60"
-              }`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${idx === activeIndex
+                ? "w-8 bg-white"
+                : "w-2 bg-white/40 hover:bg-white/60"
+                }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}

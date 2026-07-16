@@ -4,43 +4,42 @@ import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MediaUpload from "@/components/admin/MediaUpload";
 import {
   Plus,
   Search,
   Edit2,
   Trash2,
-  X,
   Sparkles,
   Layers,
   CheckCircle2,
-  AlertCircle,
   ArrowLeft,
-  Video,
-  Link2,
-  Tag,
   Award,
   Shield,
   Grid,
   FileText,
   Sliders,
-  Type,
   Layout,
   MessageSquare,
   Bookmark,
-  Image as ImageIcon,
 } from "lucide-react";
 
-// Default template structure aligned with Prisma schema seed structures
+const isVideo = (url: string) =>
+  /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
+
 const defaultHomeSections = {
   hero: {
     title: "Dependable Bonds for Indian Homes",
     desc: "Superior strength adhesives crafted with state-of-the-art polymer chemistry to safeguard your woodworking and furniture creations for a lifetime.",
-    bgImage: "/images/hero.png",
-    video: "https://www.youtube.com/watch?v=mock-lab-test",
     actionButtons: {
       primary: { text: "Explore Products", actionPath: "#product-section" },
-      secondary: { text: "About Jivanjor", actionPath: "/about" }
-    }
+      secondary: { text: "About Jivanjor", actionPath: "/about" },
+    },
+    media: [
+      "/images/hero.png",
+      "/images/hero (1).png",
+      "/videos/hero-background.mp4",
+    ],
   },
   productRange: {
     title: "A Complete Adhesive Range for Modern Woodworking",
@@ -195,8 +194,28 @@ export default function TemplatesPage() {
 
     // Deep merge sections data with defaults to prevent missing fields
     const rawData = template.rawSections || {};
+
+    // Auto-migrate legacy structure to flat media array
+    const rawHero = rawData.hero || {};
+    let heroMedia = rawHero.media;
+    if (!heroMedia) {
+      if (rawHero.slides) {
+        heroMedia = rawHero.slides.map((s: any) => s.video || s.bgImage).filter(Boolean);
+      } else if (rawHero.bgImage || rawHero.video) {
+        heroMedia = [rawHero.bgImage, rawHero.video].filter(Boolean);
+      }
+    }
+    if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
+      heroMedia = [...defaultHomeSections.hero.media];
+    }
+
     const mergedSections = {
-      hero: { ...defaultHomeSections.hero, ...rawData.hero },
+      hero: {
+        title: rawHero.title || defaultHomeSections.hero.title,
+        desc: rawHero.desc || defaultHomeSections.hero.desc,
+        actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
+        media: heroMedia
+      },
       productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
       findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
       whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
@@ -602,7 +621,7 @@ export default function TemplatesPage() {
                 <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                   <div className="flex items-center gap-2 border-b border-border pb-3">
                     <Layout className="h-5 w-5 text-primary" />
-                    <h3 className="text-base font-extrabold text-foreground">Hero Setup</h3>
+                    <h3 className="text-base font-extrabold text-foreground">Global Hero Settings</h3>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -612,7 +631,7 @@ export default function TemplatesPage() {
                       </label>
                       <input
                         type="text"
-                        value={homeSections.hero.title}
+                        value={homeSections.hero.title || ""}
                         onChange={(e) => updateSectionField("hero", "title", e.target.value)}
                         placeholder="Dependable Bonds for Indian Homes"
                         className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
@@ -624,28 +643,10 @@ export default function TemplatesPage() {
                       </label>
                       <textarea
                         rows={3}
-                        value={homeSections.hero.desc}
+                        value={homeSections.hero.desc || ""}
                         onChange={(e) => updateSectionField("hero", "desc", e.target.value)}
                         placeholder="Explain premium quality formulations..."
                         className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
-                      />
-                    </div>
-                    <ImageUpload
-                      label="Hero Background Image"
-                      value={homeSections.hero.bgImage}
-                      onChange={(url) => updateSectionField("hero", "bgImage", url)}
-                      folder="templates"
-                    />
-                    <div>
-                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                        Watch Video CTA URL (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={homeSections.hero.video || ""}
-                        onChange={(e) => updateSectionField("hero", "video", e.target.value)}
-                        placeholder="e.g. YouTube lab video link"
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                       />
                     </div>
                   </div>
@@ -662,14 +663,14 @@ export default function TemplatesPage() {
                           value={homeSections.hero.actionButtons?.primary?.text || ""}
                           onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, text: e.target.value })}
                           placeholder="Button Text"
-                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs"
+                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                         />
                         <input
                           type="text"
                           value={homeSections.hero.actionButtons?.primary?.actionPath || ""}
                           onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, actionPath: e.target.value })}
                           placeholder="Action Path (e.g. #product-section)"
-                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs"
+                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                         />
                       </div>
                       {/* Secondary Button */}
@@ -680,17 +681,81 @@ export default function TemplatesPage() {
                           value={homeSections.hero.actionButtons?.secondary?.text || ""}
                           onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, text: e.target.value })}
                           placeholder="Button Text"
-                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs"
+                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                         />
                         <input
                           type="text"
                           value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
                           onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
                           placeholder="Action Path (e.g. /about)"
-                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs"
+                          className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                         />
                       </div>
                     </div>
+                  </div>
+
+                  <div className="flex flex-col border-t border-border pt-6 mt-4 gap-3">
+                    <div className="flex items-center gap-2">
+                      <Layout className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Hero Background Media (Images/Videos)</h3>
+                    </div>
+                    <p className="text-xs text-foreground/50 font-medium">
+                      At least one background image or video is mandatory for the hero slideshow.
+                    </p>
+                  </div>
+
+                  {/* Media Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {(homeSections.hero.media || []).map((mediaUrl: string, idx: number) => {
+                      const isVid = isVideo(mediaUrl);
+                      return (
+                        <div key={idx} className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface group">
+                          {isVid ? (
+                            <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline />
+                          ) : (
+                            <img src={mediaUrl} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                          )}
+                          
+                          {/* Remove button (only if more than 1 item) */}
+                          {(homeSections.hero.media || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newMedia = (homeSections.hero.media || []).filter((_: any, i: number) => i !== idx);
+                                updateSectionField("hero", "media", newMedia);
+                              }}
+                              className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer shadow-md border border-red-700"
+                              title="Delete media file"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+                          
+                          <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white uppercase tracking-wider">
+                            {isVid ? "Video" : "Image"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Add Media upload zone */}
+                  <div className="mt-4">
+                    <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                      Upload New Image or Video
+                    </label>
+                    <MediaUpload
+                      value=""
+                      onChange={(url) => {
+                        if (url) {
+                          const newMedia = [...(homeSections.hero.media || [])];
+                          newMedia.push(url);
+                          updateSectionField("hero", "media", newMedia);
+                        }
+                      }}
+                      folder="templates"
+                      accept="any"
+                    />
                   </div>
                 </div>
               )}
