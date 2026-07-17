@@ -52,46 +52,44 @@ export default function Hero({ data }: HeroProps) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  console.log("data--------->", data);
-
   const slides: SlideItem[] = data?.media && data.media.length > 0
     ? data.media.map((url, idx) => {
-        const isVid = isVideo(url);
-        return {
-          id: `slide-${idx}`,
-          bgImage: isVid ? "/images/video-thumbnail.png" : url,
-          bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
-          hasVideo: isVid,
-          videoUrl: isVid ? url : "",
-        };
-      })
+      const isVid = isVideo(url);
+      return {
+        id: `slide-${idx}`,
+        bgImage: isVid ? "/images/video-thumbnail.png" : url,
+        bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+        hasVideo: isVid,
+        videoUrl: isVid ? url : "",
+      };
+    })
     : [
-        {
-          id: "slide-1",
-          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
-          bgImagePhone:
-            data?.bgImage || data?.backgroundImage || "/images/hero.png",
-          hasVideo: false,
-          videoUrl: "",
-        },
-        {
-          id: "slide-2",
-          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
-          bgImagePhone:
-            data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
-          hasVideo: false,
-          videoUrl: "",
-        },
-        {
-          id: "slide-3",
-          bgImage:
-            data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-          bgImagePhone:
-            data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-          hasVideo: true,
-          videoUrl: "/videos/hero-background.mp4",
-        },
-      ];
+      {
+        id: "slide-1",
+        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+        bgImagePhone:
+          data?.bgImage || data?.backgroundImage || "/images/hero.png",
+        hasVideo: false,
+        videoUrl: "",
+      },
+      {
+        id: "slide-2",
+        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
+        bgImagePhone:
+          data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
+        hasVideo: false,
+        videoUrl: "",
+      },
+      {
+        id: "slide-3",
+        bgImage:
+          data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+        bgImagePhone:
+          data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+        hasVideo: true,
+        videoUrl: "/videos/hero-background.mp4",
+      },
+    ];
 
   const handlePlayVideo = () => {
     if (isPlayingVideo) {
