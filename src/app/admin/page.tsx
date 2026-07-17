@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, API_BASE } from "@/lib/api";
+import { api } from "@/lib/api";
 import {
   Package,
   FolderTree,
@@ -145,8 +145,6 @@ export default function DashboardPage() {
       shadow: "shadow-blue-600/10",
     },
   ];
-
-  console.log("Admin-------->", process.env.NODE_ENV, process.env.NEXT_PUBLIC_API_URL, API_BASE);
 
   return (
     <AdminLayout>

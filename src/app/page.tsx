@@ -7,7 +7,7 @@ import {
   RightChoice,
   Testimonial,
 } from "@/components/home";
-import { api, API_BASE } from "@/lib/api";
+import { api } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +20,6 @@ export default async function Home() {
   }
 
   const sections = template?.rawSections || {};
-  console.log("API_BASE-------->", process.env.NODE_ENV, process.env.NEXT_PUBLIC_API_URL, API_BASE);
 
   return (
     <div className="font-google-sans min-h-screen bg-background text-foreground">
