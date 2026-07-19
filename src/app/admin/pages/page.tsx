@@ -560,6 +560,40 @@ const defaultPartnerSections = {
   }
 };
 
+const defaultPrivacySections = {
+  hero: {
+    title: "Privacy Policy",
+    desc: "Understand how we collect, use, and protect your information at Jivanjor."
+  },
+  content: {
+    text: `Bubbles in laminate applications rarely happen by chance; they are the direct result of trapped air or moisture expanding beneath the surface. When pressing decorative laminates onto MDF or commercial ply, microscopic pockets of air can become trapped if the adhesive is spread unevenly.
+
+In standard environments, a high-quality adhesive can sometimes absorb minor imperfections. However, when working in environments with fluctuating temperatures, the air within these trapped pockets expands, creating enough upward pressure to lift the laminate from the substrate, resulting in visible bubbles.
+
+How Humidity Affects Curing Time
+
+Wood and laminates are hygroscopic, meaning they naturally absorb and release moisture based on the surrounding environment. During monsoon seasons or in coastal regions, the moisture content in commercial plywood can spike significantly. When a water-based synthetic resin (PVA) is applied to damp wood, the curing process slows down.
+
+The water within the adhesive takes longer to evaporate, extending the open time but weakening the initial grab. If pressure is released too early, the laminate can shift or lift, allowing air to enter the joint before the bond reaches its full structural integrity.
+
+Three Application Rules for Flawless Laminates
+
+To achieve a perfectly flat, secure bond on every project, contractors should standardize the following practices:
+
+- Substrate Acclimatization: Never apply laminates to plywood that has just been brought in from the rain or high humidity. Allow both the substrate and the laminate to acclimatize in the working environment for at least 24 to 48 hours before bonding.
+- The Right Spread Rate: Using a finely notched trowel is non-negotiable. A notched trowel ensures an even, consistent film of adhesive. Applying too much glue "just to be safe" actually increases the risk of bubbling, as excess moisture becomes trapped under the impermeable laminate.
+- Center-to-Edge Pressing: Once the laminate is placed, use a J-roller or a firm block. Always apply heavy pressure starting from the absolute center of the board and work your way outward to the edges. This systematically forces any trapped air out before the edges are sealed.
+
+The Role of Adhesive Formulation
+
+Technique can only take you so far; the chemical makeup of your adhesive dictates your margin of error.
+
+For high-stakes decorative surfaces, professionals should rely on specialist formulations rather than generic woodworking glues. Products like Jivanjor Lamino are specifically engineered with anti-bubble technology and water-resistant properties. Its specific viscosity prevents the easy entrapment of air during the spreading process, ensuring a smooth, premium finish every time.
+
+For projects requiring rapid turnarounds without sacrificing coverage, stepping up to Jivanjor Supremo ensures a high-strength bond that sets rapidly, mitigating the risks associated with extended curing times in unpredictable weather.`
+  }
+};
+
 const getFrontendUrl = (page: Page | { slug: string }, activeTemplate?: PageTemplate) => {
   if (!activeTemplate) return `/${page.slug}`;
   const rawData = activeTemplate.rawSections || activeTemplate.sections || {};
@@ -585,6 +619,9 @@ const getFrontendUrl = (page: Page | { slug: string }, activeTemplate?: PageTemp
   }
   if (type === "partner") {
     return page.slug === "partner" ? "/partner" : `/partner/${page.slug}`;
+  }
+  if (type === "privacy") {
+    return page.slug === "privacy" ? "/privacy" : `/privacy/${page.slug}`;
   }
   if (type === "home") {
     return page.slug === "home" ? "/" : `/${page.slug}`;
@@ -742,6 +779,12 @@ export default function PagesPage() {
             presence: { ...defaultPartnerSections.presence, ...rawData.presence },
             gallery: { ...defaultPartnerSections.gallery, ...rawData.gallery }
           };
+        } else if (type === "privacy") {
+          pageSections = {
+            layoutType: "privacy",
+            hero: { ...defaultPrivacySections.hero, ...rawData.hero },
+            content: { ...defaultPrivacySections.content, ...rawData.content }
+          };
         } else {
           const rawHero = rawData.hero || {};
           let heroMedia = rawHero.media;
@@ -874,6 +917,12 @@ export default function PagesPage() {
             presence: { ...defaultPartnerSections.presence, ...rawData.presence },
             gallery: { ...defaultPartnerSections.gallery, ...rawData.gallery }
           };
+        } else if (type === "privacy") {
+          pageSections = {
+            layoutType: "privacy",
+            hero: { ...defaultPrivacySections.hero, ...rawData.hero },
+            content: { ...defaultPrivacySections.content, ...rawData.content }
+          };
         } else {
           const rawHero = rawData.hero || {};
           let heroMedia = rawHero.media;
@@ -982,6 +1031,12 @@ export default function PagesPage() {
           reachLeft: { ...defaultPartnerSections.reachLeft, ...rawData.reachLeft },
           presence: { ...defaultPartnerSections.presence, ...rawData.presence },
           gallery: { ...defaultPartnerSections.gallery, ...rawData.gallery }
+        };
+      } else if (type === "privacy") {
+        resetSections = {
+          layoutType: "privacy",
+          hero: { ...defaultPrivacySections.hero, ...rawData.hero },
+          content: { ...defaultPrivacySections.content, ...rawData.content }
         };
       } else {
         const rawHero = rawData.hero || {};
@@ -1220,6 +1275,11 @@ export default function PagesPage() {
                 { id: "reachLeft", label: "Dealer Features Setup", icon: FileText },
                 { id: "presence", label: "Market Presence", icon: Grid },
                 { id: "gallery", label: "Dealer Network Gallery", icon: Grid },
+              ]
+            : layoutType === "privacy"
+              ? [
+                { id: "hero", label: "Hero Banner", icon: Layout },
+                { id: "content", label: "Document Content Editor", icon: FileText },
               ]
               : layoutType === "home"
                 ? [
@@ -1665,7 +1725,7 @@ export default function PagesPage() {
                   </div>
                 )}
 
-                {activeTab === "hero" && formData.sections?.hero && formData.sections.layoutType !== "blog" && (
+                {activeTab === "hero" && formData.sections?.hero && formData.sections.layoutType !== "blog" && layoutType !== "privacy" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Layout className="h-5 w-5 text-primary" />
@@ -3906,6 +3966,38 @@ export default function PagesPage() {
                   </div>
                 )}
 
+                {/* ── Privacy Hero Tab ── */}
+                {activeTab === "hero" && formData.sections?.hero && layoutType === "privacy" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Layout className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Privacy Hero Banner Settings</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Hero Title</label>
+                        <input
+                          type="text"
+                          value={formData.sections.hero.title || ""}
+                          onChange={(e) => updateSectionField("hero", "title", e.target.value)}
+                          placeholder="Privacy Policy"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Hero Description</label>
+                        <textarea
+                          rows={3}
+                          value={formData.sections.hero.desc || ""}
+                          onChange={(e) => updateSectionField("hero", "desc", e.target.value)}
+                          placeholder="Understand how we collect, use, and protect your information at Jivanjor."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* ── Blog List / Categories & Posts Tab ── */}
                 {activeTab === "list" && formData.sections?.list && formData.sections.layoutType === "blog" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
@@ -4483,6 +4575,28 @@ export default function PagesPage() {
                           </div>
                         ))}
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Privacy Document Editor Tab ── */}
+                {activeTab === "content" && formData.sections?.content && layoutType === "privacy" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Document Content Editor</h3>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Privacy Policy Content (Write standard text paragraphs. Headings and bullet points will be parsed automatically)
+                      </label>
+                      <textarea
+                        rows={25}
+                        value={formData.sections.content.text || ""}
+                        onChange={(e) => updateSectionField("content", "text", e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-mono leading-relaxed"
+                        placeholder="Write privacy content here..."
+                      />
                     </div>
                   </div>
                 )}
