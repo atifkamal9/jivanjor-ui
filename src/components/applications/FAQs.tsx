@@ -29,7 +29,16 @@ const FAQ_ITEMS: FaqItem[] = [
       "Apply adhesive evenly using a notched trowel, press from the center outward to expel trapped air, and apply adequate clamping pressure during the open time. Avoid applying on humid surfaces or in extreme temperatures.",
   },
 ];
-export default function FQAs() {
+interface FAQsProps {
+  title?: string;
+  subtitle?: string;
+  items?: FaqItem[];
+}
+
+export default function FQAs({ title, subtitle, items }: FAQsProps) {
+  const displayTitle = title || "FAQs";
+  const displaySubtitle = subtitle || "Find quick answers about product use, coverage, setting time, pack sizes and technical details.";
+  const displayItems = items || FAQ_ITEMS;
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   const toggleAccordion = (index: number) => {
@@ -57,18 +66,17 @@ export default function FQAs() {
             />
           </div>
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
-            FAQs
+            {displayTitle}
           </h2>
           <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-normal">
-            Find quick answers about product use, coverage, setting time, pack
-            sizes and technical details.
+            {displaySubtitle}
           </p>
         </div>
 
         {/* FAQs Container Card */}
         <div className="max-w-full mx-auto mt-6">
           <div className="w-full">
-            {FAQ_ITEMS.map((item, idx) => {
+            {displayItems.map((item, idx) => {
               const isOpen = openIndex === idx;
               return (
                 <div

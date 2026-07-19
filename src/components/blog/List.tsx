@@ -4,7 +4,25 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
 
-export default function List() {
+interface BlogCategory {
+  name: string;
+  icon: string;
+}
+
+interface BlogPost {
+  title: string;
+  desc: string;
+  image: string;
+  category: string;
+  slug?: string;
+}
+
+interface BlogListProps {
+  categories?: BlogCategory[];
+  posts?: BlogPost[];
+}
+
+export default function List({ categories, posts }: BlogListProps) {
   const [activeList, setActiveList] = useState("Latest Blogs");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -58,26 +76,15 @@ export default function List() {
     };
   }, []);
 
-  const Lists = [
-    {
-      name: "Latest Blogs",
-      icon: "/images/blog/image 47.svg",
-    },
-    {
-      name: "Application Tips",
-      icon: "/images/blog/image 43.svg",
-    },
-    {
-      name: "Choosing The Right Adhesive",
-      icon: "/images/blog/Check-correct.svg",
-    },
-    {
-      name: "Fix Common Issues",
-      icon: "/images/blog/image 48.svg",
-    },
+  const defaultLists = [
+    { name: "Latest Blogs", icon: "/images/blog/image 47.svg" },
+    { name: "Application Tips", icon: "/images/blog/image 43.svg" },
+    { name: "Choosing The Right Adhesive", icon: "/images/blog/Check-correct.svg" },
+    { name: "Fix Common Issues", icon: "/images/blog/image 48.svg" },
   ];
+  const displayLists = categories && categories.length > 0 ? categories : defaultLists;
 
-  const Blogs = [
+  const Blogs: BlogPost[] = [
     // Category: Application Tips
     {
       title:
@@ -196,11 +203,13 @@ export default function List() {
     },
   ];
 
+  const displayBlogs = posts && posts.length > 0 ? posts : Blogs;
+
   // Filter Blogs by category
   const filteredBlogs =
     activeList === "Latest Blogs"
-      ? Blogs
-      : Blogs.filter((blog) => blog.category === activeList);
+      ? displayBlogs
+      : displayBlogs.filter((blog) => blog.category === activeList);
 
   // Pagination calculation
   const postsPerPage = 6;
@@ -217,7 +226,7 @@ export default function List() {
           Browse By Category
         </h2>
         <div className="grid grid-cols-2 gap-4">
-          {Lists.map((list) => {
+          {displayLists.map((list) => {
             const isActive = activeList === list.name;
             return (
               <button
@@ -226,9 +235,8 @@ export default function List() {
                   setActiveList(list.name);
                   setCurrentPage(1);
                 }}
-                className={`group rounded-[20px] w-43 min-h-23.5 flex flex-col items-center justify-center px-4 py-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
-                  isActive ? "active-gradient-border" : "bg-white"
-                }`}
+                className={`group rounded-[20px] w-43 min-h-23.5 flex flex-col items-center justify-center px-4 py-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
+                  }`}
               >
                 <div className="relative w-9 h-9 mb-2 flex items-center justify-center">
                   <Image
@@ -262,11 +270,10 @@ export default function List() {
         <div className="flex items-center justify-between w-full gap-2">
           <button
             onClick={scrollLeft}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${
-              showLeftArrow
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
                 ? "block pointer-events-auto"
                 : "hidden pointer-events-none"
-            }`}
+              }`}
           >
             <ChevronLeftCircle size={24} className="text-[#FF0009]" />
           </button>
@@ -275,7 +282,7 @@ export default function List() {
             className="flex-1 flex overflow-x-auto scroll-smooth scrollbar-none snap-x snap-mandatory gap-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {Lists.map((list) => {
+            {displayLists.map((list) => {
               const isActive = activeList === list.name;
               return (
                 <button
@@ -284,11 +291,10 @@ export default function List() {
                     setActiveList(list.name);
                     setCurrentPage(1);
                   }}
-                  className={`${
-                    isActive
+                  className={`${isActive
                       ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
                       : "bg-[#efefef] text-black"
-                  } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start`}
+                    } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start`}
                 >
                   {list.name}
                 </button>
@@ -297,11 +303,10 @@ export default function List() {
           </div>
           <button
             onClick={scrollRight}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${
-              showRightArrow
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
                 ? "block pointer-events-auto"
                 : "hidden pointer-events-none"
-            }`}
+              }`}
           >
             <ChevronRightCircle size={24} className="text-[#FF0009]" />
           </button>
@@ -314,8 +319,8 @@ export default function List() {
           {currentBlogs.map((blog, idx) => (
             <Link
               key={idx}
-              href={`/blog/${blog.title.replace(/\s/g, "-").toLowerCase() ?? ""}`}
-              className="flex flex-col items-center bg-white rounded-[20px] group"
+              href={`/blog?article=${blog.slug || blog.title.replace(/\s/g, "-").toLowerCase()}`}
+              className="flex flex-col items-center bg-white rounded-[20px] group md:items-start"
             >
               {/* Blog Image Container */}
               <div className="relative w-full h-50 sm:h-61.5 rounded-[20px] overflow-hidden bg-surface">
@@ -359,11 +364,10 @@ export default function List() {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`px-3 py-1 transition-colors cursor-pointer ${
-                  currentPage === page
+                className={`px-3 py-1 transition-colors cursor-pointer ${currentPage === page
                     ? "font-bold underline decoration-solid underline-offset-[6px] text-black"
                     : "hover:text-[#ff0009] text-[#222]"
-                }`}
+                  }`}
               >
                 {page}
               </button>

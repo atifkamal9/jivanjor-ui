@@ -22,13 +22,13 @@ export default function AboutUs({ data = {} }: AboutUsProps) {
       { id: "promise-section", tabId: "about-jivanjor" },
       { id: "innovation-section", tabId: "research-innovation" },
       { id: "responsibility-section", tabId: "quality-sustainability" },
-      { id: "presence-section", tabId: "our-presence" },
+      { id: "our-presence", tabId: "our-presence" },
       { id: "tvcs-section", tabId: "tvcs" },
     ];
 
     const observerOptions = {
       root: null,
-      rootMargin: "-25% 0px -55% 0px", // Trigger when section occupies the active scroll viewport area
+      rootMargin: "-25% 0px -55% 0px",
       threshold: 0.05,
     };
 

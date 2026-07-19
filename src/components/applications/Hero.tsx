@@ -2,7 +2,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  title?: string;
+  subtitle?: string;
+  image?: string;
+}
+
+export default function Hero({ title, subtitle, image }: HeroProps) {
+  const displayTitle = title || "Furniture & Woodwork Adhesive Solutions";
+  const displaySubtitle = subtitle || "Application Tips";
+  const displayImage = image || "/images/applications/Rectangle 2.png";
   return (
     <section className="relative">
       <div className="flex items-center gap-1.5 md:hidden px-6 pt-4 text-xs font-medium">
@@ -33,18 +42,18 @@ export default function Hero() {
                 </Link>
                 {/* Chevron separator */}
                 <ChevronRight size={16} />
-                <span className="font-normal text-lg text-white/80">
-                  Application Tips
+                 <span className="font-normal text-lg text-white/80">
+                  {displaySubtitle}
                 </span>
               </div>
               <h2 className="font-amethysta font-normal text-[34px] sm:text-4xl lg:text-5xl mt-10 md:mt-12 text-center md:text-start">
-                Furniture &amp; Woodwork Adhesive Solutions
+                {displayTitle}
               </h2>
             </div>
           </div>
         </div>
-        <Image
-          src="/images/applications/Rectangle 2.png"
+         <Image
+          src={displayImage}
           fill
           alt="applications Hero"
           sizes="100vw"

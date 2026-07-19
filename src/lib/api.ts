@@ -79,6 +79,10 @@ export interface Page {
   description?: string;
   activeTemplateId?: string | null;
   sections?: any;
+  updatedAt?: string;
+  createdAt?: string;
+  updated_at?: string;
+  created_at?: string;
 }
 
 export interface PageTemplateSection {
@@ -515,13 +519,8 @@ export const api = {
       canonicalUrl: seo.canonical_url || null,
       image: seo.image || null,
     };
-    if (seo.id) {
-      const res = await client.put(`/seo/${seo.id}`, payload);
-      return mapSeoFromBackend(res.data?.data?.seo);
-    } else {
-      const res = await client.post("/seo", payload);
-      return mapSeoFromBackend(res.data?.data?.seo);
-    }
+    const res = await client.post("/seo", payload);
+    return mapSeoFromBackend(res.data?.data?.seo);
   },
   deleteSeoMetadata: async (id: string): Promise<boolean> => {
     await client.delete(`/seo/${id}`);

@@ -322,6 +322,112 @@ const defaultCategorySections = {
   }
 };
 
+const defaultApplicationsSections = {
+  hero: {
+    title: "Furniture & Woodwork Adhesive Solutions",
+    breadcrumb: "Application Tips",
+    media: [
+      "/images/applications/Rectangle 2.png"
+    ]
+  },
+  list: {
+    title: "Woodworking Applications List",
+    subtitle: "Browse specialized application areas and get bonding advice.",
+    items: [
+      {
+        title: "Furniture Assembly & Joinery",
+        desc: "For tables, chairs, cabinets, frames and other wood-to-wood bonding needs.",
+        image: "/images/applications/Rectangle 150.png"
+      },
+      {
+        title: "Lamination & Veneering",
+        desc: "For bonding laminates, veneers and decorative surfaces to plywood, MDF or boards.",
+        image: "/images/applications/Rectangle 151.png"
+      },
+      {
+        title: "Edge Banding & Finishing",
+        desc: "For clean edges, surface finishing and exposed board sides.",
+        image: "/images/applications/Rectangle 152.png"
+      },
+      {
+        title: "Wooden Cabinets & Storage Units",
+        desc: "For wardrobes, shelves, drawers, modular storage and daily-use furniture.",
+        image: "/images/applications/Rectangle 153.png"
+      },
+      {
+        title: "Repair & Restoration",
+        desc: "For fixing gaps, loose joints, damaged parts and small woodwork repairs.",
+        image: "/images/applications/Rectangle 154.png"
+      },
+      {
+        title: "Small Assembly & Detail Work",
+        desc: "For quick fixes, smaller wooden parts and intricate woodwork applications.",
+        image: "/images/applications/Rectangle 155.png"
+      }
+    ]
+  },
+  relatedProducts: {
+    title: "Related Products",
+    items: [
+      {
+        title: "Champion Super",
+        description: "Provides a superior bond and strength, while being non-hazardous.",
+        image: "/images/Champion Super.png",
+        color: "bg-[#0083CB]"
+      },
+      {
+        title: "Aquabond",
+        description: "Heatproof and waterproof adhesive made with Cross Linking Polymer",
+        image: "/images/Aquabond.png",
+        color: "bg-[#077937]"
+      },
+      {
+        title: "Foambond",
+        description: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
+        image: "/images/Foambond.png",
+        color: "bg-[#F57F26]"
+      },
+      {
+        title: "Watershield",
+        description: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+        image: "/images/Watershield.png",
+        color: "bg-[#0498AA]"
+      }
+    ]
+  },
+  faqs: {
+    title: "FAQs",
+    subtitle: "Find quick answers about product use, coverage, setting time, pack sizes and technical details.",
+    items: [
+      {
+        question: "Which adhesive should I use for furniture and woodwork?",
+        answer: "The right adhesive depends on the surface, type of furniture work, expected strength and application condition."
+      },
+      {
+        question: "Can Jivanjor adhesives be used for plywood and boards?",
+        answer: "Yes, Jivanjor offers a range of adhesives specifically formulated for plywood, MDF and boards."
+      }
+    ]
+  }
+};
+
+const defaultBlogSections = {
+  hero: {
+    title: "Practical Guidance for Woodwork and Adhesives",
+    subtitle: "Knowledge Hub",
+    desktopImage: "/images/blog/blog-hero.png"
+  },
+  list: {
+    categories: [
+      { name: "Latest Blogs", icon: "/images/blog/image 47.svg" },
+      { name: "Application Tips", icon: "/images/blog/image 43.svg" },
+      { name: "Choosing The Right Adhesive", icon: "/images/blog/Check-correct.svg" },
+      { name: "Fix Common Issues", icon: "/images/blog/image 48.svg" }
+    ],
+    posts: []
+  }
+};
+
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<PageTemplate[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
@@ -378,6 +484,10 @@ export default function TemplatesPage() {
       setHomeSections({ layoutType: "products", ...defaultProductSections });
     } else if (newType === "categories") {
       setHomeSections({ layoutType: "categories", ...defaultCategorySections });
+    } else if (newType === "applications") {
+      setHomeSections({ layoutType: "applications", ...defaultApplicationsSections });
+    } else if (newType === "blog") {
+      setHomeSections({ layoutType: "blog", ...defaultBlogSections });
     } else {
       setHomeSections({ layoutType: "home", ...defaultHomeSections });
     }
@@ -428,6 +538,20 @@ export default function TemplatesPage() {
         categoriesShowcase: { ...defaultCategorySections.categoriesShowcase, ...rawData.categoriesShowcase },
         applicationsGrid: { ...defaultCategorySections.applicationsGrid, ...rawData.applicationsGrid },
         substrates: { ...defaultCategorySections.substrates, ...rawData.substrates }
+      };
+    } else if (type === "applications") {
+      merged = {
+        layoutType: "applications",
+        hero: { ...defaultApplicationsSections.hero, ...rawData.hero },
+        list: { ...defaultApplicationsSections.list, ...rawData.list },
+        relatedProducts: { ...defaultApplicationsSections.relatedProducts, ...rawData.relatedProducts },
+        faqs: { ...defaultApplicationsSections.faqs, ...rawData.faqs }
+      };
+    } else if (type === "blog") {
+      merged = {
+        layoutType: "blog",
+        hero: { ...defaultBlogSections.hero, ...rawData.hero },
+        list: { ...defaultBlogSections.list, ...rawData.list }
       };
     } else {
       const rawHero = rawData.hero || {};
@@ -609,18 +733,30 @@ export default function TemplatesPage() {
             { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
             { id: "substrates", label: "Substrates Matrix", icon: Shield },
           ]
-          : currentLayoutType === "home"
+          : currentLayoutType === "applications"
             ? [
               { id: "hero", label: "Hero Banner", icon: Layout },
-              { id: "productRange", label: "Products Range", icon: Grid },
-              { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
-              { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
-              { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
-              { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
-              { id: "testimonials", label: "Testimonials", icon: Bookmark },
-              { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+              { id: "list", label: "Applications List", icon: Grid },
+              { id: "relatedProducts", label: "Related Products", icon: Layers },
+              { id: "faqs", label: "FAQs Accordion", icon: Award },
             ]
-            : [])
+            : currentLayoutType === "blog"
+              ? [
+                { id: "hero", label: "Hero Banner", icon: Layout },
+                { id: "list", label: "Blog Categories & Posts", icon: FileText },
+              ]
+              : currentLayoutType === "home"
+                ? [
+                  { id: "hero", label: "Hero Banner", icon: Layout },
+                  { id: "productRange", label: "Products Range", icon: Grid },
+                  { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
+                  { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
+                  { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
+                  { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
+                  { id: "testimonials", label: "Testimonials", icon: Bookmark },
+                  { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+                ]
+                : [])
   ];
 
   // Filter templates
@@ -712,7 +848,7 @@ export default function TemplatesPage() {
                               </div>
                               <div>
                                 <p className="font-extrabold text-sm text-foreground">{temp.name}</p>
-                                <p className="text-[10px] text-foreground/45 font-bold uppercase tracking-wider">{temp.slug}</p>
+                                <p className="text-[10px] text-foreground/45 font-bold tracking-wider">{temp.slug}</p>
                               </div>
                             </div>
                           </td>
@@ -897,9 +1033,11 @@ export default function TemplatesPage() {
                           <option value="about">About Page Layout System</option>
                           <option value="products">Product Specification Layout System</option>
                           <option value="categories">Category Application Layout System</option>
+                          <option value="applications">Applications Layout System</option>
+                          <option value="blog">Blog / Knowledge Hub Layout System</option>
                         </select>
                         {editingId && (
-                          <p className="mt-1 text-[11px] text-foreground/45 font-bold">
+                          <p className="mt-1 text-[11px] text-primary font-bold">
                             * Layout style type cannot be changed once a template is saved.
                           </p>
                         )}
@@ -908,7 +1046,7 @@ export default function TemplatesPage() {
                   </div>
                 )}
 
-                {activeTab === "hero" && homeSections.hero && (
+                {activeTab === "hero" && homeSections.hero && homeSections.layoutType !== "blog" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Layout className="h-5 w-5 text-primary" />
@@ -2876,6 +3014,465 @@ export default function TemplatesPage() {
                                 onChange={(e) => updateItemField("substrates", idx, "comment", e.target.value)}
                                 placeholder="Recommendations details comments..."
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-medium"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Applications List Tab */}
+                {activeTab === "list" && homeSections.list && homeSections.layoutType === "applications" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Applications List</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.list.title || ""}
+                          onChange={(e) => updateSectionField("list", "title", e.target.value)}
+                          placeholder="Woodworking Applications List"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.list.subtitle || ""}
+                          onChange={(e) => updateSectionField("list", "subtitle", e.target.value)}
+                          placeholder="Section description..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Application Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("list", { title: "New Application", desc: "Description here", image: "/images/applications/Rectangle 150.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Application Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.list.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("list", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("list", idx, "title", e.target.value)}
+                                placeholder="Application Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.desc || ""}
+                                onChange={(e) => updateItemField("list", idx, "desc", e.target.value)}
+                                placeholder="Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Card Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("list", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Products Tab */}
+                {activeTab === "relatedProducts" && homeSections.relatedProducts && homeSections.layoutType === "applications" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Layers className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Related Products</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.relatedProducts.title || ""}
+                          onChange={(e) => updateSectionField("relatedProducts", "title", e.target.value)}
+                          placeholder="Related Products"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Product Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("relatedProducts", { title: "New Product", description: "Provides a superior bond...", image: "/images/Champion Super.png", color: "bg-[#0083CB]" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Product Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.relatedProducts.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("relatedProducts", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Product #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("relatedProducts", idx, "title", e.target.value)}
+                                placeholder="Product Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.description || ""}
+                                onChange={(e) => updateItemField("relatedProducts", idx, "description", e.target.value)}
+                                placeholder="Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                              />
+                              <input
+                                type="text"
+                                value={item.color || ""}
+                                onChange={(e) => updateItemField("relatedProducts", idx, "color", e.target.value)}
+                                placeholder="bg-[#0083CB]"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Product Image</span>
+                                <ImageUpload
+                                  value={item.image || ""}
+                                  onChange={(url) => updateItemField("relatedProducts", idx, "image", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* FAQs Accordion Tab */}
+                {activeTab === "faqs" && homeSections.faqs && homeSections.layoutType === "applications" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Award className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">FAQs Accordion</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Title
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.faqs.title || ""}
+                          onChange={(e) => updateSectionField("faqs", "title", e.target.value)}
+                          placeholder="FAQs"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.faqs.subtitle || ""}
+                          onChange={(e) => updateSectionField("faqs", "subtitle", e.target.value)}
+                          placeholder="Find quick answers..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Troubleshooting FAQ cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("faqs", { question: "New Question?", answer: "Answer here." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Q&A Item
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.faqs.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("faqs", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">FAQ #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.question || ""}
+                                onChange={(e) => updateItemField("faqs", idx, "question", e.target.value)}
+                                placeholder="Question Text"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.answer || ""}
+                                onChange={(e) => updateItemField("faqs", idx, "answer", e.target.value)}
+                                placeholder="Detailed Answer description..."
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Blog Hero Tab ── */}
+                {activeTab === "hero" && homeSections.hero && homeSections.layoutType === "blog" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Layout className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Blog Hero Banner</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Hero Title</label>
+                        <input
+                          type="text"
+                          value={homeSections.hero.title || ""}
+                          onChange={(e) => updateSectionField("hero", "title", e.target.value)}
+                          placeholder="Practical Guidance for Woodwork and Adhesives"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Breadcrumb / Subtitle Label</label>
+                        <input
+                          type="text"
+                          value={homeSections.hero.subtitle || ""}
+                          onChange={(e) => updateSectionField("hero", "subtitle", e.target.value)}
+                          placeholder="Knowledge Hub"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">Desktop Hero Image</label>
+                        <ImageUpload
+                          value={homeSections.hero.desktopImage || ""}
+                          onChange={(url) => updateSectionField("hero", "desktopImage", url)}
+                          folder="templates"
+                          size="default"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Blog List / Categories & Posts Tab ── */}
+                {activeTab === "list" && homeSections.list && homeSections.layoutType === "blog" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Blog Categories &amp; Posts</h3>
+                    </div>
+
+                    {/* Categories */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Browse Categories</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const cats = [...(homeSections.list?.categories || []), { name: "New Category", icon: "/images/blog/image 47.svg" }];
+                            updateSectionField("list", "categories", cats);
+                          }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Category
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.list?.categories || []).map((cat: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const cats = (homeSections.list?.categories || []).filter((_: any, i: number) => i !== idx);
+                                updateSectionField("list", "categories", cats);
+                              }}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Category #{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={cat.name || ""}
+                              onChange={(e) => {
+                                const cats = [...(homeSections.list?.categories || [])];
+                                cats[idx] = { ...cats[idx], name: e.target.value };
+                                updateSectionField("list", "categories", cats);
+                              }}
+                              placeholder="Category Name"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
+                            />
+                            <div className="space-y-1">
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Category Icon</span>
+                              <ImageUpload
+                                value={cat.icon || ""}
+                                onChange={(url) => {
+                                  const cats = [...(homeSections.list?.categories || [])];
+                                  cats[idx] = { ...cats[idx], icon: url };
+                                  updateSectionField("list", "categories", cats);
+                                }}
+                                folder="templates"
+                                size="compact"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Posts */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Blog Posts</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const posts = [...(homeSections.list?.posts || []), { title: "New Blog Post", desc: "Post description here.", image: "/images/blog/Rectangle 140.png", category: "Latest Blogs", slug: "" }];
+                            updateSectionField("list", "posts", posts);
+                          }}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Blog Post
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.list?.posts || []).map((post: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const posts = (homeSections.list?.posts || []).filter((_: any, i: number) => i !== idx);
+                                updateSectionField("list", "posts", posts);
+                              }}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Post #{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={post.title || ""}
+                              onChange={(e) => {
+                                const posts = [...(homeSections.list?.posts || [])];
+                                posts[idx] = { ...posts[idx], title: e.target.value };
+                                updateSectionField("list", "posts", posts);
+                              }}
+                              placeholder="Blog Post Title"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                            />
+                            <input
+                              type="text"
+                              value={post.slug || ""}
+                              onChange={(e) => {
+                                const posts = [...(homeSections.list?.posts || [])];
+                                posts[idx] = { ...posts[idx], slug: e.target.value };
+                                updateSectionField("list", "posts", posts);
+                              }}
+                              placeholder="post-slug (leave blank to auto-generate)"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                            />
+                            <select
+                              value={post.category || ""}
+                              onChange={(e) => {
+                                const posts = [...(homeSections.list?.posts || [])];
+                                posts[idx] = { ...posts[idx], category: e.target.value };
+                                updateSectionField("list", "posts", posts);
+                              }}
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2 text-foreground cursor-pointer"
+                            >
+                              <option value="" disabled>-- Select Blog Post Category --</option>
+                              {(homeSections.list?.categories || []).map((cat: any, cIdx: number) => (
+                                <option key={cIdx} value={cat.name}>{cat.name}</option>
+                              ))}
+                            </select>
+                            <textarea
+                              rows={2}
+                              value={post.desc || ""}
+                              onChange={(e) => {
+                                const posts = [...(homeSections.list?.posts || [])];
+                                posts[idx] = { ...posts[idx], desc: e.target.value };
+                                updateSectionField("list", "posts", posts);
+                              }}
+                              placeholder="Short description..."
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none mb-2"
+                            />
+                            <div className="space-y-1">
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Post Image</span>
+                              <ImageUpload
+                                value={post.image || ""}
+                                onChange={(url) => {
+                                  const posts = [...(homeSections.list?.posts || [])];
+                                  posts[idx] = { ...posts[idx], image: url };
+                                  updateSectionField("list", "posts", posts);
+                                }}
+                                folder="templates"
+                                size="compact"
                               />
                             </div>
                           </div>

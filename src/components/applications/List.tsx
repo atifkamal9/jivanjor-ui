@@ -5,7 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { RightChoice } from "@/components/categories";
 
-export default function List() {
+interface ListProps {
+  subtitle?: string;
+  items?: any[];
+}
+
+export default function List({ subtitle, items }: ListProps) {
+  const displaySubtitle = subtitle || "Explore Jivanjor adhesives for furniture assembly, plywood work, joinery, cabinets, tables, chairs, boards and everyday wood bonding needs.";
   const [currentPage, setCurrentPage] = useState(1);
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -58,7 +64,7 @@ export default function List() {
     };
   }, []);
 
-  const Applications = [
+  const defaultApplications = [
     {
       title: "Furniture Assembly & Joinery",
       desc: "For tables, chairs, cabinets, frames and other wood-to-wood bonding needs.",
@@ -91,12 +97,14 @@ export default function List() {
     },
   ];
 
+  const displayItems = items || defaultApplications;
+
   // Pagination calculation
   const postsPerPage = 6;
-  const totalPages = Math.ceil(Applications.length / postsPerPage);
+  const totalPages = Math.ceil(displayItems.length / postsPerPage);
   const indexOfLastBlog = currentPage * postsPerPage;
   const indexOfFirstBlog = indexOfLastBlog - postsPerPage;
-  const currentApplications = Applications.slice(
+  const currentApplications = displayItems.slice(
     indexOfFirstBlog,
     indexOfLastBlog,
   );
@@ -126,9 +134,7 @@ export default function List() {
         <div className="flex flex-col">
           <div className="flex flex-col items-center text-center md:items-start md:text-start">
             <p className="font-normal text-lg lg:text-2xl max-w-170">
-              Explore Jivanjor adhesives for furniture assembly, plywood work,
-              joinery, cabinets, tables, chairs, boards and everyday wood
-              bonding needs.
+              {displaySubtitle}
             </p>
           </div>
           <div className="flex-1 space-y-6 mt-8">

@@ -47,7 +47,14 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
   },
 ];
 
-export default function RelatedProducts() {
+interface RelatedProductsProps {
+  title?: string;
+  items?: RelatedProduct[];
+}
+
+export default function RelatedProducts({ title, items }: RelatedProductsProps) {
+  const displayTitle = title || "Related Products";
+  const displayItems = items || RELATED_PRODUCTS;
   return (
     <section
       id="related-products"
@@ -65,7 +72,7 @@ export default function RelatedProducts() {
             />
           </div>
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
-            Related Products
+            {displayTitle}
           </h2>
         </div>
         <div className="w-full mt-24">
@@ -96,7 +103,7 @@ export default function RelatedProducts() {
             }}
             className="overflow-visible!"
           >
-            {RELATED_PRODUCTS.map((card, idx) => (
+            {displayItems.map((card, idx) => (
               <SwiperSlide
                 key={`${card.title}-${idx}`}
                 className="overflow-visible! px-1"

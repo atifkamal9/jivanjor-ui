@@ -1,16 +1,17 @@
-import { RightChoice } from "@/components/categories";
-import { FQAs, Hero, List, RelatedProducts } from "@/components/applications";
+import { api } from "@/lib/api";
+import { ApplicationsLayout } from "@/components/applications";
 
-export default function ApplicationsPage() {
-  return (
-    <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <Hero />
-      <List />
-      <RelatedProducts />
-      <FQAs />
-      <div className="hidden md:block">
-        <RightChoice />
-      </div>
-    </main>
-  );
+export const dynamic = "force-dynamic";
+
+export default async function ApplicationsPage() {
+  let template = null;
+  try {
+    template = await api.getActiveTemplateForPage("applications");
+  } catch (err) {
+    console.error("Failed to load active template for page applications:", err);
+  }
+
+  const sections = template?.rawSections || template?.sections || null;
+
+  return <ApplicationsLayout data={sections} />;
 }

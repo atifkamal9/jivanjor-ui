@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Plus, Minus, CornerDownRight } from "lucide-react";
 import {
-  aboutItems,
+  aboutItems as staticAboutItems,
   applicationItems,
   knowledgeItems,
   partnerItems,
@@ -18,6 +18,9 @@ interface CategoryItem {
 
 interface MobileNavProps {
   onClose?: () => void;
+  aboutItems?: any[];
+  appItems?: any[];
+  knowledgeItems?: any[];
 }
 
 const productCategories: CategoryItem[] = [
@@ -68,7 +71,7 @@ const productCategories: CategoryItem[] = [
   },
 ];
 
-export default function MobileNav({ onClose }: MobileNavProps) {
+export default function MobileNav({ onClose, aboutItems = staticAboutItems, appItems = applicationItems, knowledgeItems: propKnowledgeItems = knowledgeItems }: MobileNavProps) {
   const pathname = usePathname();
 
   // Determine initial open section based on current path
@@ -267,7 +270,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "Applications" && (
             <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
-              {applicationItems.map((item) => {
+              {appItems.map((item) => {
                 const isActive = pathname === item.link;
                 return (
                   <Link
@@ -306,7 +309,7 @@ export default function MobileNav({ onClose }: MobileNavProps) {
 
           {openSection === "KnowledgeHub" && (
             <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {knowledgeItems.map((item) => {
+              {propKnowledgeItems.map((item) => {
                 const isActive = pathname === item.link;
                 return (
                   <Link

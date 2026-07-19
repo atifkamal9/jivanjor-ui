@@ -17,13 +17,13 @@ export interface NavItem {
 
 export const aboutItems: NavItem[] = [
   { name: "About Jivanjor", link: "/about" },
-  { name: "Research and Innovation", link: "/about#innovation-section" },
+  { name: "Research and Innovation", link: "/about/research-and-innovation" },
   {
     name: "Quality & Performance Promise",
-    link: "/about#responsibility-section",
+    link: "/about/quality-and-performance-promise",
   },
-  { name: "TVC", link: "/about#tvcs-section" },
-  { name: "Market Presence", link: "/about#presence-section" },
+  { name: "TVC", link: "/about/tvc" },
+  { name: "Market Presence", link: "/about/market-presence" },
 ];
 
 export const applicationItems = [
