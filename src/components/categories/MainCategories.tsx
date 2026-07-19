@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { api } from "@/lib/api";
 import {
   ChevronRight,
   ChevronRightCircle,
@@ -12,6 +13,7 @@ import {
 
 interface ProductCard {
   title: string;
+  slug?: string;
   description: string;
   mobileDesc: string;
   color: string;
@@ -33,7 +35,7 @@ interface MainCategoryData {
   subCategories: SubCategoryData[];
 }
 
-const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
+const STATIC_MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   {
     name: "Woodworking Adhesives",
     subCategories: [
@@ -333,6 +335,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 ];
 
 export default function MainCategories() {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [activeMainCategory, setActiveMainCategory] = useState(
     "Woodworking Adhesives",
   );
@@ -349,14 +353,86 @@ export default function MainCategories() {
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentMainCategoryData =
-    MAIN_CATEGORIES_DATA.find((c) => c.name === activeMainCategory) ||
-    MAIN_CATEGORIES_DATA[0];
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [cats, prods] = await Promise.all([
+          api.getCategories(),
+          api.getProducts(),
+        ]);
+        setCategories(cats);
+        setProducts(prods);
 
-  const subCategories = currentMainCategoryData.subCategories;
+        // Find first main category and active subcategory and make them active
+        const firstMain = cats.find((cat) => !cat.parent_category);
+        if (firstMain) {
+          setActiveMainCategory(firstMain.name);
+          const firstSub = cats.find((sub) => sub.parent_category === firstMain.id);
+          if (firstSub) {
+            setActiveSubCategory(firstSub.name);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load category/product data:", err);
+      }
+    }
+    loadData();
+  }, []);
+
+  const mainCategoriesData = categories.length > 0
+    ? categories
+        .filter((cat) => !cat.parent_category)
+        .map((cat) => {
+          const subCats = categories.filter((sub) => sub.parent_category === cat.id);
+          return {
+            name: cat.name,
+            subCategories: subCats.map((sub) => {
+              const subProducts = products.filter((p) => p.category_id === sub.id);
+              return {
+                name: sub.name,
+                slug: sub.slug,
+                title: sub.name + " Adhesives by Jivanjor",
+                description: sub.description || `Explore our high quality ${sub.name} solutions.`,
+                icon: subProducts[0]?.image || "/images/Watershield.png",
+                products: subProducts.map((p) => {
+                  let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
+                  if (p.metadata) {
+                    const cleaned = p.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
+                    if (cleaned.length > 0) {
+                      featuresList = cleaned;
+                    }
+                  }
+                  return {
+                    title: p.name,
+                    slug: p.slug,
+                    description: p.description,
+                    mobileDesc: p.description,
+                    color: p.name.toLowerCase().includes("aquabond")
+                      ? "bg-[#077937]"
+                      : p.name.toLowerCase().includes("foambond")
+                        ? "bg-[#F57F26]"
+                        : "bg-[#0498AA]",
+                    badge: sub.name,
+                    image: p.image || "/images/Watershield.png",
+                    features: featuresList,
+                  };
+                }),
+              };
+            }),
+          };
+        })
+    : [];
+
+  const mainCategoriesToUse = mainCategoriesData.length > 0 ? mainCategoriesData : STATIC_MAIN_CATEGORIES_DATA;
+
+  const currentMainCategoryData =
+    mainCategoriesToUse.find((c) => c.name === activeMainCategory) ||
+    mainCategoriesToUse[0];
+
+  const subCategories = currentMainCategoryData?.subCategories || [];
 
   const currentSubCategoryData =
-    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0];
+    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0] || { name: "", title: "", description: "", icon: "", products: [] };
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -447,8 +523,8 @@ export default function MainCategories() {
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);
     const categoryData =
-      MAIN_CATEGORIES_DATA.find((c) => c.name === name) ||
-      MAIN_CATEGORIES_DATA[0];
+      mainCategoriesToUse.find((c) => c.name === name) ||
+      mainCategoriesToUse[0];
     const firstSubName = categoryData.subCategories[0]?.name || "";
     setActiveSubCategory(firstSubName);
     setOpenAccordionIndex(0);
@@ -485,7 +561,7 @@ export default function MainCategories() {
           </button>
           {dropdownOpen && (
             <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden space-y-1.5 z-10">
-              {MAIN_CATEGORIES_DATA.map((cat) => (
+              {mainCategoriesToUse.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
@@ -549,7 +625,7 @@ export default function MainCategories() {
           </button>
           {dropdownOpen && (
             <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-8 pb-5 overflow-hidden space-y-1.5 z-10">
-              {MAIN_CATEGORIES_DATA.map((cat) => (
+              {mainCategoriesToUse.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
@@ -647,7 +723,7 @@ export default function MainCategories() {
                         {product.description}
                       </p>
                       <Link
-                        href="/products"
+                        href={`/products?product=${product.slug || product.title.toLowerCase().replace(/\s+/g, '-')}`}
                         className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
                       >
                         View More

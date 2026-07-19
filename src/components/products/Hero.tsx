@@ -2,7 +2,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  product?: any;
+  category?: any;
+}
+
+export default function Hero({ product, category }: HeroProps) {
+  const categoryName = category?.name || "Premium Grade";
+  const productName = product?.name || "Watershield";
+  const productDescription = product?.description || "Apke furniture ko paani se bachane wali shield.";
+
+  // Extract features from product metadata (comma-separated list)
+  let featuresList = ["Best-in-Class Coverage", "D3 Grade for Water Resistance", "Anti-bubble Adhesive"];
+  if (product?.metadata) {
+    const cleaned = product.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
+    if (cleaned.length > 0) {
+      featuresList = cleaned;
+    }
+  }
+
   return (
     <section id="overview">
       {/* 1. MOBILE BREADCRUMBS (Only visible on mobile/tablet, hidden on desktop) */}
@@ -19,10 +37,10 @@ export default function Hero() {
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="text-foreground/80 font-normal">Waterproof Grade</span>
+        <span className="text-foreground/80 font-normal">{categoryName}</span>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="">Watershield</span>
+        <span className="">{productName}</span>
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
@@ -48,62 +66,31 @@ export default function Hero() {
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
             <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-normal">
-              Watershield
+              {productName}
             </h1>
             {/* Product Tagline */}
             <p className="font-amethysta text-xl lg:text-3xl leading-[120%] max-w-3xs sm:max-w-md">
-              Apke furniture ko paani se bachane wali shield.
+              {productDescription}
             </p>
           </div>
           {/* Product Bullet Features list */}
           <div className="space-y-1">
-            {/* Feature 1 */}
-            <div className="flex items-center gap-3.5">
-              <div className="shrink-0 text-white">
-                <Image
-                  src="/icons/image 18.svg"
-                  className="aspect-square"
-                  alt="waterproof Grade"
-                  width={20}
-                  height={20}
-                />
+            {featuresList.map((feature, fIdx) => (
+              <div key={fIdx} className="flex items-center gap-3.5">
+                <div className="shrink-0 text-white">
+                  <Image
+                    src={`/icons/image ${18 + (fIdx % 3)}.svg`}
+                    className="aspect-square"
+                    alt="waterproof Grade"
+                    width={20}
+                    height={20}
+                  />
+                </div>
+                <span className="text-lg lg:text-2xl font-normal leading-normal">
+                  {feature}
+                </span>
               </div>
-              <span className="text-lg lg:text-2xl font-normal leading-normal">
-                Best-in-Class Coverage
-              </span>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="flex items-center gap-3.5">
-              <div className="shrink-0 text-white">
-                <Image
-                  src="/icons/image 19.svg"
-                  className="aspect-square"
-                  alt="waterproof Grade"
-                  width={20}
-                  height={20}
-                />
-              </div>
-              <span className="text-lg lg:text-2xl font-normal leading-normal">
-                D3 Grade for Water Resistance
-              </span>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="flex items-center gap-3.5">
-              <div className="shrink-0 text-white">
-                <Image
-                  src="/icons/image 20.svg"
-                  className="aspect-square"
-                  alt="waterproof Grade"
-                  width={20}
-                  height={20}
-                />
-              </div>
-              <span className="text-lg lg:text-2xl font-normal leading-normal">
-                Anti-bubble Adhesive
-              </span>
-            </div>
+            ))}
           </div>
 
           {/* Enquire Now pill button */}
@@ -121,7 +108,7 @@ export default function Hero() {
         <div className="order-1 lg:order-2 w-full lg:w-[60%] relative h-72 sm:h-100 lg:h-full overflow-hidden">
           {/* Desktop Kitchen Backdrop Image */}
           <Image
-            src="/images/Rectangle 149.png"
+            src={product?.image && !product.image.includes("unsplash") ? product.image : "/images/Rectangle 149.png"}
             alt="Kitchen background"
             fill
             priority
@@ -131,7 +118,7 @@ export default function Hero() {
 
           {/* Mobile Kitchen Backdrop Image */}
           <Image
-            src="/images/Rectangle 149 (1).png"
+            src={product?.image && !product.image.includes("unsplash") ? product.image : "/images/Rectangle 149 (1).png"}
             alt="Kitchen background mobile"
             fill
             priority

@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { api } from "@/lib/api";
 import {
   ChevronLeft,
   ChevronRight,
@@ -24,6 +25,7 @@ interface Props {
 
 interface ProductCard {
   title: string;
+  slug?: string;
   description: string;
   mobileDesc: string;
   color: string;
@@ -40,7 +42,7 @@ interface CategoryData {
   products: ProductCard[];
 }
 
-const CATEGORIES_DATA: CategoryData[] = [
+const STATIC_CATEGORIES_DATA: CategoryData[] = [
   {
     name: "Waterproof Grade",
     title: "Super Premium Adhesives by Jivanjor",
@@ -235,10 +237,36 @@ const CATEGORIES_DATA: CategoryData[] = [
 ];
 
 export default function ProductCategories({ category }: Props) {
+  const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("Waterproof Grade");
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [cats, prods] = await Promise.all([
+          api.getCategories(),
+          api.getProducts(),
+        ]);
+        setCategories(cats);
+        setProducts(prods);
+
+        // Auto-select activeCategory matching parameter category slug
+        if (category) {
+          const match = cats.find((c) => c.slug === category);
+          if (match) {
+            setActiveCategory(match.name);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load category/product data:", err);
+      }
+    }
+    loadData();
+  }, [category]);
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {
@@ -286,9 +314,53 @@ export default function ProductCategories({ category }: Props) {
     }
   }, []);
 
+  // Find subcategory matching the slug, find parent and its siblings
+  const currentSubcategory = categories.find((c) => c.slug === category);
+  const parentId = currentSubcategory?.parent_category || null;
+  const siblingSubcategories = parentId
+    ? categories.filter((c) => c.parent_category === parentId)
+    : categories.filter((c) => c.parent_category); // fallback to all subcategories if no parent found
+
+  const categoriesData = categories.length > 0 && currentSubcategory
+    ? siblingSubcategories.map((sub) => {
+      const subProducts = products.filter((p) => p.category_id === sub.id);
+      return {
+        name: sub.name,
+        title: sub.name + " Adhesives by Jivanjor",
+        description: sub.description || `Explore our high quality ${sub.name} solutions.`,
+        icon: subProducts[0]?.image || "/images/Watershield.png",
+        products: subProducts.map((p) => {
+          let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
+          if (p.metadata) {
+            const cleaned = p.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
+            if (cleaned.length > 0) {
+              featuresList = cleaned;
+            }
+          }
+          return {
+            title: p.name,
+            slug: p.slug,
+            description: p.description,
+            mobileDesc: p.description,
+            color: p.name.toLowerCase().includes("aquabond")
+              ? "bg-[#077937]"
+              : p.name.toLowerCase().includes("foambond")
+                ? "bg-[#F57F26]"
+                : "bg-[#0498AA]",
+            badge: sub.name,
+            image: p.image || "/images/Watershield.png",
+            features: featuresList,
+          };
+        }),
+      };
+    })
+    : [];
+
+  const categoriesToUse = categoriesData.length > 0 ? categoriesData : STATIC_CATEGORIES_DATA;
+
   useEffect(() => {
     if (scrollContainerRef.current) {
-      const activeIndex = CATEGORIES_DATA.findIndex(
+      const activeIndex = categoriesToUse.findIndex(
         (c) => c.name === activeCategory,
       );
       const activeElement = scrollContainerRef.current.children[
@@ -304,11 +376,11 @@ export default function ProductCategories({ category }: Props) {
     }
     const timer = setTimeout(checkScroll, 400);
     return () => clearTimeout(timer);
-  }, [activeCategory]);
+  }, [activeCategory, categoriesToUse]);
 
   const currentCategoryData =
-    CATEGORIES_DATA.find((c) => c.name === activeCategory) ||
-    CATEGORIES_DATA[3];
+    categoriesToUse.find((c) => c.name === activeCategory) ||
+    categoriesToUse[0];
 
   return (
     <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
@@ -316,15 +388,14 @@ export default function ProductCategories({ category }: Props) {
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
         <h2 className="text-2xl ">Categories</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
-          {CATEGORIES_DATA.map((cat) => {
+          {categoriesToUse.map((cat) => {
             const isActive = activeCategory === cat.name;
             return (
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(cat.name)}
-                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
-                  isActive ? "active-gradient-border" : "bg-white"
-                }`}
+                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
+                  }`}
               >
                 <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                   <Image
@@ -335,7 +406,7 @@ export default function ProductCategories({ category }: Props) {
                     className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
-                <span className="font-medium text-sm leading-normal whitespace-nowrap">
+                <span className="font-medium text-sm leading-normal max-w-[132px]">
                   {cat.name}
                 </span>
               </button>
@@ -356,11 +427,10 @@ export default function ProductCategories({ category }: Props) {
         />
         <button
           onClick={scrollLeft}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showLeftArrow
-              ? "block pointer-events-auto"
-              : "hidden pointer-events-none"
-          }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
+            ? "block pointer-events-auto"
+            : "hidden pointer-events-none"
+            }`}
         >
           <ChevronLeftCircle size={24} className="text-[#FF0009]" />
         </button>
@@ -369,7 +439,7 @@ export default function ProductCategories({ category }: Props) {
           className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {CATEGORIES_DATA.map((cat) => {
+          {categoriesToUse.map((cat) => {
             const isActive = activeCategory === cat.name;
             return (
               <button
@@ -384,11 +454,10 @@ export default function ProductCategories({ category }: Props) {
         </div>
         <button
           onClick={scrollRight}
-          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-            showRightArrow
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
+          className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+            }`}
         >
           <ChevronRightCircle size={24} className="text-[#FF0009]" />
         </button>
@@ -441,7 +510,7 @@ export default function ProductCategories({ category }: Props) {
                 <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">
                   {/* Card Main Body */}
                   <Link
-                    href={`/products`}
+                    href={`/products?product=${card.slug || card.title.toLowerCase().replace(/\s+/g, '-')}`}
                     className={`${card.color} group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}

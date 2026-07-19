@@ -1333,6 +1333,37 @@ export default function PagesPage() {
                         </div>
                       )}
                     </div>
+
+                    {/* Nav Display Order — shown for sub-page layout types */}
+                    {formData.sections?.layoutType && formData.sections.layoutType !== "home" && (
+                      <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Layers className="h-4.5 w-4.5 text-primary shrink-0" />
+                          <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Navbar Display Order</span>
+                        </div>
+                        <p className="text-xs text-foreground/50 font-medium leading-relaxed">
+                          Controls the position of this page in the navbar mega-menu for its section (e.g. About sub-pages). Lower numbers appear first. Leave blank to sort alphabetically.
+                        </p>
+                        <input
+                          type="number"
+                          min={1}
+                          max={99}
+                          value={formData.sections?.navOrder ?? ""}
+                          onChange={(e) => {
+                            const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                            setFormData((prev) => ({
+                              ...prev,
+                              sections: {
+                                ...prev.sections,
+                                navOrder: val,
+                              },
+                            }));
+                          }}
+                          placeholder="e.g. 1 (first), 2 (second)..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 

@@ -7,7 +7,11 @@ import ProductFaq from "./ProductFaq";
 
 type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
 
-export default function ProductInfo() {
+interface ProductInfoProps {
+  product?: any;
+}
+
+export default function ProductInfo({ product }: ProductInfoProps) {
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
   const [isManualScroll, setIsManualScroll] = useState(false);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
@@ -240,9 +244,8 @@ export default function ProductInfo() {
                     alt="badge"
                   />
                 </div>
-                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
-                  Watershield provides excellent water-resistance. Its superior
-                  flow makes it smooth and easy to apply.
+                 <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
+                  {product?.description || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
                 </p>
               </div>
 
