@@ -523,7 +523,7 @@ export default function Categories() {
                     className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
-                <span className="font-medium text-sm leading-normal max-w-[132px]">
+                <span className="font-medium text-sm leading-normal">
                   {sub.name}
                 </span>
               </button>
