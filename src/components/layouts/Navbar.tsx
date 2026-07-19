@@ -25,24 +25,31 @@ export default function Navbar() {
   const [hoveredKnowledgeItem, setHoveredKnowledgeItem] = useState<string | null>(null);
   const [pages, setPages] = useState<any[]>([]);
   const [seos, setSeos] = useState<any[]>([]);
+  const [dbCategories, setDbCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadNavData() {
       try {
-        const [pagesList, seosList] = await Promise.all([
+        const [pagesList, seosList, catsList] = await Promise.all([
           api.getPages(),
-          api.getSeoMetadata()
+          api.getSeoMetadata(),
+          api.getCategories()
         ]);
         setPages(pagesList);
         setSeos(seosList);
+        setDbCategories(catsList);
+
+        // Find first main category and make it the active one
+        const firstMain = catsList.find((cat) => !cat.parent_category);
+        if (firstMain) {
+          setActiveCategory(firstMain.name);
+        }
       } catch (err) {
         console.error("Failed to load dynamic nav data:", err);
       }
     }
     loadNavData();
   }, []);
-
-  console.log("pages----------->", pages);
 
   // ── About ──────────────────────────────────────────────────────────────────
   const defaultAboutData: Record<string, { desc: string; img: string }> = {
@@ -103,10 +110,22 @@ export default function Navbar() {
             return p.slug === "about";
           }
         })
-        .map((p) => ({
-          name: p.title,
-          link: p.slug === "about" ? "/about" : `/about/${p.slug}`,
-        }))
+        .map((p) => {
+          const sections = typeof p.sections === "string" ? JSON.parse(p.sections ?? "{}") : (p.sections ?? {});
+          return {
+            name: p.title,
+            link: p.slug === "about" ? "/about" : `/about/${p.slug}`,
+            navOrder: sections?.navOrder as number | undefined,
+          };
+        })
+        .sort((a, b) => {
+          if (a.navOrder != null && b.navOrder != null) return a.navOrder - b.navOrder;
+          if (a.navOrder != null) return -1;
+          if (b.navOrder != null) return 1;
+          if (a.link === "/about") return -1;
+          if (b.link === "/about") return 1;
+          return a.name.localeCompare(b.name);
+        })
       : aboutItems;
 
   // ── Applications ───────────────────────────────────────────────────────────
@@ -308,8 +327,26 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const dynamicProductCategories = dbCategories.length > 0
+    ? dbCategories
+        .filter((cat) => !cat.parent_category)
+        .map((cat) => {
+          const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+          return {
+            name: cat.name,
+            products: subCats.map((sub) => ({
+              name: sub.name,
+              image: "/images/Watershield.png",
+              bgColor: "bg-[#0083CB]"
+            })),
+            categoryImage: "/images/mega-menu.png"
+          };
+        })
+    : productCategories;
+
   const activeCategoryData =
-    productCategories.find((c) => c.name === activeCategory) ||
+    dynamicProductCategories.find((c) => c.name === activeCategory) ||
+    dynamicProductCategories[0] ||
     productCategories[0];
 
   const handleMenuEnter = (
@@ -464,7 +501,7 @@ export default function Navbar() {
             <div className="flex">
               {/* Left Column: Top-level Category List */}
               <div className="flex flex-col min-w-75 p-6 bg-surface">
-                {productCategories.map((cat) => (
+                {dynamicProductCategories.map((cat) => (
                   <button
                     key={cat.name}
                     onMouseEnter={() => setActiveCategory(cat.name)}
@@ -484,9 +521,9 @@ export default function Navbar() {
 
               {/* Middle Column: Sub-products list */}
               <div className="flex flex-col flex-1 p-8">
-                {activeCategoryData.products.map((prod) => (
+                {activeCategoryData.products.map((prod: any) => (
                   <Link
-                    href={`/categories/${prod.name.replace(/\s/g, "-").toLowerCase()}`}
+                    href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
                     key={prod.name}
                     className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
                     onClick={() => setActiveMenu(null)}
@@ -632,6 +669,19 @@ export default function Navbar() {
             aboutItems={dynamicAboutItems}
             appItems={dynamicAppItems}
             knowledgeItems={dynamicKnowledgeItems}
+            productCategories={
+              dbCategories.length > 0
+                ? dbCategories
+                    .filter((cat) => !cat.parent_category)
+                    .map((cat) => {
+                      const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+                      return {
+                        name: cat.name,
+                        products: subCats.map((sub) => sub.name),
+                      };
+                    })
+                : undefined
+            }
           />
         ) : null}
       </nav>

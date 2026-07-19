@@ -22,7 +22,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [materials, setMaterials] = useState<Material[]>([]);
-  
+
   // Search & Filters
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
@@ -85,10 +85,10 @@ export default function ProductsPage() {
         const defaultMain = rootCats[0].id;
         const subs = catsList.filter(c => c.parent_category === defaultMain);
         const defaultSub = subs[0]?.id || "";
-        
+
         setSelectedMainCategoryId(defaultMain);
         setSelectedSubCategoryId(defaultSub);
-        
+
         if (!formData.category_id) {
           setFormData(prev => ({
             ...prev,
@@ -123,7 +123,7 @@ export default function ProductsPage() {
     const defaultMainId = rootCats[0]?.id || "";
     const subs = categories.filter(c => c.parent_category === defaultMainId);
     const defaultSubId = subs[0]?.id || "";
-    
+
     setSelectedMainCategoryId(defaultMainId);
     setSelectedSubCategoryId(defaultSubId);
 
@@ -148,12 +148,12 @@ export default function ProductsPage() {
 
   const handleOpenEdit = (product: Product) => {
     setEditingId(product.id);
-    
+
     // Find the product's category parent-child mapping
     const productCat = categories.find(c => c.id === product.category_id);
     let mainId = "";
     let subId = "";
-    
+
     if (productCat) {
       if (productCat.parent_category) {
         mainId = productCat.parent_category;
@@ -168,7 +168,7 @@ export default function ProductsPage() {
       const subs = categories.filter(c => c.parent_category === mainId);
       subId = subs[0]?.id || "";
     }
-    
+
     setSelectedMainCategoryId(mainId);
     setSelectedSubCategoryId(subId);
 
@@ -241,9 +241,9 @@ export default function ProductsPage() {
 
   // Filter products
   const filteredProducts = products.filter((p) => {
-    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || 
-                          p.description.toLowerCase().includes(search.toLowerCase()) ||
-                          p.metadata.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.description.toLowerCase().includes(search.toLowerCase()) ||
+      p.metadata.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = filterCategory ? p.category_id === filterCategory : true;
     const matchesMaterial = filterMaterial ? p.material_id === filterMaterial : true;
     return matchesSearch && matchesCategory && matchesMaterial;
@@ -327,8 +327,8 @@ export default function ProductsPage() {
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Product</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Category</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Substrate</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Attributes</th>
+                    {/* <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Substrate</th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Attributes</th> */}
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
                   </tr>
                 </thead>
@@ -368,7 +368,7 @@ export default function ProductsPage() {
                               {category ? category.name : "Uncategorized"}
                             </span>
                           </td>
-                          <td className="p-5">
+                          {/* <td className="p-5">
                             <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400">
                               {material ? material.name : "General purpose"}
                             </span>
@@ -381,7 +381,7 @@ export default function ProductsPage() {
                                 </span>
                               ))}
                             </div>
-                          </td>
+                          </td> */}
                           <td className="p-5 text-right">
                             <div className="flex items-center justify-end gap-2">
                               <button
@@ -590,36 +590,6 @@ export default function ProductsPage() {
                             <option value="">No subcategories (assign directly to Main Category)</option>
                           )}
                         </select>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Target Wood/Substrate Material
-                        </label>
-                        <select
-                          value={formData.material_id}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, material_id: e.target.value }))}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 cursor-pointer"
-                        >
-                          {materials.map((m) => (
-                            <option key={m.id} value={m.id}>{m.name}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Attributes (Comma Separated Tags)
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.metadata}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, metadata: e.target.value }))}
-                          placeholder="e.g. waterproof, high-bond, synthetic, marine-grade"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                        />
                       </div>
                     </div>
 

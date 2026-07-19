@@ -511,9 +511,8 @@ export default function Categories() {
               <button
                 key={sub.name}
                 onClick={() => handleSubCategoryChange(sub.name)}
-                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${
-                  isActive ? "active-gradient-border" : "bg-white"
-                }`}
+                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
+                  }`}
               >
                 <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
                   <Image
@@ -524,7 +523,7 @@ export default function Categories() {
                     className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
                   />
                 </div>
-                <span className="font-medium text-sm leading-normal whitespace-nowrap">
+                <span className="font-medium text-sm leading-normal max-w-[132px]">
                   {sub.name}
                 </span>
               </button>
@@ -580,11 +579,10 @@ export default function Categories() {
           />
           <button
             onClick={scrollLeft}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-              showLeftArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
-            }`}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
+              }`}
           >
             <ChevronLeftCircle size={24} className="text-[#FF0009]" />
           </button>
@@ -599,11 +597,10 @@ export default function Categories() {
                 <button
                   key={sub.name}
                   onClick={() => handleSubCategoryChange(sub.name)}
-                  className={`cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center py-2 px-1.5 font-medium transition-all duration-300 truncate ${
-                    isActive
-                      ? "active-gradient-border-surface"
-                      : "bg-surface text-black"
-                  }`}
+                  className={`cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center py-2 px-1.5 font-medium transition-all duration-300 truncate ${isActive
+                    ? "active-gradient-border-surface"
+                    : "bg-surface text-black"
+                    }`}
                 >
                   {sub.name}
                 </button>
@@ -612,11 +609,10 @@ export default function Categories() {
           </div>
           <button
             onClick={scrollRight}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${
-              showRightArrow
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
+            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+              }`}
           >
             <ChevronRightCircle size={24} className="text-[#FF0009]" />
           </button>

@@ -21,9 +21,10 @@ interface MobileNavProps {
   aboutItems?: any[];
   appItems?: any[];
   knowledgeItems?: any[];
+  productCategories?: any[];
 }
 
-const productCategories: CategoryItem[] = [
+const staticProductCategories: CategoryItem[] = [
   {
     name: "Woodworking Adhesive",
     products: [
@@ -71,8 +72,15 @@ const productCategories: CategoryItem[] = [
   },
 ];
 
-export default function MobileNav({ onClose, aboutItems = staticAboutItems, appItems = applicationItems, knowledgeItems: propKnowledgeItems = knowledgeItems }: MobileNavProps) {
+export default function MobileNav({
+  onClose,
+  aboutItems = staticAboutItems,
+  appItems = applicationItems,
+  knowledgeItems: propKnowledgeItems = knowledgeItems,
+  productCategories: incomingProductCategories
+}: MobileNavProps) {
   const pathname = usePathname();
+  const productCategories = incomingProductCategories || staticProductCategories;
 
   // Determine initial open section based on current path
   const getInitialSection = () => {
@@ -88,7 +96,7 @@ export default function MobileNav({ onClose, aboutItems = staticAboutItems, appI
   // Determine initial open category based on current path
   const getInitialCategory = () => {
     for (const cat of productCategories) {
-      const match = cat.products.some((prod) => {
+      const match = cat.products.some((prod: string) => {
         const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
         return pathname === productLink;
       });
@@ -220,7 +228,7 @@ export default function MobileNav({ onClose, aboutItems = staticAboutItems, appI
 
                     {isCatOpen && (
                       <div className="space-y-1">
-                        {cat.products.map((prod) => {
+                        {cat.products.map((prod: string) => {
                           const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
                           const isActive = pathname === productLink;
                           return (
