@@ -258,6 +258,28 @@ export default function Navbar() {
   const currentKnowledgeItem =
     hoveredKnowledgeItem || (dynamicKnowledgeItems[0]?.name || "Choosing The Right Adhesive");
 
+  // Look up hovered blog page + its SEO record (mirrors About/Applications pattern)
+  const currentKnowledgeLink = dynamicKnowledgeItems.find(
+    (i) => i.name === currentKnowledgeItem
+  )?.link ?? "/blog";
+  const currentKnowledgeSlug =
+    currentKnowledgeLink === "/blog"
+      ? "blog"
+      : currentKnowledgeLink.startsWith("/blog/")
+        ? currentKnowledgeLink.replace("/blog/", "")
+        : currentKnowledgeLink === "/resources"
+          ? "resources"
+          : "";
+
+  const matchedKnowledgePage = pages.find((p) => p.slug === currentKnowledgeSlug);
+  const matchedKnowledgeSeo = seos.find(
+    (s) =>
+      s.page_type === "static" &&
+      (s.page_id === currentKnowledgeSlug ||
+        (currentKnowledgeSlug === "blog" && s.page_id === "BLOG_PAGE") ||
+        (matchedKnowledgePage && s.page_id === matchedKnowledgePage.id))
+  );
+
   const knowledgeFallbackKey =
     defaultKnowledgeData[currentKnowledgeItem] != null
       ? currentKnowledgeItem
@@ -269,9 +291,16 @@ export default function Navbar() {
         ) || "Latest Blogs"
         : "Latest Blogs";
 
-  const knowledgeData =
+  const defaultKnowledgeObj =
     defaultKnowledgeData[knowledgeFallbackKey] ||
     defaultKnowledgeData["Choosing The Right Adhesive"];
+
+  const knowledgeDescription =
+    matchedKnowledgeSeo?.meta_description ||
+    matchedKnowledgePage?.description ||
+    defaultKnowledgeObj.desc;
+
+  const knowledgeImage = matchedKnowledgeSeo?.image || defaultKnowledgeObj.img;
 
   // ── Products ───────────────────────────────────────────────────────────────
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
@@ -532,7 +561,7 @@ export default function Navbar() {
                     : activeMenu === "applications"
                       ? appDescription
                       : activeMenu === "knowledge"
-                        ? knowledgeData.desc
+                        ? knowledgeDescription
                         : "Partner with Jivanjor, India's most trusted adhesive partner. Become a dealer, or download the Achievers Club app to access contractor rewards and tracking benefits."}
                 </p>
               </div>
@@ -547,7 +576,7 @@ export default function Navbar() {
                         : activeMenu === "applications"
                           ? appImage
                           : activeMenu === "knowledge"
-                            ? knowledgeData.img
+                            ? knowledgeImage
                             : "/images/contractor/contractor-app-promo.png"
                     }
                     alt={activeMenu ?? "menu"}
