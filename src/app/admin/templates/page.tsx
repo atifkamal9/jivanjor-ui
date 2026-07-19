@@ -428,6 +428,138 @@ const defaultBlogSections = {
   }
 };
 
+const defaultContractorSections = {
+  hero: {
+    title: "Build Your Business with India's Trusted Adhesive Partner",
+    media: [
+      "/images/contractor/Rectangle 2.png"
+    ]
+  },
+  reachLeft: {
+    title: "Step into the realm of Champions and Unlock a world of limitless advantages.",
+    appText: "Download the Jivanjor Achievers Club App to enrol, access contractor benefits, track rewards and stay connected.",
+    promoImage: "/images/contractor/contractor-app-promo.png",
+    playStoreLink: "https://play.google.com/store",
+    cards: [
+      {
+        title: "Reliable Product Range",
+        desc: "Work with adhesives made for superior performance across every woodworking need.",
+        icon: "/images/about/Ad-product.svg"
+      },
+      {
+        title: "Trade-Focused Support",
+        desc: "Get product information, application guidance and support to recommend with confidence.",
+        icon: "/images/about/Spanner.svg"
+      },
+      {
+        title: "Business Growth Opportunity",
+        desc: "Connect with a growing adhesive brand that supports contractors, carpenters and channel partners across markets.",
+        icon: "/images/contractor/Positive-dynamics.svg"
+      }
+    ]
+  },
+  presence: {
+    title: "A Presence Built Through Trust",
+    items: [
+      { value: "Pan-India", label: "Market Presence", icon: "/images/about/presence.svg" },
+      { value: "27,000+", label: "Distribution Touchpoints", icon: "/images/about/distribution.svg" },
+      { value: "275K+", label: "Trusting Woodworking Professionals", icon: "/images/about/professionals.svg" },
+      { value: "8 High-Tech", label: "Manufacturing Facilities", icon: "/images/about/facilities.svg" },
+      { value: "20+", label: "Product Variants", icon: "/images/about/variants.svg" }
+    ]
+  },
+  professionals: {
+    title: "Built Around India’s Woodworking Professionals",
+    desc: "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.",
+    testimonials: [
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        image: "/images/contractor/testimonial-1.png",
+        showPlayButton: true
+      },
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        image: "/images/contractor/testimonial-2.png",
+        showPlayButton: true
+      },
+      {
+        type: "text",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        quote: "Aquabond kitchen ka specialist hai."
+      },
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        image: "/images/contractor/testimonial-1.png",
+        showPlayButton: true
+      },
+      {
+        type: "text",
+        name: "Mr. Mosim Ali",
+        role: "Contractor Carpenter",
+        quote: "Jivanjor products are highly reliable and strong."
+      }
+    ]
+  }
+};
+
+const defaultPartnerSections = {
+  hero: {
+    title: "Build Your Dealership with a Growing Distribution Network",
+    media: [
+      "/images/dealer/Rectangle 2.png"
+    ]
+  },
+  reachLeft: {
+    title: "Become A Jivanjor Dealer",
+    desc: "Jivanjor gives dealers access to a wide adhesive portfolio, professional market demand and the support needed to serve contractors, carpenters and end users with confidence.",
+    cards: [
+      {
+        title: "Reliable Product Range",
+        desc: "Work with adhesives made for superior performance across every woodworking need.",
+        icon: "/images/about/Ad-product.svg"
+      },
+      {
+        title: "Trade-Focused Support",
+        desc: "Get product information, application guidance and support to recommend with confidence.",
+        icon: "/images/about/Spanner.svg"
+      },
+      {
+        title: "Business Growth Opportunity",
+        desc: "Connect with a growing adhesive brand that supports contractors, carpenters and channel partners across markets.",
+        icon: "/images/contractor/Positive-dynamics.svg"
+      }
+    ]
+  },
+  presence: {
+    title: "A Presence Built Through Trust",
+    items: [
+      { value: "Pan-India", label: "Market Presence", icon: "/images/about/presence.svg" },
+      { value: "27,000+", label: "Distribution Touchpoints", icon: "/images/about/distribution.svg" },
+      { value: "275K+", label: "Trusting Woodworking Professionals", icon: "/images/about/professionals.svg" },
+      { value: "8 High-Tech", label: "Manufacturing Facilities", icon: "/images/about/facilities.svg" },
+      { value: "20+", label: "Product Variants", icon: "/images/about/variants.svg" }
+    ]
+  },
+  gallery: {
+    title: "Growing Through a Strong Dealer Network",
+    desc: "Jivanjor continues to grow through a strong network of dealers, channel partners, contractors and woodworking professionals across India’s adhesive market.",
+    items: [
+      { title: "Technical Resources", link: "#", imageUrl: "/images/dealer/Rectangle 35.png" },
+      { title: "Market Presence", link: "#", imageUrl: "/images/dealer/Rectangle 79.png" },
+      { title: "Dealer Meet", link: "#", imageUrl: "/images/dealer/Rectangle 37.png" },
+      { title: "Store Showcase", link: "#", imageUrl: "/images/dealer/Rectangle 30.png" },
+      { title: "Warehousing", link: "#", imageUrl: "/images/dealer/Rectangle 34.png" }
+    ]
+  }
+};
+
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<PageTemplate[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
@@ -488,6 +620,10 @@ export default function TemplatesPage() {
       setHomeSections({ layoutType: "applications", ...defaultApplicationsSections });
     } else if (newType === "blog") {
       setHomeSections({ layoutType: "blog", ...defaultBlogSections });
+    } else if (newType === "contractor") {
+      setHomeSections({ layoutType: "contractor", ...defaultContractorSections });
+    } else if (newType === "partner") {
+      setHomeSections({ layoutType: "partner", ...defaultPartnerSections });
     } else {
       setHomeSections({ layoutType: "home", ...defaultHomeSections });
     }
@@ -552,6 +688,22 @@ export default function TemplatesPage() {
         layoutType: "blog",
         hero: { ...defaultBlogSections.hero, ...rawData.hero },
         list: { ...defaultBlogSections.list, ...rawData.list }
+      };
+    } else if (type === "contractor") {
+      merged = {
+        layoutType: "contractor",
+        hero: { ...defaultContractorSections.hero, ...rawData.hero },
+        reachLeft: { ...defaultContractorSections.reachLeft, ...rawData.reachLeft },
+        presence: { ...defaultContractorSections.presence, ...rawData.presence },
+        professionals: { ...defaultContractorSections.professionals, ...rawData.professionals }
+      };
+    } else if (type === "partner") {
+      merged = {
+        layoutType: "partner",
+        hero: { ...defaultPartnerSections.hero, ...rawData.hero },
+        reachLeft: { ...defaultPartnerSections.reachLeft, ...rawData.reachLeft },
+        presence: { ...defaultPartnerSections.presence, ...rawData.presence },
+        gallery: { ...defaultPartnerSections.gallery, ...rawData.gallery }
       };
     } else {
       const rawHero = rawData.hero || {};
@@ -744,6 +896,20 @@ export default function TemplatesPage() {
               ? [
                 { id: "hero", label: "Hero Banner", icon: Layout },
                 { id: "list", label: "Blog Categories & Posts", icon: FileText },
+              ]
+            : currentLayoutType === "contractor"
+              ? [
+                { id: "hero", label: "Hero Banner", icon: Layout },
+                { id: "reachLeft", label: "App & Features Setup", icon: FileText },
+                { id: "presence", label: "Market Presence", icon: Grid },
+                { id: "professionals", label: "Testimonials", icon: Bookmark },
+              ]
+            : currentLayoutType === "partner"
+              ? [
+                { id: "hero", label: "Hero Banner", icon: Layout },
+                { id: "reachLeft", label: "Dealer Features Setup", icon: FileText },
+                { id: "presence", label: "Market Presence", icon: Grid },
+                { id: "gallery", label: "Dealer Network Gallery", icon: Grid },
               ]
               : currentLayoutType === "home"
                 ? [
@@ -1035,6 +1201,8 @@ export default function TemplatesPage() {
                           <option value="categories">Category Application Layout System</option>
                           <option value="applications">Applications Layout System</option>
                           <option value="blog">Blog / Knowledge Hub Layout System</option>
+                          <option value="contractor">Contractor Connect Layout System</option>
+                          <option value="partner">Become a Dealer Layout System</option>
                         </select>
                         {editingId && (
                           <p className="mt-1 text-[11px] text-primary font-bold">
@@ -3470,6 +3638,425 @@ export default function TemplatesPage() {
                                   const posts = [...(homeSections.list?.posts || [])];
                                   posts[idx] = { ...posts[idx], image: url };
                                   updateSectionField("list", "posts", posts);
+                                }}
+                                folder="templates"
+                                size="compact"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Contractor ReachLeft / App & Features Setup Tab ── */}
+                {activeTab === "reachLeft" && homeSections.reachLeft && currentLayoutType === "contractor" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">App &amp; Features Setup</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Main Title Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.reachLeft.title || ""}
+                          onChange={(e) => updateSectionField("reachLeft", "title", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          App Download Text (Description)
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.reachLeft.appText || ""}
+                          onChange={(e) => updateSectionField("reachLeft", "appText", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          App Play Store Link URL
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.reachLeft.playStoreLink || ""}
+                          onChange={(e) => updateSectionField("reachLeft", "playStoreLink", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Promo App Banner Image
+                        </label>
+                        <ImageUpload
+                          value={homeSections.reachLeft.promoImage || ""}
+                          onChange={(url) => updateSectionField("reachLeft", "promoImage", url)}
+                          folder="templates"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Cards setup */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Features Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("reachLeft", { title: "New Feature", desc: "Feature details...", icon: "/images/about/Ad-product.svg" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Card
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.reachLeft.cards || []).map((card: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("reachLeft", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={card.title || ""}
+                              onChange={(e) => updateItemField("reachLeft", idx, "title", e.target.value)}
+                              placeholder="Title"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                            />
+                            <textarea
+                              rows={2}
+                              value={card.desc || ""}
+                              onChange={(e) => updateItemField("reachLeft", idx, "desc", e.target.value)}
+                              placeholder="Description"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none mb-2"
+                            />
+                            <div>
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider mb-1">Icon Path</span>
+                              <ImageUpload
+                                value={card.icon || ""}
+                                onChange={(url) => updateItemField("reachLeft", idx, "icon", url)}
+                                folder="templates"
+                                size="compact"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Partner ReachLeft / Dealer Features Setup Tab ── */}
+                {activeTab === "reachLeft" && homeSections.reachLeft && currentLayoutType === "partner" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Dealer Features Setup</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Main Title Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.reachLeft.title || ""}
+                          onChange={(e) => updateSectionField("reachLeft", "title", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Description Subtitle
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={homeSections.reachLeft.desc || ""}
+                          onChange={(e) => updateSectionField("reachLeft", "desc", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Cards setup */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Features Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("reachLeft", { title: "New Feature", desc: "Feature details...", icon: "/images/about/Ad-product.svg" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Card
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.reachLeft.cards || []).map((card: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("reachLeft", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
+                            <input
+                              type="text"
+                              value={card.title || ""}
+                              onChange={(e) => updateItemField("reachLeft", idx, "title", e.target.value)}
+                              placeholder="Title"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                            />
+                            <textarea
+                              rows={2}
+                              value={card.desc || ""}
+                              onChange={(e) => updateItemField("reachLeft", idx, "desc", e.target.value)}
+                              placeholder="Description"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none mb-2"
+                            />
+                            <div>
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider mb-1">Icon Path</span>
+                              <ImageUpload
+                                value={card.icon || ""}
+                                onChange={(url) => updateItemField("reachLeft", idx, "icon", url)}
+                                folder="templates"
+                                size="compact"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Contractor Testimonials Tab ── */}
+                {activeTab === "professionals" && homeSections.professionals && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Bookmark className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Woodworking Professionals Testimonials</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Testimonial Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.professionals.title || ""}
+                          onChange={(e) => updateSectionField("professionals", "title", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Section Description Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.professionals.desc || ""}
+                          onChange={(e) => updateSectionField("professionals", "desc", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Testimonials list */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Testimonials Carousel Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("professionals", { type: "text", name: "Name", role: "Role", quote: "Feedback..." })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Testimonial
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.professionals.testimonials || []).map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("professionals", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Testimonial #{idx + 1}</span>
+                            
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
+                                <select
+                                  value={item.type || "text"}
+                                  onChange={(e) => updateItemField("professionals", idx, "type", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer border-border"
+                                >
+                                  <option value="text">Text Quote Card</option>
+                                  <option value="video">Video Card</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
+                                <input
+                                  type="text"
+                                  value={item.name || ""}
+                                  onChange={(e) => updateItemField("professionals", idx, "name", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold border-border"
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 gap-2">
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
+                                <input
+                                  type="text"
+                                  value={item.role || ""}
+                                  onChange={(e) => updateItemField("professionals", idx, "role", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs border-border"
+                                />
+                              </div>
+                            </div>
+
+                            {item.type === "video" ? (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border/50 pt-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                  <ImageUpload
+                                    value={item.image || ""}
+                                    onChange={(url) => updateItemField("professionals", idx, "image", url)}
+                                    folder="templates"
+                                    size="compact"
+                                  />
+                                </div>
+                                <div className="flex items-center gap-2 pt-4 pl-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`showPlayButton-${idx}`}
+                                    checked={!!item.showPlayButton}
+                                    onChange={(e) => updateItemField("professionals", idx, "showPlayButton", e.target.checked)}
+                                    className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                  />
+                                  <label htmlFor={`showPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                    Show Play Button
+                                  </label>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="border-t border-border/50 pt-2">
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                <textarea
+                                  rows={2}
+                                  value={item.quote || ""}
+                                  onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Partner Gallery Tab ── */}
+                {activeTab === "gallery" && homeSections.gallery && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Dealer Network Gallery</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Gallery Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.gallery.title || ""}
+                          onChange={(e) => updateSectionField("gallery", "title", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Gallery Description Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.gallery.desc || ""}
+                          onChange={(e) => updateSectionField("gallery", "desc", e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Gallery items list */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dealer Network Gallery Cards (First item maps to Resource Box, remaining 5 to grid photos)</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("gallery", { title: "Technical Resources", link: "#", imageUrl: "/images/dealer/Rectangle 35.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Gallery Card
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(homeSections.gallery.items || []).map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("gallery", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">
+                              {idx === 0 ? "Resource Box Item #1" : `Grid Photo Card #${idx}`}
+                            </span>
+                            
+                            <input
+                              type="text"
+                              value={item.title || ""}
+                              onChange={(e) => updateItemField("gallery", idx, "title", e.target.value)}
+                              placeholder="Title / Label (e.g. Technical Resources)"
+                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                            />
+                            
+                            {idx === 0 && (
+                              <input
+                                type="text"
+                                value={item.link || ""}
+                                onChange={(e) => updateItemField("gallery", idx, "link", e.target.value)}
+                                placeholder="Link URL (e.g. #)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2"
+                              />
+                            )}
+
+                            <div>
+                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider mb-1">Image</span>
+                              <ImageUpload
+                                value={item.imageUrl || item.image || ""}
+                                onChange={(url) => {
+                                  updateItemField("gallery", idx, "imageUrl", url);
+                                  updateItemField("gallery", idx, "image", url);
                                 }}
                                 folder="templates"
                                 size="compact"

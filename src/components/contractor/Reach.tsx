@@ -4,68 +4,74 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck } from "lucide-react";
 
-const cards = [
+interface ReachLeftProps {
+  data?: {
+    title?: string;
+    appText?: string;
+    promoImage?: string;
+    playStoreLink?: string;
+    cards?: { title: string; desc: string; icon: string }[];
+  };
+}
+
+const defaultCards = [
   {
     title: "Reliable Product Range",
     desc: "Work with adhesives made for superior performance across every woodworking need.",
-    icon: (
-      <Image
-        src="/images/about/Ad-product.svg"
-        className="aspect-square w-10 h-10 invert brightness-0"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/about/Ad-product.svg",
   },
   {
     title: "Trade-Focused Support",
     desc: "Get product information, application guidance and support to recommend with confidence.",
-    icon: (
-      <Image
-        src="/images/about/Spanner.svg"
-        className="aspect-square w-10 h-10 invert brightness-0"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/about/Spanner.svg",
   },
   {
     title: "Business Growth Opportunity",
     desc: "Connect with a growing adhesive brand that supports contractors, carpenters and channel partners across markets.",
-    icon: (
-      <Image
-        src="/images/contractor/Positive-dynamics.svg"
-        className="aspect-square w-10 h-10"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/contractor/Positive-dynamics.svg",
   },
 ];
 
-export function ReachLeft() {
+export function ReachLeft({ data }: ReachLeftProps) {
+  const title = data?.title || "Step into the realm of Champions and Unlock a world of limitless advantages.";
+  const appText = data?.appText || "Download the Jivanjor Achievers Club App to enrol, access contractor benefits, track rewards and stay connected.";
+  const promoImage = data?.promoImage || "/images/contractor/contractor-app-promo.png";
+  const playStoreLink = data?.playStoreLink || "https://play.google.com/store";
+  const cards = data?.cards || defaultCards;
+
+  const renderIcon = (icon: any) => {
+    if (typeof icon === "string") {
+      const isInvert = icon.includes("Ad-product") || icon.includes("Spanner");
+      return (
+        <Image
+          src={icon}
+          className={`aspect-square w-10 h-10 ${isInvert ? "invert brightness-0" : ""}`}
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      );
+    }
+    return icon;
+  };
+
   return (
     <div className="flex flex-col space-y-6 text-[#222]">
       <h3 className="font-amethysta text-[34px] md:text-4xl text-center md:text-start leading-tight">
-        Step into the realm of Champions and Unlock a world of limitless
-        advantages.
+        {title}
       </h3>
       {/* Top section: Text, Download button and Promo Image */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
         {/* App text */}
         <div className="hidden md:block col-span-7 max-w-md space-y-4">
           <p className="text-lg md:text-2xl leading-relaxed">
-            Download the Jivanjor Achievers Club App to enrol, access contractor
-            benefits, track rewards and stay connected.
+            {appText}
           </p>
           <div>
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://play.google.com/store"
+              href={playStoreLink}
               className="inline-block transition-transform hover:scale-105"
             >
               <Image
@@ -83,7 +89,7 @@ export function ReachLeft() {
         <div className="md:col-span-5 relative w-full h-51 md:h-55 rounded-[20px] overflow-hidden shadow-md">
           <Image
             fill
-            src="/images/contractor/contractor-app-promo.png"
+            src={promoImage}
             alt="Jivanjor Achievers Club App"
             className="object-cover"
           />
@@ -91,14 +97,13 @@ export function ReachLeft() {
 
         <div className="flex flex-col items-center text-center md:hidden space-y-4 max-w-85 mx-auto">
           <p className="text-lg">
-            Download the Jivanjor Achievers Club App to enrol, access contractor
-            benefits, track rewards and stay connected.
+            {appText}
           </p>
           <div>
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href="https://play.google.com/store"
+              href={playStoreLink}
               className="inline-block transition-transform hover:scale-105"
             >
               <Image
@@ -122,7 +127,7 @@ export function ReachLeft() {
               className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-60.5"
             >
               <div className="flex items-center justify-center mb-4 md:mb-5">
-                {card.icon}
+                {renderIcon(card.icon)}
               </div>
               <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
                 {card.title}
@@ -135,6 +140,7 @@ export function ReachLeft() {
     </div>
   );
 }
+
 
 interface ReachFormProps {
   isOpen?: boolean;
