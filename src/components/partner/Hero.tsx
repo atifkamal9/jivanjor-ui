@@ -4,15 +4,22 @@ import { ChevronRight } from "lucide-react";
 
 interface HeroProps {
   hideText?: boolean;
+  data?: {
+    title?: string;
+    media?: string[];
+  };
 }
 
-export default function Hero({ hideText = false }: HeroProps) {
+export default function Hero({ hideText = false, data }: HeroProps) {
+  const title = data?.title || "Build Your Dealership with a Growing Distribution Network";
+  const bgImage = data?.media?.[0] || "/images/dealer/Rectangle 2.png";
+
   return (
     <section className="relative w-full">
       <div className="hidden md:block relative h-67 bg-black/60">
         {/* Background Image */}
         <Image
-          src="/images/dealer/Rectangle 2.png"
+          src={bgImage}
           fill
           alt="Become a Dealer Hero"
           priority
@@ -39,7 +46,7 @@ export default function Hero({ hideText = false }: HeroProps) {
 
           {/* Title */}
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[50px] font-normal max-w-203 text-start">
-            Build Your Dealership with a Growing Distribution Network
+            {title}
           </h2>
         </div>
       </div>
@@ -67,7 +74,7 @@ export default function Hero({ hideText = false }: HeroProps) {
 
         {/* Title */}
         <h2 className="font-amethysta text-[34px] font-normal max-w-sm text-center">
-          Build Your Dealership with a Growing Distribution Network
+          {title}
         </h2>
       </div>
     </section>

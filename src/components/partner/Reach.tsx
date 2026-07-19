@@ -4,69 +4,71 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck } from "lucide-react";
 
-const cards = [
+interface ReachLeftProps {
+  data?: {
+    title?: string;
+    desc?: string;
+    cards?: { title: string; desc: string; icon: string }[];
+  };
+}
+
+const defaultCards = [
   {
     title: "Reliable Product Range",
     desc: "Work with adhesives made for superior performance across every woodworking need.",
-    icon: (
-      <Image
-        src="/images/about/Ad-product.svg"
-        className="aspect-square w-10 h-10 invert brightness-0"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/about/Ad-product.svg",
   },
   {
     title: "Trade-Focused Support",
     desc: "Get product information, application guidance and support to recommend with confidence.",
-    icon: (
-      <Image
-        src="/images/about/Spanner.svg"
-        className="aspect-square w-10 h-10 invert brightness-0"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/about/Spanner.svg",
   },
   {
     title: "Business Growth Opportunity",
     desc: "Connect with a growing adhesive brand that supports contractors, carpenters and channel partners across markets.",
-    icon: (
-      <Image
-        src="/images/contractor/Positive-dynamics.svg"
-        className="aspect-square w-10 h-10"
-        height={40}
-        width={40}
-        alt="icon"
-      />
-    ),
+    icon: "/images/contractor/Positive-dynamics.svg",
   },
 ];
 
-export function ReachLeft() {
+export function ReachLeft({ data }: ReachLeftProps) {
+  const title = data?.title || "Become A Jivanjor Dealer";
+  const desc = data?.desc || "Jivanjor gives dealers access to a wide adhesive portfolio, professional market demand and the support needed to serve contractors, carpenters and end users with confidence.";
+  const displayCards = data?.cards || defaultCards;
+
+  const renderIcon = (icon: any) => {
+    if (typeof icon === "string") {
+      const isInvert = icon.includes("Ad-product") || icon.includes("Spanner");
+      return (
+        <Image
+          src={icon}
+          className={`aspect-square w-10 h-10 ${isInvert ? "invert brightness-0" : ""}`}
+          height={40}
+          width={40}
+          alt="icon"
+        />
+      );
+    }
+    return icon;
+  };
+
   return (
     <div className="flex flex-col space-y-6 text-[#222]">
       <p className="text-lg md:text-2xl max-w-175 text-center md:text-start">
-        Jivanjor gives dealers access to a wide adhesive portfolio, professional
-        market demand and the support needed to serve contractors, carpenters
-        and end users with confidence.
+        {desc}
       </p>
       {/* Feature Cards Box */}
       <h2 className="font-amethysta text-[34px] md:text-[48px] text-center md:text-start px-10 md:px-0">
-        Become A Jivanjor Dealer
+        {title}
       </h2>
       <div className="w-full bg-linear-to-r from-[#772571] to-[#E7071C] text-white rounded-[20px] p-10 md:p-12 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center justify-center">
-          {cards.map((card, index) => (
+          {displayCards.map((card, index) => (
             <div
               key={index}
               className="flex flex-1 flex-col items-center text-center transition-all duration-300 max-w-60.5"
             >
               <div className="flex items-center justify-center mb-4 md:mb-5">
-                {card.icon}
+                {renderIcon(card.icon)}
               </div>
               <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
                 {card.title}
@@ -79,6 +81,7 @@ export function ReachLeft() {
     </div>
   );
 }
+
 
 interface ReachFormProps {
   isOpen?: boolean;

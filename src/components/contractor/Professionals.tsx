@@ -44,19 +44,36 @@ const testimonials = [
   },
 ];
 
-export default function Professionals() {
+interface ProfessionalsProps {
+  data?: {
+    title?: string;
+    desc?: string;
+    testimonials?: {
+      type: "video" | "text";
+      name: string;
+      role: string;
+      quote?: string;
+      image?: string;
+      showPlayButton?: boolean;
+    }[];
+  };
+}
+
+export default function Professionals({ data }: ProfessionalsProps = {}) {
+  const title = data?.title || "Built Around India’s Woodworking Professionals";
+  const desc = data?.desc || "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.";
+  const displayTestimonials = data?.testimonials || testimonials;
+
   return (
     <section className="relative w-full text-[#222] overflow-hidden">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Header Title and Subtitle */}
         <div className="flex flex-col space-y-4 max-w-3xl text-center md:text-left">
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl">
-            Built Around India’s Woodworking Professionals
+            {title}
           </h2>
           <p className="text-lg lg:text-2xl">
-            Jivanjor continues to grow through the trust of carpenters,
-            contractors, dealers and channel partners across India’s woodworking
-            ecosystem.
+            {desc}
           </p>
         </div>
 
@@ -86,7 +103,7 @@ export default function Professionals() {
             }}
             className="w-full"
           >
-            {testimonials.map((item, idx) => (
+            {displayTestimonials.map((item, idx) => (
               <SwiperSlide key={idx} className="h-full py-4">
                 {item.type === "video" ? (
                   /* Video Card */

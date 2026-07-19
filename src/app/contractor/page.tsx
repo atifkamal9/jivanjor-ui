@@ -1,47 +1,53 @@
-"use client";
+import { ContractorLayout } from "@/components/contractor";
+import { api } from "@/lib/api";
+import { Metadata } from "next";
 
-import { useState } from "react";
-import {
-  Hero,
-  ReachLeft,
-  ReachForm,
-  Presence,
-  Professionals,
-} from "@/components/contractor";
-import { RightChoice } from "@/components/categories";
+export const dynamic = "force-dynamic";
 
-export default function ContractorPage() {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isSticky, setIsSticky] = useState(false);
+export async function generateMetadata(): Promise<Metadata> {
+  let matchedSeo = undefined;
+  try {
+    const [seos, pages] = await Promise.all([
+      api.getSeoMetadata(),
+      api.getPages()
+    ]);
+    const contractorPage = pages.find(p => p.slug === "contractor");
+    matchedSeo = seos.find((s) =>
+      s.page_type === "static" &&
+      (s.page_id === "CONTRACTOR_PAGE" || s.page_id === "contractor" || (contractorPage && s.page_id === contractorPage.id))
+    );
+  } catch (err) {
+    console.error("Failed to load SEO metadata for contractor page:", err);
+  }
 
-  return (
-    <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <Hero hideText={isSticky || !isOpen} />
-      <div className="xl:hidden md:mt-10">
-        <ReachForm
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          isSticky={isSticky}
-          setIsSticky={setIsSticky}
-        />
-      </div>
-      {/* Main Grid Wrapper */}
-      <div className="max-w-360 mx-auto w-full px-5 lg:px-8 py-10 lg:py-13">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-14 items-start">
-          {/* Left Column (App, Stats, Testimonials) */}
-          <div className="xl:col-span-8 flex flex-col space-y-12 xl:space-y-18">
-            <ReachLeft />
-            <Presence />
-            <Professionals />
-          </div>
+  const title = matchedSeo?.meta_title || "Contractor Connect | Jivanjor";
+  const description = matchedSeo?.meta_description || "Build your business with India's trusted adhesive partner. Download Jivanjor Achievers Club App.";
+  const canonical = matchedSeo?.canonical_url || "https://jivanjor.vercel.app/contractor";
 
-          {/* Right Column (Sticky Form) */}
-          <div className="hidden xl:block xl:col-span-4 w-full xl:sticky xl:top-28 xl:self-start z-30">
-            <ReachForm />
-          </div>
-        </div>
-      </div>
-      <RightChoice />
-    </main>
-  );
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      images: matchedSeo?.image ? [{ url: matchedSeo.image }] : undefined,
+    }
+  };
+}
+
+export default async function ContractorPage() {
+  let template = undefined;
+  try {
+    template = await api.getActiveTemplateForPage("contractor");
+  } catch (err) {
+    console.error("Failed to load active contractor template from server:", err);
+  }
+
+  const sections = template?.rawSections || {};
+
+  return <ContractorLayout data={sections} />;
 }

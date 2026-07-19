@@ -39,19 +39,29 @@ const stats = [
   },
 ];
 
-export default function Presence() {
+interface PresenceProps {
+  data?: {
+    title?: string;
+    items?: { value: string; label: string; icon: string; width?: number; height?: number }[];
+  };
+}
+
+export default function Presence({ data }: PresenceProps = {}) {
+  const title = data?.title || "A Presence Built Through Trust";
+  const displayStats = data?.items || stats;
+
   return (
     <section className="w-full">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Title */}
         <h2 className="font-amethysta text-[36px] sm:text-4xl lg:text-[48px] font-normal text-[#222] leading-tight">
-          A Presence Built Through Trust
+          {title}
         </h2>
 
         {/* Stats Grid */}
         <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
-          {stats.map((stat, idx) => {
-            const isLast = idx === stats.length - 1;
+          {displayStats.map((stat, idx) => {
+            const isLast = idx === displayStats.length - 1;
             return (
               <div
                 key={idx}
@@ -64,8 +74,8 @@ export default function Presence() {
                   <Image
                     src={stat.icon}
                     alt={stat.label}
-                    width={stat.width}
-                    height={stat.height}
+                    width={stat.width || 60}
+                    height={stat.height || 60}
                     className="object-contain hover:scale-105 transition-transform duration-300"
                   />
                 </div>
@@ -94,3 +104,4 @@ export default function Presence() {
     </section>
   );
 }
+
