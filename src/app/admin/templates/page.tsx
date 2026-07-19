@@ -133,56 +133,104 @@ const defaultHomeSections = {
 
 const defaultAboutSections = {
   hero: {
-    title: "About Jivanjor",
-    desc: "Crafting bonds of trust, strength, and innovation across generations.",
+    title: "A Trusted Name in Woodworking Adhesives",
+    desc: "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.",
     actionButtons: {
-      primary: { text: "Contact Us", actionPath: "/contact" },
-      secondary: { text: "Learn More", actionPath: "#story" }
+      primary: { text: "Enquire Now", actionPath: "#about-query-section" }
     },
     media: [
-      "/images/hero.png"
+      "/images/about/about-hero.png",
+      "/images/about/about-hero-1.png"
     ]
   },
-  story: {
-    title: "Our Woodworking Legacy",
-    subtitle: "From a single product line to India's most trusted carpentry adhesives.",
-    paragraphs: [
-      "Jivanjor has been a pioneer in premium wood glues, providing master carpenters and interior design professionals with dependable adhesives tailored for the diverse climatic conditions of India.",
-      "Our continuous investment in polymer research and state-of-the-art manufacturing ensures every container of Jivanjor adhesive holds the highest standard of initial grab, coverage, and bond strength."
+  promise: {
+    title: "The Promise of Stronger Bonds",
+    subtitle: "Jivanjor is built around the needs of woodworking professionals, channel partners and end users who look for dependable adhesive solutions.",
+    items: [
+      {
+        title: "Quality-Led Products",
+        desc: "Adhesive solutions built around consistent performance and practical use.",
+        icon: "/images/about/Ad-product.svg"
+      },
+      {
+        title: "Woodworking Focus",
+        desc: "Products designed for furniture, interiors, laminates and everyday woodwork needs.",
+        icon: "/images/about/Distribute-vertically.svg"
+      },
+      {
+        title: "Trade Understanding",
+        desc: "A brand connected with the professionals and partners who shape adhesive choices.",
+        icon: "/images/about/Spanner.svg"
+      },
+      {
+        title: "Application Confidence",
+        desc: "Guidance, product information and support to help users choose and apply better.",
+        icon: "/images/about/Worker.svg"
+      }
+    ]
+  },
+  innovation: {
+    title: "Built on Innovation That Drives Performance",
+    bgImage: "/images/about/about-innovation-bg.png",
+    items: [
+      {
+        title: "Equipped R&D",
+        desc: "A dedicated facility focused on adhesive development and product improvement."
+      },
+      {
+        title: "Application Testing",
+        desc: "Testing-led developments to support practical bonding and usage needs."
+      },
+      {
+        title: "Advanced Chemistries",
+        desc: "Research across adhesive technologies, wood finishes and performance-led formulations."
+      }
     ],
-    image: "/images/Champion Super.png"
+    ctaText: "Explore Applications",
+    ctaLink: "/applications"
   },
-  values: {
-    title: "Our Core Pillars",
-    subtitle: "The principles that define Jivanjor’s legacy and future innovations.",
+  responsibility: {
+    title: "Recognised for Quality. Built with Responsibility.",
+    subtitle: "Jivanjor’s product promise is supported by quality-led facilities, recognised environmental practices and a continued focus on responsible manufacturing.",
+    badges: [
+      { title: "GreenPro Awards 2023", src: "/images/about/badge-greenpro.png" },
+      { title: "EcoVadis Awards 2023", src: "/images/about/badge-ecovadis.png" },
+      { title: "Chairman's Annual Award 24-25", src: "/images/about/badge-chairman.png" },
+      { title: "ISO 9001 Compliant Facilities", src: "/images/about/badge-iso-9001.png" },
+      { title: "ISO 14001 Compliant Facilities", src: "/images/about/badge-iso-14001.png" }
+    ],
+    sustainability: {
+      title: "A Responsible Approach to Manufacturing",
+      subtitle: "JACPL follows a long-term sustainability approach focused on protecting the environment, managing resources responsibly and reducing the impact of business operations.",
+      image: "/images/about/windmill.png",
+      items: [
+        { title: "Use Resources Carefully", desc: "Practices focused on saving natural resources and energy." },
+        { title: "Reduce Waste and Pollutants", desc: "Efforts to reduce industrial waste and environmental pollutants from business operations." },
+        { title: "Lower Substances of Concern", desc: "Efforts to reduce industrial waste and environmental pollutants from business operations." },
+        { title: "Act with Environmental Awareness", desc: "Encouraging conversation-minded practices across the organisation." }
+      ]
+    }
+  },
+  presence: {
+    title: "A Presence Built Through Trust",
+    subtitle: "Jivanjor brings together product performance and professional know-how to support the work that happens before the final finish, inside workshops, homes and everyday interiors.",
     items: [
-      { title: "Ultimate Strength", description: "Engineered bonding that exceeds standard industry benchmarks." },
-      { title: "Carpenter Safety", description: "Eco-friendly, water-based formulations with zero toxic emissions." },
-      { title: "Continuous Innovation", description: "Pioneering cross-linking technology for waterproof joints." }
-    ]
+      { value: "Pan-India", label: "Market Presence", icon: "/images/about/presence.svg" },
+      { value: "27,000+", label: "Distribution Touchpoints", icon: "/images/about/distribution.svg" },
+      { value: "275K+", label: "Trusting Woodworking Professionals", icon: "/images/about/professionals.svg" },
+      { value: "8 High-Tech", label: "Manufacturing Facilities", icon: "/images/about/facilities.svg" },
+      { value: "20+", label: "Product Variants", icon: "/images/about/variants.svg" }
+    ],
+    ctaExplore: { text: "Explore Products", actionPath: "/products" },
+    ctaPartner: { text: "Partner With Us", actionPath: "/partner" }
   },
-  team: {
-    title: "Leadership Team",
-    subtitle: "The experts and visionaries driving Jivanjor forward.",
+  tvcs: {
+    title: "A Brand That Holds It All Together",
+    subtitle: "Jivanjor brings together product performance and professional know-how to support the work that happens before the final finish, inside workshops, homes and everyday interiors.",
     items: [
-      { name: "Mr. Ramesh Sharma", designation: "Managing Director", bio: "25+ years of experience in specialty chemicals.", image: "/images/Champion Super.png" },
-      { name: "Dr. Ananya Roy", designation: "Head of R&D", bio: "Led development of Jivanjor's patented Aquabond technology.", image: "/images/Aquabond.png" }
+      { id: "allrounder", title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya", thumbnail: "/images/about/about-video-1.png", youtubeId: "5F7y8l18Nrc" },
+      { id: "champion", title: "Jivanjor Champion - Multi-purpose Adhesive", thumbnail: "/images/about/about-video-2.png", youtubeId: "11mQhW3Zntk" }
     ]
-  },
-  milestones: {
-    title: "Corporate Milestones",
-    subtitle: "Key moments in Jivanjor's path of excellence.",
-    items: [
-      { year: "1998", title: "Brand Foundation", description: "First batch of Champion Super white carpentry glue launched." },
-      { year: "2010", title: "Eco-Grade Launch", description: "Formulated zero-VOC adhesives for premium commercial woodworking." },
-      { year: "2020", title: "Aquabond Breakthrough", description: "Introduced cross-linking polymer waterproof wood glues." }
-    ]
-  },
-  ctaPromo: {
-    title: "Explore the Jivanjor Experience",
-    subtitle: "Connect with our distribution network or request custom technical assistance.",
-    ctaText: "Get in Touch",
-    ctaLink: "/contact"
   }
 };
 
@@ -358,11 +406,11 @@ export default function TemplatesPage() {
       merged = {
         layoutType: "about",
         hero: { ...defaultAboutSections.hero, ...rawData.hero },
-        story: { ...defaultAboutSections.story, ...rawData.story },
-        values: { ...defaultAboutSections.values, ...rawData.values },
-        team: { ...defaultAboutSections.team, ...rawData.team },
-        milestones: { ...defaultAboutSections.milestones, ...rawData.milestones },
-        ctaPromo: { ...defaultAboutSections.ctaPromo, ...rawData.ctaPromo }
+        promise: { ...defaultAboutSections.promise, ...rawData.promise },
+        innovation: { ...defaultAboutSections.innovation, ...rawData.innovation },
+        responsibility: { ...defaultAboutSections.responsibility, ...rawData.responsibility },
+        presence: { ...defaultAboutSections.presence, ...rawData.presence },
+        tvcs: { ...defaultAboutSections.tvcs, ...rawData.tvcs }
       };
     } else if (type === "products") {
       merged = {
@@ -539,40 +587,40 @@ export default function TemplatesPage() {
     { id: "general", label: "General Properties", icon: Sliders },
     ...(currentLayoutType === "about"
       ? [
-          { id: "hero", label: "Hero Banner", icon: Layout },
-          { id: "story", label: "Company Story", icon: FileText },
-          { id: "values", label: "Core Values", icon: Shield },
-          { id: "team", label: "Leadership Team", icon: Sliders },
-          { id: "milestones", label: "Milestones Timeline", icon: Award },
-          { id: "ctaPromo", label: "CTA Promo Banner", icon: MessageSquare },
-        ]
+        { id: "hero", label: "Hero Banner", icon: Layout },
+        { id: "promise", label: "Stronger Bonds Promise", icon: Shield },
+        { id: "innovation", label: "Research & Innovation", icon: Sparkles },
+        { id: "responsibility", label: "Quality & Responsibility", icon: Award },
+        { id: "presence", label: "Market Presence", icon: Grid },
+        { id: "tvcs", label: "Brand TVCs", icon: MessageSquare },
+      ]
       : currentLayoutType === "products"
-      ? [
+        ? [
           { id: "hero", label: "Hero Banner", icon: Layout },
           { id: "specifications", label: "Technical Specs", icon: Sliders },
           { id: "features", label: "Key Features", icon: Shield },
           { id: "applicationGuide", label: "Application Steps", icon: Grid },
           { id: "faqs", label: "Troubleshooting FAQs", icon: Award },
         ]
-      : currentLayoutType === "categories"
-      ? [
-          { id: "hero", label: "Hero Banner", icon: Layout },
-          { id: "categoriesShowcase", label: "Sub-Categories Showcase", icon: Grid },
-          { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
-          { id: "substrates", label: "Substrates Matrix", icon: Shield },
-        ]
-      : currentLayoutType === "home"
-      ? [
-          { id: "hero", label: "Hero Banner", icon: Layout },
-          { id: "productRange", label: "Products Range", icon: Grid },
-          { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
-          { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
-          { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
-          { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
-          { id: "testimonials", label: "Testimonials", icon: Bookmark },
-          { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
-        ]
-      : [])
+        : currentLayoutType === "categories"
+          ? [
+            { id: "hero", label: "Hero Banner", icon: Layout },
+            { id: "categoriesShowcase", label: "Sub-Categories Showcase", icon: Grid },
+            { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
+            { id: "substrates", label: "Substrates Matrix", icon: Shield },
+          ]
+          : currentLayoutType === "home"
+            ? [
+              { id: "hero", label: "Hero Banner", icon: Layout },
+              { id: "productRange", label: "Products Range", icon: Grid },
+              { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
+              { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
+              { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
+              { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
+              { id: "testimonials", label: "Testimonials", icon: Bookmark },
+              { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+            ]
+            : [])
   ];
 
   // Filter templates
@@ -937,69 +985,111 @@ export default function TemplatesPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col border-t border-border pt-6 mt-4 gap-3">
-                      <div className="flex items-center gap-2">
-                        <Layout className="h-5 w-5 text-primary" />
-                        <h3 className="text-base font-extrabold text-foreground">Hero Background Media (Images/Videos)</h3>
-                      </div>
-                      <p className="text-xs text-foreground/50 font-medium">
-                        At least one background image or video is mandatory for the hero slideshow.
-                      </p>
-                    </div>
-
-                    {/* Media Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {(homeSections.hero.media || []).map((mediaUrl: string, idx: number) => {
-                        const isVid = isVideo(mediaUrl);
-                        return (
-                          <div key={idx} className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface group">
-                            {isVid ? (
-                              <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline />
-                            ) : (
-                              <img src={mediaUrl} alt={`Media ${idx}`} className="w-full h-full object-cover" />
-                            )}
-                            
-                            {/* Remove button (only if more than 1 item) */}
-                            {(homeSections.hero.media || []).length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const newMedia = (homeSections.hero.media || []).filter((_: any, i: number) => i !== idx);
-                                  updateSectionField("hero", "media", newMedia);
-                                }}
-                                className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer shadow-md border border-red-700"
-                                title="Delete media file"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                            )}
-                            
-                            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white uppercase tracking-wider">
-                              {isVid ? "Video" : "Image"}
-                            </div>
+                    {currentLayoutType === "about" ? (
+                      <div className="space-y-6 border-t border-border pt-6 mt-4">
+                        <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl text-xs font-bold text-primary leading-relaxed">
+                          💡 INFO: The about hero template requires 2 images: one optimized for desktop screens and one optimized for mobile screens.
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">
+                              Desktop Hero Image (Desktop Banner)
+                            </label>
+                            <ImageUpload
+                              value={homeSections.hero.media?.[0] || ""}
+                              onChange={(url) => {
+                                const newMedia = [...(homeSections.hero.media || [])];
+                                newMedia[0] = url;
+                                updateSectionField("hero", "media", newMedia);
+                              }}
+                              folder="templates"
+                            />
+                            <span className="text-[10px] text-foreground/40 font-medium">Recommended aspect ratio: 16:9 (e.g. 1920x1080)</span>
                           </div>
-                        );
-                      })}
-                    </div>
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">
+                              Mobile Hero Image (Mobile Banner)
+                            </label>
+                            <ImageUpload
+                              value={homeSections.hero.media?.[1] || ""}
+                              onChange={(url) => {
+                                const newMedia = [...(homeSections.hero.media || [])];
+                                newMedia[1] = url;
+                                updateSectionField("hero", "media", newMedia);
+                              }}
+                              folder="templates"
+                            />
+                            <span className="text-[10px] text-foreground/40 font-medium">Recommended aspect ratio: 4:5 or 9:16 (e.g. 750x1334)</span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex flex-col border-t border-border pt-6 mt-4 gap-3">
+                          <div className="flex items-center gap-2">
+                            <Layout className="h-5 w-5 text-primary" />
+                            <h3 className="text-base font-extrabold text-foreground">Hero Background Media (Images/Videos)</h3>
+                          </div>
+                          <p className="text-xs text-foreground/50 font-medium">
+                            At least one background image or video is mandatory for the hero slideshow.
+                          </p>
+                        </div>
 
-                    {/* Add Media upload zone */}
-                    <div className="mt-4">
-                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                        Upload New Image or Video
-                      </label>
-                      <MediaUpload
-                        value=""
-                        onChange={(url) => {
-                          if (url) {
-                            const newMedia = [...(homeSections.hero.media || [])];
-                            newMedia.push(url);
-                            updateSectionField("hero", "media", newMedia);
-                          }
-                        }}
-                        folder="templates"
-                        accept="any"
-                      />
-                    </div>
+                        {/* Media Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {(homeSections.hero.media || []).map((mediaUrl: string, idx: number) => {
+                            const isVid = isVideo(mediaUrl);
+                            return (
+                              <div key={idx} className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface group">
+                                {isVid ? (
+                                  <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline />
+                                ) : (
+                                  <img src={mediaUrl} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                                )}
+
+                                {/* Remove button (only if more than 1 item) */}
+                                {(homeSections.hero.media || []).length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newMedia = (homeSections.hero.media || []).filter((_: any, i: number) => i !== idx);
+                                      updateSectionField("hero", "media", newMedia);
+                                    }}
+                                    className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer shadow-md border border-red-700"
+                                    title="Delete media file"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                )}
+
+                                <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white uppercase tracking-wider">
+                                  {isVid ? "Video" : "Image"}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Add Media upload zone */}
+                        <div className="mt-4">
+                          <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                            Upload New Image or Video
+                          </label>
+                          <MediaUpload
+                            value=""
+                            onChange={(url) => {
+                              if (url) {
+                                const newMedia = [...(homeSections.hero.media || [])];
+                                newMedia.push(url);
+                                updateSectionField("hero", "media", newMedia);
+                              }
+                            }}
+                            folder="templates"
+                            accept="any"
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
 
@@ -1589,264 +1679,84 @@ export default function TemplatesPage() {
                 )}
 
                 {/* About Layout Tabs */}
-                {activeTab === "story" && homeSections.story && (
-                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <FileText className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Company Story Section</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Story Title Heading
-                        </label>
-                        <input
-                          type="text"
-                          value={homeSections.story.title || ""}
-                          onChange={(e) => updateSectionField("story", "title", e.target.value)}
-                          placeholder="Our Woodworking Legacy"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Story Subtitle
-                        </label>
-                        <input
-                          type="text"
-                          value={homeSections.story.subtitle || ""}
-                          onChange={(e) => updateSectionField("story", "subtitle", e.target.value)}
-                          placeholder="From a single product line..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-
-                      <div className="md:col-span-2 space-y-1">
-                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Showcase Image</span>
-                        <ImageUpload
-                          value={homeSections.story.image || ""}
-                          onChange={(url) => updateSectionField("story", "image", url)}
-                          folder="templates"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Story Paragraphs List */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Story Narrative Paragraphs</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const newParas = [...(homeSections.story.paragraphs || []), ""];
-                            updateSectionField("story", "paragraphs", newParas);
-                          }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Paragraph
-                        </button>
-                      </div>
-
-                      <div className="space-y-3">
-                        {(homeSections.story.paragraphs || []).map((para: string, idx: number) => (
-                          <div key={idx} className="relative flex gap-3 items-start">
-                            <span className="text-xs font-bold text-foreground/40 mt-3">#{idx + 1}</span>
-                            <textarea
-                              rows={3}
-                              value={para}
-                              onChange={(e) => {
-                                const newParas = [...(homeSections.story.paragraphs || [])];
-                                newParas[idx] = e.target.value;
-                                updateSectionField("story", "paragraphs", newParas);
-                              }}
-                              placeholder="Write company story detail narrative..."
-                              className="flex-1 px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
-                            />
-                            <button
-                              type="button"
-                              disabled={(homeSections.story.paragraphs || []).length <= 1}
-                              onClick={() => {
-                                const newParas = (homeSections.story.paragraphs || []).filter((_: any, i: number) => i !== idx);
-                                updateSectionField("story", "paragraphs", newParas);
-                              }}
-                              className="p-2.5 mt-1 bg-surface hover:bg-red-50 text-foreground/40 hover:text-red-500 rounded-xl cursor-pointer border border-border disabled:opacity-40"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "values" && homeSections.values && (
+                {activeTab === "promise" && homeSections.promise && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Shield className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Core Pillars / Values</h3>
+                      <h3 className="text-base font-extrabold text-foreground">Stronger Bonds Promise</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Values Heading Title
+                          Promise Section Heading
                         </label>
                         <input
                           type="text"
-                          value={homeSections.values.title}
-                          onChange={(e) => updateSectionField("values", "title", e.target.value)}
-                          placeholder="Our Core Pillars"
+                          value={homeSections.promise.title || ""}
+                          onChange={(e) => updateSectionField("promise", "title", e.target.value)}
+                          placeholder="The Promise of Stronger Bonds"
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Values Subtitle description
+                          Promise Section Subtitle
                         </label>
-                        <input
-                          type="text"
-                          value={homeSections.values.subtitle || ""}
-                          onChange={(e) => updateSectionField("values", "subtitle", e.target.value)}
-                          placeholder="Principles driving our innovation..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        <textarea
+                          rows={2}
+                          value={homeSections.promise.subtitle || ""}
+                          onChange={(e) => updateSectionField("promise", "subtitle", e.target.value)}
+                          placeholder="Jivanjor is built around the needs..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
                         />
                       </div>
                     </div>
 
-                    {/* Values Checklist Cards */}
+                    {/* Promise Cards list */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dynamic Values Checklist</span>
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Promise Feature Cards</span>
                         <button
                           type="button"
-                          onClick={() => addItem("values", { title: "New Core Value", description: "Explain this standard..." })}
+                          onClick={() => addItem("promise", { title: "New Quality Pillar", desc: "Description...", icon: "/images/about/Ad-product.svg" })}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
                         >
-                          <Plus className="h-3.5 w-3.5" /> Add Core Value Card
+                          <Plus className="h-3.5 w-3.5" /> Add Promise Card
                         </button>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.values.items?.map((item: any, idx: number) => (
+                        {homeSections.promise.items?.map((item: any, idx: number) => (
                           <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
                             <button
                               type="button"
-                              onClick={() => removeItem("values", idx)}
+                              onClick={() => removeItem("promise", idx)}
                               className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Value #{idx + 1}</span>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
                             <div>
                               <input
                                 type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("values", idx, "title", e.target.value)}
-                                placeholder="Value Title"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("promise", idx, "title", e.target.value)}
+                                placeholder="Card Title"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
                               />
                               <textarea
                                 rows={2}
-                                value={item.description}
-                                onChange={(e) => updateItemField("values", idx, "description", e.target.value)}
-                                placeholder="Value Description detail text"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "team" && homeSections.team && (
-                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Sliders className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Leadership Team Profiles</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Main Heading
-                        </label>
-                        <input
-                          type="text"
-                          value={homeSections.team.title}
-                          onChange={(e) => updateSectionField("team", "title", e.target.value)}
-                          placeholder="Leadership Team"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle details
-                        </label>
-                        <input
-                          type="text"
-                          value={homeSections.team.subtitle || ""}
-                          onChange={(e) => updateSectionField("team", "subtitle", e.target.value)}
-                          placeholder="The experts and visionaries driving us..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Team Members List */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Executive Board Members</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("team", { name: "New Executive", designation: "Director", bio: "Bio details...", image: "/images/Champion Super.png" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Team Member
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.team.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("team", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Profile #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.name}
-                                onChange={(e) => updateItemField("team", idx, "name", e.target.value)}
-                                placeholder="Member Full Name"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <input
-                                type="text"
-                                value={item.designation}
-                                onChange={(e) => updateItemField("team", idx, "designation", e.target.value)}
-                                placeholder="Corporate Title / Role"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.bio}
-                                onChange={(e) => updateItemField("team", idx, "bio", e.target.value)}
-                                placeholder="Professional background details..."
+                                value={item.desc || ""}
+                                onChange={(e) => updateItemField("promise", idx, "desc", e.target.value)}
+                                placeholder="Card Description"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
                               />
                               <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Executive Portrait Portrait</span>
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Icon Image</span>
                                 <ImageUpload
-                                  value={item.image || ""}
-                                  onChange={(url) => updateItemField("team", idx, "image", url)}
+                                  value={item.icon || ""}
+                                  onChange={(url) => updateItemField("promise", idx, "icon", url)}
                                   folder="templates"
                                   size="compact"
                                 />
@@ -1859,86 +1769,503 @@ export default function TemplatesPage() {
                   </div>
                 )}
 
-                {activeTab === "milestones" && homeSections.milestones && (
+                {activeTab === "innovation" && homeSections.innovation && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Award className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Company Milestones timeline</h3>
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Research & Innovation</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Milestones Heading Title
+                          Innovation Section Title
                         </label>
                         <input
                           type="text"
-                          value={homeSections.milestones.title}
-                          onChange={(e) => updateSectionField("milestones", "title", e.target.value)}
-                          placeholder="Corporate Milestones"
+                          value={homeSections.innovation.title || ""}
+                          onChange={(e) => updateSectionField("innovation", "title", e.target.value)}
+                          placeholder="Built on Innovation That Drives Performance"
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-2 space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Background Lab Image</span>
+                        <ImageUpload
+                          value={homeSections.innovation.bgImage || ""}
+                          onChange={(url) => updateSectionField("innovation", "bgImage", url)}
+                          folder="templates"
+                        />
+                      </div>
+                      <div>
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Milestones Description details
+                          Explore CTA Text
                         </label>
                         <input
                           type="text"
-                          value={homeSections.milestones.subtitle || ""}
-                          onChange={(e) => updateSectionField("milestones", "subtitle", e.target.value)}
-                          placeholder="Key moments in Jivanjor's path..."
+                          value={homeSections.innovation.ctaText || ""}
+                          onChange={(e) => updateSectionField("innovation", "ctaText", e.target.value)}
+                          placeholder="Explore Applications"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Explore CTA Link
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.innovation.ctaLink || ""}
+                          onChange={(e) => updateSectionField("innovation", "ctaLink", e.target.value)}
+                          placeholder="/applications"
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
                     </div>
 
-                    {/* Timeline Milestones Cards */}
+                    {/* Innovation Cards */}
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Company History Timeline</span>
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Innovation Pillars</span>
                         <button
                           type="button"
-                          onClick={() => addItem("milestones", { year: "2026", title: "Launch Studio", description: "Began digital portals..." })}
+                          onClick={() => addItem("innovation", { title: "New Chemistry Standard", desc: "Description detail..." })}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
                         >
-                          <Plus className="h-3.5 w-3.5" /> Add Milestone Timeline Card
+                          <Plus className="h-3.5 w-3.5" /> Add Pillar
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.milestones.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {homeSections.innovation.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-2">
                             <button
                               type="button"
-                              onClick={() => removeItem("milestones", idx)}
+                              onClick={() => removeItem("innovation", idx)}
                               className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Milestone #{idx + 1}</span>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Pillar #{idx + 1}</span>
                             <div>
                               <input
                                 type="text"
-                                value={item.year}
-                                onChange={(e) => updateItemField("milestones", idx, "year", e.target.value)}
-                                placeholder="Year (e.g. 1998)"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-black mb-2 uppercase text-primary"
-                              />
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("milestones", idx, "title", e.target.value)}
-                                placeholder="Milestone Header Name"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("innovation", idx, "title", e.target.value)}
+                                placeholder="Pillar Title"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
                               />
                               <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => updateItemField("milestones", idx, "description", e.target.value)}
-                                placeholder="Brief historical timeline description..."
+                                rows={3}
+                                value={item.desc || ""}
+                                onChange={(e) => updateItemField("innovation", idx, "desc", e.target.value)}
+                                placeholder="Description"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
                               />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "responsibility" && homeSections.responsibility && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Award className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Quality & Responsibility</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Responsibility Main Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.responsibility.title || ""}
+                          onChange={(e) => updateSectionField("responsibility", "title", e.target.value)}
+                          placeholder="Recognised for Quality. Built with Responsibility."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Responsibility Description Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.responsibility.subtitle || ""}
+                          onChange={(e) => updateSectionField("responsibility", "subtitle", e.target.value)}
+                          placeholder="Jivanjor’s product promise is supported..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Swiper Badges list */}
+                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-black uppercase text-primary tracking-wider">Awards & Certification Badges</h4>
+                        <button
+                          type="button"
+                          onClick={() => addItem("responsibility", { title: "New Award 2026", src: "/images/about/badge-greenpro.png" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Badge
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.responsibility.badges?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 bg-background border border-border rounded-xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("responsibility", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Badge #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("responsibility", idx, "title", e.target.value)}
+                                placeholder="Badge Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Badge Image</span>
+                                <ImageUpload
+                                  value={item.src || ""}
+                                  onChange={(url) => updateItemField("responsibility", idx, "src", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sustainability Card */}
+                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                      <h4 className="text-xs font-black uppercase text-primary tracking-wider font-google-sans">Responsible Manufacturing card</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider mb-2">
+                            Sustainability Card Title
+                          </label>
+                          <input
+                            type="text"
+                            value={homeSections.responsibility.sustainability?.title || ""}
+                            onChange={(e) => updateNestedField("responsibility", "sustainability", "title", e.target.value)}
+                            placeholder="A Responsible Approach to Manufacturing"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider mb-2">
+                            Sustainability Subtitle
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={homeSections.responsibility.sustainability?.subtitle || ""}
+                            onChange={(e) => updateNestedField("responsibility", "sustainability", "subtitle", e.target.value)}
+                            placeholder="JACPL follows a long-term sustainability..."
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs resize-none"
+                          />
+                        </div>
+                        <div className="md:col-span-2 space-y-1">
+                          <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Illustration / Photo</span>
+                          <ImageUpload
+                            value={homeSections.responsibility.sustainability?.image || ""}
+                            onChange={(url) => updateNestedField("responsibility", "sustainability", "image", url)}
+                            folder="templates"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Leaves items practices list */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between border-t border-border pt-4">
+                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Environmental Practices (Leaves list)</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const currItems = homeSections.responsibility.sustainability?.items || [];
+                              const newItems = [...currItems, { title: "Save Energy", desc: "Energy checks..." }];
+                              updateNestedField("responsibility", "sustainability", "items", newItems);
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                          >
+                            <Plus className="h-3.5 w-3.5" /> Add Practice item
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {homeSections.responsibility.sustainability?.items?.map((item: any, itemIdx: number) => (
+                            <div key={itemIdx} className="p-3 bg-background border border-border rounded-xl relative space-y-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const currItems = homeSections.responsibility.sustainability?.items || [];
+                                  const newItems = currItems.filter((_: any, i: number) => i !== itemIdx);
+                                  updateNestedField("responsibility", "sustainability", "items", newItems);
+                                }}
+                                className="absolute top-2 right-2 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                              <span className="text-[9px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded-full w-fit">Item #{itemIdx + 1}</span>
+                              <input
+                                type="text"
+                                value={item.title || ""}
+                                onChange={(e) => {
+                                  const currItems = [...(homeSections.responsibility.sustainability?.items || [])];
+                                  currItems[itemIdx] = { ...currItems[itemIdx], title: e.target.value };
+                                  updateNestedField("responsibility", "sustainability", "items", currItems);
+                                }}
+                                placeholder="Practice Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
+                              />
+                              <textarea
+                                rows={2}
+                                value={item.desc || ""}
+                                onChange={(e) => {
+                                  const currItems = [...(homeSections.responsibility.sustainability?.items || [])];
+                                  currItems[itemIdx] = { ...currItems[itemIdx], desc: e.target.value };
+                                  updateNestedField("responsibility", "sustainability", "items", currItems);
+                                }}
+                                placeholder="Practice Description"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "presence" && homeSections.presence && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Grid className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Market Presence</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Presence Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.presence.title || ""}
+                          onChange={(e) => updateSectionField("presence", "title", e.target.value)}
+                          placeholder="A Presence Built Through Trust"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Presence Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.presence.subtitle || ""}
+                          onChange={(e) => updateSectionField("presence", "subtitle", e.target.value)}
+                          placeholder="Jivanjor brings together product performance..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Stats List */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Statistics Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("presence", { value: "100+", label: "Stat Label", icon: "/images/about/presence.svg" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Stat Card
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.presence.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("presence", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Stat #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.value || ""}
+                                onChange={(e) => updateItemField("presence", idx, "value", e.target.value)}
+                                placeholder="Stat Value (e.g. 27,000+)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-bold mb-2"
+                              />
+                              <input
+                                type="text"
+                                value={item.label || ""}
+                                onChange={(e) => updateItemField("presence", idx, "label", e.target.value)}
+                                placeholder="Stat Label"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Icon Image</span>
+                                <ImageUpload
+                                  value={item.icon || ""}
+                                  onChange={(url) => updateItemField("presence", idx, "icon", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* CTAs */}
+                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                      <h4 className="text-xs font-black uppercase text-primary tracking-wider font-google-sans">CTA Action Buttons Setup</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Explore button */}
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Explore Products CTA</span>
+                          <input
+                            type="text"
+                            value={homeSections.presence.ctaExplore?.text || ""}
+                            onChange={(e) => updateNestedField("presence", "ctaExplore", "text", e.target.value)}
+                            placeholder="Button Text"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                          <input
+                            type="text"
+                            value={homeSections.presence.ctaExplore?.actionPath || ""}
+                            onChange={(e) => updateNestedField("presence", "ctaExplore", "actionPath", e.target.value)}
+                            placeholder="Action Path (e.g. /products)"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                        </div>
+                        {/* Partner button */}
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Partner With Us CTA</span>
+                          <input
+                            type="text"
+                            value={homeSections.presence.ctaPartner?.text || ""}
+                            onChange={(e) => updateNestedField("presence", "ctaPartner", "text", e.target.value)}
+                            placeholder="Button Text"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                          <input
+                            type="text"
+                            value={homeSections.presence.ctaPartner?.actionPath || ""}
+                            onChange={(e) => updateNestedField("presence", "ctaPartner", "actionPath", e.target.value)}
+                            placeholder="Action Path (e.g. /partner)"
+                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "tvcs" && homeSections.tvcs && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Brand TVCs commercials</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          TVCs Section Heading
+                        </label>
+                        <input
+                          type="text"
+                          value={homeSections.tvcs.title || ""}
+                          onChange={(e) => updateSectionField("tvcs", "title", e.target.value)}
+                          placeholder="A Brand That Holds It All Together"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          TVCs Section Subtitle
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.tvcs.subtitle || ""}
+                          onChange={(e) => updateSectionField("tvcs", "subtitle", e.target.value)}
+                          placeholder="Jivanjor brings together product performance..."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* TVC commercial videos list */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Commercial Videos</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("tvcs", { id: "commercial", title: "New Commercial Video", thumbnail: "/images/about/about-video-1.png", youtubeId: "5F7y8l18Nrc" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Video
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {homeSections.tvcs.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("tvcs", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Video #{idx + 1}</span>
+                            <div>
+                              <input
+                                type="text"
+                                value={item.title || ""}
+                                onChange={(e) => updateItemField("tvcs", idx, "title", e.target.value)}
+                                placeholder="Video Title"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                              />
+                              <input
+                                type="text"
+                                value={item.youtubeId || ""}
+                                onChange={(e) => updateItemField("tvcs", idx, "youtubeId", e.target.value)}
+                                placeholder="YouTube Video ID (e.g. 5F7y8l18Nrc)"
+                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2"
+                              />
+                              <div className="space-y-1">
+                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Thumbnail Image</span>
+                                <ImageUpload
+                                  value={item.thumbnail || ""}
+                                  onChange={(url) => updateItemField("tvcs", idx, "thumbnail", url)}
+                                  folder="templates"
+                                  size="compact"
+                                />
+                              </div>
                             </div>
                           </div>
                         ))}

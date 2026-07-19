@@ -3,8 +3,23 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Innovation() {
-  const cards = [
+interface InnovationProps {
+  data?: {
+    title?: string;
+    bgImage?: string;
+    items?: Array<{
+      title?: string;
+      desc?: string;
+    }>;
+    ctaText?: string;
+    ctaLink?: string;
+  };
+}
+
+export default function Innovation({ data }: InnovationProps) {
+  const title = data?.title || "Built on Innovation That Drives Performance";
+  const bgImage = data?.bgImage || "/images/about/about-innovation-bg.png";
+  const defaultCards = [
     {
       title: "Equipped R&D",
       desc: "A dedicated facility focused on adhesive development and product improvement.",
@@ -18,6 +33,9 @@ export default function Innovation() {
       desc: "Research across adhesive technologies, wood finishes and performance-led formulations.",
     },
   ];
+  const cards = data?.items && data.items.length > 0 ? data.items : defaultCards;
+  const ctaText = data?.ctaText || "Explore Applications";
+  const ctaLink = data?.ctaLink || "/applications";
 
   return (
     <section
@@ -27,7 +45,7 @@ export default function Innovation() {
       {/* Background Image with Overlay */}
       <div className="hidden md:block absolute inset-0 z-0 mt-12">
         <Image
-          src="/images/about/about-innovation-bg.png"
+          src={bgImage}
           alt="R&D Lab background"
           fill
           className="object-cover object-center"
@@ -41,7 +59,7 @@ export default function Innovation() {
       <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative w-full z-10 pb-4 md:pb-0">
         <div className="relative md:hidden min-h-116 min-w-100 w-full h-full">
           <Image
-            src="/images/about/about-innovation-bg.png"
+            src={bgImage}
             alt="R&D Lab background"
             fill
             className="object-cover object-center"
@@ -52,7 +70,7 @@ export default function Innovation() {
         <div className="px-5 lg:px-20">
           {/* Title */}
           <h2 className="font-amethysta text-center md:text-start text-[34px] sm:text-4xl lg:text-[48px] mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-2xl font-normal my-6 sm:my-7 text-foreground md:text-white">
-            Built on Innovation That Drives Performance
+            {title}
           </h2>
 
           {/* Cards Desktop */}
@@ -91,10 +109,10 @@ export default function Innovation() {
           {/* Explore Applications Button */}
           <div className="p-5 md:p-0 text-center md:text-start">
             <Link
-              href="/applications"
+              href={ctaLink}
               className="inline-flex items-center justify-center font-medium text-base md:text-lg rounded-full px-8 py-2 bg-linear-to-r from-[#FF0009] to-[#772571] text-white hover:scale-105 transition-transform duration-200"
             >
-              Explore Applications
+              {ctaText}
             </Link>
           </div>
         </div>
@@ -102,3 +120,4 @@ export default function Innovation() {
     </section>
   );
 }
+

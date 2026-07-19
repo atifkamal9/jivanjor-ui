@@ -10,7 +10,11 @@ import Presence from "./Presence";
 import TVCs from "./TVCs";
 import { RightChoice } from "@/components/categories";
 
-export default function AboutUs() {
+interface AboutUsProps {
+  data?: any;
+}
+
+export default function AboutUs({ data = {} }: AboutUsProps) {
   const [activeTab, setActiveTab] = useState("about-jivanjor");
 
   useEffect(() => {
@@ -62,15 +66,15 @@ export default function AboutUs() {
       id="about-jivanjor"
       className="flex flex-col min-h-screen bg-background font-google-sans text-foreground overflow-x-hidden xl:overflow-x-visible"
     >
-      <Hero />
+      <Hero data={data.hero} />
       {/* Navigation Tabs */}
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* Page Sections */}
-      <Promise />
-      <Innovation />
-      <Responsibility />
-      <Presence />
-      <TVCs />
+      <Promise data={data.promise} />
+      <Innovation data={data.innovation} />
+      <Responsibility data={data.responsibility} />
+      <Presence data={data.presence} />
+      <TVCs data={data.tvcs} />
       {/* CTA Footer Section */}
       <div id="about-query-section">
         <RightChoice />
@@ -78,3 +82,4 @@ export default function AboutUs() {
     </div>
   );
 }
+

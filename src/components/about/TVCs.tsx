@@ -16,10 +16,26 @@ interface VideoItem {
   youtubeId: string;
 }
 
-export default function TVCs() {
+interface TVCsProps {
+  data?: {
+    title?: string;
+    subtitle?: string;
+    items?: Array<{
+      id: string;
+      title: string;
+      thumbnail: string;
+      youtubeId: string;
+    }>;
+  };
+}
+
+export default function TVCs({ data }: TVCsProps) {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
-  const videos: VideoItem[] = [
+  const title = data?.title || "A Brand That Holds It All Together";
+  const subtitle = data?.subtitle || "Jivanjor brings together product performance and professional know-how to support the work that happens before the final finish, inside workshops, homes and everyday interiors.";
+
+  const defaultVideos: VideoItem[] = [
     {
       id: "allrounder",
       title: "Jivanjor AllRounder - Jud Gaya Toh Jud Gaya",
@@ -46,6 +62,8 @@ export default function TVCs() {
     },
   ];
 
+  const videos = data?.items && data.items.length > 0 ? data.items : defaultVideos;
+
   const handleOpenVideo = (youtubeId: string) => {
     setActiveVideo(youtubeId);
   };
@@ -71,15 +89,14 @@ export default function TVCs() {
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center relative z-10">
         {/* Section Heading */}
         <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl text-center font-normal mb-6 max-w-87.5 md:max-w-5xl">
-          A Brand That Holds It All Together
+          {title}
         </h2>
 
         {/* Section Subtitle */}
         <p className="text-lg sm:text-xl lg:text-2xl text-center max-w-82.5 md:max-w-5xl mb-8">
-          Jivanjor brings together product performance and professional know-how
-          to support the work that happens before the final finish, inside
-          workshops, homes and everyday interiors.
+          {subtitle}
         </p>
+
 
         {/* Swiper Slider */}
         <div className="relative w-full max-w-5xl px-8">
