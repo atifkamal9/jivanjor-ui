@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-export default function Hero() {
+interface HeroProps {
+  data?: {
+    title?: string;
+    desc?: string;
+  };
+}
+
+export default function Hero({ data }: HeroProps = {}) {
+  const title = data?.title || "Privacy Policy";
+  const desc = data?.desc;
+
   return (
     <section className="relative">
       <div className="max-w-360 mx-auto w-full h-full px-5 py-3 md:px-6.5 flex flex-col justify-center">
@@ -15,11 +25,16 @@ export default function Hero() {
             </Link>
             {/* Chevron separator */}
             <ChevronRight size={16} />
-            <span className="font-normal text-lg">Privacy Policy</span>
+            <span className="font-normal text-lg">{title}</span>
           </div>
           <h2 className="font-amethysta font-normal text-[34px] sm:text-4xl lg:text-5xl mt-6">
-            Privacy Policy
+            {title}
           </h2>
+          {desc && (
+            <p className="mt-4 text-base md:text-lg">
+              {desc}
+            </p>
+          )}
         </div>
       </div>
     </section>
