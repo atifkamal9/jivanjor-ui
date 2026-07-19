@@ -42,6 +42,8 @@ export default function Navbar() {
     loadNavData();
   }, []);
 
+  console.log("pages----------->", pages);
+
   // ── About ──────────────────────────────────────────────────────────────────
   const defaultAboutData: Record<string, { desc: string; img: string }> = {
     "/about": {
