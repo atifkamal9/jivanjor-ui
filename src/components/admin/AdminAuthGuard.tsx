@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { isAuthenticated } from "@/lib/auth";
+import { isAuthenticated, getUserRole } from "@/lib/auth";
 
 export default function AdminAuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -17,6 +17,8 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
       if (!auth && !isLogin) {
         router.push("/admin/login");
       } else if (auth && isLogin) {
+        router.push("/admin");
+      } else if (auth && pathname?.startsWith("/admin/templates") && getUserRole() !== "SUPER_ADMIN") {
         router.push("/admin");
       } else {
         setLoading(false);

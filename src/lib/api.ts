@@ -26,6 +26,7 @@ export interface Category {
   slug: string;
   parent_category: string; // id or empty string
   description: string;
+  icon?: string; // Pre-stored platform icon key (e.g. Lucide icon name)
 }
 
 export interface Material {
@@ -140,6 +141,7 @@ function mapCategoryFromBackend(cat: any): Category {
     slug: cat.slug,
     parent_category: cat.parentId || "",
     description: cat.description || "",
+    icon: cat.icon || "",
   };
 }
 
@@ -349,6 +351,7 @@ export const api = {
       name: category.name,
       parentId: category.parent_category || null,
       description: category.description || "",
+      icon: category.icon || null,
     };
     if (category.id) {
       const res = await client.put(`/categories/${category.id}`, payload);
