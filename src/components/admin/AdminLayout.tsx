@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut, getUserEmail } from "@/lib/auth";
+import { signOut, getUserEmail, getUserRole } from "@/lib/auth";
 import {
   LayoutDashboard,
   Package,
@@ -47,6 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -54,6 +55,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     setEmail(getUserEmail() || "admin@jivanjor.com");
+    setRole(getUserRole());
 
     // Check local storage for theme
     const theme = localStorage.getItem("jivanjor_admin_theme");
@@ -328,35 +330,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {renderDesktopProductsAccordion()}
 
           {/* Remaining Sidebar Items */}
-          {SIDEBAR_ITEMS.slice(1).map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${
-                  isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
-                } ${isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-foreground/75 hover:bg-surface hover:text-foreground"
-                }`}
-                title={isCollapsed ? item.name : undefined}
-              >
-                <Icon
-                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-                    isActive ? "text-primary" : "text-foreground/45"
+          {SIDEBAR_ITEMS.slice(1)
+            .filter((item) => item.href !== "/admin/templates" || role === "SUPER_ADMIN")
+            .map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${
+                    isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
+                  } ${isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-foreground/75 hover:bg-surface hover:text-foreground"
                   }`}
-                />
-                {!isCollapsed && (
-                  <span className="animate-[fadeIn_0.2s_ease-out] truncate">{item.name}</span>
-                )}
-                {!isCollapsed && isActive && (
-                  <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
-                )}
-              </Link>
-            );
-          })}
+                  title={isCollapsed ? item.name : undefined}
+                >
+                  <Icon
+                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
+                      isActive ? "text-primary" : "text-foreground/45"
+                    }`}
+                  />
+                  {!isCollapsed && (
+                    <span className="animate-[fadeIn_0.2s_ease-out] truncate">{item.name}</span>
+                  )}
+                  {!isCollapsed && isActive && (
+                    <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                  )}
+                </Link>
+              );
+            })}
         </nav>
 
         {/* Footer Info */}
@@ -441,24 +445,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {renderMobileProductsAccordion()}
 
               {/* Remaining Mobile Links */}
-              {SIDEBAR_ITEMS.slice(1).map((item) => {
-                const isActive = pathname === item.href;
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all ${isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-foreground/75 hover:bg-surface"
-                      }`}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
+              {SIDEBAR_ITEMS.slice(1)
+                .filter((item) => item.href !== "/admin/templates" || role === "SUPER_ADMIN")
+                .map((item) => {
+                  const isActive = pathname === item.href;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-all ${isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground/75 hover:bg-surface"
+                        }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
             </nav>
 
             <div className="pt-4 border-t border-border">

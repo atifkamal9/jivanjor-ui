@@ -33,3 +33,26 @@ export function getAuthToken() {
   return isBrowser() ? (localStorage.getItem(TOKEN_KEY) ?? "") : "";
 }
 
+export function getUserRole() {
+  const token = getAuthToken();
+  if (!token) return "";
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return "";
+    // Decode base64url safely
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    const decoded = JSON.parse(jsonPayload);
+    return decoded.role || "";
+  } catch (e) {
+    console.error("Failed to parse token payload:", e);
+    return "";
+  }
+}
+
+

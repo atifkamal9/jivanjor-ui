@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api } from "@/lib/api";
+import { getUserRole } from "@/lib/auth";
 import {
   Package,
   FolderTree,
@@ -16,11 +17,27 @@ import {
   Activity,
   FileText,
   Layers,
+  Shield,
+  CheckCircle,
+  XCircle,
+  Terminal,
+  Cpu,
+  Database,
+  Key,
+  Clock,
+  History,
+  PlusCircle,
+  Edit,
+  Eye,
+  Trash,
 } from "lucide-react";
 import Link from "next/link";
+import { getUserEmail } from "@/lib/auth";
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState("");
+  const [activityFilter, setActivityFilter] = useState("all");
   const [stats, setStats] = useState({
     products: 0,
     categories: 0,
@@ -34,6 +51,7 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
+    setRole(getUserRole());
     async function loadStats() {
       try {
         const [
@@ -168,8 +186,10 @@ export default function DashboardPage() {
 
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {metricCards.map((card, idx) => {
-            const Icon = card.icon;
+          {metricCards
+            .filter((card) => card.href !== "/admin/templates" || role === "SUPER_ADMIN")
+            .map((card, idx) => {
+              const Icon = card.icon;
             return (
               <Link
                 key={idx}
@@ -198,175 +218,37 @@ export default function DashboardPage() {
           })}
         </div>
 
-        {/* Charts & Interactive Stats Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Chart */}
-          <div className="lg:col-span-2 bg-background border border-border rounded-3xl p-6 shadow-sm transition-colors duration-300">
-            <div className="flex items-center justify-between mb-6">
-              <div className="space-y-0.5">
-                <h3 className="text-lg font-black text-foreground flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  <span>Visitor Engagement Trend</span>
-                </h3>
-                <p className="text-xs text-foreground/40 font-semibold uppercase tracking-wider">
-                  Weekly Analytics Overview
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-bold text-foreground/60 bg-surface px-3 py-1.5 rounded-lg">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                <span>Product Page Visits</span>
-              </div>
-            </div>
+        {/* Quick Actions Panel */}
+        <div className="bg-background border border-border rounded-3xl p-6 shadow-sm transition-colors duration-300">
+          <div className="space-y-5">
+            <h3 className="text-lg font-black text-foreground flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
+              <span>Admin Actions Hub</span>
+            </h3>
 
-            {/* High fidelity inline SVG Chart */}
-            <div className="w-full h-64 bg-surface/40 rounded-2xl p-4 flex flex-col justify-between">
-              <div className="flex-1 w-full relative">
-                <svg
-                  className="w-full h-full"
-                  viewBox="0 0 600 200"
-                  preserveAspectRatio="none"
-                >
-                  {/* Grid Lines */}
-                  <line
-                    x1="0"
-                    y1="50"
-                    x2="600"
-                    y2="50"
-                    stroke="#f1f5f9"
-                    strokeDasharray="4 4"
-                    className="stroke-border"
-                  />
-                  <line
-                    x1="0"
-                    y1="100"
-                    x2="600"
-                    y2="100"
-                    stroke="#f1f5f9"
-                    strokeDasharray="4 4"
-                    className="stroke-border"
-                  />
-                  <line
-                    x1="0"
-                    y1="150"
-                    x2="600"
-                    y2="150"
-                    stroke="#f1f5f9"
-                    strokeDasharray="4 4"
-                    className="stroke-border"
-                  />
-
-                  {/* Gradient definition */}
-                  <defs>
-                    <linearGradient
-                      id="chartGradient"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop offset="0%" stopColor="#ed1c24" stopOpacity="0.3" />
-                      <stop
-                        offset="100%"
-                        stopColor="#ed1c24"
-                        stopOpacity="0.0"
-                      />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Fill Area */}
-                  <path
-                    d="M0,170 Q75,130 150,110 T300,120 T450,60 T600,40 L600,200 L0,200 Z"
-                    fill="url(#chartGradient)"
-                  />
-
-                  {/* Stroke Line */}
-                  <path
-                    d="M0,170 Q75,130 150,110 T300,120 T450,60 T600,40"
-                    fill="none"
-                    stroke="#ed1c24"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Data Points */}
-                  <circle
-                    cx="150"
-                    cy="110"
-                    r="5"
-                    fill="#ed1c24"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="300"
-                    cy="120"
-                    r="5"
-                    fill="#ed1c24"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="450"
-                    cy="60"
-                    r="5"
-                    fill="#ed1c24"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="600"
-                    cy="40"
-                    r="5"
-                    fill="#ed1c24"
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </div>
-
-              {/* Chart Labels */}
-              <div className="flex justify-between items-center px-2 mt-4 text-[10px] font-bold text-foreground/40 uppercase tracking-wider">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions & Recent Updates */}
-          <div className="bg-background border border-border rounded-3xl p-6 shadow-sm flex flex-col justify-between transition-colors duration-300">
-            <div className="space-y-5">
-              <h3 className="text-lg font-black text-foreground flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                <span>Admin Actions Hub</span>
-              </h3>
-
-              <div className="grid grid-cols-2 gap-3">
-                <Link
-                  href="/admin/products"
-                  className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
-                >
-                  <Plus className="h-5 w-5 shrink-0" />
-                  <span className="text-xs">Add Product</span>
-                </Link>
-                <Link
-                  href="/admin/blog"
-                  className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
-                >
-                  <Plus className="h-5 w-5 shrink-0" />
-                  <span className="text-xs">Compose Blog</span>
-                </Link>
-                <Link
-                  href="/admin/pages"
-                  className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
-                >
-                  <Plus className="h-5 w-5 shrink-0" />
-                  <span className="text-xs">Create Page</span>
-                </Link>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Link
+                href="/admin/products"
+                className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
+              >
+                <Plus className="h-5 w-5 shrink-0" />
+                <span className="text-xs">Add Product</span>
+              </Link>
+              <Link
+                href="/admin/blog"
+                className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
+              >
+                <Plus className="h-5 w-5 shrink-0" />
+                <span className="text-xs">Compose Blog</span>
+              </Link>
+              <Link
+                href="/admin/pages"
+                className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
+              >
+                <Plus className="h-5 w-5 shrink-0" />
+                <span className="text-xs">Create Page</span>
+              </Link>
+              {role === "SUPER_ADMIN" && (
                 <Link
                   href="/admin/templates"
                   className="flex flex-col gap-2 p-4 rounded-xl bg-surface hover:bg-primary/10 text-foreground/80 hover:text-primary transition-all font-bold cursor-pointer border border-border"
@@ -374,37 +256,7 @@ export default function DashboardPage() {
                   <Plus className="h-5 w-5 shrink-0" />
                   <span className="text-xs">Build Template</span>
                 </Link>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-border">
-              <h4 className="text-xs font-bold text-foreground/40 uppercase tracking-wider mb-3">
-                Latest Activity
-              </h4>
-              <div className="space-y-3">
-                <div className="flex gap-3 text-xs leading-normal">
-                  <div className="h-2 w-2 rounded-full bg-green-500 mt-1.5 shrink-0" />
-                  <div>
-                    <p className="font-bold text-foreground/80">
-                      Product Catalog Seeded
-                    </p>
-                    <p className="text-[10px] text-foreground/45 font-semibold">
-                      Just now • System Agent
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3 text-xs leading-normal">
-                  <div className="h-2 w-2 rounded-full bg-blue-500 mt-1.5 shrink-0" />
-                  <div>
-                    <p className="font-bold text-foreground/80">
-                      Admin Session Authenticated
-                    </p>
-                    <p className="text-[10px] text-foreground/45 font-semibold">
-                      5 mins ago • admin@jivanjor.com
-                    </p>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

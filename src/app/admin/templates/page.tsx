@@ -1975,7 +1975,7 @@ export default function TemplatesPage() {
                         <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dynamic Guides List</span>
                         <button
                           type="button"
-                          onClick={() => addItem("knowledgeBase", { title: "New Masterclass Guide", summary: "Learn techniques...", link: "#" })}
+                          onClick={() => addItem("knowledgeBase", { title: "New Masterclass Guide", summary: "Learn techniques...", link: "#", image: "", mobileImage: "" })}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
                         >
                           <Plus className="h-3.5 w-3.5" /> Add Guide Item
@@ -2001,14 +2001,23 @@ export default function TemplatesPage() {
                                 placeholder="Guide Name"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
                               />
-                              <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Image</span>
-                                <ImageUpload
-                                  value={item.image || ""}
-                                  onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
-                                  folder="templates"
-                                  size="compact"
-                                />
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="space-y-1">
+                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Desktop Image</span>
+                                  <ImageUpload
+                                    value={item.image || ""}
+                                    onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
+                                    folder="templates"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Mobile/Tablet Image</span>
+                                  <ImageUpload
+                                    value={item.mobileImage || ""}
+                                    onChange={(url) => updateItemField("knowledgeBase", idx, "mobileImage", url)}
+                                    folder="templates"
+                                  />
+                                </div>
                               </div>
                               <textarea
                                 rows={2}

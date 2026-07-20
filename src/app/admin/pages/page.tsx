@@ -2414,7 +2414,7 @@ export default function PagesPage() {
                         <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Featured Guides/Articles</span>
                         <button
                           type="button"
-                          onClick={() => addItem("knowledgeBase", { title: "New Guide Article", summary: "Learn about...", link: "#" })}
+                          onClick={() => addItem("knowledgeBase", { title: "New Guide Article", summary: "Learn about...", link: "#", image: "", mobileImage: "" })}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
                         >
                           <Plus className="h-3.5 w-3.5" /> Add Guide Link
@@ -2427,7 +2427,7 @@ export default function PagesPage() {
                             <button
                               type="button"
                               onClick={() => removeItem("knowledgeBase", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background animate-pulse-subtle"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
@@ -2440,6 +2440,24 @@ export default function PagesPage() {
                                 placeholder="Article Title"
                                 className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
                               />
+                              <div className="grid grid-cols-2 gap-2 mb-2">
+                                <div className="space-y-1">
+                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Desktop Image</span>
+                                  <ImageUpload
+                                    value={item.image || ""}
+                                    onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
+                                    folder="pages"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Mobile/Tablet Image</span>
+                                  <ImageUpload
+                                    value={item.mobileImage || ""}
+                                    onChange={(url) => updateItemField("knowledgeBase", idx, "mobileImage", url)}
+                                    folder="pages"
+                                  />
+                                </div>
+                              </div>
                               <textarea
                                 rows={2}
                                 value={item.summary}

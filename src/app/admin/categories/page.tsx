@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import IconPicker, { DynamicIcon } from "@/components/admin/IconPicker";
 import {
   Plus,
   Search,
@@ -15,6 +16,7 @@ import {
   ArrowLeft,
   Sliders,
   Layers,
+  Smile,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -33,6 +35,7 @@ export default function CategoriesPage() {
     slug: "",
     parent_category: "",
     description: "",
+    icon: "",
   });
 
   // SEO metadata states
@@ -81,6 +84,7 @@ export default function CategoriesPage() {
       slug: "",
       parent_category: "",
       description: "",
+      icon: "",
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -98,6 +102,7 @@ export default function CategoriesPage() {
       slug: category.slug,
       parent_category: category.parent_category || "",
       description: category.description,
+      icon: category.icon || "",
     });
 
     const matchedSeo = seos.find(
@@ -227,6 +232,7 @@ export default function CategoriesPage() {
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Category Structure</th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Icon</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Description</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
                   </tr>
@@ -234,7 +240,7 @@ export default function CategoriesPage() {
                 <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                   {loading ? (
                     <tr>
-                      <td colSpan={3} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                      <td colSpan={4} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
                         <div className="flex flex-col items-center gap-3">
                           <div className="h-6 w-6 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
                           <span>Retrieving classifications from database...</span>
@@ -267,6 +273,21 @@ export default function CategoriesPage() {
                                   <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{mainCat.slug}</p>
                                 </div>
                               </div>
+                            </td>
+                            <td className="p-5">
+                              {mainCat.icon ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center">
+                                    <DynamicIcon iconKey={mainCat.icon} className="h-4 w-4" />
+                                  </div>
+                                  <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-mono">{mainCat.icon}</span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-gray-300 dark:text-zinc-700">
+                                  <Smile className="h-4 w-4" />
+                                  <span className="text-[10px] font-medium">No icon</span>
+                                </div>
+                              )}
                             </td>
                             <td className="p-5 text-sm text-gray-500 dark:text-zinc-400 max-w-xs truncate">
                               {mainCat.description || "No description provided."}
@@ -304,6 +325,21 @@ export default function CategoriesPage() {
                                   </div>
                                 </div>
                               </td>
+                              <td className="p-5 pl-14">
+                                {sub.icon ? (
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-7 w-7 rounded-lg bg-gray-50 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 flex items-center justify-center">
+                                      <DynamicIcon iconKey={sub.icon} className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-mono">{sub.icon}</span>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-2 text-gray-300 dark:text-zinc-700">
+                                    <Smile className="h-4 w-4" />
+                                    <span className="text-[10px] font-medium">No icon</span>
+                                  </div>
+                                )}
+                              </td>
                               <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
                                 {sub.description || "No description provided."}
                               </td>
@@ -332,7 +368,7 @@ export default function CategoriesPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={3} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                      <td colSpan={4} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
                         No category structures configured.
                       </td>
                     </tr>
@@ -488,6 +524,34 @@ export default function CategoriesPage() {
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
                       />
                     </div>
+
+                    {/* Icon Picker */}
+                    <IconPicker
+                      label="Category Icon (displayed on the categories page)"
+                      value={formData.icon}
+                      onChange={(iconKey) => setFormData((prev) => ({ ...prev, icon: iconKey }))}
+                    />
+
+                    {/* Icon Preview */}
+                    {formData.icon && (
+                      <div className="p-4 border border-gray-100 dark:border-zinc-800 bg-gray-50/30 dark:bg-zinc-950/30 rounded-2xl">
+                        <p className="text-[10px] font-black uppercase text-gray-400 tracking-wider mb-3">Icon Preview on Categories Page</p>
+                        <div className="flex items-center gap-4">
+                          <div className="flex flex-col items-center gap-2 p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800 shadow-sm w-32">
+                            <div className="relative w-10 h-10 flex items-center justify-center">
+                              <DynamicIcon iconKey={formData.icon} className="h-9 w-9 text-gray-700 dark:text-zinc-200" />
+                            </div>
+                            <span className="font-medium text-sm text-center text-gray-800 dark:text-zinc-200 leading-tight">
+                              {formData.name || "Category Name"}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-400 dark:text-zinc-500 space-y-1">
+                            <p className="font-bold">This is how the icon will appear in the subcategory selector on the front-end categories page.</p>
+                            <p className="font-mono text-red-500">Icon Key: {formData.icon}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
