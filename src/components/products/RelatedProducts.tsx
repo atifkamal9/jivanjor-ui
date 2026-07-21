@@ -47,7 +47,36 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
   },
 ];
 
-export default function RelatedProducts() {
+interface RelatedProductsProps {
+  product?: any;
+  allProducts?: any[];
+}
+
+export default function RelatedProducts({ product, allProducts = [] }: RelatedProductsProps) {
+  // Load related products from product configurations
+  let displayedProducts: any[] = [];
+  if (product?.relatedProducts && product.relatedProducts.length > 0 && allProducts.length > 0) {
+    displayedProducts = allProducts.filter(p => product.relatedProducts.includes(p.id));
+  }
+
+  // Fallback: Show other products in the database if list is empty
+  if (displayedProducts.length === 0) {
+    const otherProducts = allProducts.filter(p => p.id !== product?.id);
+    if (otherProducts.length > 0) {
+      displayedProducts = otherProducts.slice(0, 4);
+    } else {
+      // Map static hardcoded defaults if allProducts is empty
+      displayedProducts = RELATED_PRODUCTS.map((item, idx) => ({
+        id: `static-${idx}`,
+        name: item.title,
+        description: item.description,
+        image: item.image,
+        themeColor: item.color.startsWith("bg-[") ? item.color.replace("bg-[", "").replace("]", "") : item.color,
+        slug: item.title.toLowerCase().replace(/\s+/g, "-"),
+      }));
+    }
+  }
+
   return (
     <section id="related-products" className="relative overflow-hidden mt-6">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto my-6 max-w-330 px-5 lg:px-8 w-full">
@@ -62,7 +91,7 @@ export default function RelatedProducts() {
             />
           </div>
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
-            Related Products
+            {product?.relatedTitle || "Related Products"}
           </h2>
         </div>
         <div className="w-full mt-24">
@@ -93,31 +122,34 @@ export default function RelatedProducts() {
             }}
             className="overflow-visible!"
           >
-            {RELATED_PRODUCTS.map((card, idx) => (
+            {displayedProducts.map((card, idx) => (
               <SwiperSlide
-                key={`${card.title}-${idx}`}
+                key={`${card.name}-${idx}`}
                 className="overflow-visible! px-1"
               >
                 <Link
-                  href="/products#overview"
+                  href={`/products?product=${card.slug}`}
                   className="flex flex-col items-center relative px-4"
                 >
                   <div className="absolute aspect-44/51 group -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain transition-opacity duration-300 ease-out z-100">
                     {/* Floating image */}
-                    <Image
-                      fill
-                      priority
-                      src={card.image}
-                      alt={card.title}
-                      className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
-                    />
+                    {card.image && (
+                      <Image
+                        fill
+                        priority
+                        src={card.image}
+                        alt={card.name}
+                        className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
+                      />
+                    )}
                   </div>
                   {/* Card */}
                   <div
-                    className={`${card.color} rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
+                    className="rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88"
+                    style={{ backgroundColor: card.themeColor || "whitesmoke" }}
                   >
                     <h3 className="text-2xl font-semibold text-center">
-                      {card.title}
+                      {card.name}
                     </h3>
                     <div className="w-full h-px bg-white my-4" />
                     <p className="text-center text-base leading-normal max-w-60">
