@@ -12,9 +12,10 @@ import { RightChoice } from "@/components/categories";
 
 interface AboutUsProps {
   data?: any;
+  subpageTitle?: string;
 }
 
-export default function AboutUs({ data = {} }: AboutUsProps) {
+export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
   const [activeTab, setActiveTab] = useState("about-jivanjor");
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function AboutUs({ data = {} }: AboutUsProps) {
       id="about-jivanjor"
       className="flex flex-col min-h-screen bg-background font-google-sans text-foreground overflow-x-hidden xl:overflow-x-visible"
     >
-      <Hero data={data.hero} />
+      <Hero data={data.hero} subpageTitle={subpageTitle} />
       {/* Navigation Tabs */}
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       {/* Page Sections */}

@@ -50,10 +50,17 @@ export default async function AboutSubpage({ params }: PageProps) {
   const { subpage } = await params;
   
   let template = undefined;
+  let pageTitle = "";
   try {
-    template = await api.getActiveTemplateForPage(subpage);
+    const [t, pages] = await Promise.all([
+      api.getActiveTemplateForPage(subpage),
+      api.getPages()
+    ]);
+    template = t;
+    const matchedPage = pages.find(p => p.slug === subpage);
+    pageTitle = matchedPage?.title || "";
   } catch (err) {
-    console.error(`Failed to load active template for page ${subpage}:`, err);
+    console.error(`Failed to load active template/page for ${subpage}:`, err);
   }
 
   if (!template) {
@@ -62,5 +69,5 @@ export default async function AboutSubpage({ params }: PageProps) {
 
   const sections = template?.rawSections || {};
 
-  return <AboutUs data={sections} />;
+  return <AboutUs data={sections} subpageTitle={pageTitle} />;
 }

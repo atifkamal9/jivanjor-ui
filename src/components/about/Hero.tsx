@@ -16,9 +16,10 @@ interface HeroProps {
     };
     media?: string[];
   };
+  subpageTitle?: string;
 }
 
-export default function Hero({ data }: HeroProps) {
+export default function Hero({ data, subpageTitle }: HeroProps) {
   const title = data?.title || "A Trusted Name in Woodworking Adhesives";
   const desc = data?.desc || "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.";
   const ctaText = data?.actionButtons?.primary?.text || "Enquire Now";
@@ -38,7 +39,17 @@ export default function Hero({ data }: HeroProps) {
           </svg>
         </Link>
         <ChevronRight className="w-4 h-4" />
-        <span className="font-medium text-sm md:text-lg">About Us</span>
+        {subpageTitle ? (
+          <>
+            <Link href="/about" className="hover:text-primary transition-colors">
+              <span className="font-medium text-sm md:text-lg">About Us</span>
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-gray-400 font-medium text-sm md:text-lg">{subpageTitle}</span>
+          </>
+        ) : (
+          <span className="font-medium text-sm md:text-lg">About Us</span>
+        )}
       </div>
 
       {/* Banner Card */}
