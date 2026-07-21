@@ -326,7 +326,7 @@ export default function ProductCategories({ category }: Props) {
       const subProducts = products.filter((p) => p.category_id === sub.id);
       return {
         name: sub.name,
-        title: sub.name + " Adhesives by Jivanjor",
+        title: sub.name || "Adhesives by Jivanjor",
         description: sub.description || `Explore our high quality ${sub.name} solutions.`,
         icon: subProducts[0]?.image || "/images/Watershield.png",
         products: subProducts.map((p) => {
@@ -342,11 +342,7 @@ export default function ProductCategories({ category }: Props) {
             slug: p.slug,
             description: p.description,
             mobileDesc: p.description,
-            color: p.name.toLowerCase().includes("aquabond")
-              ? "bg-[#077937]"
-              : p.name.toLowerCase().includes("foambond")
-                ? "bg-[#F57F26]"
-                : "bg-[#0498AA]",
+            color: p.themeColor ?? "#0498AA",
             badge: sub.name,
             image: p.image || "/images/Watershield.png",
             features: featuresList,
@@ -511,7 +507,8 @@ export default function ProductCategories({ category }: Props) {
                   {/* Card Main Body */}
                   <Link
                     href={`/products?product=${card.slug || card.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    className={`${card.color} group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64`}
+                    className="group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64"
+                    style={{ backgroundColor: `${card.color}` }}
                   >
                     {/* Top Row: Floating image & Text info side-by-side */}
                     <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">

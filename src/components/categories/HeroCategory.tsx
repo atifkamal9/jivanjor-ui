@@ -2,7 +2,31 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 
-export default function HeroCategory() {
+export default function HeroCategory({
+  category,
+  parentCategory,
+}: {
+  category?: any;
+  parentCategory?: any;
+}) {
+  const isSubcategory = !!category?.parent_category;
+
+  // Resolve dynamic background image
+  const heroImage =
+    category?.heroImage ||
+    parentCategory?.heroImage ||
+    "/images/category-hero.png";
+
+  // Resolve breadcrumbs label
+  const breadcrumbText = isSubcategory
+    ? (category?.name || "Subcategory")
+    : "All Products";
+
+  // Resolve header title
+  const title = isSubcategory
+    ? (parentCategory?.categoryTitle || parentCategory?.name || "Premium Adhesives")
+    : (category?.categoryTitle || category?.name || "Our Exclusive Product Range");
+
   return (
     <section className="relative">
       <div className="flex items-center gap-1.5 md:hidden px-6 pt-4 text-xs font-medium">
@@ -14,7 +38,7 @@ export default function HeroCategory() {
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="font-medium text-lg">Premium Adhesives</span>
+        <span className="font-medium text-lg">{breadcrumbText}</span>
       </div>
       <div className="hidden md:block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
@@ -34,19 +58,19 @@ export default function HeroCategory() {
                 {/* Chevron separator */}
                 <ChevronRight size={16} />
                 <span className="font-normal text-lg text-white/80">
-                  Premium Adhesives
+                  {breadcrumbText}
                 </span>
               </div>
               <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6">
-                A Complete Adhesive Range for Modern Woodworking
+                {title}
               </h2>
             </div>
           </div>
         </div>
         <Image
-          src="/images/category-hero.png"
+          src={heroImage}
           fill
-          alt="Category Hero"
+          alt={title}
           sizes="100vw"
           className="object-cover object-center hidden md:block"
         />

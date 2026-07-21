@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { api, Product, Category as ApiCategory } from "@/lib/api";
 import {
   ChevronRight,
   ChevronRightCircle,
@@ -18,6 +19,7 @@ interface ProductCard {
   badge: string;
   image: string;
   features: string[];
+  fileUrl?: string;
 }
 
 interface SubCategoryData {
@@ -332,7 +334,90 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   },
 ];
 
+function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCategoryData[] {
+  const roots = cats.filter(c => !c.parent_category);
+  if (roots.length === 0) return [];
+
+  const mainCategories: MainCategoryData[] = [];
+
+  for (const root of roots) {
+    const subs = cats.filter(c => c.parent_category === root.id);
+    const subCategoriesList: SubCategoryData[] = [];
+
+    for (const sub of subs) {
+      const subProds = prods.filter(p => p.category_id === sub.id);
+      if (subProds.length === 0) continue;
+
+      const productsList: ProductCard[] = subProds.map(p => {
+        let bullets: string[] = [];
+        if (p.overviewBullets) {
+          bullets = p.overviewBullets.map((b: any) => typeof b === 'string' ? b : (b?.text || ""));
+        }
+
+        return {
+          title: p.techResourceTitle || `${p.name} - Technical Data Sheet`,
+          description: p.techResourceDescription || p.description || "Provides excellent white PVA wood glue bonding performance.",
+          mobileDesc: p.techResourceDescription || p.description || "White PVA woodwork adhesive.",
+          color: p.themeColor || "#0498AA",
+          badge: sub.name,
+          image: p.image || "/images/Watershield.png",
+          features: bullets.filter(b => b.trim() !== ""),
+          fileUrl: p.techResourceFileUrl || p.documentUrl || "/docs/watershield-tds.pdf",
+        };
+      });
+
+      subCategoriesList.push({
+        name: sub.name,
+        title: `${sub.name} Adhesives`,
+        description: sub.description || `Explore ${sub.name} Jivanjor adhesives and technical resources.`,
+        icon: sub.icon || "/images/Watershield.png",
+        products: productsList
+      });
+    }
+
+    if (subCategoriesList.length > 0) {
+      mainCategories.push({
+        name: root.name,
+        subCategories: subCategoriesList
+      });
+    }
+  }
+
+  return mainCategories;
+}
+
 export default function Categories() {
+  const [categoriesData, setCategoriesData] = useState<MainCategoryData[]>(MAIN_CATEGORIES_DATA);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [catsList, prodsList] = await Promise.all([
+          api.getCategories(),
+          api.getProducts()
+        ]);
+        
+        if (catsList.length > 0 && prodsList.length > 0) {
+          const dynamicData = buildDynamicCategories(catsList, prodsList);
+          if (dynamicData.length > 0) {
+            setCategoriesData(dynamicData);
+            
+            const firstMain = dynamicData[0];
+            setActiveMainCategory(firstMain.name);
+            if (firstMain.subCategories.length > 0) {
+              setActiveSubCategory(firstMain.subCategories[0].name);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load resources dynamically", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
   const [activeMainCategory, setActiveMainCategory] = useState(
     "Woodworking Adhesives",
   );
@@ -350,10 +435,10 @@ export default function Categories() {
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   const currentMainCategoryData =
-    MAIN_CATEGORIES_DATA.find((c) => c.name === activeMainCategory) ||
-    MAIN_CATEGORIES_DATA[0];
+    categoriesData.find((c) => c.name === activeMainCategory) ||
+    categoriesData[0];
 
-  const subCategories = currentMainCategoryData.subCategories;
+  const subCategories = currentMainCategoryData?.subCategories || [];
 
   const currentSubCategoryData =
     subCategories.find((s) => s.name === activeSubCategory) || subCategories[0];
@@ -447,9 +532,9 @@ export default function Categories() {
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);
     const categoryData =
-      MAIN_CATEGORIES_DATA.find((c) => c.name === name) ||
-      MAIN_CATEGORIES_DATA[0];
-    const firstSubName = categoryData.subCategories[0]?.name || "";
+      categoriesData.find((c) => c.name === name) ||
+      categoriesData[0];
+    const firstSubName = categoryData?.subCategories?.[0]?.name || "";
     setActiveSubCategory(firstSubName);
     setOpenAccordionIndex(0);
     setDropdownOpen(false);
@@ -485,7 +570,7 @@ export default function Categories() {
           </button>
           {dropdownOpen && (
             <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden space-y-1.5 z-10">
-              {MAIN_CATEGORIES_DATA.map((cat) => (
+              {categoriesData.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
@@ -548,7 +633,7 @@ export default function Categories() {
           </button>
           {dropdownOpen && (
             <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-6 pb-5 overflow-hidden space-y-1.5 z-10">
-              {MAIN_CATEGORIES_DATA.map((cat) => (
+              {categoriesData.map((cat) => (
                 <button
                   key={cat.name}
                   onClick={() => handleMainCategoryChange(cat.name)}
@@ -647,7 +732,9 @@ export default function Categories() {
                           PDF | 1.2 MB
                         </span>
                         <Link
-                          href="/products"
+                          href={product.fileUrl || "/docs/watershield-tds.pdf"}
+                          target="_blank"
+                          rel="noreferrer"
                           className="flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
                         >
                           Download
@@ -676,7 +763,8 @@ export default function Categories() {
                       />
                     </div>
                     <div
-                      className={`${product.color} absolute bottom-0 rounded-[20px] min-h-32 w-full`}
+                      className={`${product.color.startsWith("bg-") ? product.color : ""} absolute bottom-0 rounded-[20px] min-h-32 w-full`}
+                      style={{ backgroundColor: !product.color.startsWith("bg-") ? product.color : undefined }}
                     >
                       <Image
                         src="/images/watermark pro.svg"
