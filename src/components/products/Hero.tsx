@@ -72,7 +72,7 @@ export default function Hero({ product, category }: HeroProps) {
               {productName}
             </h1>
             {/* Product Tagline */}
-            <p className="font-amethysta text-xl lg:text-3xl leading-[120%] max-w-3xs sm:max-w-md">
+            <p className="font-amethysta text-xl lg:text-3xl leading-[120%]! max-w-3xs sm:max-w-md">
               {productDescription}
             </p>
           </div>

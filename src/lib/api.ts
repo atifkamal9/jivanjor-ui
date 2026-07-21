@@ -37,6 +37,9 @@ export interface Product {
   faqsTitle?: string;
   faqsDescription?: string;
   relatedTitle?: string;
+  techResourceTitle?: string;
+  techResourceDescription?: string;
+  techResourceFileUrl?: string;
 }
 
 export interface Category {
@@ -46,6 +49,11 @@ export interface Category {
   parent_category: string; // id or empty string
   description: string;
   icon?: string; // Pre-stored platform icon key (e.g. Lucide icon name)
+  categoryTitle?: string;
+  categoryDescription?: string;
+  resourcesTitle?: string;
+  resourcesDescription?: string;
+  heroImage?: string;
 }
 
 export interface Material {
@@ -154,12 +162,38 @@ client.interceptors.request.use(
 
 // Mappers for backward compatibility with UI schemas
 function mapCategoryFromBackend(cat: any): Category {
+  let description = cat.description || "";
+  let categoryTitle = "";
+  let categoryDescription = "";
+  let resourcesTitle = "";
+  let resourcesDescription = "";
+  let heroImage = "";
+
+  if (description.startsWith("{") && description.endsWith("}")) {
+    try {
+      const parsed = JSON.parse(description);
+      description = parsed.description || "";
+      categoryTitle = parsed.categoryTitle || "";
+      categoryDescription = parsed.categoryDescription || "";
+      resourcesTitle = parsed.resourcesTitle || "";
+      resourcesDescription = parsed.resourcesDescription || "";
+      heroImage = parsed.heroImage || "";
+    } catch (e) {
+      // ignore
+    }
+  }
+
   return {
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
     parent_category: cat.parentId || "",
-    description: cat.description || "",
+    description,
+    categoryTitle,
+    categoryDescription,
+    resourcesTitle,
+    resourcesDescription,
+    heroImage,
     icon: cat.icon || "",
   };
 }
@@ -194,6 +228,9 @@ function mapProductFromBackend(prod: any): Product {
   let faqsTitle = "FAQs";
   let faqsDescription = "Find quick answers about product use, coverage, setting time, pack sizes and technical details.";
   let relatedTitle = "Related Products";
+  let techResourceTitle = "";
+  let techResourceDescription = "";
+  let techResourceFileUrl = "";
 
   if (prod.metadata) {
     if (typeof prod.metadata === "string") {
@@ -231,6 +268,9 @@ function mapProductFromBackend(prod: any): Product {
         faqsTitle = prod.metadata.faqsTitle || "FAQs";
         faqsDescription = prod.metadata.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details.";
         relatedTitle = prod.metadata.relatedTitle || "Related Products";
+        techResourceTitle = prod.metadata.techResourceTitle || "";
+        techResourceDescription = prod.metadata.techResourceDescription || "";
+        techResourceFileUrl = prod.metadata.techResourceFileUrl || "";
 
         metadataStr = prod.metadata.tags || (overviewBullets ? overviewBullets.map(b => b.text).join(", ") : "");
       } else if ("tags" in prod.metadata && typeof prod.metadata.tags === "string") {
@@ -334,6 +374,9 @@ function mapProductFromBackend(prod: any): Product {
     faqsTitle,
     faqsDescription,
     relatedTitle,
+    techResourceTitle,
+    techResourceDescription,
+    techResourceFileUrl,
   };
 }
 
@@ -487,6 +530,9 @@ export const api = {
         faqsTitle: product.faqsTitle || "",
         faqsDescription: product.faqsDescription || "",
         relatedTitle: product.relatedTitle || "",
+        techResourceTitle: product.techResourceTitle || "",
+        techResourceDescription: product.techResourceDescription || "",
+        techResourceFileUrl: product.techResourceFileUrl || "",
       },
       image: product.image || null,
     };
@@ -519,10 +565,19 @@ export const api = {
   saveCategory: async (
     category: Omit<Category, "id"> & { id?: string },
   ): Promise<Category> => {
+    const serializedDescription = JSON.stringify({
+      description: category.description || "",
+      categoryTitle: category.categoryTitle || "",
+      categoryDescription: category.categoryDescription || "",
+      resourcesTitle: category.resourcesTitle || "",
+      resourcesDescription: category.resourcesDescription || "",
+      heroImage: category.heroImage || "",
+    });
+
     const payload = {
       name: category.name,
       parentId: category.parent_category || null,
-      description: category.description || "",
+      description: serializedDescription,
       icon: category.icon || null,
     };
     if (category.id) {

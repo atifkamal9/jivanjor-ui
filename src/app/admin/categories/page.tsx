@@ -4,19 +4,17 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
-import IconPicker, { DynamicIcon } from "@/components/admin/IconPicker";
 import {
   Plus,
   Search,
   Edit2,
   Trash2,
-  X,
   Sparkles,
   FolderTree,
   ArrowLeft,
   Sliders,
   Layers,
-  Smile,
+  FileText,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -36,6 +34,11 @@ export default function CategoriesPage() {
     parent_category: "",
     description: "",
     icon: "",
+    categoryTitle: "",
+    categoryDescription: "",
+    resourcesTitle: "",
+    resourcesDescription: "",
+    heroImage: "",
   });
 
   // SEO metadata states
@@ -85,6 +88,11 @@ export default function CategoriesPage() {
       parent_category: "",
       description: "",
       icon: "",
+      categoryTitle: "",
+      categoryDescription: "",
+      resourcesTitle: "",
+      resourcesDescription: "",
+      heroImage: "",
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -103,6 +111,11 @@ export default function CategoriesPage() {
       parent_category: category.parent_category || "",
       description: category.description,
       icon: category.icon || "",
+      categoryTitle: category.categoryTitle || "",
+      categoryDescription: category.categoryDescription || "",
+      resourcesTitle: category.resourcesTitle || "",
+      resourcesDescription: category.resourcesDescription || "",
+      heroImage: category.heroImage || "",
     });
 
     const matchedSeo = seos.find(
@@ -165,17 +178,17 @@ export default function CategoriesPage() {
   // Filter Categories
   const filteredMainCategories = categories.filter((c) => {
     if (c.parent_category) return false;
-    
-    const mainMatches = c.name.toLowerCase().includes(search.toLowerCase()) || 
-                        c.description.toLowerCase().includes(search.toLowerCase());
-    
+
+    const mainMatches = c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.description.toLowerCase().includes(search.toLowerCase());
+
     const subMatches = categories.some(
       (sub) =>
         sub.parent_category === c.id &&
         (sub.name.toLowerCase().includes(search.toLowerCase()) ||
           sub.description.toLowerCase().includes(search.toLowerCase()))
     );
-    
+
     return mainMatches || subMatches;
   });
 
@@ -186,6 +199,7 @@ export default function CategoriesPage() {
 
   const tabsList = [
     { id: "general", label: "General Properties", icon: Sliders },
+    { id: "content", label: "Dynamic Page Content", icon: FileText },
     { id: "seo", label: "SEO Metadata", icon: Search },
   ];
 
@@ -232,7 +246,6 @@ export default function CategoriesPage() {
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Category Structure</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Icon</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Description</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
                   </tr>
@@ -274,21 +287,6 @@ export default function CategoriesPage() {
                                 </div>
                               </div>
                             </td>
-                            <td className="p-5">
-                              {mainCat.icon ? (
-                                <div className="flex items-center gap-2">
-                                  <div className="h-8 w-8 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center">
-                                    <DynamicIcon iconKey={mainCat.icon} className="h-4 w-4" />
-                                  </div>
-                                  <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-mono">{mainCat.icon}</span>
-                                </div>
-                              ) : (
-                                <div className="flex items-center gap-2 text-gray-300 dark:text-zinc-700">
-                                  <Smile className="h-4 w-4" />
-                                  <span className="text-[10px] font-medium">No icon</span>
-                                </div>
-                              )}
-                            </td>
                             <td className="p-5 text-sm text-gray-500 dark:text-zinc-400 max-w-xs truncate">
                               {mainCat.description || "No description provided."}
                             </td>
@@ -324,21 +322,6 @@ export default function CategoriesPage() {
                                     <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
                                   </div>
                                 </div>
-                              </td>
-                              <td className="p-5 pl-14">
-                                {sub.icon ? (
-                                  <div className="flex items-center gap-2">
-                                    <div className="h-7 w-7 rounded-lg bg-gray-50 dark:bg-zinc-800 text-gray-600 dark:text-zinc-400 flex items-center justify-center">
-                                      <DynamicIcon iconKey={sub.icon} className="h-3.5 w-3.5" />
-                                    </div>
-                                    <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-mono">{sub.icon}</span>
-                                  </div>
-                                ) : (
-                                  <div className="flex items-center gap-2 text-gray-300 dark:text-zinc-700">
-                                    <Smile className="h-4 w-4" />
-                                    <span className="text-[10px] font-medium">No icon</span>
-                                  </div>
-                                )}
                               </td>
                               <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
                                 {sub.description || "No description provided."}
@@ -524,34 +507,73 @@ export default function CategoriesPage() {
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
                       />
                     </div>
+                  </div>
+                )}
 
-                    {/* Icon Picker */}
-                    <IconPicker
-                      label="Category Icon (displayed on the categories page)"
-                      value={formData.icon}
-                      onChange={(iconKey) => setFormData((prev) => ({ ...prev, icon: iconKey }))}
-                    />
+                {activeTab === "content" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <FileText className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Dynamic Page Content</h3>
+                    </div>
 
-                    {/* Icon Preview */}
-                    {formData.icon && (
-                      <div className="p-4 border border-gray-100 dark:border-zinc-800 bg-gray-50/30 dark:bg-zinc-950/30 rounded-2xl">
-                        <p className="text-[10px] font-black uppercase text-gray-400 tracking-wider mb-3">Icon Preview on Categories Page</p>
-                        <div className="flex items-center gap-4">
-                          <div className="flex flex-col items-center gap-2 p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800 shadow-sm w-32">
-                            <div className="relative w-10 h-10 flex items-center justify-center">
-                              <DynamicIcon iconKey={formData.icon} className="h-9 w-9 text-gray-700 dark:text-zinc-200" />
-                            </div>
-                            <span className="font-medium text-sm text-center text-gray-800 dark:text-zinc-200 leading-tight">
-                              {formData.name || "Category Name"}
-                            </span>
-                          </div>
-                          <div className="text-xs text-gray-400 dark:text-zinc-500 space-y-1">
-                            <p className="font-bold">This is how the icon will appear in the subcategory selector on the front-end categories page.</p>
-                            <p className="font-mono text-red-500">Icon Key: {formData.icon}</p>
-                          </div>
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Category Hero Header Settings (Main Category / Subcategory Page)</span>
+                      <div className="grid grid-cols-1 gap-4">
+                        <ImageUpload
+                          label="Category Hero Background Image"
+                          value={formData.heroImage}
+                          onChange={(url) => setFormData((prev) => ({ ...prev, heroImage: url }))}
+                          folder="categories"
+                        />
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Category Hero Title</label>
+                          <input
+                            type="text"
+                            value={formData.categoryTitle}
+                            onChange={(e) => setFormData(prev => ({ ...prev, categoryTitle: e.target.value }))}
+                            placeholder="e.g. A Complete Adhesive Range for Modern Woodworking"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Category Hero Description</label>
+                          <textarea
+                            rows={3}
+                            value={formData.categoryDescription}
+                            onChange={(e) => setFormData(prev => ({ ...prev, categoryDescription: e.target.value }))}
+                            placeholder="Detailed overview for the category page hero..."
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
+                          />
                         </div>
                       </div>
-                    )}
+                    </div>
+
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Resources Page Section Settings (Accordion Header & description)</span>
+                      <div className="grid grid-cols-1 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resources Section Title</label>
+                          <input
+                            type="text"
+                            value={formData.resourcesTitle}
+                            onChange={(e) => setFormData(prev => ({ ...prev, resourcesTitle: e.target.value }))}
+                            placeholder="e.g. Waterproof Grade Adhesives"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resources Section Description</label>
+                          <textarea
+                            rows={3}
+                            value={formData.resourcesDescription}
+                            onChange={(e) => setFormData(prev => ({ ...prev, resourcesDescription: e.target.value }))}
+                            placeholder="Explore where Jivanjor waterproof adhesives fit across woodworking applications..."
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 

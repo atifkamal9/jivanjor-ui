@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { api } from "@/lib/api";
 import {
   HeroCategory,
   ProductCategories,
@@ -12,9 +13,21 @@ interface PageProps {
 export default async function Categories({ params }: PageProps) {
   const { slug } = await params;
 
+  let categoryData: any = undefined;
+  let parentCategoryData: any = undefined;
+  try {
+    const cats = await api.getCategories();
+    categoryData = cats.find((c) => c.slug === slug);
+    if (categoryData && categoryData.parent_category) {
+      parentCategoryData = cats.find((c) => c.id === categoryData.parent_category);
+    }
+  } catch (err) {
+    console.error("Failed to fetch category details in SSR:", err);
+  }
+
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <HeroCategory />
+      <HeroCategory category={categoryData} parentCategory={parentCategoryData} />
       <div className="relative w-full">
         {/* Watermark */}
         <Image

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Product, Category, Material } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import FileUpload from "@/components/admin/FileUpload";
 import {
   Plus,
   Search,
@@ -20,6 +21,7 @@ import {
   Award,
   Play,
   HelpCircle,
+  Files,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -70,6 +72,9 @@ export default function ProductsPage() {
     faqsTitle: "",
     faqsDescription: "",
     relatedTitle: "",
+    techResourceTitle: "",
+    techResourceDescription: "",
+    techResourceFileUrl: "",
   });
 
   // SEO metadata states
@@ -198,6 +203,9 @@ export default function ProductsPage() {
       faqsTitle: "FAQs",
       faqsDescription: "Find quick answers about product use, coverage, setting time, pack sizes and technical details.",
       relatedTitle: "Related Products",
+      techResourceTitle: "Technical Data Sheet",
+      techResourceDescription: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+      techResourceFileUrl: "",
     });
 
     setSeoMetaTitle("");
@@ -262,6 +270,9 @@ export default function ProductsPage() {
       faqsTitle: product.faqsTitle || "",
       faqsDescription: product.faqsDescription || "",
       relatedTitle: product.relatedTitle || "",
+      techResourceTitle: product.techResourceTitle || "",
+      techResourceDescription: product.techResourceDescription || "",
+      techResourceFileUrl: product.techResourceFileUrl || "",
     });
 
     const matchedSeo = seos.find(
@@ -291,6 +302,7 @@ export default function ProductsPage() {
       const savedProd = await api.saveProduct({
         id: editingId || undefined,
         ...formData,
+        overviewBullets: formData.overviewBullets.slice(0, 3),
       });
 
       // Save SEO metadata record in context
@@ -343,6 +355,7 @@ export default function ProductsPage() {
     { id: "usps", label: "Unique USPs", icon: Award },
     { id: "apps", label: "Applications & Video", icon: Play },
     { id: "faqs", label: "FAQs Editor", icon: HelpCircle },
+    { id: "resources", label: "Technical Resources", icon: Files },
     { id: "seo", label: "SEO Metadata", icon: Search },
   ];
 
@@ -706,6 +719,45 @@ export default function ProductsPage() {
                   </div>
                 )}
 
+                {activeTab === "resources" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Files className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Technical Resources</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resource Title</label>
+                        <input
+                          type="text"
+                          value={formData.techResourceTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, techResourceTitle: e.target.value }))}
+                          placeholder="e.g. Watershield - Technical Data Sheet"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resource Description</label>
+                        <input
+                          type="text"
+                          value={formData.techResourceDescription}
+                          onChange={(e) => setFormData(prev => ({ ...prev, techResourceDescription: e.target.value }))}
+                          placeholder="e.g. Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
+                        />
+                      </div>
+                    </div>
+
+                    <FileUpload
+                      label="Upload Technical Resource File (PDF/DOC/ZIP)"
+                      value={formData.techResourceFileUrl}
+                      onChange={(url) => setFormData(prev => ({ ...prev, techResourceFileUrl: url }))}
+                      folder="resources"
+                    />
+                  </div>
+                )}
+
                 {activeTab === "seo" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
@@ -903,7 +955,9 @@ export default function ProductsPage() {
                         ))}
                         <button
                           type="button"
+                          disabled={formData.overviewBullets.length >= 3}
                           onClick={() => setFormData(prev => {
+                            if (prev.overviewBullets.length >= 3) return prev;
                             const list = [...prev.overviewBullets, { text: "", icon: "image 18.svg" }];
                             return {
                               ...prev,
@@ -911,10 +965,10 @@ export default function ProductsPage() {
                               metadata: list.map(b => b.text).join(", ")
                             };
                           })}
-                          className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
+                          className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         >
                           <Plus className="h-4 w-4 text-red-600" />
-                          <span>Add Overview Bullet</span>
+                          <span>{formData.overviewBullets.length >= 3 ? "Max 3 Bullets Reached" : "Add Overview Bullet"}</span>
                         </button>
                       </div>
                     </div>
