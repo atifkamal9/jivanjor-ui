@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
 
+import { BLOG_CATEGORY_FILTERS } from "@/lib/blog-categories";
+import { api } from "@/lib/api";
+
 interface BlogCategory {
   name: string;
   icon: string;
@@ -20,11 +23,40 @@ interface BlogPost {
 interface BlogListProps {
   categories?: BlogCategory[];
   posts?: BlogPost[];
+  initialCategory?: string;
 }
 
-export default function List({ categories, posts }: BlogListProps) {
-  const [activeList, setActiveList] = useState("Latest Blogs");
+export default function List({ categories, posts, initialCategory }: BlogListProps) {
+  const [activeList, setActiveList] = useState(initialCategory || "Latest Blogs");
   const [currentPage, setCurrentPage] = useState(1);
+  const [apiPosts, setApiPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    if (initialCategory) {
+      setActiveList(initialCategory);
+    }
+  }, [initialCategory]);
+
+  useEffect(() => {
+    async function loadApiPosts() {
+      try {
+        const data = await api.getBlogPosts();
+        if (data && data.length > 0) {
+          const mapped: BlogPost[] = data.map((b) => ({
+            title: b.title,
+            desc: b.content ? b.content.replace(/<[^>]*>/g, "").slice(0, 150) + "..." : "",
+            image: b.image || "/images/blog/Rectangle 140.png",
+            category: b.category || "Latest Blogs",
+            slug: b.slug,
+          }));
+          setApiPosts(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to load API blog posts:", err);
+      }
+    }
+    loadApiPosts();
+  }, []);
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -76,12 +108,7 @@ export default function List({ categories, posts }: BlogListProps) {
     };
   }, []);
 
-  const defaultLists = [
-    { name: "Latest Blogs", icon: "/images/blog/image 47.svg" },
-    { name: "Application Tips", icon: "/images/blog/image 43.svg" },
-    { name: "Choosing The Right Adhesive", icon: "/images/blog/Check-correct.svg" },
-    { name: "Fix Common Issues", icon: "/images/blog/image 48.svg" },
-  ];
+  const defaultLists = BLOG_CATEGORY_FILTERS;
   const displayLists = categories && categories.length > 0 ? categories : defaultLists;
 
   const Blogs: BlogPost[] = [
@@ -203,7 +230,7 @@ export default function List({ categories, posts }: BlogListProps) {
     },
   ];
 
-  const displayBlogs = posts && posts.length > 0 ? posts : Blogs;
+  const displayBlogs = [...apiPosts, ...(posts && posts.length > 0 ? posts : Blogs)];
 
   // Filter Blogs by category
   const filteredBlogs =
@@ -319,7 +346,7 @@ export default function List({ categories, posts }: BlogListProps) {
           {currentBlogs.map((blog, idx) => (
             <Link
               key={idx}
-              href={`/blog?article=${blog.slug || blog.title.replace(/\s/g, "-").toLowerCase()}`}
+              href={`/blog/${blog.slug || blog.title.replace(/\s/g, "-").toLowerCase()}`}
               className="flex flex-col items-center bg-white rounded-[20px] group md:items-start"
             >
               {/* Blog Image Container */}

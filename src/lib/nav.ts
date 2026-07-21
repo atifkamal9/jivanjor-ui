@@ -36,10 +36,10 @@ export const applicationItems = [
 ];
 
 export const knowledgeItems: NavItem[] = [
-  { name: "Choosing The Right Adhesive", link: "/blog" },
-  { name: "Application Tips", link: "/blog" },
-  { name: "Fix Common Issues", link: "/blog" },
-  { name: "Latest Blogs", link: "/blog" },
+  { name: "Choosing The Right Adhesive", link: "/blog?category=Choosing%20The%20Right%20Adhesive" },
+  { name: "Application Tips", link: "/blog?category=Application%20Tips" },
+  { name: "Fix Common Issues", link: "/blog?category=Fix%20Common%20Issues" },
+  { name: "Latest Blogs", link: "/blog?category=Latest%20Blogs" },
   { name: "Technical Resources", link: "/resources" },
 ];
 

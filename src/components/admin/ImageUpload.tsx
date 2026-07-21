@@ -11,6 +11,7 @@ interface ImageUploadProps {
   label?: string;
   size?: "default" | "compact";
   className?: string;
+  aspect?: "square" | "video" | "default";
 }
 
 export default function ImageUpload({
@@ -20,6 +21,7 @@ export default function ImageUpload({
   label,
   size = "default",
   className = "",
+  aspect = "default",
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -144,6 +146,89 @@ export default function ImageUpload({
     );
   }
 
+  if (aspect === "square") {
+    return (
+      <div className={`space-y-2 font-sans ${className}`}>
+        {label && (
+          <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+            {label}
+          </label>
+        )}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          className="hidden"
+        />
+        <div
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDragLeave={handleDrag}
+          onDrop={handleDrop}
+          onClick={triggerInput}
+          className={`h-48 w-48 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+            dragActive
+              ? "border-red-500 bg-red-50/10"
+              : value
+              ? "border-gray-200 dark:border-zinc-800"
+              : "border-gray-200 dark:border-zinc-800 hover:border-red-500 hover:bg-gray-50/30 dark:hover:bg-zinc-800/10"
+          }`}
+        >
+          {uploading ? (
+            <div className="flex flex-col items-center gap-2 text-center p-2">
+              <Loader2 className="h-6 w-6 animate-spin text-red-600" />
+              <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider animate-pulse">
+                Uploading...
+              </span>
+            </div>
+          ) : value ? (
+            <>
+              <img src={value} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gray-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-2 backdrop-blur-xs">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    triggerInput();
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-gray-100 text-gray-900 shadow-md transform hover:scale-105 transition-all text-[10px] font-bold cursor-pointer"
+                >
+                  Change Image
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClear(e);
+                  }}
+                  className="p-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-md transform hover:scale-105 transition-all cursor-pointer"
+                  title="Remove image"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center text-center space-y-2 p-2">
+              <div className="h-10 w-10 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-red-100 transition-all duration-300">
+                <UploadCloud className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-gray-700 dark:text-zinc-300 leading-normal">
+                  Drag & drop here, or <span className="text-red-600 hover:underline">browse</span>
+                </p>
+                <p className="text-[9px] text-gray-400 dark:text-zinc-500 font-medium mt-1">
+                  JPG, PNG, WEBP (Max. 10MB)
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`space-y-2 font-sans ${className}`}>
       {label && (
@@ -164,7 +249,11 @@ export default function ImageUpload({
         onDragLeave={handleDrag}
         onDrop={handleDrop}
         onClick={triggerInput}
-        className={`w-full min-h-[150px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+        className={`w-full border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+          aspect === "video"
+            ? "aspect-video"
+            : "min-h-[150px]"
+        } ${
           dragActive
             ? "border-red-500 bg-red-50/10"
             : value

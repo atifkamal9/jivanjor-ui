@@ -87,6 +87,7 @@ export interface BlogPost {
   author: string;
   publish_date: string;
   image?: string;
+  tldr?: string;
 }
 
 export interface SeoMetadata {
@@ -415,6 +416,7 @@ function mapBlogPostFromBackend(post: any): BlogPost {
     image:
       post.image ||
       "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400&auto=format&fit=crop",
+    tldr: post.tldr || "",
   };
 }
 
@@ -710,6 +712,7 @@ export const api = {
         ? new Date(blogPost.publish_date).toISOString()
         : new Date().toISOString(),
       image: blogPost.image || null,
+      tldr: blogPost.tldr || null,
     };
     if (blogPost.id) {
       const res = await client.put(`/blogs/${blogPost.id}`, payload);

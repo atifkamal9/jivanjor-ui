@@ -37,19 +37,19 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
       title: "Choosing the Right Adhesive",
       image: "/images/Rectangle 69.png",
       mobileImage: "/images/Rectangle 72.png",
-      link: "#",
+      link: "/blog?category=Choosing%20The%20Right%20Adhesive",
     },
     {
       title: "Application Tips",
       image: "/images/Rectangle 70.png",
       mobileImage: "/images/Rectangle 73.png",
-      link: "#",
+      link: "/blog?category=Application%20Tips",
     },
     {
       title: "Fix Common Issues",
       image: "/images/Rectangle 71.png",
       mobileImage: "/images/Rectangle 74.png",
-      link: "#",
+      link: "/blog?category=Fix%20Common%20Issues",
     },
   ];
 
@@ -129,7 +129,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                   projects.
                 </p>
                 <a
-                  href="/blogs"
+                  href="/blog"
                   className="inline-flex items-center justify-center font-medium min-w-35 px-4 py-2 rounded-[20px] text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
                 >
                   Learn More

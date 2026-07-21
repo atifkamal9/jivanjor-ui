@@ -937,7 +937,7 @@ export default function TemplatesPage() {
             : currentLayoutType === "blog"
               ? [
                 { id: "hero", label: "Hero Banner", icon: Layout },
-                { id: "list", label: "Blog Categories & Posts", icon: FileText },
+                { id: "list", label: "Browse Categories", icon: FileText },
               ]
             : currentLayoutType === "contractor"
               ? [
@@ -3577,12 +3577,12 @@ export default function TemplatesPage() {
                   </div>
                 )}
 
-                {/* ── Blog List / Categories & Posts Tab ── */}
+                {/* ── Blog List / Browse Categories Tab ── */}
                 {activeTab === "list" && homeSections.list && homeSections.layoutType === "blog" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <FileText className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Blog Categories &amp; Posts</h3>
+                      <h3 className="text-base font-extrabold text-foreground">Browse Categories</h3>
                     </div>
 
                     {/* Categories */}
@@ -3633,100 +3633,6 @@ export default function TemplatesPage() {
                                   const cats = [...(homeSections.list?.categories || [])];
                                   cats[idx] = { ...cats[idx], icon: url };
                                   updateSectionField("list", "categories", cats);
-                                }}
-                                folder="templates"
-                                size="compact"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Posts */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Blog Posts</span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const posts = [...(homeSections.list?.posts || []), { title: "New Blog Post", desc: "Post description here.", image: "/images/blog/Rectangle 140.png", category: "Latest Blogs", slug: "" }];
-                            updateSectionField("list", "posts", posts);
-                          }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Blog Post
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(homeSections.list?.posts || []).map((post: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const posts = (homeSections.list?.posts || []).filter((_: any, i: number) => i !== idx);
-                                updateSectionField("list", "posts", posts);
-                              }}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Post #{idx + 1}</span>
-                            <input
-                              type="text"
-                              value={post.title || ""}
-                              onChange={(e) => {
-                                const posts = [...(homeSections.list?.posts || [])];
-                                posts[idx] = { ...posts[idx], title: e.target.value };
-                                updateSectionField("list", "posts", posts);
-                              }}
-                              placeholder="Blog Post Title"
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                            />
-                            <input
-                              type="text"
-                              value={post.slug || ""}
-                              onChange={(e) => {
-                                const posts = [...(homeSections.list?.posts || [])];
-                                posts[idx] = { ...posts[idx], slug: e.target.value };
-                                updateSectionField("list", "posts", posts);
-                              }}
-                              placeholder="post-slug (leave blank to auto-generate)"
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                            />
-                            <select
-                              value={post.category || ""}
-                              onChange={(e) => {
-                                const posts = [...(homeSections.list?.posts || [])];
-                                posts[idx] = { ...posts[idx], category: e.target.value };
-                                updateSectionField("list", "posts", posts);
-                              }}
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2 text-foreground cursor-pointer"
-                            >
-                              <option value="" disabled>-- Select Blog Post Category --</option>
-                              {(homeSections.list?.categories || []).map((cat: any, cIdx: number) => (
-                                <option key={cIdx} value={cat.name}>{cat.name}</option>
-                              ))}
-                            </select>
-                            <textarea
-                              rows={2}
-                              value={post.desc || ""}
-                              onChange={(e) => {
-                                const posts = [...(homeSections.list?.posts || [])];
-                                posts[idx] = { ...posts[idx], desc: e.target.value };
-                                updateSectionField("list", "posts", posts);
-                              }}
-                              placeholder="Short description..."
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none mb-2"
-                            />
-                            <div className="space-y-1">
-                              <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Post Image</span>
-                              <ImageUpload
-                                value={post.image || ""}
-                                onChange={(url) => {
-                                  const posts = [...(homeSections.list?.posts || [])];
-                                  posts[idx] = { ...posts[idx], image: url };
-                                  updateSectionField("list", "posts", posts);
                                 }}
                                 folder="templates"
                                 size="compact"

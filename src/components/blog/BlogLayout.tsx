@@ -16,9 +16,10 @@ interface BlogLayoutData {
 
 interface BlogLayoutProps {
   data?: BlogLayoutData | null;
+  initialCategory?: string;
 }
 
-export default function BlogLayout({ data }: BlogLayoutProps) {
+export default function BlogLayout({ data, initialCategory }: BlogLayoutProps) {
   const hero = data?.hero;
   const list = data?.list;
 
@@ -32,6 +33,7 @@ export default function BlogLayout({ data }: BlogLayoutProps) {
       <List
         categories={list?.categories}
         posts={list?.posts}
+        initialCategory={initialCategory}
       />
       <RightChoice />
     </main>

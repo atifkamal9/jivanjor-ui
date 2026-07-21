@@ -32,6 +32,16 @@ const relatedArticles = [
 export interface BlogContentProps {
   publishDate?: string;
   lastUpdated?: string;
+  articleData?: {
+    id?: string;
+    title?: string;
+    content?: string;
+    image?: string;
+    author?: string;
+    category?: string;
+    publish_date?: string;
+    tldr?: string;
+  } | null;
 }
 
 const formatDate = (dateStr: string) => {
@@ -60,8 +70,44 @@ const formatDate = (dateStr: string) => {
 export default function BlogContent({
   publishDate = "2026-07-01",
   lastUpdated,
+  articleData,
 }: BlogContentProps) {
   const [activeSection, setActiveSection] = useState("science");
+
+  useEffect(() => {
+    if (articleData) {
+      const articleEl = document.querySelector("article .prose-content");
+      if (articleEl) {
+        // Clear any pre-assigned IDs to avoid duplicate matching
+        const existingWithIds = Array.from(articleEl.querySelectorAll("[id]"));
+        existingWithIds.forEach(el => {
+          if (["science", "humidity", "rules", "formulation"].includes(el.id)) {
+            el.removeAttribute("id");
+          }
+        });
+
+        // Find headings first
+        const headings = Array.from(articleEl.querySelectorAll("h1, h2, h3, h4"));
+        if (headings.length > 0) {
+          headings.forEach((heading, index) => {
+            if (index === 0) heading.id = "science";
+            else if (index === 1) heading.id = "humidity";
+            else if (index === 2) heading.id = "rules";
+            else if (index === 3) heading.id = "formulation";
+          });
+        } else {
+          // Fallback to paragraphs if no headings are present
+          const paragraphs = Array.from(articleEl.querySelectorAll("p"));
+          paragraphs.forEach((p, index) => {
+            if (index === 0) p.id = "science";
+            else if (index === 2 || (paragraphs.length < 3 && index === 1)) p.id = "humidity";
+            else if (index === 4 || (paragraphs.length < 5 && index === 2)) p.id = "rules";
+            else if (index === 6 || (paragraphs.length < 7 && index === 3)) p.id = "formulation";
+          });
+        }
+      }
+    }
+  }, [articleData]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,8 +171,8 @@ export default function BlogContent({
       <section className="max-w-360 mx-auto px-5 mb-6">
         <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
-            src="/images/blog/Rectangle 125.png"
-            alt="Mastering Laminate Bonding"
+            src={articleData?.image || "/images/blog/Rectangle 125.png"}
+            alt={articleData?.title || "Mastering Laminate Bonding"}
             fill
             priority
             className="object-cover"
@@ -136,8 +182,8 @@ export default function BlogContent({
         </div>
         <div className="relative w-full h-47 sm:hidden rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
-            src="/images/blog/Rectangle 125 (1).png"
-            alt="Mastering Laminate Bonding"
+            src={articleData?.image || "/images/blog/Rectangle 125 (1).png"}
+            alt={articleData?.title || "Mastering Laminate Bonding"}
             fill
             priority
             className="object-cover"
@@ -226,36 +272,43 @@ export default function BlogContent({
               TLDR :
             </h4>
             <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222] max-w-4xl">
-              Laminate bubbling is a common failure point in coastal or
-              high-humidity interior woodwork. This guide covers how varying
-              moisture levels affect synthetic resins and how selecting an
-              anti-bubble formulation, combined with proper pressure techniques,
-              guarantees a flawless, long-lasting finish.
+              {articleData?.tldr || `Laminate bubbling is a common failure point in coastal or high-humidity interior woodwork. This guide covers how varying moisture levels affect synthetic resins and how selecting an anti-bubble formulation, combined with proper pressure techniques, guarantees a flawless, long-lasting finish.`}
             </p>
           </div>
 
           {/* Blog Article Main Content */}
           <article className="flex-1 space-y-12 min-w-0 border-l-0 md:border-l border-[#00000099] px-0 md:px-10">
-            {/* Section 1: The Science of Air Entrapment */}
-            <div id="science" className="space-y-6 scroll-mt-28">
-              <h3 className="font-amethysta text-2xl md:text-[36px] text-[#222] leading-tight font-normal">
-                The Science of Air Entrapment
-              </h3>
-              <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
-                Bubbles in laminate applications rarely happen by chance; they
-                are the direct result of trapped air or moisture expanding
-                beneath the surface. When pressing decorative laminates onto MDF
-                or commercial ply, microscopic pockets of air can become trapped
-                if the adhesive is spread unevenly.
-              </p>
-              <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
-                In standard environments, a high-quality adhesive can sometimes
-                absorb minor imperfections. However, when working in
-                environments with fluctuating temperatures, the air within these
-                trapped pockets expands, creating enough upward pressure to lift
-                the laminate from the substrate, resulting in visible bubbles.
-              </p>
-            </div>
+            {articleData ? (
+              <div className="space-y-6">
+                <div
+                  className="font-google-sans text-base md:text-lg lg:text-xl text-[#222] leading-relaxed space-y-4 prose max-w-none prose-content"
+                  dangerouslySetInnerHTML={{ __html: articleData.content || "" }}
+                />
+              </div>
+            ) : (
+              <>
+                {/* Section 1: The Science of Air Entrapment */}
+                <div id="science" className="space-y-6 scroll-mt-28">
+                  <h3 className="font-amethysta text-2xl md:text-[36px] text-[#222] leading-tight font-normal">
+                    The Science of Air Entrapment
+                  </h3>
+                  <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
+                    Bubbles in laminate applications rarely happen by chance; they
+                    are the direct result of trapped air or moisture expanding
+                    beneath the surface. When pressing decorative laminates onto MDF
+                    or commercial ply, microscopic pockets of air can become trapped
+                    if the adhesive is spread unevenly.
+                  </p>
+                  <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222]">
+                    In standard environments, a high-quality adhesive can sometimes
+                    absorb minor imperfections. However, when working in
+                    environments with fluctuating temperatures, the air within these
+                    trapped pockets expands, creating enough upward pressure to lift
+                    the laminate from the substrate, resulting in visible bubbles.
+                  </p>
+                </div>
+              </>
+            )}
 
             {/* TLDR Summary */}
             <div className="md:hidden bg-surface p-5 md:p-10 border-l-[5px] border-[#FF0009]">
@@ -263,11 +316,7 @@ export default function BlogContent({
                 TLDR :
               </h4>
               <p className="font-google-sans text-lg text-[#222] max-w-76">
-                Laminate bubbling is a common failure point in coastal or
-                high-humidity interior woodwork. This guide covers how varying
-                moisture levels affect synthetic resins and how selecting an
-                anti-bubble formulation, combined with proper pressure
-                techniques, guarantees a flawless, long-lasting finish.
+                {articleData?.tldr || `Laminate bubbling is a common failure point in coastal or high-humidity interior woodwork. This guide covers how varying moisture levels affect synthetic resins and how selecting an anti-bubble formulation, combined with proper pressure techniques, guarantees a flawless, long-lasting finish.`}
               </p>
             </div>
 
