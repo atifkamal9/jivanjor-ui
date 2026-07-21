@@ -446,12 +446,15 @@ export default function ProductsPage() {
                               </div>
                               <div className="min-w-0">
                                 <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 truncate">{p.name}</p>
-                                <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider truncate">{p.slug}</p>
+                                <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-semibold tracking-wider">{p.slug}</p>
                               </div>
                             </div>
                           </td>
                           <td className="p-5">
-                            <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400">
+                            <span
+                              className={`px-2.5 py-1 rounded-lg text-xs font-bold`}
+                              style={{ color: p.themeColor, backgroundColor: p.themeColor + "0D" }}
+                            >
                               {category ? category.name : "Uncategorized"}
                             </span>
                           </td>
@@ -932,33 +935,33 @@ export default function ProductsPage() {
                         <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                           Select Related Products
                         </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 max-h-48 overflow-y-auto">
-                        {products.filter(p => p.id !== editingId).map(p => {
-                          const isChecked = formData.relatedProducts.includes(p.id);
-                          return (
-                            <label key={p.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-850 hover:bg-red-50/50 dark:hover:bg-red-955/10 cursor-pointer select-none text-xs font-bold">
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => setFormData(prev => {
-                                  const list = isChecked
-                                    ? prev.relatedProducts.filter(id => id !== p.id)
-                                    : [...prev.relatedProducts, p.id];
-                                  return { ...prev, relatedProducts: list };
-                                })}
-                                className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4"
-                              />
-                              <span className="truncate">{p.name}</span>
-                            </label>
-                          );
-                        })}
-                        {products.filter(p => p.id !== editingId).length === 0 && (
-                          <span className="text-xs text-gray-400 italic">No other products configured in catalogue.</span>
-                        )}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 max-h-48 overflow-y-auto">
+                          {products.filter(p => p.id !== editingId).map(p => {
+                            const isChecked = formData.relatedProducts.includes(p.id);
+                            return (
+                              <label key={p.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-850 hover:bg-red-50/50 dark:hover:bg-red-955/10 cursor-pointer select-none text-xs font-bold">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => setFormData(prev => {
+                                    const list = isChecked
+                                      ? prev.relatedProducts.filter(id => id !== p.id)
+                                      : [...prev.relatedProducts, p.id];
+                                    return { ...prev, relatedProducts: list };
+                                  })}
+                                  className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4"
+                                />
+                                <span className="truncate">{p.name}</span>
+                              </label>
+                            );
+                          })}
+                          {products.filter(p => p.id !== editingId).length === 0 && (
+                            <span className="text-xs text-gray-400 italic">No other products configured in catalogue.</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 )}
 
                 {activeTab === "specs" && (
