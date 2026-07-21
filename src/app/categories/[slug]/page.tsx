@@ -15,15 +15,31 @@ export default async function Categories({ params }: PageProps) {
 
   let categoryData: any = undefined;
   let parentCategoryData: any = undefined;
+  let templateData: any = undefined;
   try {
-    const cats = await api.getCategories();
+    const [cats, template] = await Promise.all([
+      api.getCategories(),
+      api.getActiveTemplateForPage("categories").catch(() => null)
+    ]);
     categoryData = cats.find((c) => c.slug === slug);
     if (categoryData && categoryData.parent_category) {
       parentCategoryData = cats.find((c) => c.id === categoryData.parent_category);
     }
+    templateData = template;
   } catch (err) {
     console.error("Failed to fetch category details in SSR:", err);
   }
+
+  const sections = templateData?.rawSections || templateData?.sections || {};
+
+  const researchSection = categoryData ? {
+    title: categoryData.researchTitle || sections.research?.title,
+    desc: categoryData.researchDescription || sections.research?.desc,
+    ctaText: categoryData.researchCtaText || sections.research?.ctaText,
+    ctaLink: categoryData.researchCtaLink || sections.research?.ctaLink,
+    image1: categoryData.researchImage1 || sections.research?.images?.[0],
+    image2: categoryData.researchImage2 || sections.research?.images?.[1],
+  } : (sections.research || sections);
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
@@ -37,7 +53,7 @@ export default async function Categories({ params }: PageProps) {
           height={682}
           className="hidden lg:block absolute top-[22%] -right-2 pointer-events-none"
         />
-        <ProductCategories category={slug} />
+        <ProductCategories category={slug} data={researchSection} />
       </div>
       <RightChoice />
     </main>

@@ -39,6 +39,12 @@ export default function CategoriesPage() {
     resourcesTitle: "",
     resourcesDescription: "",
     heroImage: "",
+    researchTitle: "",
+    researchDescription: "",
+    researchCtaText: "",
+    researchCtaLink: "",
+    researchImage1: "",
+    researchImage2: "",
   });
 
   // SEO metadata states
@@ -93,6 +99,12 @@ export default function CategoriesPage() {
       resourcesTitle: "",
       resourcesDescription: "",
       heroImage: "",
+      researchTitle: "",
+      researchDescription: "",
+      researchCtaText: "",
+      researchCtaLink: "",
+      researchImage1: "",
+      researchImage2: "",
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -116,6 +128,12 @@ export default function CategoriesPage() {
       resourcesTitle: category.resourcesTitle || "",
       resourcesDescription: category.resourcesDescription || "",
       heroImage: category.heroImage || "",
+      researchTitle: category.researchTitle || category.resourcesTitle || "",
+      researchDescription: category.researchDescription || category.resourcesDescription || "",
+      researchCtaText: category.researchCtaText || "",
+      researchCtaLink: category.researchCtaLink || "",
+      researchImage1: category.researchImage1 || "",
+      researchImage2: category.researchImage2 || "",
     });
 
     const matchedSeo = seos.find(
@@ -550,26 +568,62 @@ export default function CategoriesPage() {
                     </div>
 
                     <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
-                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Resources Page Section Settings (Accordion Header & description)</span>
-                      <div className="grid grid-cols-1 gap-4">
-                        <div>
-                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resources Section Title</label>
+                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Research & Development Section (Superior Quality Backed by Research)</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Section Title</label>
                           <input
                             type="text"
-                            value={formData.resourcesTitle}
-                            onChange={(e) => setFormData(prev => ({ ...prev, resourcesTitle: e.target.value }))}
-                            placeholder="e.g. Waterproof Grade Adhesives"
+                            value={formData.researchTitle}
+                            onChange={(e) => setFormData(prev => ({ ...prev, researchTitle: e.target.value }))}
+                            placeholder="Superior Quality Backed by Research"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Section Description</label>
+                          <textarea
+                            rows={2}
+                            value={formData.researchDescription}
+                            onChange={(e) => setFormData(prev => ({ ...prev, researchDescription: e.target.value }))}
+                            placeholder="Learn how our focus on product development, quality standards and market reach supports India's woodworking needs."
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">CTA Button Text</label>
+                          <input
+                            type="text"
+                            value={formData.researchCtaText}
+                            onChange={(e) => setFormData(prev => ({ ...prev, researchCtaText: e.target.value }))}
+                            placeholder="Inside Our Labs"
                             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Resources Section Description</label>
-                          <textarea
-                            rows={3}
-                            value={formData.resourcesDescription}
-                            onChange={(e) => setFormData(prev => ({ ...prev, resourcesDescription: e.target.value }))}
-                            placeholder="Explore where Jivanjor waterproof adhesives fit across woodworking applications..."
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">CTA Button Link</label>
+                          <input
+                            type="text"
+                            value={formData.researchCtaLink}
+                            onChange={(e) => setFormData(prev => ({ ...prev, researchCtaLink: e.target.value }))}
+                            placeholder="/about/research-and-innovation"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Research Image 1 (Left)</label>
+                          <ImageUpload
+                            value={formData.researchImage1}
+                            onChange={(url) => setFormData(prev => ({ ...prev, researchImage1: url }))}
+                            label="Upload Left Image"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Research Image 2 (Right)</label>
+                          <ImageUpload
+                            value={formData.researchImage2}
+                            onChange={(url) => setFormData(prev => ({ ...prev, researchImage2: url }))}
+                            label="Upload Right Image"
                           />
                         </div>
                       </div>
