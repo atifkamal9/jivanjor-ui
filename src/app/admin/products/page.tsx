@@ -897,6 +897,8 @@ export default function ProductsPage() {
                             <input
                               type="text"
                               required
+                              minLength={3}
+                              maxLength={30}
                               value={bullet.text}
                               onChange={(e) => setFormData(prev => {
                                 const list = [...prev.overviewBullets];
