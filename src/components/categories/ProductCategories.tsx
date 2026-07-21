@@ -21,6 +21,7 @@ import "swiper/css/navigation";
 
 interface Props {
   category?: string;
+  data?: any;
 }
 
 interface ProductCard {
@@ -236,7 +237,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
   },
 ];
 
-export default function ProductCategories({ category }: Props) {
+export default function ProductCategories({ category, data }: Props) {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("Waterproof Grade");
@@ -578,33 +579,32 @@ export default function ProductCategories({ category }: Props) {
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
           <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal">
-            Superior Quality Backed by Research
+            {data?.title || "Superior Quality Backed by Research"}
           </h1>
           <p className="text-lg md:text-2xl leading-normal max-w-3xl">
-            Learn how our focus on product development, quality standards and
-            market reach supports India’s woodworking needs.
+            {data?.desc || data?.description || "Learn how our focus on product development, quality standards and market reach supports India’s woodworking needs."}
           </p>
           <Link
-            href="#"
+            href={data?.ctaLink || data?.buttonLink || data?.actionButtons?.primary?.actionPath || "/about/research-and-innovation"}
             className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"
           >
-            Inside Our Labs
+            {data?.ctaText || data?.buttonText || data?.actionButtons?.primary?.text || "Inside Our Labs"}
           </Link>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
             <div className="hidden md:block col-span-1">
               <Image
-                src="/images/Rectangle 110.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Research Laboratory"
+                src={data?.image1 || data?.images?.[0] || data?.media?.[0] || "/images/Rectangle 110.png"}
+                className="object-cover w-full h-full max-h-[204px] md:max-h-[280px] rounded-2xl bg-surface"
+                alt={data?.title || "Research Laboratory"}
                 width={400}
                 height={260}
               />
             </div>
             <div className="col-span-2">
               <Image
-                src="/images/Rectangle 111.png"
-                className="object-cover w-full h-full rounded-2xl bg-surface"
-                alt="Adhesive Testing Laboratory"
+                src={data?.image2 || data?.images?.[1] || data?.media?.[1] || "/images/Rectangle 111.png"}
+                className="object-cover w-full h-full max-h-[204px] md:max-h-[280px] rounded-2xl bg-surface"
+                alt={data?.title || "Adhesive Testing Laboratory"}
                 width={800}
                 height={260}
               />

@@ -319,6 +319,16 @@ const defaultCategorySections = {
       { name: "Plywood to Laminate", suitability: "Excellent", comment: "Highly recommended with all Jivanjor grades." },
       { name: "MDF to Acrylic Sheet", suitability: "Good", comment: "Use Foambond or specialized edge formulations." }
     ]
+  },
+  research: {
+    title: "Superior Quality Backed by Research",
+    desc: "Learn how our focus on product development, quality standards and market reach supports India’s woodworking needs.",
+    ctaText: "Inside Our Labs",
+    ctaLink: "/about/research-and-innovation",
+    images: [
+      "/images/Rectangle 110.png",
+      "/images/Rectangle 111.png"
+    ]
   }
 };
 

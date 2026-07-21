@@ -54,6 +54,12 @@ export interface Category {
   resourcesTitle?: string;
   resourcesDescription?: string;
   heroImage?: string;
+  researchTitle?: string;
+  researchDescription?: string;
+  researchCtaText?: string;
+  researchCtaLink?: string;
+  researchImage1?: string;
+  researchImage2?: string;
 }
 
 export interface Material {
@@ -169,6 +175,12 @@ function mapCategoryFromBackend(cat: any): Category {
   let resourcesTitle = "";
   let resourcesDescription = "";
   let heroImage = "";
+  let researchTitle = "";
+  let researchDescription = "";
+  let researchCtaText = "";
+  let researchCtaLink = "";
+  let researchImage1 = "";
+  let researchImage2 = "";
 
   if (description.startsWith("{") && description.endsWith("}")) {
     try {
@@ -176,9 +188,15 @@ function mapCategoryFromBackend(cat: any): Category {
       description = parsed.description || "";
       categoryTitle = parsed.categoryTitle || "";
       categoryDescription = parsed.categoryDescription || "";
-      resourcesTitle = parsed.resourcesTitle || "";
-      resourcesDescription = parsed.resourcesDescription || "";
+      resourcesTitle = parsed.resourcesTitle || parsed.researchTitle || "";
+      resourcesDescription = parsed.resourcesDescription || parsed.researchDescription || "";
       heroImage = parsed.heroImage || "";
+      researchTitle = parsed.researchTitle || parsed.resourcesTitle || "";
+      researchDescription = parsed.researchDescription || parsed.resourcesDescription || "";
+      researchCtaText = parsed.researchCtaText || "";
+      researchCtaLink = parsed.researchCtaLink || "";
+      researchImage1 = parsed.researchImage1 || "";
+      researchImage2 = parsed.researchImage2 || "";
     } catch (e) {
       // ignore
     }
@@ -195,6 +213,12 @@ function mapCategoryFromBackend(cat: any): Category {
     resourcesTitle,
     resourcesDescription,
     heroImage,
+    researchTitle,
+    researchDescription,
+    researchCtaText,
+    researchCtaLink,
+    researchImage1,
+    researchImage2,
     icon: cat.icon || "",
   };
 }
@@ -571,9 +595,15 @@ export const api = {
       description: category.description || "",
       categoryTitle: category.categoryTitle || "",
       categoryDescription: category.categoryDescription || "",
-      resourcesTitle: category.resourcesTitle || "",
-      resourcesDescription: category.resourcesDescription || "",
+      resourcesTitle: category.resourcesTitle || category.researchTitle || "",
+      resourcesDescription: category.resourcesDescription || category.researchDescription || "",
       heroImage: category.heroImage || "",
+      researchTitle: category.researchTitle || category.resourcesTitle || "",
+      researchDescription: category.researchDescription || category.resourcesDescription || "",
+      researchCtaText: category.researchCtaText || "",
+      researchCtaLink: category.researchCtaLink || "",
+      researchImage1: category.researchImage1 || "",
+      researchImage2: category.researchImage2 || "",
     });
 
     const payload = {
