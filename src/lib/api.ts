@@ -18,6 +18,25 @@ export interface Product {
   material_id: string;
   metadata: string; // comma-separated or JSON
   image?: string;
+  themeColor?: string;
+  overviewBullets?: { text: string; icon: string }[];
+  techSpecs?: { key: string; value: string }[];
+  packSizes?: string[];
+  documentUrl?: string;
+  usps?: { title: string; description: string; icon: string }[];
+  applications?: { title: string; description: string; imageA: string; imageB: string }[];
+  videoUrl?: string;
+  videoThumbnail?: string;
+  faqs?: { question: string; answer: string }[];
+  relatedProducts?: string[];
+  techSpecsDescription?: string;
+  appsTitle?: string;
+  appsDescription?: string;
+  videoTitle?: string;
+  videoDescription?: string;
+  faqsTitle?: string;
+  faqsDescription?: string;
+  relatedTitle?: string;
 }
 
 export interface Category {
@@ -155,11 +174,66 @@ function mapMaterialFromBackend(mat: any): Material {
 
 function mapProductFromBackend(prod: any): Product {
   let metadataStr = "";
+  let themeColor = "#0498AA";
+  let overviewBullets: { text: string; icon: string }[] = [];
+  let techSpecs: { key: string; value: string }[] = [];
+  let packSizes: string[] = [];
+  let documentUrl = "";
+  let usps: { title: string; description: string; icon: string }[] = [];
+  let applications: { title: string; description: string; imageA: string; imageB: string }[] = [];
+  let videoUrl = "";
+  let videoThumbnail = "";
+  let faqs: { question: string; answer: string }[] = [];
+  let relatedProducts: string[] = [];
+
+  let techSpecsDescription = "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.";
+  let appsTitle = "Engineered for the Task at Hand";
+  let appsDescription = `Explore where Jivanjor fits across furniture, laminates, plywood, boards and professional woodwork applications.`;
+  let videoTitle = "See product in Action";
+  let videoDescription = "Watch how trade professionals achieve flawless, high-coverage bonding in record time.";
+  let faqsTitle = "FAQs";
+  let faqsDescription = "Find quick answers about product use, coverage, setting time, pack sizes and technical details.";
+  let relatedTitle = "Related Products";
+
   if (prod.metadata) {
     if (typeof prod.metadata === "string") {
       metadataStr = prod.metadata;
     } else if (typeof prod.metadata === "object") {
-      if ("tags" in prod.metadata && typeof prod.metadata.tags === "string") {
+      if ("themeColor" in prod.metadata) {
+        themeColor = prod.metadata.themeColor || "#0498AA";
+        
+        let rawBullets = prod.metadata.overviewBullets || [];
+        overviewBullets = rawBullets.map((b: any, idx: number) => {
+          if (typeof b === "string") {
+            return { text: b, icon: `image ${18 + (idx % 3)}.svg` };
+          }
+          return {
+            text: b?.text || "",
+            icon: b?.icon || `image ${18 + (idx % 3)}.svg`
+          };
+        });
+
+        techSpecs = prod.metadata.techSpecs || [];
+        packSizes = prod.metadata.packSizes || [];
+        documentUrl = prod.metadata.documentUrl || "";
+        usps = prod.metadata.usps || [];
+        applications = prod.metadata.applications || [];
+        videoUrl = prod.metadata.videoUrl || "";
+        videoThumbnail = prod.metadata.videoThumbnail || "";
+        faqs = prod.metadata.faqs || [];
+        relatedProducts = prod.metadata.relatedProducts || [];
+
+        techSpecsDescription = prod.metadata.techSpecsDescription || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.";
+        appsTitle = prod.metadata.appsTitle || "Engineered for the Task at Hand";
+        appsDescription = prod.metadata.appsDescription || `Explore where Jivanjor fits across furniture, laminates, plywood, boards and professional woodwork applications.`;
+        videoTitle = prod.metadata.videoTitle || "See product in Action";
+        videoDescription = prod.metadata.videoDescription || "Watch how trade professionals achieve flawless, high-coverage bonding in record time.";
+        faqsTitle = prod.metadata.faqsTitle || "FAQs";
+        faqsDescription = prod.metadata.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details.";
+        relatedTitle = prod.metadata.relatedTitle || "Related Products";
+
+        metadataStr = prod.metadata.tags || (overviewBullets ? overviewBullets.map(b => b.text).join(", ") : "");
+      } else if ("tags" in prod.metadata && typeof prod.metadata.tags === "string") {
         metadataStr = prod.metadata.tags;
       } else if ("list" in prod.metadata && Array.isArray(prod.metadata.list)) {
         metadataStr = prod.metadata.list.join(", ");
@@ -172,6 +246,64 @@ function mapProductFromBackend(prod: any): Product {
       }
     }
   }
+
+  if (overviewBullets.length === 0) {
+    if (metadataStr) {
+      overviewBullets = metadataStr.split(",").map((f: string) => f.trim()).filter(Boolean).map((b, idx) => ({
+        text: b,
+        icon: `image ${18 + (idx % 3)}.svg`
+      }));
+    }
+    if (overviewBullets.length === 0) {
+      overviewBullets = [
+        { text: "Water Resistant", icon: "image 18.svg" },
+        { text: "Super Fast Setting - 1 Hour", icon: "image 19.svg" },
+        { text: "Anti-Bubble Technology", icon: "image 20.svg" },
+        { text: "Superior Coverage", icon: "Texture.svg" }
+      ];
+    }
+  }
+
+  if (techSpecs.length === 0) {
+    techSpecs = [
+      { key: "Appearance", value: "Milk White" },
+      { key: "Solids", value: "50-53%" },
+      { key: "Viscosity", value: "150-250 Poise" },
+      { key: "Coverage", value: "60-70 Sqft/Kg" }
+    ];
+  }
+
+  if (packSizes.length === 0) {
+    packSizes = ["0.6 Kg", "1 Kg", "2 Kg", "5 Kg", "10 Kg", "20 Kg", "30 Kg", "50 Kg", "60 Kg"];
+  }
+
+  if (usps.length === 0) {
+    usps = [
+      { title: "Faster Site Rotation", description: "Fast setting time helps professionals complete work quicker and move between jobs more efficiently.", icon: "Cycle-arrow.svg" },
+      { title: "Smooth Spreadability", description: "Superior flow and easy spreading help reduce wastage and support better coverage.", icon: "Texture.svg" },
+      { title: "Solvent-Free Safety", description: "Water-based, non-flammable and non-toxic formulation for safer handling during application.", icon: "Asterisk.svg" },
+      { title: "Clean Finish After Drying", description: "Dries into a clear transparent film, helping maintain a neat finish around edges and joints.", icon: "Circles-seven.svg" }
+    ];
+  }
+
+  if (applications.length === 0) {
+    applications = [
+      { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" },
+      { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png" }
+    ];
+  }
+
+  if (!videoThumbnail) {
+    videoThumbnail = "/images/Rectangle 4.png";
+  }
+
+  if (faqs.length === 0) {
+    faqs = [
+      { question: "How long does it take to set?", answer: "It has a superfast setting time of just 1 hour under typical site conditions." },
+      { question: "What is the coverage area?", answer: "Provides coverage of approximately 60-70 sq.ft per kg." }
+    ];
+  }
+
   return {
     id: prod.id,
     name: prod.name,
@@ -183,6 +315,25 @@ function mapProductFromBackend(prod: any): Product {
     image:
       prod.image ||
       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop",
+    themeColor,
+    overviewBullets,
+    techSpecs,
+    packSizes,
+    documentUrl,
+    usps,
+    applications,
+    videoUrl,
+    videoThumbnail,
+    faqs,
+    relatedProducts,
+    techSpecsDescription,
+    appsTitle,
+    appsDescription,
+    videoTitle,
+    videoDescription,
+    faqsTitle,
+    faqsDescription,
+    relatedTitle,
   };
 }
 
@@ -315,7 +466,28 @@ export const api = {
       description: product.description,
       categoryId: product.category_id,
       materialId: product.material_id || null,
-      metadata: { tags: product.metadata },
+      metadata: {
+        tags: product.metadata,
+        themeColor: product.themeColor || "#0498AA",
+        overviewBullets: product.overviewBullets || [],
+        techSpecs: product.techSpecs || [],
+        packSizes: product.packSizes || [],
+        documentUrl: product.documentUrl || "",
+        usps: product.usps || [],
+        applications: product.applications || [],
+        videoUrl: product.videoUrl || "",
+        videoThumbnail: product.videoThumbnail || "",
+        faqs: product.faqs || [],
+        relatedProducts: product.relatedProducts || [],
+        techSpecsDescription: product.techSpecsDescription || "",
+        appsTitle: product.appsTitle || "",
+        appsDescription: product.appsDescription || "",
+        videoTitle: product.videoTitle || "",
+        videoDescription: product.videoDescription || "",
+        faqsTitle: product.faqsTitle || "",
+        faqsDescription: product.faqsDescription || "",
+        relatedTitle: product.relatedTitle || "",
+      },
       image: product.image || null,
     };
     if (product.id) {

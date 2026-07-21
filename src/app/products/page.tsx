@@ -13,6 +13,7 @@ function ProductPageContent() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,6 +24,8 @@ function ProductPageContent() {
           api.getProducts(),
           api.getCategories(),
         ]);
+
+        setAllProducts(prods);
 
         let selected: Product | null = null;
         if (productSlug) {
@@ -68,7 +71,7 @@ function ProductPageContent() {
   return (
     <div className="font-google-sans min-h-screen bg-background text-foreground">
       <Hero product={product} category={category} />
-      <ProductInfo product={product} />
+      <ProductInfo product={product} allProducts={allProducts} />
       <RightChoice />
     </div>
   );

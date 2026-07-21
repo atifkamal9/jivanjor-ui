@@ -49,12 +49,22 @@ const ACCORDION_ITEMS: AccordionItem[] = [
   },
 ];
 
-export default function ProductFeatures() {
+interface ProductFeaturesProps {
+  product?: any;
+}
+
+export default function ProductFeatures({ product }: ProductFeaturesProps) {
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? -1 : index);
   };
+
+  const applicationsList = product?.applications && product.applications.length > 0
+    ? product.applications
+    : ACCORDION_ITEMS;
+
+  const productName = product?.name || "Supremo";
 
   return (
     <section id="applications" className="max-w-360 mx-auto pt-12 space-y-10">
@@ -74,17 +84,16 @@ export default function ProductFeatures() {
             />
           </div>
           <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal max-w-75 lg:max-w-full mx-auto">
-            Engineered for the Task at Hand
+            {product?.appsTitle || "Engineered for the Task at Hand"}
           </h2>
           <p className="text-lg md:text-2xl leading-normal max-w-85 lg:max-w-full mx-auto">
-            Explore where Supremo fits across furniture, laminates, plywood,
-            boards and professional woodwork applications.
+            {product?.appsDescription ? product.appsDescription.replace("{productName}", productName) : `Explore where ${productName} fits across furniture, laminates, plywood, boards and professional woodwork applications.`}
           </p>
         </div>
 
         {/* Accordion List */}
         <div className="w-full max-w-7xl mx-auto">
-          {ACCORDION_ITEMS.map((item, idx) => {
+          {applicationsList.map((item: any, idx: number) => {
             const isOpen = openIndex === idx;
             return (
               <div
@@ -176,11 +185,10 @@ export default function ProductFeatures() {
         {/* Text Details Column */}
         <div className="order-1 md:order-2 flex-1 text-center xl:text-left space-y-4 min-w-xs max-w-85 md:max-w-3xl">
           <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal px-12 sm:px-0">
-            See Supremo in Action
+            {product?.videoTitle ? product.videoTitle.replace("{productName}", productName) : `See ${productName} in Action`}
           </h2>
           <p className="text-lg sm:text-2xl leading-normal">
-            Watch how trade professionals achieve flawless, high-coverage
-            laminate bonding in record time.
+            {product?.videoDescription ? product.videoDescription.replace("{productName}", productName) : `Watch how trade professionals achieve flawless, high-coverage bonding with ${productName} in record time.`}
           </p>
           <Link
             href="#"
@@ -195,8 +203,8 @@ export default function ProductFeatures() {
           <div className="relative w-full max-w-2xl aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
             {/* Background image mockup for video */}
             <Image
-              src="/images/Rectangle 4.png"
-              alt="Supremo wood bonding video"
+              src={product?.videoThumbnail || "/images/Rectangle 4.png"}
+              alt={`${productName} wood bonding video`}
               width={800}
               height={450}
               className="object-cover w-full h-full"
@@ -204,18 +212,36 @@ export default function ProductFeatures() {
             />
             {/* Center play icon overlay */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-              <button
-                className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                aria-label="Play video"
-              >
-                {/* Play Triangle SVG */}
-                <svg
-                  className="w-5 h-5 ml-0.5 fill-current"
-                  viewBox="0 0 24 24"
+              {product?.videoUrl ? (
+                <a
+                  href={product.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  aria-label="Play video"
                 >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </button>
+                  {/* Play Triangle SVG */}
+                  <svg
+                    className="w-5 h-5 ml-0.5 fill-current text-black"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </a>
+              ) : (
+                <button
+                  className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  aria-label="Play video"
+                >
+                  {/* Play Triangle SVG */}
+                  <svg
+                    className="w-5 h-5 ml-0.5 fill-current text-black"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -30,12 +30,18 @@ const FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
-export default function ProductFaq() {
+interface ProductFaqProps {
+  product?: any;
+}
+
+export default function ProductFaq({ product }: ProductFaqProps) {
   const [openIndex, setOpenIndex] = useState<number>(0);
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? -1 : index);
   };
+
+  const faqsList = product?.faqs && product.faqs.length > 0 ? product.faqs : FAQ_ITEMS;
 
   return (
     <section
@@ -58,18 +64,17 @@ export default function ProductFaq() {
             />
           </div>
           <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
-            FAQs
+            {product?.faqsTitle || "FAQs"}
           </h2>
           <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-normal">
-            Find quick answers about product use, coverage, setting time, pack
-            sizes and technical details.
+            {product?.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details."}
           </p>
         </div>
 
         {/* FAQs Container Card */}
         <div className="max-w-full mx-auto mt-6">
           <div className="w-full">
-            {FAQ_ITEMS.map((item, idx) => {
+            {faqsList.map((item: any, idx: number) => {
               const isOpen = openIndex === idx;
               return (
                 <div

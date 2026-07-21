@@ -12,9 +12,11 @@ export default function Hero({ product, category }: HeroProps) {
   const productName = product?.name || "Watershield";
   const productDescription = product?.description || "Apke furniture ko paani se bachane wali shield.";
 
-  // Extract features from product metadata (comma-separated list)
+  // Extract features from product metadata
   let featuresList = ["Best-in-Class Coverage", "D3 Grade for Water Resistance", "Anti-bubble Adhesive"];
-  if (product?.metadata) {
+  if (product?.overviewBullets && product.overviewBullets.length > 0) {
+    featuresList = product.overviewBullets;
+  } else if (product?.metadata) {
     const cleaned = product.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
     if (cleaned.length > 0) {
       featuresList = cleaned;
@@ -49,9 +51,10 @@ export default function Hero({ product, category }: HeroProps) {
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
         <div
-          className="relative order-2 lg:order-1 w-full lg:w-2/5 bg-[#0498AA] text-white py-5 lg:py-16 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-6 lg:gap-8"
+          className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-16 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-6 lg:gap-8"
           style={{
             paddingLeft: "max(24px, calc((100vw - 1440px) / 2 + 24px))",
+            backgroundColor: product?.themeColor || "#0498AA",
           }}
         >
           <div className="absolute bottom-0 right-0 pointer-events-none">
@@ -75,22 +78,29 @@ export default function Hero({ product, category }: HeroProps) {
           </div>
           {/* Product Bullet Features list */}
           <div className="space-y-1">
-            {featuresList.map((feature, fIdx) => (
-              <div key={fIdx} className="flex items-center gap-3.5">
-                <div className="shrink-0 text-white">
-                  <Image
-                    src={`/icons/image ${18 + (fIdx % 3)}.svg`}
-                    className="aspect-square"
-                    alt="waterproof Grade"
-                    width={20}
-                    height={20}
-                  />
+            {featuresList.map((feature: any, fIdx) => {
+              const text = typeof feature === "string" ? feature : (feature?.text || "");
+              const iconName = typeof feature === "string"
+                ? `image ${18 + (fIdx % 3)}.svg`
+                : (feature?.icon || `image ${18 + (fIdx % 3)}.svg`);
+
+              return (
+                <div key={fIdx} className="flex items-center gap-3.5">
+                  <div className="shrink-0 text-white flex items-center justify-center">
+                    <Image
+                      src={`/icons/${iconName}`}
+                      className="aspect-square object-contain"
+                      alt={text}
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span className="text-lg lg:text-2xl font-normal leading-normal">
+                    {text}
+                  </span>
                 </div>
-                <span className="text-lg lg:text-2xl font-normal leading-normal">
-                  {feature}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Enquire Now pill button */}

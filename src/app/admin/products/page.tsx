@@ -16,6 +16,10 @@ import {
   ArrowLeft,
   Sliders,
   Layers,
+  FileText,
+  Award,
+  Play,
+  HelpCircle,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -47,6 +51,25 @@ export default function ProductsPage() {
     material_id: "",
     metadata: "",
     image: "",
+    themeColor: "#0498AA",
+    overviewBullets: [] as { text: string; icon: string }[],
+    techSpecs: [] as { key: string; value: string }[],
+    packSizes: [] as string[],
+    documentUrl: "",
+    usps: [] as { title: string; description: string; icon: string }[],
+    applications: [] as { title: string; description: string; imageA: string; imageB: string }[],
+    videoUrl: "",
+    videoThumbnail: "",
+    faqs: [] as { question: string; answer: string }[],
+    relatedProducts: [] as string[],
+    techSpecsDescription: "",
+    appsTitle: "",
+    appsDescription: "",
+    videoTitle: "",
+    videoDescription: "",
+    faqsTitle: "",
+    faqsDescription: "",
+    relatedTitle: "",
   });
 
   // SEO metadata states
@@ -135,6 +158,46 @@ export default function ProductsPage() {
       material_id: materials[0]?.id || "",
       metadata: "",
       image: "",
+      themeColor: "#0498AA",
+      overviewBullets: [
+        { text: "Water Resistant", icon: "image 18.svg" },
+        { text: "Super Fast Setting - 1 Hour", icon: "image 19.svg" },
+        { text: "Anti-Bubble Technology", icon: "image 20.svg" },
+        { text: "Superior Coverage", icon: "Texture.svg" }
+      ],
+      techSpecs: [
+        { key: "Appearance", value: "Milk White" },
+        { key: "Solids", value: "50-53%" },
+        { key: "Viscosity", value: "150-250 Poise" },
+        { key: "Coverage", value: "60-70 Sqft/Kg" }
+      ],
+      packSizes: ["0.6 Kg", "1 Kg", "2 Kg", "5 Kg", "10 Kg", "20 Kg", "30 Kg", "50 Kg", "60 Kg"],
+      documentUrl: "",
+      usps: [
+        { title: "Faster Site Rotation", description: "Fast setting time helps professionals complete work quicker and move between jobs more efficiently.", icon: "Cycle-arrow.svg" },
+        { title: "Smooth Spreadability", description: "Superior flow and easy spreading help reduce wastage and support better coverage.", icon: "Texture.svg" },
+        { title: "Solvent-Free Safety", description: "Water-based, non-flammable and non-toxic formulation for safer handling during application.", icon: "Asterisk.svg" },
+        { title: "Clean Finish After Drying", description: "Dries into a clear transparent film, helping maintain a neat finish around edges and joints.", icon: "Circles-seven.svg" }
+      ],
+      applications: [
+        { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" },
+        { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png" }
+      ],
+      videoUrl: "",
+      videoThumbnail: "/images/Rectangle 4.png",
+      faqs: [
+        { question: "How long does it take to set?", answer: "It has a superfast setting time of just 1 hour under typical site conditions." },
+        { question: "What is the coverage area?", answer: "Provides coverage of approximately 60-70 sq.ft per kg." }
+      ],
+      relatedProducts: [],
+      techSpecsDescription: "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
+      appsTitle: "Engineered for the Task at Hand",
+      appsDescription: "Explore where Jivanjor fits across furniture, laminates, plywood, boards and woodwork applications.",
+      videoTitle: "See product in Action",
+      videoDescription: "Watch how trade professionals achieve flawless, high-coverage bonding in record time.",
+      faqsTitle: "FAQs",
+      faqsDescription: "Find quick answers about product use, coverage, setting time, pack sizes and technical details.",
+      relatedTitle: "Related Products",
     });
 
     setSeoMetaTitle("");
@@ -180,6 +243,25 @@ export default function ProductsPage() {
       material_id: product.material_id,
       metadata: product.metadata,
       image: product.image || "",
+      themeColor: product.themeColor || "#0498AA",
+      overviewBullets: product.overviewBullets || [],
+      techSpecs: product.techSpecs || [],
+      packSizes: product.packSizes || [],
+      documentUrl: product.documentUrl || "",
+      usps: product.usps || [],
+      applications: product.applications || [],
+      videoUrl: product.videoUrl || "",
+      videoThumbnail: product.videoThumbnail || "",
+      faqs: product.faqs || [],
+      relatedProducts: product.relatedProducts || [],
+      techSpecsDescription: product.techSpecsDescription || "",
+      appsTitle: product.appsTitle || "",
+      appsDescription: product.appsDescription || "",
+      videoTitle: product.videoTitle || "",
+      videoDescription: product.videoDescription || "",
+      faqsTitle: product.faqsTitle || "",
+      faqsDescription: product.faqsDescription || "",
+      relatedTitle: product.relatedTitle || "",
     });
 
     const matchedSeo = seos.find(
@@ -256,6 +338,11 @@ export default function ProductsPage() {
 
   const tabsList = [
     { id: "general", label: "General Properties", icon: Sliders },
+    { id: "overview", label: "Overview Details", icon: Package },
+    { id: "specs", label: "Technical Specs", icon: FileText },
+    { id: "usps", label: "Unique USPs", icon: Award },
+    { id: "apps", label: "Applications & Video", icon: Play },
+    { id: "faqs", label: "FAQs Editor", icon: HelpCircle },
     { id: "seo", label: "SEO Metadata", icon: Search },
   ];
 
@@ -709,6 +796,677 @@ export default function ProductsPage() {
                             </p>
                           </>
                         )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "overview" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Package className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Overview Details</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Theme Color
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="color"
+                            value={formData.themeColor}
+                            onChange={(e) => setFormData(prev => ({ ...prev, themeColor: e.target.value }))}
+                            className="w-12 h-11 p-1 rounded-xl border border-gray-200 dark:border-zinc-800 bg-gray-50/50 cursor-pointer"
+                          />
+                          <input
+                            type="text"
+                            value={formData.themeColor}
+                            onChange={(e) => setFormData(prev => ({ ...prev, themeColor: e.target.value }))}
+                            placeholder="#0498AA"
+                            className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 dark:focus:border-red-500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Overview Bullets */}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Overview Highlights (Bullet Features)
+                      </label>
+                      <div className="space-y-3 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                        {formData.overviewBullets.map((bullet, idx) => (
+                          <div key={idx} className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              required
+                              value={bullet.text}
+                              onChange={(e) => setFormData(prev => {
+                                const list = [...prev.overviewBullets];
+                                list[idx] = { ...list[idx], text: e.target.value };
+                                return {
+                                  ...prev,
+                                  overviewBullets: list,
+                                  metadata: list.map(b => b.text).join(", ")
+                                };
+                              })}
+                              placeholder="Bullet feature text..."
+                              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                            />
+                            <select
+                              value={bullet.icon}
+                              onChange={(e) => setFormData(prev => {
+                                const list = [...prev.overviewBullets];
+                                list[idx] = { ...list[idx], icon: e.target.value };
+                                return { ...prev, overviewBullets: list };
+                              })}
+                              className="px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 cursor-pointer"
+                            >
+                              <option value="image 18.svg">Teal Water Drop (image 18)</option>
+                              <option value="image 19.svg">Teal Timer Clock (image 19)</option>
+                              <option value="image 20.svg">Teal Bubbles (image 20)</option>
+                              <option value="Star.svg">Star (Premium)</option>
+                              <option value="Cycle-arrow.svg">Cycle Arrow (Speed)</option>
+                              <option value="Circles-seven.svg">Circles Seven (Finish)</option>
+                              <option value="Texture.svg">Texture (Spread)</option>
+                              <option value="Asterisk.svg">Asterisk (Safety)</option>
+                              <option value="badge.svg">Shield Badge</option>
+                            </select>
+                            <div className="flex items-center justify-center p-2 w-10 h-10 rounded-xl shrink-0"
+                              style={{ backgroundColor: `${formData.themeColor}` }}>
+                              <img
+                                src={`/icons/${bullet.icon}`}
+                                alt="icon preview"
+                                className="w-5 h-5 object-contain"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => {
+                                const list = prev.overviewBullets.filter((_, i) => i !== idx);
+                                return {
+                                  ...prev,
+                                  overviewBullets: list,
+                                  metadata: list.map(b => b.text).join(", ")
+                                };
+                              })}
+                              className="p-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/20 border border-gray-200 dark:border-zinc-800 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => {
+                            const list = [...prev.overviewBullets, { text: "", icon: "image 18.svg" }];
+                            return {
+                              ...prev,
+                              overviewBullets: list,
+                              metadata: list.map(b => b.text).join(", ")
+                            };
+                          })}
+                          className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
+                        >
+                          <Plus className="h-4 w-4 text-red-600" />
+                          <span>Add Overview Bullet</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Related Products */}
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Related Products Section Title</label>
+                        <input
+                          type="text"
+                          value={formData.relatedTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, relatedTitle: e.target.value }))}
+                          placeholder="e.g. Related Products"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Select Related Products
+                        </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 max-h-48 overflow-y-auto">
+                        {products.filter(p => p.id !== editingId).map(p => {
+                          const isChecked = formData.relatedProducts.includes(p.id);
+                          return (
+                            <label key={p.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-850 hover:bg-red-50/50 dark:hover:bg-red-955/10 cursor-pointer select-none text-xs font-bold">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => setFormData(prev => {
+                                  const list = isChecked
+                                    ? prev.relatedProducts.filter(id => id !== p.id)
+                                    : [...prev.relatedProducts, p.id];
+                                  return { ...prev, relatedProducts: list };
+                                })}
+                                className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4"
+                              />
+                              <span className="truncate">{p.name}</span>
+                            </label>
+                          );
+                        })}
+                        {products.filter(p => p.id !== editingId).length === 0 && (
+                          <span className="text-xs text-gray-400 italic">No other products configured in catalogue.</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                )}
+
+                {activeTab === "specs" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <FileText className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Technical Specifications</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Tech Specs Section Tagline/Intro</label>
+                      <input
+                        type="text"
+                        value={formData.techSpecsDescription}
+                        onChange={(e) => setFormData(prev => ({ ...prev, techSpecsDescription: e.target.value }))}
+                        placeholder="e.g. Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        TDS Document Link (PDF)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.documentUrl}
+                        onChange={(e) => setFormData(prev => ({ ...prev, documentUrl: e.target.value }))}
+                        placeholder="/docs/watershield-tds.pdf"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
+                    </div>
+
+                    {/* Technical Specs */}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Technical Specifications (Appearance, Viscosity, Solids, Coverage, etc.)
+                      </label>
+                      <div className="space-y-2 mb-2">
+                        {formData.techSpecs.map((spec, specIdx) => (
+                          <div key={specIdx} className="flex gap-2 items-center">
+                            <input
+                              type="text"
+                              value={spec.key}
+                              onChange={(e) => setFormData(prev => {
+                                const newSpecs = [...prev.techSpecs];
+                                newSpecs[specIdx].key = e.target.value;
+                                return { ...prev, techSpecs: newSpecs };
+                              })}
+                              placeholder="Parameter (e.g. Viscosity)"
+                              className="w-1/3 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                            />
+                            <input
+                              type="text"
+                              value={spec.value}
+                              onChange={(e) => setFormData(prev => {
+                                const newSpecs = [...prev.techSpecs];
+                                newSpecs[specIdx].value = e.target.value;
+                                return { ...prev, techSpecs: newSpecs };
+                              })}
+                              placeholder="Value (e.g. 150-250 Poise)"
+                              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                techSpecs: prev.techSpecs.filter((_, i) => i !== specIdx)
+                              }))}
+                              className="p-2.5 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-400 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/20 border border-gray-200 dark:border-zinc-800 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          techSpecs: [...prev.techSpecs, { key: "", value: "" }]
+                        }))}
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-zinc-800 text-xs font-bold hover:bg-gray-50 dark:hover:bg-zinc-850 dark:text-zinc-300 cursor-pointer"
+                      >
+                        <Plus className="h-3.5 w-3.5 text-red-600" />
+                        <span>Add Spec Row</span>
+                      </button>
+                    </div>
+
+                    {/* Pack Sizes */}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Available Pack Sizes
+                      </label>
+                      <div className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          id="new-size-input"
+                          placeholder="e.g. 1 Kg"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              const input = e.currentTarget;
+                              const val = input.value.trim();
+                              if (val && !formData.packSizes.includes(val)) {
+                                setFormData(prev => ({ ...prev, packSizes: [...prev.packSizes, val] }));
+                                input.value = "";
+                              }
+                            }
+                          }}
+                          className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById("new-size-input") as HTMLInputElement;
+                            const val = input?.value.trim();
+                            if (val && !formData.packSizes.includes(val)) {
+                              setFormData(prev => ({ ...prev, packSizes: [...prev.packSizes, val] }));
+                              if (input) input.value = "";
+                            }
+                          }}
+                          className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-955/20 text-xs font-bold text-gray-700 dark:text-zinc-350 hover:text-red-600 transition-all border border-gray-200 dark:border-zinc-800 cursor-pointer"
+                        >
+                          Add Size
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 min-h-[44px]">
+                        {formData.packSizes.length === 0 ? (
+                          <span className="text-xs text-gray-400 dark:text-zinc-500 font-semibold italic">No pack sizes configured yet.</span>
+                        ) : (
+                          formData.packSizes.map((size, idx) => (
+                            <span key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-600 dark:bg-amber-955/20 dark:text-amber-400 border border-amber-100/50 dark:border-amber-900/20">
+                              <span>{size}</span>
+                              <button
+                                type="button"
+                                onClick={() => setFormData(prev => ({
+                                  ...prev,
+                                  packSizes: prev.packSizes.filter((_, i) => i !== idx)
+                                }))}
+                                className="text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 font-bold focus:outline-none"
+                              >
+                                &times;
+                              </button>
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "usps" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Award className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Unique Selling Propositions (USPs)</h3>
+                    </div>
+
+
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                          Unique Selling Propositions (USPs) - Max 4
+                        </label>
+                        <span className="text-[10px] text-gray-400 font-bold">{formData.usps.length} / 4 configured</span>
+                      </div>
+                      <div className="space-y-4 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                        {formData.usps.map((usp, idx) => (
+                          <div key={idx} className="p-3 bg-white dark:bg-zinc-950 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-2">
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                usps: prev.usps.filter((_, i) => i !== idx)
+                              }))}
+                              className="absolute top-2 right-2 text-gray-400 hover:text-red-600 font-bold transition-colors text-lg cursor-pointer"
+                            >
+                              &times;
+                            </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 sm:pt-0">
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">USP Title</label>
+                                <input
+                                  type="text"
+                                  required
+                                  value={usp.title}
+                                  onChange={(e) => setFormData(prev => {
+                                    const list = [...prev.usps];
+                                    list[idx].title = e.target.value;
+                                    return { ...prev, usps: list };
+                                  })}
+                                  placeholder="e.g. Faster Site Rotation"
+                                  className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">USP Icon Name</label>
+                                <select
+                                  value={usp.icon}
+                                  onChange={(e) => setFormData(prev => {
+                                    const list = [...prev.usps];
+                                    list[idx].icon = e.target.value;
+                                    return { ...prev, usps: list };
+                                  })}
+                                  className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 cursor-pointer"
+                                >
+                                  <option value="Cycle-arrow.svg">Cycle Arrow (Rotate)</option>
+                                  <option value="Texture.svg">Texture (Spreadability)</option>
+                                  <option value="Asterisk.svg">Asterisk (Safety/Non-toxic)</option>
+                                  <option value="Circles-seven.svg">Circles Seven (Clean Finish)</option>
+                                  <option value="Star.svg">Star (Premium)</option>
+                                  <option value="Shield.svg">Shield (Water Resistance)</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">USP Description</label>
+                              <textarea
+                                rows={2}
+                                required
+                                value={usp.description}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.usps];
+                                  list[idx].description = e.target.value;
+                                  return { ...prev, usps: list };
+                                })}
+                                placeholder="Write how this feature helps the builder or customer..."
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        {formData.usps.length < 4 && (
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({
+                              ...prev,
+                              usps: [...prev.usps, { title: "", description: "", icon: "Cycle-arrow.svg" }]
+                            }))}
+                            className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
+                          >
+                            <Plus className="h-4 w-4 text-red-600" />
+                            <span>Add USP</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "apps" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <Play className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Applications & Video</h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Applications Section Title</label>
+                        <input
+                          type="text"
+                          value={formData.appsTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, appsTitle: e.target.value }))}
+                          placeholder="e.g. Engineered for the Task at Hand"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Applications Section Subtitle</label>
+                        <input
+                          type="text"
+                          value={formData.appsDescription}
+                          onChange={(e) => setFormData(prev => ({ ...prev, appsDescription: e.target.value }))}
+                          placeholder="e.g. Explore where Jivanjor fits across furniture..."
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Applications accordion list */}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Product Woodwork & Joinery Applications
+                      </label>
+                      <div className="space-y-4 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                        {formData.applications.map((app, idx) => (
+                          <div key={idx} className="p-4 bg-white dark:bg-zinc-950 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                applications: prev.applications.filter((_, i) => i !== idx)
+                              }))}
+                              className="absolute top-2 right-2 text-gray-400 hover:text-red-600 font-bold transition-colors text-lg cursor-pointer"
+                            >
+                              &times;
+                            </button>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Application Title</label>
+                              <input
+                                type="text"
+                                required
+                                value={app.title}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.applications];
+                                  list[idx].title = e.target.value;
+                                  return { ...prev, applications: list };
+                                })}
+                                placeholder="e.g. Laminate to Plywood Bonding"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Application Description</label>
+                              <textarea
+                                rows={2}
+                                required
+                                value={app.description}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.applications];
+                                  list[idx].description = e.target.value;
+                                  return { ...prev, applications: list };
+                                })}
+                                placeholder="Explain adhesive requirements and performance for this joint..."
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 resize-none"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <ImageUpload
+                                label="Detail Image URL A"
+                                value={app.imageA}
+                                onChange={(url) => setFormData(prev => {
+                                  const list = [...prev.applications];
+                                  list[idx].imageA = url;
+                                  return { ...prev, applications: list };
+                                })}
+                                folder="applications"
+                              />
+                              <ImageUpload
+                                label="Detail Image URL B"
+                                value={app.imageB}
+                                onChange={(url) => setFormData(prev => {
+                                  const list = [...prev.applications];
+                                  list[idx].imageB = url;
+                                  return { ...prev, applications: list };
+                                })}
+                                folder="applications"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            applications: [...prev.applications, { title: "", description: "", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" }]
+                          }))}
+                          className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
+                        >
+                          <Plus className="h-4 w-4 text-red-600" />
+                          <span>Add Application Spec</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* See in Action Video */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-100 dark:border-zinc-850 pt-4 mb-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Video Section Title</label>
+                        <input
+                          type="text"
+                          value={formData.videoTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, videoTitle: e.target.value }))}
+                          placeholder="e.g. See product in Action"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Video Section Subtitle</label>
+                        <input
+                          type="text"
+                          value={formData.videoDescription}
+                          onChange={(e) => setFormData(prev => ({ ...prev, videoDescription: e.target.value }))}
+                          placeholder="e.g. Watch how trade professionals achieve flawless bonding..."
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          See in Action Video URL (YouTube or direct MP4)
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.videoUrl}
+                          onChange={(e) => setFormData(prev => ({ ...prev, videoUrl: e.target.value }))}
+                          placeholder="e.g. https://www.youtube.com/watch?v=..."
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                      </div>
+                      <ImageUpload
+                        label="Video cover/thumbnail Image"
+                        value={formData.videoThumbnail}
+                        onChange={(url) => setFormData(prev => ({ ...prev, videoThumbnail: url }))}
+                        folder="videos"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "faqs" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <HelpCircle className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">FAQs Editor</h3>
+                    </div>
+
+                    {/* FAQs */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">FAQs Section Title</label>
+                        <input
+                          type="text"
+                          value={formData.faqsTitle}
+                          onChange={(e) => setFormData(prev => ({ ...prev, faqsTitle: e.target.value }))}
+                          placeholder="e.g. FAQs"
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">FAQs Section Subtitle</label>
+                        <input
+                          type="text"
+                          value={formData.faqsDescription}
+                          onChange={(e) => setFormData(prev => ({ ...prev, faqsDescription: e.target.value }))}
+                          placeholder="e.g. Find quick answers about product use..."
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Product FAQs
+                      </label>
+                      <div className="space-y-3 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                        {formData.faqs.map((faq, idx) => (
+                          <div key={idx} className="p-3 bg-white dark:bg-zinc-95 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-2">
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({
+                                ...prev,
+                                faqs: prev.faqs.filter((_, i) => i !== idx)
+                              }))}
+                              className="absolute top-2 right-2 text-gray-400 hover:text-red-600 font-bold transition-colors text-lg cursor-pointer"
+                            >
+                              &times;
+                            </button>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Question</label>
+                              <input
+                                type="text"
+                                required
+                                value={faq.question}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.faqs];
+                                  list[idx].question = e.target.value;
+                                  return { ...prev, faqs: list };
+                                })}
+                                placeholder="Question text..."
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Answer</label>
+                              <textarea
+                                rows={2}
+                                required
+                                value={faq.answer}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.faqs];
+                                  list[idx].answer = e.target.value;
+                                  return { ...prev, faqs: list };
+                                })}
+                                placeholder="Answer text..."
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 resize-none"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            faqs: [...prev.faqs, { question: "", answer: "" }]
+                          }))}
+                          className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
+                        >
+                          <Plus className="h-4 w-4 text-red-600" />
+                          <span>Add FAQ</span>
+                        </button>
                       </div>
                     </div>
                   </div>

@@ -9,9 +9,10 @@ type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
 
 interface ProductInfoProps {
   product?: any;
+  allProducts?: any[];
 }
 
-export default function ProductInfo({ product }: ProductInfoProps) {
+export default function ProductInfo({ product, allProducts }: ProductInfoProps) {
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
   const [isManualScroll, setIsManualScroll] = useState(false);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
@@ -244,9 +245,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                     alt="badge"
                   />
                 </div>
-                 <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
-                  {product?.description || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
-                </p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
+                    {product?.techSpecsDescription || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
+                  </p>
               </div>
 
               {/* Split specifications grid */}
@@ -257,26 +258,37 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                     Technical Specifications
                   </h3>
                   <div className="space-y-2 max-w-sm text-lg md:text-xl">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Appearance</span>
-                      <span className="font-normal text-start">Milk White</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Solids</span>
-                      <span className="font-normal text-start">50-53%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Viscosity</span>
-                      <span className="font-normal text-start">
-                        150-250 Poise
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Coverage</span>
-                      <span className="font-normal text-start">
-                        60-70 Sqft/Kg
-                      </span>
-                    </div>
+                    {product?.techSpecs && product.techSpecs.length > 0 ? (
+                      product.techSpecs.map((spec: any, idx: number) => (
+                        <div key={idx} className="flex justify-between items-center gap-4 border-b border-neutral-100/50 pb-1.5 last:border-0">
+                          <span className="font-medium text-left">{spec.key}</span>
+                          <span className="font-normal text-right">{spec.value}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">Appearance</span>
+                          <span className="font-normal text-start">Milk White</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">Solids</span>
+                          <span className="font-normal text-start">50-53%</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">Viscosity</span>
+                          <span className="font-normal text-start">
+                            150-250 Poise
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="font-medium">Coverage</span>
+                          <span className="font-normal text-start">
+                            60-70 Sqft/Kg
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -289,7 +301,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
                     {/* Grid layout of sizes chips */}
                     <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mb-5 max-w-lg">
-                      {[
+                      {(product?.packSizes && product.packSizes.length > 0 ? product.packSizes : [
                         "0.6 Kg",
                         "1 Kg",
                         "2 Kg",
@@ -299,7 +311,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                         "30 Kg",
                         "50 Kg",
                         "60 Kg",
-                      ].map((size) => (
+                      ]).map((size: string) => (
                         <div
                           key={size}
                           className="bg-surface lg:bg-white w-24 rounded-xl p-3 text-center text-base sm:text-xl font-medium leading-normal transition-all duration-200 cursor-default"
@@ -311,104 +323,139 @@ export default function ProductInfo({ product }: ProductInfoProps) {
                   </div>
 
                   {/* PDF technical data sheet download action */}
-                  <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
-                    Download Technical Data Sheet
-                  </button>
+                  {product?.documentUrl ? (
+                    <a
+                      href={product.documentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block w-full sm:w-auto text-center bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer"
+                    >
+                      Download Technical Data Sheet
+                    </a>
+                  ) : (
+                    <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
+                      Download Technical Data Sheet
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
-            {/* Bottom USP Section (Rounded Teal box) */}
-            <div id="usps" className="">
-              <div className="bg-[#0498AA] rounded-[28px] p-8 sm:p-10 lg:p-12 text-white">
+            {/* Bottom USP Section (Rounded dynamic theme box) */}
+            <div id="usps" className="scroll-mt-40">
+              <div className="rounded-[28px] p-8 sm:p-10 lg:p-12 text-white" style={{ backgroundColor: product?.themeColor || "#0498AA" }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-                  {/* USP 1 */}
-                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
-                    <div className="text-white">
-                      <Image
-                        src="/icons/Cycle-arrow.svg"
-                        alt="USP1"
-                        className="aspect-square"
-                        width={40}
-                        height={40}
-                      />
-                    </div>
-                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
-                      Faster Site Rotation
-                    </h4>
-                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
-                      Fast setting time helps professionals complete work
-                      quicker and move between jobs more efficiently.
-                    </span>
-                  </div>
+                  {product?.usps && product.usps.length > 0 ? (
+                    product.usps.map((usp: any, uIdx: number) => (
+                      <div key={uIdx} className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
+                        <div className="text-white">
+                          <Image
+                            src={usp.icon ? (usp.icon.startsWith("/") ? usp.icon : `/icons/${usp.icon}`) : "/icons/Cycle-arrow.svg"}
+                            alt={usp.title}
+                            className="aspect-square invert brightness-0"
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                          {usp.title}
+                        </h4>
+                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                          {usp.description}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      {/* USP 1 */}
+                      <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
+                        <div className="text-white">
+                          <Image
+                            src="/icons/Cycle-arrow.svg"
+                            alt="USP1"
+                            className="aspect-square"
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                          Faster Site Rotation
+                        </h4>
+                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                          Fast setting time helps professionals complete work
+                          quicker and move between jobs more efficiently.
+                        </span>
+                      </div>
 
-                  {/* USP 2 */}
-                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
-                    <div className="text-white">
-                      <Image
-                        src="/icons/Texture.svg"
-                        alt="USP2"
-                        className="aspect-square"
-                        width={40}
-                        height={40}
-                      />
-                    </div>
-                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
-                      Smooth Spreadability
-                    </h4>
-                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
-                      Superior flow and easy spreading help reduce wastage and
-                      support better coverage.
-                    </span>
-                  </div>
+                      {/* USP 2 */}
+                      <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
+                        <div className="text-white">
+                          <Image
+                            src="/icons/Texture.svg"
+                            alt="USP2"
+                            className="aspect-square"
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                          Smooth Spreadability
+                        </h4>
+                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                          Superior flow and easy spreading help reduce wastage and
+                          support better coverage.
+                        </span>
+                      </div>
 
-                  {/* USP 3 */}
-                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
-                    <div className="text-white">
-                      <Image
-                        src="/icons/Asterisk.svg"
-                        alt="USP3"
-                        className="aspect-square"
-                        width={40}
-                        height={40}
-                      />
-                    </div>
-                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
-                      Solvent-Free Safety
-                    </h4>
-                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
-                      Water-based, non-flammable and non-toxic formulation for
-                      safer handling during application.
-                    </span>
-                  </div>
+                      {/* USP 3 */}
+                      <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
+                        <div className="text-white">
+                          <Image
+                            src="/icons/Asterisk.svg"
+                            alt="USP3"
+                            className="aspect-square"
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                          Solvent-Free Safety
+                        </h4>
+                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                          Water-based, non-flammable and non-toxic formulation for
+                          safer handling during application.
+                        </span>
+                      </div>
 
-                  {/* USP 4 */}
-                  <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
-                    <div className="text-white">
-                      <Image
-                        src="/icons/Circles-seven.svg"
-                        alt="USP4"
-                        className="aspect-square"
-                        width={40}
-                        height={40}
-                      />
-                    </div>
-                    <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
-                      Clean Finish After Drying
-                    </h4>
-                    <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
-                      Dries into a clear transparent film, helping maintain a
-                      neat finish around edges and joints.
-                    </span>
-                  </div>
+                      {/* USP 4 */}
+                      <div className="flex flex-col items-center text-center space-y-3 max-w-60 mx-auto">
+                        <div className="text-white">
+                          <Image
+                            src="/icons/Circles-seven.svg"
+                            alt="USP4"
+                            className="aspect-square"
+                            width={40}
+                            height={40}
+                          />
+                        </div>
+                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                          Clean Finish After Drying
+                        </h4>
+                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                          Dries into a clear transparent film, helping maintain a
+                          neat finish around edges and joints.
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <ProductFeatures />
-      <RelatedProducts />
-      <ProductFaq />
+      <ProductFeatures product={product} />
+      <RelatedProducts product={product} allProducts={allProducts} />
+      <ProductFaq product={product} />
     </section>
   );
 }
