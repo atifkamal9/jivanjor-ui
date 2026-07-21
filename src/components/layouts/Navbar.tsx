@@ -26,18 +26,28 @@ export default function Navbar() {
   const [pages, setPages] = useState<any[]>([]);
   const [seos, setSeos] = useState<any[]>([]);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
+  const [blogCategories, setBlogCategories] = useState<any[]>([]);
 
   useEffect(() => {
     async function loadNavData() {
       try {
-        const [pagesList, seosList, catsList] = await Promise.all([
+        const [pagesList, seosList, catsList, activeBlogTemplate] = await Promise.all([
           api.getPages(),
           api.getSeoMetadata(),
-          api.getCategories()
+          api.getCategories(),
+          api.getActiveTemplateForPage("blog").catch(() => null)
         ]);
         setPages(pagesList);
         setSeos(seosList);
         setDbCategories(catsList);
+
+        if (activeBlogTemplate) {
+          const rawSec = activeBlogTemplate.rawSections || activeBlogTemplate.sections;
+          const sections = typeof rawSec === "string" ? JSON.parse(rawSec) : rawSec;
+          if (sections?.list?.categories) {
+            setBlogCategories(sections.list.categories);
+          }
+        }
 
         // Find first main category and make it the active one
         const firstMain = catsList.find((cat) => !cat.parent_category);
@@ -251,46 +261,30 @@ export default function Navbar() {
   };
 
   const dynamicKnowledgeItems =
-    pages.length > 0
+    blogCategories.length > 0
       ? [
-        ...pages
-          .filter((p) => {
-            try {
-              const sections =
-                typeof p.sections === "string"
-                  ? JSON.parse(p.sections)
-                  : p.sections;
-              return (
-                p.slug === "blog" || sections?.layoutType === "blog"
-              );
-            } catch {
-              return p.slug === "blog";
-            }
-          })
-          .map((p) => ({
-            name: p.title,
-            link: p.slug === "blog" ? "/blog" : `/blog/${p.slug}`,
-          }))
-        ,
-        { name: "Technical Resources", link: "/resources" }
-      ]
+          { name: "Latest Blogs", link: "/blog?category=Latest%20Blogs" },
+          ...blogCategories
+            .filter((cat: any) => cat.name && cat.name.toLowerCase() !== "latest blogs")
+            .map((cat: any) => ({
+              name: cat.name,
+              link: `/blog?category=${encodeURIComponent(cat.name)}`,
+            })),
+          { name: "Technical Resources", link: "/resources" }
+        ]
       : knowledgeItems;
 
   const currentKnowledgeItem =
     hoveredKnowledgeItem || (dynamicKnowledgeItems[0]?.name || "Choosing The Right Adhesive");
 
-  // Look up hovered blog page + its SEO record (mirrors About/Applications pattern)
+  // Look up hovered blog page + its SEO record
   const currentKnowledgeLink = dynamicKnowledgeItems.find(
     (i) => i.name === currentKnowledgeItem
   )?.link ?? "/blog";
   const currentKnowledgeSlug =
-    currentKnowledgeLink === "/blog"
-      ? "blog"
-      : currentKnowledgeLink.startsWith("/blog/")
-        ? currentKnowledgeLink.replace("/blog/", "")
-        : currentKnowledgeLink === "/resources"
-          ? "resources"
-          : "";
+    currentKnowledgeLink === "/resources"
+      ? "resources"
+      : "blog";
 
   const matchedKnowledgePage = pages.find((p) => p.slug === currentKnowledgeSlug);
   const matchedKnowledgeSeo = seos.find(

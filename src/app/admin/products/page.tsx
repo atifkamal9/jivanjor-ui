@@ -701,6 +701,7 @@ export default function ProductsPage() {
                       value={formData.image}
                       onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
                       folder="products"
+                      aspect="square"
                     />
 
                     <div>
@@ -815,6 +816,7 @@ export default function ProductsPage() {
                       value={seoImage}
                       onChange={(url) => setSeoImage(url)}
                       folder="seo"
+                      aspect="square"
                     />
 
                     {/* Google Snippet Search Engine Live Preview */}
@@ -1360,6 +1362,7 @@ export default function ProductsPage() {
                                   return { ...prev, applications: list };
                                 })}
                                 folder="applications"
+                                aspect="square"
                               />
                               <ImageUpload
                                 label="Detail Image URL B"
@@ -1370,6 +1373,7 @@ export default function ProductsPage() {
                                   return { ...prev, applications: list };
                                 })}
                                 folder="applications"
+                                aspect="square"
                               />
                             </div>
                           </div>
@@ -1430,6 +1434,7 @@ export default function ProductsPage() {
                         value={formData.videoThumbnail}
                         onChange={(url) => setFormData(prev => ({ ...prev, videoThumbnail: url }))}
                         folder="videos"
+                        aspect="square"
                       />
                     </div>
                   </div>
