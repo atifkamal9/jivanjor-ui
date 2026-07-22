@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
+import { api, Category, Page } from "@/lib/api";
 
 const footerSections = [
   {
@@ -35,13 +36,13 @@ const footerSections = [
     title: "About Jivanjor",
     links: [
       { text: "About Jivanjor", href: "/about" },
-      { text: "Research & Innovation", href: "/about#research-innovation" },
+      { text: "Research & Innovation", href: "/about/research-and-innovation" },
       {
         text: "Quality & Performance Promise",
-        href: "/about#quality-performance",
+        href: "/about/quality-and-performance-promise",
       },
-      { text: "TVCs", href: "/about#tvcs-section" },
-      { text: "Market Presence", href: "/about#market-presence" },
+      { text: "TVCs", href: "/about/tvc" },
+      { text: "Market Presence", href: "/about/market-presence" },
     ],
   },
   {
@@ -61,10 +62,85 @@ const footerSections = [
 
 export default function Footer() {
   const [openSection, setOpenSection] = useState("products");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([
+      api.getCategories().catch(() => []),
+      api.getPages().catch(() => []),
+    ]).then(([catList, pageList]) => {
+      if (isMounted) {
+        setCategories(catList);
+        setPages(pageList);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const toggleSection = (id: string) => {
     setOpenSection((prev) => (prev === id ? "" : id));
   };
+
+  // Build Dynamic Product Links
+  const subCats = categories.filter((c) => c.parent_category);
+  const rootCats = categories.filter((c) => !c.parent_category);
+  const displayCats = subCats.length > 0 ? subCats : rootCats;
+
+  const dynamicProductLinks = displayCats.length > 0
+    ? displayCats
+        .sort((a: any, b: any) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+        .map((cat) => ({
+          text: cat.name,
+          href: `/categories/${cat.slug}`,
+        }))
+    : footerSections[0].links;
+
+  // Build Dynamic About Links
+  const dynamicAboutLinks = pages.length > 0
+    ? pages
+        .filter((p) => {
+          try {
+            const sec = typeof p.sections === "string" ? JSON.parse(p.sections) : p.sections;
+            return p.slug === "about" || sec?.layoutType === "about";
+          } catch {
+            return p.slug === "about";
+          }
+        })
+        .map((p) => {
+          const sec = typeof p.sections === "string" ? JSON.parse(p.sections ?? "{}") : (p.sections ?? {});
+          return {
+            text: p.title,
+            href: p.slug === "about" ? "/about" : `/about/${p.slug}`,
+            navOrder: sec?.navOrder as number | undefined,
+          };
+        })
+        .sort((a, b) => {
+          if (a.navOrder != null && b.navOrder != null) return a.navOrder - b.navOrder;
+          if (a.navOrder != null) return -1;
+          if (b.navOrder != null) return 1;
+          if (a.href === "/about") return -1;
+          if (b.href === "/about") return 1;
+          return a.text.localeCompare(b.text);
+        })
+    : footerSections[1].links;
+
+  const dynamicFooterSections = [
+    {
+      id: "products",
+      title: "Products",
+      links: dynamicProductLinks,
+    },
+    {
+      id: "about",
+      title: "About Jivanjor",
+      links: dynamicAboutLinks,
+    },
+    footerSections[2],
+  ];
 
   return (
     <footer className="relative overflow-hidden font-google-sans bg-white">
@@ -126,7 +202,7 @@ export default function Footer() {
 
             {/* Right columns */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-12 lg:gap-20">
-              {footerSections.map((section) => (
+              {dynamicFooterSections.map((section) => (
                 <div key={section.title} className="min-w-55">
                   <h3 className="font-bold text-xl mb-4">{section.title}</h3>
 
@@ -171,7 +247,7 @@ export default function Footer() {
           />
         </div>
         <div className="p-2 w-full space-y-2">
-          {footerSections.map((fs) => {
+          {dynamicFooterSections.map((fs) => {
             const isOpen = openSection === fs.id;
 
             return (
