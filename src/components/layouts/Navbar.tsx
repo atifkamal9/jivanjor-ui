@@ -222,14 +222,21 @@ export default function Navbar() {
             return p.slug === "applications";
           }
         })
-        .map((p) => ({
-          name: p.title,
-          link:
-            p.slug === "applications"
-              ? "/applications"
-              : `/applications/${p.slug}`,
-        }))
+        .map((p) => {
+          const sections = typeof p.sections === "string" ? JSON.parse(p.sections ?? "{}") : (p.sections ?? {});
+          return {
+            name: p.title,
+            link:
+              p.slug === "applications"
+                ? "/applications"
+                : `/applications/${p.slug}`,
+            navOrder: sections?.navOrder as number | undefined,
+          };
+        })
         .sort((a, b) => {
+          if (a.navOrder != null && b.navOrder != null) return a.navOrder - b.navOrder;
+          if (a.navOrder != null) return -1;
+          if (b.navOrder != null) return 1;
           if (a.link === "/applications") return -1;
           if (b.link === "/applications") return 1;
           return a.name.localeCompare(b.name);

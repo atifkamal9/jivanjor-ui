@@ -26,6 +26,7 @@ import {
   Bookmark,
   Award,
   Layers,
+  GripVertical,
 } from "lucide-react";
 
 const isVideo = (url: string) =>
@@ -662,6 +663,78 @@ export default function PagesPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Subpages Drag & Drop Reordering state
+  const [draggedSubpageId, setDraggedSubpageId] = useState<string | null>(null);
+
+  const handleSubpageDragStart = (e: React.DragEvent, id: string) => {
+    setDraggedSubpageId(id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleSubpageDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleSubpageDrop = async (e: React.DragEvent, targetPage: Page, groupSubpages: Page[]) => {
+    e.preventDefault();
+    if (!draggedSubpageId || draggedSubpageId === targetPage.id) return;
+
+    const sourceIndex = groupSubpages.findIndex((p) => p.id === draggedSubpageId);
+    const targetIndex = groupSubpages.findIndex((p) => p.id === targetPage.id);
+    if (sourceIndex < 0 || targetIndex < 0) return;
+
+    const reordered = [...groupSubpages];
+    const [moved] = reordered.splice(sourceIndex, 1);
+    reordered.splice(targetIndex, 0, moved);
+
+    const updatedPages = pages.map((p) => {
+      const foundIdx = reordered.findIndex((item) => item.id === p.id);
+      if (foundIdx !== -1) {
+        const rawSec = typeof p.sections === "string" ? JSON.parse(p.sections || "{}") : (p.sections || {});
+        return {
+          ...p,
+          sections: {
+            ...rawSec,
+            navOrder: foundIdx + 1,
+          },
+        };
+      }
+      return p;
+    });
+
+    setPages(updatedPages);
+    setDraggedSubpageId(null);
+
+    const currentIdx = reordered.findIndex((p) => p.id === editingId);
+    if (currentIdx !== -1) {
+      setFormData((prev: any) => ({
+        ...prev,
+        sections: {
+          ...prev.sections,
+          navOrder: currentIdx + 1,
+        },
+      }));
+    }
+
+    try {
+      await Promise.all(
+        reordered.map((page, idx) => {
+          const rawSec = typeof page.sections === "string" ? JSON.parse(page.sections || "{}") : (page.sections || {});
+          return api.savePage({
+            ...page,
+            sections: {
+              ...rawSec,
+              navOrder: idx + 1,
+            },
+          });
+        })
+      );
+    } catch (err) {
+      console.error("Failed to save reordered subpages navOrder", err);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -1226,6 +1299,26 @@ export default function PagesPage() {
     });
 
   const layoutType = formData.activeTemplateId ? (formData.sections?.layoutType || "home") : "";
+  const currentLayoutType = formData.sections?.layoutType || (formData.activeTemplateId ? templates.find(t => t.id === formData.activeTemplateId)?.slug : "");
+
+  const siblingSubpages: Page[] = pages
+    .filter((p) => {
+      if (!currentLayoutType) return true;
+      try {
+        const sec = typeof p.sections === "string" ? JSON.parse(p.sections || "{}") : (p.sections || {});
+        return p.slug === currentLayoutType || sec?.layoutType === currentLayoutType;
+      } catch {
+        return p.slug === currentLayoutType;
+      }
+    })
+    .sort((a, b) => {
+      const secA = typeof a.sections === "string" ? JSON.parse(a.sections || "{}") : (a.sections || {});
+      const secB = typeof b.sections === "string" ? JSON.parse(b.sections || "{}") : (b.sections || {});
+      if (secA.navOrder != null && secB.navOrder != null) return secA.navOrder - secB.navOrder;
+      if (secA.navOrder != null) return -1;
+      if (secB.navOrder != null) return 1;
+      return a.title.localeCompare(b.title);
+    });
 
   // Build Dynamic tabs list based on Layout Type
   const tabsList = [
@@ -1599,34 +1692,76 @@ export default function PagesPage() {
                       )}
                     </div>
 
-                    {/* Nav Display Order — shown for sub-page layout types */}
+                    {/* Navbar Display Order & Drag-and-Drop Subpages Reordering */}
                     {formData.sections?.layoutType && formData.sections.layoutType !== "home" && (
-                      <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Layers className="h-4.5 w-4.5 text-primary shrink-0" />
-                          <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Navbar Display Order</span>
+                      <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Layers className="h-4.5 w-4.5 text-primary shrink-0" />
+                            <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">
+                              Navbar Subpages Reordering
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                            {formData.sections.layoutType} section
+                          </span>
                         </div>
+
                         <p className="text-xs text-foreground/50 font-medium leading-relaxed">
-                          Controls the position of this page in the navbar mega-menu for its section (e.g. About sub-pages). Lower numbers appear first. Leave blank to sort alphabetically.
+                          Drag and drop subpages below to reorder their display sequence in the top Navbar mega-menu for this section.
                         </p>
-                        <input
-                          type="number"
-                          min={1}
-                          max={99}
-                          value={formData.sections?.navOrder ?? ""}
-                          onChange={(e) => {
-                            const val = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
-                            setFormData((prev) => ({
-                              ...prev,
-                              sections: {
-                                ...prev.sections,
-                                navOrder: val,
-                              },
-                            }));
-                          }}
-                          placeholder="e.g. 1 (first), 2 (second)..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20"
-                        />
+
+                        {siblingSubpages.length > 0 ? (
+                          <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+                            {siblingSubpages.map((sub, idx) => {
+                              const isCurrent = sub.id === editingId || sub.title === formData.title;
+                              return (
+                                <div
+                                  key={sub.id || idx}
+                                  draggable
+                                  onDragStart={(e) => handleSubpageDragStart(e, sub.id)}
+                                  onDragOver={handleSubpageDragOver}
+                                  onDrop={(e) => handleSubpageDrop(e, sub, siblingSubpages)}
+                                  className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
+                                    isCurrent
+                                      ? "bg-primary/10 border-primary/40 shadow-xs"
+                                      : "bg-background/80 hover:bg-surface border-border"
+                                  } ${draggedSubpageId === sub.id ? "opacity-30 border-dashed border-primary" : ""}`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="p-1 rounded hover:bg-surface text-foreground/40 hover:text-foreground transition-colors" title="Drag to reorder">
+                                      <GripVertical className="h-4 w-4 shrink-0" />
+                                    </div>
+                                    <span className="h-6 w-6 rounded-md bg-surface flex items-center justify-center text-[11px] font-extrabold text-foreground/70 border border-border">
+                                      #{idx + 1}
+                                    </span>
+                                    <div>
+                                      <p className="font-bold text-xs text-foreground flex items-center gap-2">
+                                        <span>{sub.title}</span>
+                                        {isCurrent && (
+                                          <span className="text-[9px] font-black uppercase tracking-wider text-primary bg-primary/15 px-2 py-0.5 rounded-full">
+                                            This Page
+                                          </span>
+                                        )}
+                                      </p>
+                                      <p className="text-[10px] text-foreground/45 font-semibold">
+                                        /{sub.slug}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <span className="text-[10px] font-extrabold text-foreground/50 bg-surface px-2.5 py-1 rounded-md border border-border">
+                                    Order #{idx + 1}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-background border border-dashed border-border rounded-xl text-xs text-foreground/50 font-semibold text-center">
+                            No sibling subpages found. Create more pages with the "{formData.sections.layoutType}" layout template to enable reordering.
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
