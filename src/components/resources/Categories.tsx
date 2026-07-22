@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { api, Product, Category as ApiCategory } from "@/lib/api";
+import { useFileMetadata } from "@/lib/useFileMetadata";
 import {
   ChevronRight,
   ChevronRightCircle,
@@ -10,6 +11,15 @@ import {
   ChevronDown,
   Plus,
 } from "lucide-react";
+
+function ResourceFileMeta({ fileUrl, fileSize }: { fileUrl?: string; fileSize?: string | number }) {
+  const meta = useFileMetadata(fileUrl, fileSize);
+  return (
+    <span className="font-medium text-base md:text-lg">
+      {meta.label}
+    </span>
+  );
+}
 
 interface ProductCard {
   title: string;
@@ -20,6 +30,7 @@ interface ProductCard {
   image: string;
   features: string[];
   fileUrl?: string;
+  fileSize?: string | number;
 }
 
 interface SubCategoryData {
@@ -728,9 +739,7 @@ export default function Categories() {
                         {product.description}
                       </p>
                       <div className="space-y-2">
-                        <span className="font-medium text-base md:text-lg">
-                          PDF | 1.2 MB
-                        </span>
+                        <ResourceFileMeta fileUrl={product.fileUrl || "/docs/watershield-tds.pdf"} fileSize={product.fileSize} />
                         <Link
                           href={product.fileUrl || "/docs/watershield-tds.pdf"}
                           target="_blank"

@@ -32,6 +32,19 @@ For projects requiring rapid turnarounds without sacrificing coverage, stepping 
 
 export default function Content({ data }: ContentProps = {}) {
   const text = data?.text || defaultText;
+  const isHtml = /<[a-z][\s\S]*>/i.test(text.trim());
+
+  if (isHtml) {
+    return (
+      <section className="relative max-w-360 mx-auto w-full h-full px-5 py-4 md:p-6.5 mb-16 lg:mb-20">
+        <div
+          className="flex flex-col justify-center max-w-87 md:max-w-307 text-[#222] prose-content"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
+      </section>
+    );
+  }
+
   const paragraphs = text.split("\n\n").map(p => p.trim()).filter(Boolean);
 
   return (

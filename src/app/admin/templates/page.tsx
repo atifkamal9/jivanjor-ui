@@ -6,6 +6,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate, Product } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MediaUpload from "@/components/admin/MediaUpload";
+import BlogRichEditor from "@/components/admin/BlogRichEditor";
 import {
   Plus,
   Search,
@@ -4071,14 +4072,12 @@ export default function TemplatesPage() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                        Privacy Policy Content (Write standard text paragraphs. Headings and bullet points will be parsed automatically)
+                        Privacy Policy Content (Rich text formatted with headings, paragraphs, lists, and links)
                       </label>
-                      <textarea
-                        rows={25}
+                      <BlogRichEditor
+                        title="Privacy Policy Editor"
                         value={homeSections.content.text || ""}
-                        onChange={(e) => updateSectionField("content", "text", e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-mono leading-relaxed"
-                        placeholder="Write privacy content here..."
+                        onChange={(content) => updateSectionField("content", "text", content)}
                       />
                     </div>
                   </div>
