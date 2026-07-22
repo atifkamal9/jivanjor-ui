@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { useFileMetadata } from "@/lib/useFileMetadata";
 
 interface ProductResourcesProps {
   product?: any;
@@ -17,6 +18,8 @@ export default function ProductResources({ product }: ProductResourcesProps) {
   const resourceDescription = product?.techResourceDescription || "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.";
   const resourceUrl = product?.techResourceFileUrl || product?.documentUrl || "/docs/watershield-tds.pdf";
   const themeColor = product?.themeColor || "#0498AA";
+
+  const fileMeta = useFileMetadata(resourceUrl);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -63,7 +66,7 @@ export default function ProductResources({ product }: ProductResourcesProps) {
                   </p>
                   <div className="space-y-2">
                     <span className="block font-medium text-xs md:text-sm text-neutral-400 uppercase tracking-wider">
-                      PDF Document
+                      {fileMeta.label}
                     </span>
                     <a
                       href={resourceUrl}

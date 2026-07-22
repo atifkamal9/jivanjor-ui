@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import ProductCarousel from "./ProductCarousel";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
 import { Heading } from "@/components/ui";
+import { api, Product } from "@/lib/api";
 
 interface ProductRangeProps {
   data?: {
     title?: string;
     subtitle?: string;
     items?: any[];
+    selectedProductIds?: string[];
   };
 }
 
@@ -18,6 +20,35 @@ export default function ProductRange({ data }: ProductRangeProps) {
     data?.title || "A Complete Adhesive Range for Modern Woodworking";
   const subtitle = data?.subtitle || "";
   const items = data?.items || [];
+  const selectedProductIds = data?.selectedProductIds || [];
+
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const prods = await api.getProducts();
+        setDbProducts(prods);
+      } catch (err) {
+        console.error("Failed to load products for homepage ProductRange:", err);
+      }
+    }
+    fetchProducts();
+  }, []);
+
+  let carouselItems: any[] = [];
+  if (dbProducts.length > 0) {
+    if (selectedProductIds.length > 0) {
+      carouselItems = dbProducts.filter((p) =>
+        selectedProductIds.includes(p.id) || selectedProductIds.includes(p.slug)
+      );
+    }
+    if (carouselItems.length === 0) {
+      carouselItems = dbProducts;
+    }
+  } else if (items.length > 0) {
+    carouselItems = items;
+  }
 
   const tabs = [
     "Super Premium",
@@ -126,13 +157,8 @@ export default function ProductRange({ data }: ProductRangeProps) {
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full md:max-w-5xl mx-auto my-6">
           <Heading className="max-w-full md:max-w-3xl">{title}</Heading>
-          {subtitle && (
-            <p className="mt-4 text-xl text-foreground/85 max-w-3xl mx-auto font-google-sans">
-              {subtitle}
-            </p>
-          )}
           {/* Categories tabs Desktop */}
-          <div className="hidden md:flex flex-wrap items-center justify-center gap-4 my-4">
+          <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mt-4 mb-6">
             {tabs.map((tab) => (
               <button
                 key={tab}
@@ -156,11 +182,10 @@ export default function ProductRange({ data }: ProductRangeProps) {
             />
             <button
               onClick={scrollLeft}
-              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${
-                showLeftArrow
-                  ? "block pointer-events-auto"
-                  : "hidden pointer-events-none"
-              }`}
+              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+                ? "block pointer-events-auto"
+                : "hidden pointer-events-none"
+                }`}
             >
               <ChevronLeftCircle size={24} className="text-[#FF0009]" />
             </button>
@@ -175,11 +200,10 @@ export default function ProductRange({ data }: ProductRangeProps) {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`${
-                      isActive
-                        ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
-                        : "bg-surface text-black"
-                    } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start`}
+                    className={`${isActive
+                      ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
+                      : "bg-surface text-black"
+                      } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start`}
                   >
                     {cat}
                   </button>
@@ -188,18 +212,17 @@ export default function ProductRange({ data }: ProductRangeProps) {
             </div>
             <button
               onClick={scrollRight}
-              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${
-                showRightArrow
-                  ? "block pointer-events-auto"
-                  : "hidden pointer-events-none"
-              }`}
+              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
+                ? "block pointer-events-auto"
+                : "hidden pointer-events-none"
+                }`}
             >
               <ChevronRightCircle size={24} className="text-[#FF0009]" />
             </button>
           </div>
         </div>
       </div>
-      <ProductCarousel items={items} />
+      <ProductCarousel items={carouselItems} />
     </section>
   );
 }

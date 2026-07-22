@@ -91,7 +91,13 @@ export interface BlogPost {
   category: string;
   tags: string[];
   author: string;
+  author_description?: string;
+  authorDescription?: string;
+  author_avatar?: string;
+  authorAvatar?: string;
   publish_date: string;
+  updated_at?: string;
+  updatedAt?: string;
   image?: string;
   tldr?: string;
 }
@@ -426,6 +432,22 @@ function mapBlogPostFromBackend(post: any): BlogPost {
       tagsArray = (post.tags as any).tags;
     }
   }
+
+  const rawPublishDate = post.publishDate || post.publish_date || post.createdAt || post.created_at;
+  const rawUpdatedAt = post.updatedAt || post.updated_at || post.updated_At || rawPublishDate;
+
+  const publish_date = rawPublishDate
+    ? new Date(rawPublishDate).toISOString().split("T")[0]
+    : "";
+  const updated_at = rawUpdatedAt
+    ? new Date(rawUpdatedAt).toISOString().split("T")[0]
+    : publish_date;
+
+  const author_description =
+    post.author_description || post.authorDescription || post.authorDesc || "";
+  const author_avatar =
+    post.author_avatar || post.authorAvatar || post.authorImage || "";
+
   return {
     id: post.id,
     title: post.title,
@@ -434,9 +456,13 @@ function mapBlogPostFromBackend(post: any): BlogPost {
     category: post.category || "",
     tags: tagsArray,
     author: post.author || "",
-    publish_date: post.publishDate
-      ? new Date(post.publishDate).toISOString().split("T")[0]
-      : "",
+    author_description,
+    authorDescription: author_description,
+    author_avatar,
+    authorAvatar: author_avatar,
+    publish_date,
+    updated_at,
+    updatedAt: updated_at,
     image:
       post.image ||
       "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400&auto=format&fit=crop",
@@ -722,7 +748,12 @@ export const api = {
   getBlogPosts: async (): Promise<BlogPost[]> => {
     const res = await client.get("/blogs");
     const blogs = res.data?.data?.blogs || [];
-    return Array.isArray(blogs) ? blogs.map(mapBlogPostFromBackend) : [];
+    const mapped = Array.isArray(blogs) ? blogs.map(mapBlogPostFromBackend) : [];
+    return mapped.sort((a, b) => {
+      const dateA = new Date(a.updated_at || a.updatedAt || a.publish_date || 0).getTime();
+      const dateB = new Date(b.updated_at || b.updatedAt || b.publish_date || 0).getTime();
+      return dateB - dateA;
+    });
   },
   getBlogPostById: async (id: string): Promise<BlogPost | undefined> => {
     const res = await client.get(`/blogs/${id}`);
@@ -738,6 +769,10 @@ export const api = {
       category: blogPost.category,
       tags: blogPost.tags,
       author: blogPost.author,
+      authorDescription: blogPost.author_description || blogPost.authorDescription || null,
+      author_description: blogPost.author_description || blogPost.authorDescription || null,
+      authorAvatar: blogPost.author_avatar || blogPost.authorAvatar || null,
+      author_avatar: blogPost.author_avatar || blogPost.authorAvatar || null,
       publishDate: blogPost.publish_date
         ? new Date(blogPost.publish_date).toISOString()
         : new Date().toISOString(),

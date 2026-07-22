@@ -39,7 +39,7 @@ export default function Hero({ product, category }: HeroProps) {
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="text-foreground/80 font-normal">{categoryName}</span>
+        <span className="text-foreground/70 font-normal">{categoryName}</span>
         {/* Chevron separator */}
         <ChevronRight size={16} />
         <span className="">{productName}</span>

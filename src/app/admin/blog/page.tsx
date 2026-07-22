@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, BlogPost, SeoMetadata } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import BlogRichEditor from "@/components/admin/BlogRichEditor";
 import { BLOG_POST_CATEGORIES } from "@/lib/blog-categories";
 import {
   Plus,
@@ -54,6 +55,8 @@ export default function BlogPage() {
     category: BLOG_POST_CATEGORIES[0] || "Application Tips",
     tagsInput: "",
     author: "",
+    author_description: "",
+    author_avatar: "",
     publish_date: "",
     image: "",
     tldr: "",
@@ -123,6 +126,8 @@ export default function BlogPage() {
       category: BLOG_POST_CATEGORIES[0] || "Application Tips",
       tagsInput: "woodworking, carpentry, adhesives",
       author: "Admin Editor",
+      author_description: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals.",
+      author_avatar: "",
       publish_date: new Date().toISOString().split("T")[0],
       image: "",
       tldr: "",
@@ -142,6 +147,8 @@ export default function BlogPage() {
       category: blog.category || BLOG_POST_CATEGORIES[0],
       tagsInput: (blog.tags || []).join(", "),
       author: blog.author,
+      author_description: blog.author_description || blog.authorDescription || "",
+      author_avatar: blog.author_avatar || blog.authorAvatar || "",
       publish_date: blog.publish_date,
       image: blog.image || "",
       tldr: blog.tldr || "",
@@ -188,6 +195,8 @@ export default function BlogPage() {
         category: formData.category,
         tags,
         author: formData.author,
+        author_description: formData.author_description,
+        author_avatar: formData.author_avatar,
         publish_date: formData.publish_date,
         image: formData.image || undefined,
         tldr: formData.tldr || undefined,
@@ -594,6 +603,19 @@ export default function BlogPage() {
                               />
                             </div>
                           </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                              Author Bio / Description
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={formData.author_description}
+                              onChange={(e) => setFormData((prev) => ({ ...prev, author_description: e.target.value }))}
+                              placeholder="e.g. Knowledge shaped by Jivanjor's team of product specialists, woodworking experts..."
+                              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none font-medium"
+                            />
+                          </div>
                         </div>
 
                         <div className="space-y-4 flex flex-col justify-between">
@@ -604,152 +626,23 @@ export default function BlogPage() {
                             folder="blog"
                             aspect="square"
                           />
+                          <ImageUpload
+                            label="Author Avatar Photo"
+                            value={formData.author_avatar}
+                            onChange={(url) => setFormData((prev) => ({ ...prev, author_avatar: url }))}
+                            folder="authors"
+                            aspect="square"
+                          />
                         </div>
                       </div>
 
-                      {/* WYSIWYG Rich Text Content Editor with Immediate Styling */}
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center justify-between gap-2 bg-gray-100 dark:bg-zinc-800 p-2 rounded-t-xl border border-gray-200 dark:border-zinc-700">
-                          <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider px-2">
-                            Blog Content Editor (Live Styling)
-                          </span>
-                          
-                          <div className="flex flex-wrap items-center gap-1">
-                            {/* Format dropdown */}
-                            <select
-                              onChange={(e) => execCmd("formatBlock", e.target.value)}
-                              className="px-2 py-1 text-xs rounded bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 font-semibold cursor-pointer outline-none"
-                            >
-                              <option value="p">Paragraph</option>
-                              <option value="h1">Heading 1</option>
-                              <option value="h2">Heading 2</option>
-                              <option value="h3">Heading 3</option>
-                              <option value="blockquote">Quote</option>
-                              <option value="pre">Code Block</option>
-                            </select>
-
-                            <div className="h-4 w-px bg-gray-300 dark:bg-zinc-700 mx-1" />
-
-                            {/* Styling Buttons */}
-                            <button
-                              type="button"
-                              onClick={() => execCmd("bold")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Bold text"
-                            >
-                              <Bold className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("italic")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Italic text"
-                            >
-                              <Italic className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("underline")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Underline text"
-                            >
-                              <Underline className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("strikeThrough")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Strikethrough"
-                            >
-                              <Strikethrough className="h-4 w-4" />
-                            </button>
-
-                            <div className="h-4 w-px bg-gray-300 dark:bg-zinc-700 mx-1" />
-
-                            {/* Lists & Alignment */}
-                            <button
-                              type="button"
-                              onClick={() => execCmd("insertUnorderedList")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Bullet List"
-                            >
-                              <List className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("insertOrderedList")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Numbered List"
-                            >
-                              <ListOrdered className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("justifyLeft")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Align Left"
-                            >
-                              <AlignLeft className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("justifyCenter")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Align Center"
-                            >
-                              <AlignCenter className="h-4 w-4" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("justifyRight")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Align Right"
-                            >
-                              <AlignRight className="h-4 w-4" />
-                            </button>
-
-                            <div className="h-4 w-px bg-gray-300 dark:bg-zinc-700 mx-1" />
-
-                            {/* Link & Color */}
-                            <button
-                              type="button"
-                              onClick={handleAddLink}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Insert Link"
-                            >
-                              <LinkIcon className="h-4 w-4" />
-                            </button>
-                            <label
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer flex items-center gap-1"
-                              title="Text Color"
-                            >
-                              <Palette className="h-4 w-4" />
-                              <input
-                                type="color"
-                                onChange={(e) => execCmd("foreColor", e.target.value)}
-                                className="w-0 h-0 opacity-0 cursor-pointer"
-                              />
-                            </label>
-                            <button
-                              type="button"
-                              onClick={() => execCmd("removeFormat")}
-                              className="p-1.5 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded text-gray-700 dark:text-zinc-300 cursor-pointer"
-                              title="Clear Formatting"
-                            >
-                              <Eraser className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Interactive ContentEditable Container */}
-                        <div
-                          ref={editorRef}
-                          contentEditable
-                          onInput={handleEditorInput}
-                          className="w-full px-5 py-4 rounded-b-xl border border-t-0 border-gray-200 bg-white text-gray-900 outline-none focus:ring-2 focus:ring-red-500/20 dark:border-zinc-700 dark:bg-zinc-955 dark:text-zinc-100 min-h-[350px] prose dark:prose-invert max-w-none shadow-inner leading-relaxed"
-                          style={{ minHeight: "350px" }}
-                        />
-                      </div>
+                      {/* TipTap WYSIWYG Rich Text Content Editor */}
+                      <BlogRichEditor
+                        value={formData.content}
+                        onChange={(html) =>
+                          setFormData((prev) => ({ ...prev, content: html }))
+                        }
+                      />
                     </div>
                   ) : (
                     <div className="space-y-4 animate-[fadeIn_0.15s_ease-out]">
@@ -761,7 +654,7 @@ export default function BlogPage() {
                       </div>
 
                       <div className="bg-gray-50 dark:bg-zinc-955 border border-gray-100 dark:border-zinc-900 rounded-3xl p-6 overflow-y-auto max-h-[60vh] prose dark:prose-invert max-w-none">
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 mb-4">
+                        <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 mb-4 font-amethysta">
                           {formData.title || "Untitled Article Specification"}
                         </h1>
                         <div className="flex gap-4 text-xs text-gray-400 mb-6 font-bold uppercase tracking-wider">
@@ -786,7 +679,7 @@ export default function BlogPage() {
                         )}
 
                         <div
-                          className="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed"
+                          className="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed blog-editor-content prose-content"
                           dangerouslySetInnerHTML={{ __html: formData.content || "<p>Empty content...</p>" }}
                         />
                       </div>
