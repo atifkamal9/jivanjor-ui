@@ -30,6 +30,8 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
   const [activeList, setActiveList] = useState(initialCategory || "Latest Blogs");
   const [currentPage, setCurrentPage] = useState(1);
   const [apiPosts, setApiPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (initialCategory) {
@@ -40,6 +42,8 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
   useEffect(() => {
     async function loadApiPosts() {
       try {
+        setLoading(true);
+        setError(false);
         const data = await api.getBlogPosts();
         if (data && data.length > 0) {
           const mapped: BlogPost[] = data.map((b) => ({
@@ -50,9 +54,14 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
             slug: b.slug,
           }));
           setApiPosts(mapped);
+        } else {
+          setApiPosts([]);
         }
       } catch (err) {
         console.error("Failed to load API blog posts:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     }
     loadApiPosts();
@@ -230,7 +239,11 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
     },
   ];
 
-  const displayBlogs = [...apiPosts, ...(posts && posts.length > 0 ? posts : Blogs)];
+  const displayBlogs = error
+    ? posts && posts.length > 0
+      ? posts
+      : Blogs
+    : apiPosts;
 
   // Filter Blogs by category
   const filteredBlogs =
@@ -342,74 +355,89 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
 
       {/* Blogs Grid and Pagination Area */}
       <div className="flex-1 space-y-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-          {currentBlogs.map((blog, idx) => (
-            <Link
-              key={idx}
-              href={`/blog/${blog.slug || blog.title.replace(/\s/g, "-").toLowerCase()}`}
-              className="flex flex-col items-center bg-white rounded-[20px] group md:items-start"
-            >
-              {/* Blog Image Container */}
-              <div className="relative w-full h-50 sm:h-61.5 rounded-[20px] overflow-hidden bg-surface">
-                <Image
-                  src={blog.image}
-                  alt={blog.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-103"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                />
-              </div>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center min-h-[400px] w-full py-16">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
+              Loading blogs...
+            </p>
+          </div>
+        ) : currentBlogs.length === 0 ? (
+          <div className="text-center py-16 font-google-sans text-xl text-[#666]">
+            No blog posts found.
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+              {currentBlogs.map((blog, idx) => (
+                <Link
+                  key={idx}
+                  href={`/blog/${blog.slug || blog.title.replace(/\s/g, "-").toLowerCase()}`}
+                  className="flex flex-col items-center bg-white rounded-[20px] group md:items-start"
+                >
+                  {/* Blog Image Container */}
+                  <div className="relative w-full h-50 sm:h-61.5 rounded-[20px] overflow-hidden bg-surface">
+                    <Image
+                      src={blog.image}
+                      alt={blog.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-103"
+                      sizes="(max-width: 768px) 100vw, 400px"
+                    />
+                  </div>
 
-              {/* Blog Info */}
-              <div className="flex flex-col items-center text-center md:items-start md:text-start flex-1 pt-6 pb-2 space-y-4">
-                <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
-                  {blog.title}
-                </h3>
-                <p className="text-base lg:text-xl text-[#222] leading-normal line-clamp-2">
-                  {blog.desc}
-                </p>
-                <button className="active-gradient-border-surface text-[#ff0009] hover:bg-[#ff0009] transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
-                  Read Post
+                  {/* Blog Info */}
+                  <div className="flex flex-col items-center text-center md:items-start md:text-start flex-1 pt-6 pb-2 space-y-4">
+                    <h3 className="font-amethysta text-xl lg:text-[26px] text-black font-normal mb-3 hover:text-[#ff0009] transition-colors cursor-pointer line-clamp-2 pb-0.5">
+                      {blog.title}
+                    </h3>
+                    <p className="text-base lg:text-xl text-[#222] leading-normal line-clamp-2">
+                      {blog.desc}
+                    </p>
+                    <button className="active-gradient-border-surface text-[#ff0009] hover:bg-[#ff0009] transition-all font-google-sans font-medium text-base w-34.5 h-9 rounded-[20px] flex items-center justify-center cursor-pointer">
+                      Read Post
+                    </button>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222]">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="hover:text-[#ff0009] disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 cursor-pointer font-medium"
+                >
+                  &lt;
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1 transition-colors cursor-pointer ${currentPage === page
+                        ? "font-bold underline decoration-solid underline-offset-[6px] text-black"
+                        : "hover:text-[#ff0009] text-[#222]"
+                      }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="hover:text-[#ff0009] disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 cursor-pointer font-medium"
+                >
+                  &gt;
                 </button>
               </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center md:justify-start gap-3 font-google-sans text-[20px] text-[#222]">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="hover:text-[#ff0009] disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 cursor-pointer font-medium"
-            >
-              &lt;
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`px-3 py-1 transition-colors cursor-pointer ${currentPage === page
-                    ? "font-bold underline decoration-solid underline-offset-[6px] text-black"
-                    : "hover:text-[#ff0009] text-[#222]"
-                  }`}
-              >
-                {page}
-              </button>
-            ))}
-
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-              className="hover:text-[#ff0009] disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 cursor-pointer font-medium"
-            >
-              &gt;
-            </button>
-          </div>
+            )}
+          </>
         )}
       </div>
     </section>

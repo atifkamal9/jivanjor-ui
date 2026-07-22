@@ -45,7 +45,7 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
               <span className="font-medium text-sm md:text-lg">About Us</span>
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-gray-400 font-medium text-sm md:text-lg">{subpageTitle}</span>
+            <span className="text-foreground/70 font-medium text-sm md:text-lg">{subpageTitle}</span>
           </>
         ) : (
           <span className="font-medium text-sm md:text-lg">About Us</span>

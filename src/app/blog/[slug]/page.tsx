@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { api } from "@/lib/api";
-import { BlogHero, BlogContent } from "@/components/blog";
+import BlogPostClient from "./BlogPostClient";
 
 export const dynamic = "force-dynamic";
 
@@ -40,27 +40,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  let postData = null;
-  try {
-    const dbPosts = await api.getBlogPosts();
-    postData = dbPosts.find(
-      (p) => p.slug === slug || p.title.toLowerCase().replace(/\s/g, "-") === slug
-    );
-  } catch (err) {
-    console.error("Failed to load blog post by slug:", err);
-  }
-
-  const publishDate = postData?.publish_date || "2026-07-01";
-  const lastUpdated = "2026-07-09";
-
-  return (
-    <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip pb-10">
-      <BlogHero title={postData?.title} category={postData?.category} />
-      <BlogContent
-        publishDate={publishDate}
-        lastUpdated={lastUpdated}
-        articleData={postData}
-      />
-    </main>
-  );
+  return <BlogPostClient slug={slug} />;
 }
