@@ -89,13 +89,22 @@ div {
 .blog-editor-content {
   font-family: var(--font-google-sans), sans-serif;
   color: #222222;
-  font-size: 1rem; /* 16px mobile */
+  font-size: 1rem;
+  /* 16px mobile */
+}
+
+.prose-content> :first-child,
+.blog-editor-content> :first-child,
+.blog-editor-content .ProseMirror> :first-child {
+  margin-top: 0 !important;
 }
 
 @media (min-width: 768px) {
+
   .prose-content,
   .blog-editor-content {
-    font-size: 1.375rem; /* 22px desktop */
+    font-size: 1.375rem;
+    /* 22px desktop */
   }
 }
 
@@ -114,59 +123,70 @@ div {
   font-family: var(--font-amethysta), Amethysta, serif;
   font-weight: 400;
   color: #222222;
-  line-height: 1.15;
+  line-height: var(--leading-normal);
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
 }
 
 .prose-content h1,
 .blog-editor-content h1 {
-  font-size: 1.875rem; /* 30px mobile */
+  font-size: 1.875rem;
+  /* 30px mobile */
 }
 
 @media (min-width: 768px) {
+
   .prose-content h1,
   .blog-editor-content h1 {
-    font-size: 3rem; /* 48px desktop */
+    font-size: 3rem;
+    /* 48px desktop */
     line-height: 1.1;
   }
 }
 
 .prose-content h2,
 .blog-editor-content h2 {
-  font-size: 1.875rem; /* 30px mobile */
+  font-size: 1.875rem;
+  /* 30px mobile */
 }
 
 @media (min-width: 768px) {
+
   .prose-content h2,
   .blog-editor-content h2 {
-    font-size: 2.25rem; /* 36px desktop */
+    font-size: 2.25rem;
+    /* 36px desktop */
     line-height: 1.1;
   }
 }
 
 .prose-content h3,
 .blog-editor-content h3 {
-  font-size: 1.5rem; /* 24px mobile */
+  font-size: 1.5rem;
+  /* 24px mobile */
 }
 
 @media (min-width: 768px) {
+
   .prose-content h3,
   .blog-editor-content h3 {
-    font-size: 1.75rem; /* 28px desktop */
+    font-size: 1.75rem;
+    /* 28px desktop */
     line-height: 1.15;
   }
 }
 
 .prose-content h4,
 .blog-editor-content h4 {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem;
+  /* 20px */
 }
 
 .prose-content p,
 .blog-editor-content p {
   font-family: var(--font-google-sans), sans-serif;
-  font-size: 1rem; /* 16px mobile */
+  font-size: 1rem;
+  /* 16px mobile */
   line-height: 1.45;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
@@ -174,9 +194,11 @@ div {
 }
 
 @media (min-width: 768px) {
+
   .prose-content p,
   .blog-editor-content p {
-    font-size: 1.375rem; /* 22px desktop */
+    font-size: 1.375rem;
+    /* 22px desktop */
     line-height: 1.4;
   }
 }
@@ -200,16 +222,19 @@ div {
 .prose-content li,
 .blog-editor-content li {
   font-family: var(--font-google-sans), sans-serif;
-  font-size: 1rem; /* 16px mobile */
+  font-size: 1rem;
+  /* 16px mobile */
   line-height: 1.45;
   margin-top: 0.35rem;
   margin-bottom: 0.35rem;
 }
 
 @media (min-width: 768px) {
+
   .prose-content li,
   .blog-editor-content li {
-    font-size: 1.375rem; /* 22px desktop */
+    font-size: 1.375rem;
+    /* 22px desktop */
     line-height: 1.4;
   }
 }

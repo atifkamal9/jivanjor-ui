@@ -76,34 +76,46 @@ export default function BlogContent({
       return;
     }
 
-    const timer = setTimeout(() => {
+    const processHeadings = () => {
       const articleEl = document.querySelector("article .prose-content");
-      if (articleEl) {
-        const headings = Array.from(articleEl.querySelectorAll("h1, h2, h3, h4"));
-        if (headings.length > 0) {
-          const items = headings.map((heading, index) => {
-            let id = heading.id;
-            if (!id) {
-              const text = heading.textContent || `section-${index}`;
-              id = text
-                .toLowerCase()
-                .replace(/[^\w\s-]/g, "")
-                .replace(/\s+/g, "-");
-              if (!id) id = `section-${index}`;
-              heading.id = id;
-            }
-            return {
-              id,
-              title: heading.textContent || `Section ${index + 1}`,
-            };
-          });
-          setTocSections(items);
-          setActiveSection(items[0]?.id || "");
-        } else {
-          setTocSections([]);
-        }
+      if (!articleEl) return;
+
+      const headings = Array.from(articleEl.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+      if (headings.length > 0) {
+        const usedIds: Record<string, number> = {};
+        const items = headings.map((heading, index) => {
+          const rawText = (heading.textContent || "").trim();
+          let baseId = rawText
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-");
+
+          if (!baseId) baseId = `section-${index + 1}`;
+
+          let uniqueId = baseId;
+          if (usedIds[baseId] !== undefined) {
+            usedIds[baseId] += 1;
+            uniqueId = `${baseId}-${usedIds[baseId]}`;
+          } else {
+            usedIds[baseId] = 0;
+          }
+
+          heading.id = uniqueId;
+          return {
+            id: uniqueId,
+            title: rawText || `Section ${index + 1}`,
+          };
+        });
+
+        setTocSections(items);
+        setActiveSection(items[0]?.id || "");
+      } else {
+        setTocSections([]);
       }
-    }, 50);
+    };
+
+    processHeadings();
+    const timer = setTimeout(processHeadings, 150);
 
     return () => clearTimeout(timer);
   }, [articleData?.content]);
@@ -112,19 +124,23 @@ export default function BlogContent({
     if (tocSections.length === 0) return;
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 220;
+      const scrollPosition = window.scrollY + 160;
+      let currentId = tocSections[0]?.id || "";
 
       for (const section of tocSections) {
         const el = document.getElementById(section.id);
         if (el) {
-          const rect = el.getBoundingClientRect();
-          const top = rect.top + window.scrollY;
-          const height = rect.height;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section.id);
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          if (scrollPosition >= top) {
+            currentId = section.id;
+          } else {
             break;
           }
         }
+      }
+
+      if (currentId) {
+        setActiveSection(currentId);
       }
     };
 
@@ -133,10 +149,25 @@ export default function BlogContent({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [tocSections]);
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
+  const scrollToSection = (id: string, title?: string) => {
+    let el = document.getElementById(id);
+
+    if (!el) {
+      const articleEl = document.querySelector("article .prose-content");
+      if (articleEl) {
+        const headings = Array.from(articleEl.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+        el = headings.find((h) => {
+          return (
+            h.id === id ||
+            h.textContent?.trim() === title?.trim()
+          );
+        }) as HTMLElement | null;
+      }
+    }
+
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 100;
+      if (!el.id) el.id = id;
+      const top = el.getBoundingClientRect().top + window.scrollY - 110;
       window.scrollTo({
         top,
         behavior: "smooth",
@@ -229,7 +260,7 @@ export default function BlogContent({
                 return (
                   <button
                     key={section.id}
-                    onClick={() => scrollToSection(section.id)}
+                    onClick={() => scrollToSection(section.id, section.title)}
                     className={`text-left transition-all duration-200 cursor-pointer ${isActive
                       ? "underline underline-offset-4"
                       : "hover:font-medium"
@@ -257,10 +288,9 @@ export default function BlogContent({
                     <button
                       key={section.id}
                       onClick={() => {
-                        scrollToSection(section.id);
+                        scrollToSection(section.id, section.title);
                       }}
-                      className={`text-left transition-all cursor-pointer ${isActive ? "underline" : "hover:font-medium"
-                        }`}
+                      className={`text-left transition-all cursor-pointer ${isActive ? "underline" : "hover:font-medium"}`}
                     >
                       {section.title}
                     </button>
@@ -285,7 +315,7 @@ export default function BlogContent({
 
           {/* TLDR Summary */}
           {articleData.tldr && (
-            <div className="hidden md:block bg-surface p-5 md:px-10 md:py-6 border-l-[5px] border-[#FF0009]">
+            <div className="bg-surface p-5 md:px-10 md:py-6 border-l-[5px] border-[#FF0009]">
               <h4 className="font-google-sans font-bold text-xl md:text-[22px] text-[#222] mb-3">
                 TLDR :
               </h4>
@@ -303,18 +333,6 @@ export default function BlogContent({
                 dangerouslySetInnerHTML={{ __html: articleData.content || "" }}
               />
             </div>
-
-            {/* TLDR Summary (Mobile) */}
-            {articleData.tldr && (
-              <div className="md:hidden bg-surface p-5 md:p-10 border-l-[5px] border-[#FF0009]">
-                <h4 className="font-google-sans font-bold text-xl md:text-[22px] text-[#222] mb-3">
-                  TLDR :
-                </h4>
-                <p className="font-google-sans text-lg text-[#222] max-w-76">
-                  {articleData.tldr}
-                </p>
-              </div>
-            )}
 
             {/* Share on Socials */}
             <div className="flex flex-col gap-2">
