@@ -269,7 +269,7 @@ function mapProductFromBackend(prod: any): Product {
     } else if (typeof prod.metadata === "object") {
       if ("themeColor" in prod.metadata) {
         themeColor = prod.metadata.themeColor || "#0498AA";
-        
+
         let rawBullets = prod.metadata.overviewBullets || [];
         overviewBullets = rawBullets.map((b: any, idx: number) => {
           if (typeof b === "string") {

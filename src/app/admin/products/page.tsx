@@ -22,6 +22,7 @@ import {
   Play,
   HelpCircle,
   Files,
+  CopyPlus,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -296,6 +297,89 @@ export default function ProductsPage() {
     setIsModalOpen(true);
   };
 
+  const handleDuplicate = (product: Product) => {
+    // Set editingId to null so saving creates a brand new product
+    setEditingId(null);
+
+    // Find the product's category parent-child mapping
+    const productCat = categories.find((c) => c.id === product.category_id);
+    let mainId = "";
+    let subId = "";
+
+    if (productCat) {
+      if (productCat.parent_category) {
+        mainId = productCat.parent_category;
+        subId = productCat.id;
+      } else {
+        mainId = productCat.id;
+        subId = "";
+      }
+    } else {
+      const rootCats = categories.filter((c) => !c.parent_category);
+      mainId = rootCats[0]?.id || "";
+      const subs = categories.filter((c) => c.parent_category === mainId);
+      subId = subs[0]?.id || "";
+    }
+
+    setSelectedMainCategoryId(mainId);
+    setSelectedSubCategoryId(subId);
+
+    const duplicateName = `${product.name} (Copy)`;
+    const baseSlug = product.slug.endsWith("-copy") ? product.slug : `${product.slug}-copy`;
+    const duplicateSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
+
+    setFormData({
+      name: duplicateName,
+      slug: duplicateSlug,
+      description: product.description,
+      category_id: product.category_id,
+      material_id: product.material_id,
+      metadata: product.metadata,
+      image: product.image || "",
+      themeColor: product.themeColor || "#0498AA",
+      overviewBullets: product.overviewBullets || [],
+      techSpecs: product.techSpecs || [],
+      packSizes: product.packSizes || [],
+      documentUrl: product.documentUrl || "",
+      usps: product.usps || [],
+      applications: product.applications || [],
+      videoUrl: product.videoUrl || "",
+      videoThumbnail: product.videoThumbnail || "",
+      faqs: product.faqs || [],
+      relatedProducts: product.relatedProducts || [],
+      techSpecsDescription: product.techSpecsDescription || "",
+      appsTitle: product.appsTitle || "",
+      appsDescription: product.appsDescription || "",
+      videoTitle: product.videoTitle || "",
+      videoDescription: product.videoDescription || "",
+      faqsTitle: product.faqsTitle || "",
+      faqsDescription: product.faqsDescription || "",
+      relatedTitle: product.relatedTitle || "",
+      techResourceTitle: product.techResourceTitle || "",
+      techResourceDescription: product.techResourceDescription || "",
+      techResourceFileUrl: product.techResourceFileUrl || "",
+    });
+
+    const matchedSeo = seos.find(
+      (s) => s.page_type === "product" && s.page_id === product.id
+    );
+    setExistingSeoId(null);
+    if (matchedSeo) {
+      setSeoMetaTitle(`${matchedSeo.meta_title} (Copy)`);
+      setSeoMetaDescription(matchedSeo.meta_description);
+      setSeoCanonicalUrl(`https://jivanjor.com/products/${duplicateSlug}`);
+      setSeoImage(matchedSeo.image || "");
+    } else {
+      setSeoMetaTitle(`${duplicateName} | Jivanjor`);
+      setSeoMetaDescription(product.description || "");
+      setSeoCanonicalUrl(`https://jivanjor.com/products/${duplicateSlug}`);
+      setSeoImage(product.image || "");
+    }
+
+    setActiveTab("general");
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -333,15 +417,21 @@ export default function ProductsPage() {
     }
   };
 
-  // Filter products
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase()) ||
-      p.metadata.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = filterCategory ? p.category_id === filterCategory : true;
-    const matchesMaterial = filterMaterial ? p.material_id === filterMaterial : true;
-    return matchesSearch && matchesCategory && matchesMaterial;
-  });
+  // Filter & Sort products by latest updated order
+  const filteredProducts = products
+    .filter((p) => {
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.description.toLowerCase().includes(search.toLowerCase()) ||
+        p.metadata.toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = filterCategory ? p.category_id === filterCategory : true;
+      const matchesMaterial = filterMaterial ? p.material_id === filterMaterial : true;
+      return matchesSearch && matchesCategory && matchesMaterial;
+    })
+    .sort((a: any, b: any) => {
+      const timeA = new Date(a.updated_at || a.updatedAt || a.created_at || a.createdAt || 0).getTime();
+      const timeB = new Date(b.updated_at || b.updatedAt || b.created_at || b.createdAt || 0).getTime();
+      return timeB - timeA;
+    });
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -493,6 +583,13 @@ export default function ProductsPage() {
                                 title="Edit product"
                               >
                                 <Edit2 className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDuplicate(p)}
+                                className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
+                                title="Duplicate product profile"
+                              >
+                                <CopyPlus className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => setDeleteConfirmId(p.id)}
@@ -1048,7 +1145,7 @@ export default function ProductsPage() {
                         type="text"
                         value={formData.documentUrl}
                         onChange={(e) => setFormData(prev => ({ ...prev, documentUrl: e.target.value }))}
-                        placeholder="/docs/watershield-tds.pdf"
+                        placeholder="/docs/technical.pdf"
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                       />
                     </div>
