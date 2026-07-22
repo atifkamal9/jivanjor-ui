@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, Page, PageTemplate } from "@/lib/api";
+import { api, Page, PageTemplate, Product } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MediaUpload from "@/components/admin/MediaUpload";
 import {
@@ -607,6 +608,7 @@ For projects requiring rapid turnarounds without sacrificing coverage, stepping 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<PageTemplate[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
+  const [availableProducts, setAvailableProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -631,12 +633,14 @@ export default function TemplatesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [templatesList, pagesList] = await Promise.all([
+      const [templatesList, pagesList, productsList] = await Promise.all([
         api.getTemplates(),
-        api.getPages()
+        api.getPages(),
+        api.getProducts().catch(() => [])
       ]);
       setTemplates(templatesList);
       setPages(pagesList);
+      setAvailableProducts(productsList);
     } catch (err) {
       console.error("Failed to load templates/pages", err);
     } finally {
@@ -949,37 +953,37 @@ export default function TemplatesPage() {
                 { id: "hero", label: "Hero Banner", icon: Layout },
                 { id: "list", label: "Browse Categories", icon: FileText },
               ]
-            : currentLayoutType === "contractor"
-              ? [
-                { id: "hero", label: "Hero Banner", icon: Layout },
-                { id: "reachLeft", label: "App & Features Setup", icon: FileText },
-                { id: "presence", label: "Market Presence", icon: Grid },
-                { id: "professionals", label: "Testimonials", icon: Bookmark },
-              ]
-            : currentLayoutType === "partner"
-              ? [
-                { id: "hero", label: "Hero Banner", icon: Layout },
-                { id: "reachLeft", label: "Dealer Features Setup", icon: FileText },
-                { id: "presence", label: "Market Presence", icon: Grid },
-                { id: "gallery", label: "Dealer Network Gallery", icon: Grid },
-              ]
-            : currentLayoutType === "privacy"
-              ? [
-                { id: "hero", label: "Hero Banner", icon: Layout },
-                { id: "content", label: "Document Content Editor", icon: FileText },
-              ]
-              : currentLayoutType === "home"
+              : currentLayoutType === "contractor"
                 ? [
                   { id: "hero", label: "Hero Banner", icon: Layout },
-                  { id: "productRange", label: "Products Range", icon: Grid },
-                  { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
-                  { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
-                  { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
-                  { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
-                  { id: "testimonials", label: "Testimonials", icon: Bookmark },
-                  { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+                  { id: "reachLeft", label: "App & Features Setup", icon: FileText },
+                  { id: "presence", label: "Market Presence", icon: Grid },
+                  { id: "professionals", label: "Testimonials", icon: Bookmark },
                 ]
-                : [])
+                : currentLayoutType === "partner"
+                  ? [
+                    { id: "hero", label: "Hero Banner", icon: Layout },
+                    { id: "reachLeft", label: "Dealer Features Setup", icon: FileText },
+                    { id: "presence", label: "Market Presence", icon: Grid },
+                    { id: "gallery", label: "Dealer Network Gallery", icon: Grid },
+                  ]
+                  : currentLayoutType === "privacy"
+                    ? [
+                      { id: "hero", label: "Hero Banner", icon: Layout },
+                      { id: "content", label: "Document Content Editor", icon: FileText },
+                    ]
+                    : currentLayoutType === "home"
+                      ? [
+                        { id: "hero", label: "Hero Banner", icon: Layout },
+                        { id: "productRange", label: "Products Range", icon: Grid },
+                        { id: "findAdhesive", label: "Right Choice Categories", icon: Search },
+                        { id: "whyTrustUs", label: "Trust Factors", icon: Shield },
+                        { id: "showcaseGrid", label: "Resource Grid", icon: FileText },
+                        { id: "ctaPromo", label: "CTA Promotion", icon: MessageSquare },
+                        { id: "testimonials", label: "Testimonials", icon: Bookmark },
+                        { id: "knowledgeBase", label: "Knowledge Articles", icon: Award },
+                      ]
+                      : [])
   ];
 
   // Filter templates
@@ -1492,85 +1496,69 @@ export default function TemplatesPage() {
                       </div>
                     </div>
 
-                    {/* List of Dynamic Product Cards */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Dynamic Products Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("productRange", { title: "New Product", description: "Excellent setting...", tag: "New", image: "/images/Champion Super.png", cta: { text: "Learn More", actionPath: "#" } })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Product Card
-                        </button>
+                    {/* Products Module Selector */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex flex-col space-y-1">
+                        <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">
+                          Select Featured Products (From Products Module)
+                        </span>
+                        <p className="text-xs text-foreground/50">
+                          Select which products to display in the Product Range section on the home page landing page. If no products are selected, all published products from the Products Module will automatically be shown.
+                        </p>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.productRange.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("productRange", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="pr-10">
-                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Card #{idx + 1}</span>
-                            </div>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("productRange", idx, "title", e.target.value)}
-                                placeholder="Product Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => updateItemField("productRange", idx, "description", e.target.value)}
-                                placeholder="Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <div className="grid grid-cols-2 gap-2 mb-2">
+                      {availableProducts.length === 0 ? (
+                        <div className="p-4 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
+                          No products found in the Products Module. Create products in <a href="/admin/products" className="text-primary underline">Admin Products</a> first.
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                          {availableProducts.map((prod) => {
+                            const selectedIds: string[] = homeSections.productRange.selectedProductIds || [];
+                            const isSelected = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug);
+
+                            const toggleProd = () => {
+                              const updated = isSelected
+                                ? selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug)
+                                : [...selectedIds, prod.id];
+                              updateSectionField("productRange", "selectedProductIds", updated);
+                            };
+
+                            return (
+                              <div
+                                key={prod.id}
+                                onClick={toggleProd}
+                                className={`p-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isSelected
+                                  ? "border-primary bg-primary/10 shadow-xs"
+                                  : "border-border bg-surface/30 hover:border-foreground/20"
+                                  }`}
+                              >
                                 <input
-                                  type="text"
-                                  value={item.tag || ""}
-                                  onChange={(e) => updateItemField("productRange", idx, "tag", e.target.value)}
-                                  placeholder="Badge tag (e.g. Best Seller)"
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={toggleProd}
+                                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
                                 />
-                                <div className="space-y-1">
-                                  <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Image</span>
-                                  <ImageUpload
-                                    value={item.image || ""}
-                                    onChange={(url) => updateItemField("productRange", idx, "image", url)}
-                                    folder="templates"
-                                    size="compact"
-                                  />
+                                {prod.image && (
+                                  <div className="w-10 h-10 relative shrink-0">
+                                    <Image
+                                      src={prod.image}
+                                      alt={prod.name}
+                                      fill
+                                      unoptimized
+                                      className="object-contain"
+                                    />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <div className="text-xs font-bold text-foreground truncate">{prod.name}</div>
+                                  <div className="text-[10px] text-foreground/50 truncate">{prod.slug}</div>
                                 </div>
                               </div>
-                              <div className="grid grid-cols-2 gap-2">
-                                <input
-                                  type="text"
-                                  value={item.cta?.text || ""}
-                                  onChange={(e) => updateNestedItemField("productRange", idx, "cta", "text", e.target.value)}
-                                  placeholder="CTA Text"
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                                />
-                                <input
-                                  type="text"
-                                  value={item.cta?.actionPath || ""}
-                                  onChange={(e) => updateNestedItemField("productRange", idx, "cta", "actionPath", e.target.value)}
-                                  placeholder="CTA Link"
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -3901,7 +3889,7 @@ export default function TemplatesPage() {
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
                             <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Testimonial #{idx + 1}</span>
-                            
+
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
@@ -3924,7 +3912,7 @@ export default function TemplatesPage() {
                                 />
                               </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-1 gap-2">
                               <div>
                                 <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
@@ -4036,7 +4024,7 @@ export default function TemplatesPage() {
                             <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">
                               {idx === 0 ? "Resource Box Item #1" : `Grid Photo Card #${idx}`}
                             </span>
-                            
+
                             <input
                               type="text"
                               value={item.title || ""}
@@ -4044,7 +4032,7 @@ export default function TemplatesPage() {
                               placeholder="Title / Label (e.g. Technical Resources)"
                               className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
                             />
-                            
+
                             {idx === 0 && (
                               <input
                                 type="text"

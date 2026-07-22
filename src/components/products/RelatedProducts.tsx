@@ -148,7 +148,7 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
                     className="rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88"
                     style={{ backgroundColor: card.themeColor || "whitesmoke" }}
                   >
-                    <h3 className="text-2xl font-semibold text-center">
+                    <h3 className="text-2xl font-semibold text-center mb-2">
                       {card.name}
                     </h3>
                     <div className="w-full h-px bg-white my-4" />
