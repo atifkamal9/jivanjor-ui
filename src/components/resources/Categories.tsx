@@ -540,6 +540,17 @@ export default function Categories() {
     return () => clearTimeout(timer);
   }, [activeSubCategory, subCategories]);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[350px] py-16 bg-background">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
+          Loading technical resources...
+        </p>
+      </div>
+    );
+  }
+
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);
     const categoryData =

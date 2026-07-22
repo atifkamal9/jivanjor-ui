@@ -240,6 +240,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
 export default function ProductCategories({ category, data }: Props) {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("Waterproof Grade");
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -248,6 +249,7 @@ export default function ProductCategories({ category, data }: Props) {
   useEffect(() => {
     async function loadData() {
       try {
+        setLoading(true);
         const [cats, prods] = await Promise.all([
           api.getCategories(),
           api.getProducts(),
@@ -263,7 +265,9 @@ export default function ProductCategories({ category, data }: Props) {
           }
         }
       } catch (err) {
-        console.error("Failed to load category/product data:", err);
+        console.error("Failed to load category/product data, falling back to static content:", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadData();
@@ -374,6 +378,17 @@ export default function ProductCategories({ category, data }: Props) {
     const timer = setTimeout(checkScroll, 400);
     return () => clearTimeout(timer);
   }, [activeCategory, categoriesToUse]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[350px] py-16 bg-background">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
+          Loading products...
+        </p>
+      </div>
+    );
+  }
 
   const currentCategoryData =
     categoriesToUse.find((c) => c.name === activeCategory) ||

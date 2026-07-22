@@ -1983,8 +1983,8 @@ export default function PagesPage() {
                                 key={prod.id}
                                 onClick={toggleProd}
                                 className={`p-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isSelected
-                                    ? "border-primary bg-primary/10 shadow-xs"
-                                    : "border-border bg-surface/30 hover:border-foreground/20"
+                                  ? "border-primary bg-primary/10 shadow-xs"
+                                  : "border-border bg-surface/30 hover:border-foreground/20"
                                   }`}
                               >
                                 <input

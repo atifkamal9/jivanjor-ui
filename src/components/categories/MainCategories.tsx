@@ -337,6 +337,7 @@ const STATIC_MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 export default function MainCategories() {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeMainCategory, setActiveMainCategory] = useState(
     "Woodworking Adhesives",
   );
@@ -356,6 +357,7 @@ export default function MainCategories() {
   useEffect(() => {
     async function loadData() {
       try {
+        setLoading(true);
         const [cats, prods] = await Promise.all([
           api.getCategories(),
           api.getProducts(),
@@ -373,7 +375,9 @@ export default function MainCategories() {
           }
         }
       } catch (err) {
-        console.error("Failed to load category/product data:", err);
+        console.error("Failed to load category/product data, falling back to static content:", err);
+      } finally {
+        setLoading(false);
       }
     }
     loadData();
@@ -519,6 +523,17 @@ export default function MainCategories() {
     const timer = setTimeout(checkScroll, 400);
     return () => clearTimeout(timer);
   }, [activeSubCategory, subCategories]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[350px] py-16 bg-background">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
+          Loading categories...
+        </p>
+      </div>
+    );
+  }
 
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);

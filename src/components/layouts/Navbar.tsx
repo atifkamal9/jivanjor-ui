@@ -263,15 +263,15 @@ export default function Navbar() {
   const dynamicKnowledgeItems =
     blogCategories.length > 0
       ? [
-          { name: "Latest Blogs", link: "/blog?category=Latest%20Blogs" },
-          ...blogCategories
-            .filter((cat: any) => cat.name && cat.name.toLowerCase() !== "latest blogs")
-            .map((cat: any) => ({
-              name: cat.name,
-              link: `/blog?category=${encodeURIComponent(cat.name)}`,
-            })),
-          { name: "Technical Resources", link: "/resources" }
-        ]
+        { name: "Latest Blogs", link: "/blog?category=Latest%20Blogs" },
+        ...blogCategories
+          .filter((cat: any) => cat.name && cat.name.toLowerCase() !== "latest blogs")
+          .map((cat: any) => ({
+            name: cat.name,
+            link: `/blog?category=${encodeURIComponent(cat.name)}`,
+          })),
+        { name: "Technical Resources", link: "/resources" }
+      ]
       : knowledgeItems;
 
   const currentKnowledgeItem =
@@ -323,19 +323,19 @@ export default function Navbar() {
 
   const dynamicProductCategories = dbCategories.length > 0
     ? dbCategories
-        .filter((cat) => !cat.parent_category)
-        .map((cat) => {
-          const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
-          return {
-            name: cat.name,
-            products: subCats.map((sub) => ({
-              name: sub.name,
-              image: "/images/Watershield.png",
-              bgColor: "bg-[#0083CB]"
-            })),
-            categoryImage: "/images/mega-menu.png"
-          };
-        })
+      .filter((cat) => !cat.parent_category)
+      .map((cat) => {
+        const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+        return {
+          name: cat.name,
+          products: subCats.map((sub) => ({
+            name: sub.name,
+            image: "/images/Watershield.png",
+            bgColor: "bg-[#0083CB]"
+          })),
+          categoryImage: "/images/mega-menu.png"
+        };
+      })
     : productCategories;
 
   const activeCategoryData =
@@ -666,14 +666,14 @@ export default function Navbar() {
             productCategories={
               dbCategories.length > 0
                 ? dbCategories
-                    .filter((cat) => !cat.parent_category)
-                    .map((cat) => {
-                      const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
-                      return {
-                        name: cat.name,
-                        products: subCats.map((sub) => sub.name),
-                      };
-                    })
+                  .filter((cat) => !cat.parent_category)
+                  .map((cat) => {
+                    const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+                    return {
+                      name: cat.name,
+                      products: subCats.map((sub) => sub.name),
+                    };
+                  })
                 : undefined
             }
           />
