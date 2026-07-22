@@ -16,7 +16,7 @@ export default function ProductResources({ product }: ProductResourcesProps) {
 
   const resourceTitle = product?.techResourceTitle || `${productName} - Technical Data Sheet`;
   const resourceDescription = product?.techResourceDescription || "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.";
-  const resourceUrl = product?.techResourceFileUrl || product?.documentUrl || "/docs/watershield-tds.pdf";
+  const resourceUrl = product?.techResourceFileUrl || product?.documentUrl || "/docs/technical.pdf";
   const themeColor = product?.themeColor || "#0498AA";
 
   const fileMeta = useFileMetadata(resourceUrl);
@@ -50,9 +50,8 @@ export default function ProductResources({ product }: ProductResourcesProps) {
         <div className="flex flex-col bg-[#F9F9F9] dark:bg-zinc-900/40 rounded-[20px] p-4 lg:p-8 w-full border border-neutral-100 dark:border-zinc-800">
           <div
             onClick={toggleAccordion}
-            className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group gap-4 relative ${
-              isOpen ? "items-start py-6 lg:py-9" : "py-4.5"
-            }`}
+            className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group gap-4 relative ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"
+              }`}
           >
             {/* Left Content Panel */}
             <div className="flex flex-col animate-fadeIn gap-1.5 relative flex-1 pr-8 lg:pr-0">
@@ -82,9 +81,8 @@ export default function ProductResources({ product }: ProductResourcesProps) {
               )}
               {/* Toggle icon for mobile */}
               <div
-                className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${
-                  isOpen ? "rotate-45 text-[#FF0009]" : ""
-                }`}
+                className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""
+                  }`}
               >
                 <Plus size={24} strokeWidth={2} />
               </div>
@@ -117,9 +115,8 @@ export default function ProductResources({ product }: ProductResourcesProps) {
 
             {/* Toggle icon for desktop */}
             <div
-              className={`hidden lg:block transition-transform duration-300 ${
-                isOpen ? "rotate-45 text-[#FF0009]" : ""
-              }`}
+              className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""
+                }`}
             >
               <Plus size={24} strokeWidth={2} />
             </div>

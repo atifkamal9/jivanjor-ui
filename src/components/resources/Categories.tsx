@@ -373,7 +373,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
           badge: sub.name,
           image: p.image || "/images/Watershield.png",
           features: bullets.filter(b => b.trim() !== ""),
-          fileUrl: p.techResourceFileUrl || p.documentUrl || "/docs/watershield-tds.pdf",
+          fileUrl: p.techResourceFileUrl || p.documentUrl || "/docs/technical.pdf",
         };
       });
 
@@ -739,9 +739,9 @@ export default function Categories() {
                         {product.description}
                       </p>
                       <div className="space-y-2">
-                        <ResourceFileMeta fileUrl={product.fileUrl || "/docs/watershield-tds.pdf"} fileSize={product.fileSize} />
+                        <ResourceFileMeta fileUrl={product.fileUrl || "/docs/technical.pdf"} fileSize={product.fileSize} />
                         <Link
-                          href={product.fileUrl || "/docs/watershield-tds.pdf"}
+                          href={product.fileUrl || "/docs/technical.pdf"}
                           target="_blank"
                           rel="noreferrer"
                           className="flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
