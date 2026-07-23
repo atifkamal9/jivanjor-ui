@@ -18,16 +18,28 @@ function getYouTubeId(url: string) {
   return match && match[2].length === 11 ? match[2] : null;
 }
 
+interface TestimonialItem {
+  type?: "video" | "text" | string;
+  name?: string;
+  role?: string;
+  videoUrl?: string;
+  image?: string;
+  quote?: string;
+  showPlayButton?: boolean;
+}
+
 interface TestimonialProps {
   data?: {
     title?: string;
     subtitle?: string;
     ctaText?: string;
     ctaLink?: string;
+    items?: TestimonialItem[];
+    testimonials?: TestimonialItem[];
   };
 }
 
-const defaultTestimonials = [
+const defaultTestimonials: TestimonialItem[] = [
   {
     type: "video",
     name: "Mr. Imran Saifi",
@@ -133,6 +145,13 @@ export default function Testimonial({ data }: TestimonialProps) {
   const ctaText = data?.ctaText || "Partner With Us";
   const ctaLink = data?.ctaLink || "#";
 
+  const testimonialsList =
+    data?.items && data.items.length > 0
+      ? data.items
+      : data?.testimonials && data.testimonials.length > 0
+        ? data.testimonials
+        : defaultTestimonials;
+
   return (
     <section className="relative overflow-hidden mt-8 md:mt-12 leading-normal">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto max-w-360 w-full space-y-6">
@@ -186,7 +205,7 @@ export default function Testimonial({ data }: TestimonialProps) {
             }}
             className="w-full"
           >
-            {defaultTestimonials.map((item, idx) => (
+            {testimonialsList.map((item, idx) => (
               <SwiperSlide key={idx} className="overflow-visible!">
                 {item.type === "video" ? (
                   // Video Card
@@ -196,7 +215,7 @@ export default function Testimonial({ data }: TestimonialProps) {
                   >
                     <Image
                       src={item.image || ""}
-                      alt={item.name}
+                      alt={item.name || "Testimonial"}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />

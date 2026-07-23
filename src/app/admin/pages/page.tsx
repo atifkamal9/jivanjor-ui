@@ -121,7 +121,45 @@ const defaultHomeSections = {
     title: "Trusted by People Who Know the Work",
     subtitle: "Hear from carpenters, contractors and dealers who rely on Jivanjor for real projects.",
     ctaText: "Partner With Us",
-    ctaLink: "#"
+    ctaLink: "#",
+    items: [
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        videoUrl: "#",
+        image: "/images/2.jpeg",
+        showPlayButton: true,
+      },
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        image: "/images/1.jpeg",
+        videoUrl: "#",
+        showPlayButton: true,
+      },
+      {
+        type: "text",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        quote: "Aquabond kitchen ka specialist hai.",
+      },
+      {
+        type: "video",
+        name: "Mr. Imran Saifi",
+        role: "Contractor Carpenter",
+        image: "/images/3.jpeg",
+        videoUrl: "#",
+        showPlayButton: true,
+      },
+      {
+        type: "text",
+        name: "Mr. Mosim Ali",
+        role: "Contractor Carpenter",
+        quote: "Jivanjor products are highly reliable and strong.",
+      },
+    ]
   },
   knowledgeBase: {
     title: "Knowledge Base & Guides",
@@ -2476,7 +2514,7 @@ export default function PagesPage() {
                         </label>
                         <input
                           type="text"
-                          value={formData.sections.testimonials.title}
+                          value={formData.sections.testimonials.title || ""}
                           onChange={(e) => updateSectionField("testimonials", "title", e.target.value)}
                           placeholder="Trusted by People Who Know the Work"
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
@@ -2493,6 +2531,158 @@ export default function PagesPage() {
                           placeholder="Hear from carpenters..."
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
                         />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          CTA Action Button Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.testimonials.ctaText || ""}
+                          onChange={(e) => updateSectionField("testimonials", "ctaText", e.target.value)}
+                          placeholder="Partner With Us"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          CTA Action Link Path
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.testimonials.ctaLink || ""}
+                          onChange={(e) => updateSectionField("testimonials", "ctaLink", e.target.value)}
+                          placeholder="#"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Testimonials list */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Testimonials Carousel Cards</span>
+                        <button
+                          type="button"
+                          onClick={() => addItem("testimonials", { type: "video", name: "Author Name", role: "Contractor Carpenter", videoUrl: "", image: "", showPlayButton: true, quote: "" })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" /> Add Testimonial
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {(formData.sections.testimonials.items || []).map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => removeItem("testimonials", idx)}
+                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Testimonial #{idx + 1}</span>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
+                                <select
+                                  value={item.type || "text"}
+                                  onChange={(e) => updateItemField("testimonials", idx, "type", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer"
+                                >
+                                  <option value="text">Text Quote Card</option>
+                                  <option value="video">Video Card</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
+                                <input
+                                  type="text"
+                                  value={item.name || ""}
+                                  onChange={(e) => updateItemField("testimonials", idx, "name", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
+                                  placeholder="Mr. Imran Saifi"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-2">
+                              <div>
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
+                                <input
+                                  type="text"
+                                  value={item.role || ""}
+                                  onChange={(e) => updateItemField("testimonials", idx, "role", e.target.value)}
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                  placeholder="Contractor Carpenter"
+                                />
+                              </div>
+                            </div>
+
+                            {item.type === "video" ? (
+                              <div className="space-y-3 border-t border-border/50 pt-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Video URL (YouTube or Direct MP4 Link)</label>
+                                  <input
+                                    type="text"
+                                    value={item.videoUrl || ""}
+                                    onChange={(e) => updateItemField("testimonials", idx, "videoUrl", e.target.value)}
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                  />
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                    <ImageUpload
+                                      value={item.image || ""}
+                                      onChange={(url) => updateItemField("testimonials", idx, "image", url)}
+                                      folder="templates"
+                                      size="compact"
+                                      aspect="video"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-2 pt-4 pl-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`homeShowPlayButton-${idx}`}
+                                      checked={item.showPlayButton !== false}
+                                      onChange={(e) => updateItemField("testimonials", idx, "showPlayButton", e.target.checked)}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                    />
+                                    <label htmlFor={`homeShowPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Show Play Button
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="border-t border-border/50 pt-2 space-y-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                  <textarea
+                                    rows={2}
+                                    value={item.quote || ""}
+                                    onChange={(e) => updateItemField("testimonials", idx, "quote", e.target.value)}
+                                    placeholder="Aquabond kitchen ka specialist hai."
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Optional Avatar Image</label>
+                                  <ImageUpload
+                                    value={item.image || ""}
+                                    onChange={(url) => updateItemField("testimonials", idx, "image", url)}
+                                    folder="templates"
+                                    size="compact"
+                                    aspect="square"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
