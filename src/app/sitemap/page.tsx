@@ -63,7 +63,7 @@ export default function SitemapPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans transition-colors duration-300">
       {/* Header Section */}
-      <section className="bg-gradient-to-b from-surface/60 to-background border-b border-border/70 py-12 lg:py-14 px-5 sm:px-8 lg:px-12">
+      <section className="border-b border-border/70 py-12 lg:py-14 px-5 sm:px-8 lg:px-12">
         <div className="max-w-[1440px] mx-auto text-left">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-foreground/70 mb-4 font-medium">
