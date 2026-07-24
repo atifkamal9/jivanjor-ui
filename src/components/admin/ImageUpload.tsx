@@ -11,7 +11,7 @@ interface ImageUploadProps {
   label?: string;
   size?: "default" | "compact";
   className?: string;
-  aspect?: "square" | "video" | "default";
+  aspect?: "square" | "video" | "banner" | "rectangle" | "default";
 }
 
 export default function ImageUpload({
@@ -94,6 +94,16 @@ export default function ImageUpload({
     fileInputRef.current?.click();
   };
 
+  // Determine compact size dimensions based on aspect prop
+  const compactShapeClass =
+    aspect === "square"
+      ? "w-24 h-24"
+      : aspect === "video"
+      ? "w-40 h-24"
+      : aspect === "banner" || aspect === "rectangle"
+      ? "w-44 h-24"
+      : "w-36 h-24";
+
   if (size === "compact") {
     return (
       <div className={`flex items-center gap-3 ${className}`}>
@@ -106,7 +116,7 @@ export default function ImageUpload({
         />
         <div
           onClick={triggerInput}
-          className={`h-11 w-11 shrink-0 rounded-xl border border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-colors ${
+          className={`${compactShapeClass} shrink-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-all ${
             dragActive ? "border-red-500 bg-red-50/10" : ""
           }`}
           onDragEnter={handleDrag}
@@ -115,86 +125,24 @@ export default function ImageUpload({
           onDrop={handleDrop}
         >
           {uploading ? (
-            <Loader2 className="h-4.5 w-4.5 animate-spin text-red-600" />
-          ) : value ? (
-            <img src={value} alt="Preview" className="h-full w-full object-cover" />
-          ) : (
-            <ImageIcon className="h-4.5 w-4.5 text-gray-400" />
-          )}
-        </div>
-        <div className="flex flex-col font-sans">
-          {value ? (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="text-[10px] text-red-600 hover:text-red-700 font-bold uppercase tracking-wider text-left transition-colors cursor-pointer"
-            >
-              Clear Image
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={triggerInput}
-              disabled={uploading}
-              className="text-[10px] text-gray-500 hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200 font-bold uppercase tracking-wider text-left disabled:opacity-50 transition-colors cursor-pointer"
-            >
-              {uploading ? "Uploading..." : "Upload File"}
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (aspect === "square") {
-    return (
-      <div className={`space-y-2 font-sans ${className}`}>
-        {label && (
-          <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-            {label}
-          </label>
-        )}
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="image/*"
-          className="hidden"
-        />
-        <div
-          onDragEnter={handleDrag}
-          onDragOver={handleDrag}
-          onDragLeave={handleDrag}
-          onDrop={handleDrop}
-          onClick={triggerInput}
-          className={`h-48 w-48 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
-            dragActive
-              ? "border-red-500 bg-red-50/10"
-              : value
-              ? "border-gray-200 dark:border-zinc-800"
-              : "border-gray-200 dark:border-zinc-800 hover:border-red-500 hover:bg-gray-50/30 dark:hover:bg-zinc-800/10"
-          }`}
-        >
-          {uploading ? (
-            <div className="flex flex-col items-center gap-2 text-center p-2">
-              <Loader2 className="h-6 w-6 animate-spin text-red-600" />
-              <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider animate-pulse">
-                Uploading...
-              </span>
+            <div className="flex flex-col items-center gap-1.5 p-2 text-center">
+              <Loader2 className="h-5 w-5 animate-spin text-red-600" />
+              <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider animate-pulse">Uploading...</span>
             </div>
           ) : value ? (
             <>
-              <img src={value} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gray-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 p-2 backdrop-blur-xs">
+              <img src={value} alt="Preview" className="h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-1.5 p-1 backdrop-blur-xs">
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     triggerInput();
                   }}
-                  className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-gray-100 text-gray-900 shadow-md transform hover:scale-105 transition-all text-[10px] font-bold cursor-pointer"
+                  className="p-1.5 rounded-lg bg-white text-gray-900 shadow hover:bg-gray-100 transition-transform hover:scale-105"
+                  title="Change Image"
                 >
-                  Change Image
+                  <ImageIcon className="h-3.5 w-3.5" />
                 </button>
                 <button
                   type="button"
@@ -202,32 +150,33 @@ export default function ImageUpload({
                     e.stopPropagation();
                     handleClear(e);
                   }}
-                  className="p-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-md transform hover:scale-105 transition-all cursor-pointer"
-                  title="Remove image"
+                  className="p-1.5 rounded-lg bg-red-600 text-white shadow hover:bg-red-700 transition-transform hover:scale-105"
+                  title="Remove Image"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center text-center space-y-2 p-2">
-              <div className="h-10 w-10 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center group-hover:scale-110 group-hover:bg-red-100 transition-all duration-300">
-                <UploadCloud className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-gray-700 dark:text-zinc-300 leading-normal">
-                  Drag & drop here, or <span className="text-red-600 hover:underline">browse</span>
-                </p>
-                <p className="text-[9px] text-gray-400 dark:text-zinc-500 font-medium mt-1">
-                  JPG, PNG, WEBP (Max. 10MB)
-                </p>
-              </div>
+            <div className="flex flex-col items-center justify-center gap-1.5 p-2 text-center">
+              <UploadCloud className="h-6 w-6 text-gray-400 group-hover:scale-110 group-hover:text-red-500 transition-all duration-300" />
+              <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Upload</span>
             </div>
           )}
         </div>
       </div>
     );
   }
+
+  // Determine default size shape class based on aspect prop
+  const defaultShapeClass =
+    aspect === "banner" || aspect === "rectangle"
+      ? "w-full aspect-[21/9] sm:aspect-[24/9] min-h-[160px]"
+      : aspect === "video"
+      ? "w-full aspect-video min-h-[180px]"
+      : aspect === "square"
+      ? "w-52 h-52 sm:w-60 sm:h-60 aspect-square"
+      : "w-full aspect-[21/9] min-h-[160px]";
 
   return (
     <div className={`space-y-2 font-sans ${className}`}>
@@ -249,11 +198,7 @@ export default function ImageUpload({
         onDragLeave={handleDrag}
         onDrop={handleDrop}
         onClick={triggerInput}
-        className={`w-full border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
-          aspect === "video"
-            ? "aspect-video"
-            : "min-h-[150px]"
-        } ${
+        className={`${defaultShapeClass} border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
           dragActive
             ? "border-red-500 bg-red-50/10"
             : value

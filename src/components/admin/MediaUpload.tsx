@@ -13,6 +13,7 @@ interface MediaUploadProps {
   accept?: "image" | "video" | "any";
   size?: "default" | "compact";
   className?: string;
+  aspect?: "square" | "video" | "banner" | "rectangle" | "default";
 }
 
 const ACCEPT_MAP = {
@@ -32,6 +33,7 @@ export default function MediaUpload({
   accept = "any",
   size = "default",
   className = "",
+  aspect = "default",
 }: MediaUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -114,6 +116,15 @@ export default function MediaUpload({
       ? "MP4, WEBM or MOV (max 50MB)"
       : "Image (max 10MB) or Video (max 50MB)";
 
+  const compactShapeClass =
+    aspect === "square"
+      ? "w-24 h-24"
+      : aspect === "video" || accept === "video"
+      ? "w-40 h-24"
+      : aspect === "banner" || aspect === "rectangle"
+      ? "w-44 h-24"
+      : "w-36 h-24";
+
   // ── COMPACT SIZE ─────────────────────────────────────────────────────────────
   if (size === "compact") {
     return (
@@ -127,7 +138,7 @@ export default function MediaUpload({
         />
         <div
           onClick={triggerInput}
-          className={`h-11 w-11 shrink-0 rounded-xl border border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-colors ${
+          className={`${compactShapeClass} shrink-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-all ${
             dragActive ? "border-red-500 bg-red-50/10" : ""
           }`}
           onDragEnter={handleDrag}
@@ -136,47 +147,71 @@ export default function MediaUpload({
           onDrop={handleDrop}
         >
           {uploading ? (
-            <Loader2 className="h-4.5 w-4.5 animate-spin text-red-600" />
+            <div className="flex flex-col items-center gap-1.5 p-2 text-center">
+              <Loader2 className="h-5 w-5 animate-spin text-red-600" />
+              <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider animate-pulse">Uploading...</span>
+            </div>
           ) : value ? (
-            valueIsVideo ? (
-              <video
-                src={value}
-                className="h-full w-full object-cover"
-                muted
-                playsInline
-              />
-            ) : (
-              <img src={value} alt="Preview" className="h-full w-full object-cover" />
-            )
+            <>
+              {valueIsVideo ? (
+                <video
+                  src={value}
+                  className="h-full w-full object-cover"
+                  muted
+                  playsInline
+                />
+              ) : (
+                <img src={value} alt="Preview" className="h-full w-full object-cover" />
+              )}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-1.5 p-1 backdrop-blur-xs">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    triggerInput();
+                  }}
+                  className="p-1.5 rounded-lg bg-white text-gray-900 shadow hover:bg-gray-100 transition-transform hover:scale-105"
+                  title="Change Media"
+                >
+                  {valueIsVideo ? <Video className="h-3.5 w-3.5" /> : <ImageIcon className="h-3.5 w-3.5" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClear(e);
+                  }}
+                  className="p-1.5 rounded-lg bg-red-600 text-white shadow hover:bg-red-700 transition-transform hover:scale-105"
+                  title="Remove Media"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </>
           ) : accept === "video" ? (
-            <Video className="h-4.5 w-4.5 text-gray-400" />
+            <div className="flex flex-col items-center justify-center gap-1.5 p-2 text-center">
+              <Video className="h-6 w-6 text-gray-400 group-hover:scale-110 group-hover:text-red-500 transition-all duration-300" />
+              <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Video</span>
+            </div>
           ) : (
-            <ImageIcon className="h-4.5 w-4.5 text-gray-400" />
-          )}
-        </div>
-        <div className="flex flex-col font-sans">
-          {value ? (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="text-[10px] text-red-600 hover:text-red-700 font-bold uppercase tracking-wider text-left transition-colors cursor-pointer"
-            >
-              Clear {valueIsVideo ? "Video" : "Image"}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={triggerInput}
-              disabled={uploading}
-              className="text-[10px] text-gray-500 hover:text-gray-700 dark:text-zinc-400 dark:hover:text-zinc-200 font-bold uppercase tracking-wider text-left disabled:opacity-50 transition-colors cursor-pointer"
-            >
-              {uploading ? "Uploading..." : "Upload File"}
-            </button>
+            <div className="flex flex-col items-center justify-center gap-1.5 p-2 text-center">
+              <UploadCloud className="h-6 w-6 text-gray-400 group-hover:scale-110 group-hover:text-red-500 transition-all duration-300" />
+              <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Upload</span>
+            </div>
           )}
         </div>
       </div>
     );
   }
+
+  const defaultShapeClass =
+    aspect === "banner" || aspect === "rectangle"
+      ? "w-full aspect-[21/9] sm:aspect-[24/9] min-h-[160px]"
+      : aspect === "video" || accept === "video"
+      ? "w-full aspect-video min-h-[180px]"
+      : aspect === "square"
+      ? "w-52 h-52 sm:w-60 sm:h-60 aspect-square"
+      : "w-full aspect-[21/9] min-h-[160px]";
 
   // ── DEFAULT SIZE ──────────────────────────────────────────────────────────────
   return (
@@ -199,7 +234,7 @@ export default function MediaUpload({
         onDragLeave={handleDrag}
         onDrop={handleDrop}
         onClick={triggerInput}
-        className={`w-full min-h-[150px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
+        className={`${defaultShapeClass} border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
           dragActive
             ? "border-red-500 bg-red-50/10"
             : value
