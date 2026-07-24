@@ -25,6 +25,7 @@ import {
   FileText,
   Layers,
   UserCheck,
+  Compass,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -41,6 +42,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Issue", href: "/admin/issues", icon: HelpCircle },
   { name: "Dynamic Page", href: "/admin/pages", icon: FileText },
   { name: "Page Template", href: "/admin/templates", icon: Layers },
+  { name: "Sitemap", href: "/admin/sitemap", icon: Compass },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -54,7 +54,7 @@ const footerSections = [
       { text: "Contractor Connect", href: "/contractor" },
       { text: "Privacy Policy", href: "/privacy" },
       { text: "Terms of Use", href: "/privacy#terms" },
-      { text: "Sitemap", href: "/" },
+      { text: "Sitemap", href: "/sitemap" },
       { text: "Contact Us", href: "/contact" },
     ],
   },
