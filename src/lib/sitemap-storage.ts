@@ -97,7 +97,8 @@ export const DEFAULT_SITEMAP_SECTIONS: SitemapSection[] = [
 ];
 
 export const DEFAULT_HERO_TITLE = "Jivanjor Sitemap";
-export const DEFAULT_HERO_DESCRIPTION = "Find direct links to all main pages, product categories, editorial guides, and support resources across Jivanjor.";
+export const DEFAULT_HERO_DESCRIPTION =
+  "Find direct links to all main pages, product categories, editorial guides, and support resources across Jivanjor.";
 
 export function getLocalSitemapConfig(): SitemapConfig {
   if (typeof window === "undefined") {
@@ -120,10 +121,15 @@ export function getLocalSitemapConfig(): SitemapConfig {
     }
     const parsed = JSON.parse(raw);
     if (parsed && Array.isArray(parsed.sections) && parsed.sections.length > 0) {
+      const sanitizedSections = parsed.sections.map((sec: SitemapSection) => ({
+        ...sec,
+        links: sanitizeAndDeduplicateLinks(sec.links || []),
+      }));
       return {
         heroTitle: parsed.heroTitle || DEFAULT_HERO_TITLE,
         heroDescription: parsed.heroDescription || DEFAULT_HERO_DESCRIPTION,
-        ...parsed,
+        sections: sanitizedSections,
+        lastUpdated: parsed.lastUpdated || new Date().toISOString(),
       };
     }
   } catch (err) {
@@ -140,8 +146,14 @@ export function getLocalSitemapConfig(): SitemapConfig {
 export function saveLocalSitemapConfig(config: SitemapConfig): void {
   if (typeof window === "undefined") return;
   try {
+    const sanitizedSections = config.sections.map((sec) => ({
+      ...sec,
+      links: sanitizeAndDeduplicateLinks(sec.links || []),
+    }));
+
     const updated = {
       ...config,
+      sections: sanitizedSections,
       lastUpdated: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -161,7 +173,44 @@ export function resetLocalSitemapConfig(): SitemapConfig {
   return config;
 }
 
-export async function syncSitemapConfigWithApi(existingConfig?: SitemapConfig): Promise<SitemapConfig> {
+function sanitizeAndDeduplicateLinks(links: SitemapLink[]): SitemapLink[] {
+  const seenHrefs = new Set<string>();
+  const seenIds = new Set<string>();
+  const deduplicated: SitemapLink[] = [];
+
+  for (const link of links) {
+    if (!link || !link.href || !link.title) continue;
+    const normalizedHref = link.href.trim().toLowerCase();
+
+    // Skip if we already saw this exact URL in this section
+    if (seenHrefs.has(normalizedHref)) continue;
+
+    // Build clean deterministic ID
+    let baseId = link.id
+      ? link.id.split("-dedup-")[0]
+      : `link-${normalizedHref.replace(/[^a-z0-9]/g, "-")}`;
+    let uniqueId = baseId;
+    let counter = 1;
+    while (seenIds.has(uniqueId)) {
+      uniqueId = `${baseId}-dedup-${counter++}`;
+    }
+
+    seenHrefs.add(normalizedHref);
+    seenIds.add(uniqueId);
+    deduplicated.push({
+      ...link,
+      id: uniqueId,
+      title: link.title.trim(),
+      href: link.href.trim(),
+    });
+  }
+
+  return deduplicated;
+}
+
+export async function syncSitemapConfigWithApi(
+  existingConfig?: SitemapConfig
+): Promise<SitemapConfig> {
   const current = existingConfig || getLocalSitemapConfig();
 
   try {
@@ -171,61 +220,94 @@ export async function syncSitemapConfigWithApi(existingConfig?: SitemapConfig): 
       api.getPages().catch(() => [] as Page[]),
     ]);
 
+    // Known static base paths that shouldn't be duplicated as dynamic CMS pages
+    const staticBaseHrefs = new Set([
+      "/",
+      "/about",
+      "/products",
+      "/categories",
+      "/applications",
+      "/blog",
+      "/resources",
+      "/partner",
+      "/contractor",
+      "/contact",
+      "/privacy",
+      "/privacy#terms",
+      "/sitemap",
+    ]);
+
     const updatedSections = current.sections.map((sec) => {
+      let mergedLinks: SitemapLink[] = [...sec.links];
+
       // Sync dynamic categories
       if (sec.id === "categories") {
-        const dynamicCatLinks: SitemapLink[] = categories.map((cat) => ({
-          id: `cat-${cat.id || cat.slug}`,
-          title: cat.name,
-          href: `/categories/${cat.slug}`,
-          description: cat.description || `Category showcase for ${cat.name}`,
-        }));
-        
-        // Preserve any custom links added by admin
+        const dynamicCatLinks: SitemapLink[] = categories
+          .filter((cat) => cat && cat.slug)
+          .map((cat) => ({
+            id: `cat-${cat.slug}`,
+            title: cat.name,
+            href: `/categories/${cat.slug}`,
+            description: cat.description || `Category showcase for ${cat.name}`,
+          }));
+
         const customLinks = sec.links.filter((l) => l.isCustom);
-        return {
-          ...sec,
-          links: dynamicCatLinks.length > 0 ? [...dynamicCatLinks, ...customLinks] : sec.links,
-        };
+        mergedLinks =
+          dynamicCatLinks.length > 0
+            ? [...dynamicCatLinks, ...customLinks]
+            : sec.links;
       }
 
       // Sync dynamic editorial blogs
       if (sec.id === "editorial") {
-        const dynamicBlogLinks: SitemapLink[] = blogs.map((post) => ({
-          id: `blog-${post.id || post.slug}`,
-          title: post.title,
-          href: `/blog/${post.slug}`,
-          description: post.tldr || `Published article on ${post.category || "Woodworking"}`,
-        }));
+        const dynamicBlogLinks: SitemapLink[] = blogs
+          .filter((post) => post && post.slug)
+          .map((post) => ({
+            id: `blog-${post.slug}`,
+            title: post.title,
+            href: `/blog/${post.slug}`,
+            description:
+              post.tldr || `Published article on ${post.category || "Woodworking"}`,
+          }));
 
         const customLinks = sec.links.filter((l) => l.isCustom);
-        return {
-          ...sec,
-          links: dynamicBlogLinks.length > 0 ? [...dynamicBlogLinks, ...customLinks] : sec.links,
-        };
+        mergedLinks =
+          dynamicBlogLinks.length > 0
+            ? [...dynamicBlogLinks, ...customLinks]
+            : sec.links;
       }
 
-      // Sync dynamic custom pages
-      if (sec.id === "main" && pages.length > 0) {
-        const dynamicPageLinks: SitemapLink[] = pages.map((p) => ({
-          id: `page-${p.id || p.slug}`,
-          title: p.title,
-          href: `/${p.slug}`,
-          description: p.description || "Custom dynamic page",
-        }));
+      // Sync dynamic custom CMS pages (avoiding static routes)
+      if (sec.id === "main") {
+        const staticMainLinks = sec.links.filter(
+          (l) => staticBaseHrefs.has(l.href.toLowerCase()) || l.isCustom
+        );
+        const dynamicPageLinks: SitemapLink[] = pages
+          .filter(
+            (p) =>
+              p &&
+              p.slug &&
+              !staticBaseHrefs.has(`/${p.slug.toLowerCase()}`) &&
+              !p.slug.startsWith("admin")
+          )
+          .map((p) => ({
+            id: `page-${p.slug}`,
+            title: p.title,
+            href: `/${p.slug}`,
+            description: p.description || "Custom dynamic page",
+          }));
 
-        const existingHrefs = new Set(sec.links.map((l) => l.href));
-        const newPageLinks = dynamicPageLinks.filter((l) => !existingHrefs.has(l.href));
-        return {
-          ...sec,
-          links: [...sec.links, ...newPageLinks],
-        };
+        mergedLinks = [...staticMainLinks, ...dynamicPageLinks];
       }
 
-      return sec;
+      return {
+        ...sec,
+        links: sanitizeAndDeduplicateLinks(mergedLinks),
+      };
     });
 
     const newConfig: SitemapConfig = {
+      ...current,
       sections: updatedSections,
       lastUpdated: new Date().toISOString(),
     };
