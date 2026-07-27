@@ -26,6 +26,8 @@ import {
   Layers,
   UserCheck,
   Compass,
+  Settings,
+  ShieldCheck,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -54,6 +56,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
 
   useEffect(() => {
     setEmail(getUserEmail() || "admin@jivanjor.com");
@@ -74,10 +78,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setIsCollapsed(collapsed);
   }, []);
 
-  // Sync productsOpen state with current path
+  // Sync productsOpen and settingsOpen state with current path
   useEffect(() => {
     if (pathname === "/admin/products" || pathname === "/admin/categories") {
       setProductsOpen(true);
+    }
+    if (pathname === "/admin/menu" || pathname === "/admin/security") {
+      setSettingsOpen(true);
     }
   }, [pathname]);
 
@@ -109,8 +116,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (activeItem) return activeItem.name;
     if (pathname === "/admin/products") return "Products";
     if (pathname === "/admin/categories") return "Product Categories";
+    if (pathname === "/admin/menu") return "Menus";
+    if (pathname === "/admin/security") return "Security Settings";
     return "Admin Panel";
   };
+
 
   // Helper render function for Products collapsible menu (Desktop)
   const renderDesktopProductsAccordion = () => {
@@ -253,6 +263,148 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   };
 
+  // Helper render function for Settings collapsible menu (Desktop)
+  const renderDesktopSettingsAccordion = () => {
+    const isChildActive = pathname === "/admin/menu" || pathname === "/admin/security";
+
+    if (isCollapsed) {
+      return (
+        <Link
+          href="/admin/menu"
+          className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${
+            isChildActive
+              ? "bg-primary/10 text-primary"
+              : "text-foreground/75 hover:bg-surface hover:text-foreground"
+          }`}
+          title="Settings (Menus & Security)"
+        >
+          <Settings
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
+              isChildActive ? "text-primary" : "text-foreground/45"
+            }`}
+          />
+        </Link>
+      );
+    }
+
+    return (
+      <div className="w-full">
+        <button
+          type="button"
+          onClick={() => setSettingsOpen(!settingsOpen)}
+          className={`w-full flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 cursor-pointer ${
+            isChildActive
+              ? "bg-primary/5 text-primary"
+              : "text-foreground/75 hover:bg-surface hover:text-foreground"
+          }`}
+        >
+          <Settings
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
+              isChildActive ? "text-primary" : "text-foreground/45"
+            }`}
+          />
+          <span className="animate-[fadeIn_0.2s_ease-out] truncate">Settings</span>
+          <ChevronRight
+            className={`ml-auto h-4 w-4 text-foreground/30 transition-transform duration-200 shrink-0 ${
+              settingsOpen ? "rotate-90 text-primary" : ""
+            }`}
+          />
+        </button>
+
+        {settingsOpen && (
+          <div className="relative pl-9 pr-2 py-1 space-y-1 mt-1 animate-[fadeIn_0.15s_ease-out]">
+            {/* Connecting line */}
+            <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
+            
+            <Link
+              href="/admin/menu"
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
+                pathname === "/admin/menu"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+              <span>Menus</span>
+            </Link>
+
+            <Link
+              href="/admin/security"
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
+                pathname === "/admin/security"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+              <span>Security</span>
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Helper render function for Settings collapsible menu (Mobile)
+  const renderMobileSettingsAccordion = () => {
+    const isChildActive = pathname === "/admin/menu" || pathname === "/admin/security";
+
+    return (
+      <div className="w-full">
+        <button
+          type="button"
+          onClick={() => setSettingsOpen(!settingsOpen)}
+          className={`w-full flex items-center rounded-lg text-xs font-bold transition-all gap-3 px-3 py-2.5 cursor-pointer ${
+            isChildActive
+              ? "bg-primary/5 text-primary"
+              : "text-foreground/75 hover:bg-surface"
+          }`}
+        >
+          <Settings className="h-4 w-4 shrink-0 text-foreground/45" />
+          <span>Settings</span>
+          <ChevronRight
+            className={`ml-auto h-3.5 w-3.5 text-foreground/30 transition-transform duration-200 shrink-0 ${
+              settingsOpen ? "rotate-90 text-primary" : ""
+            }`}
+          />
+        </button>
+
+        {settingsOpen && (
+          <div className="relative pl-7 py-1 space-y-1 mt-1">
+            <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
+            
+            <Link
+              href="/admin/menu"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
+                pathname === "/admin/menu"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary" : "bg-foreground/20"}`} />
+              <span>Menus</span>
+            </Link>
+
+            <Link
+              href="/admin/security"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
+                pathname === "/admin/security"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary" : "bg-foreground/20"}`} />
+              <span>Security</span>
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+
   return (
     <div className="flex h-screen w-full bg-surface text-foreground overflow-hidden font-google-sans transition-colors duration-300">
       {/* ==================== DESKTOP SIDEBAR ==================== */}
@@ -363,7 +515,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </Link>
               );
             })}
+
+          {/* Settings Accordion at the very bottom */}
+          {renderDesktopSettingsAccordion()}
         </nav>
+
 
         {/* Footer Info */}
         <div className={`p-4 border-t border-border bg-surface/55 transition-all duration-300 ${isCollapsed ? "flex flex-col items-center gap-3" : ""
@@ -467,7 +623,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </Link>
                   );
                 })}
+
+
+              {/* Settings Accordion at the very bottom */}
+              {renderMobileSettingsAccordion()}
             </nav>
+
 
             <div className="pt-4 border-t border-border">
               <button

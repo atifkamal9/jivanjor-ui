@@ -11,6 +11,8 @@ import {
   partnerItems,
 } from "@/lib/nav";
 
+import { MenuItem } from "@/lib/menuTypes";
+
 interface CategoryItem {
   name: string;
   products: string[];
@@ -22,7 +24,9 @@ interface MobileNavProps {
   appItems?: any[];
   knowledgeItems?: any[];
   productCategories?: any[];
+  publishedMenu?: MenuItem[];
 }
+
 
 const staticProductCategories: CategoryItem[] = [
   {
@@ -77,7 +81,8 @@ export default function MobileNav({
   aboutItems = staticAboutItems,
   appItems = applicationItems,
   knowledgeItems: propKnowledgeItems = knowledgeItems,
-  productCategories: incomingProductCategories
+  productCategories: incomingProductCategories,
+  publishedMenu,
 }: MobileNavProps) {
   const pathname = usePathname();
   const productCategories = incomingProductCategories || staticProductCategories;
@@ -145,239 +150,208 @@ export default function MobileNav({
 
       {/* Main Nav Content */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
-        {/* About Accordion */}
-        <div className="border-b">
-          <button
-            onClick={() => toggleSection("About")}
-            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-          >
-            <span>About</span>
-            <ChevronDown
-              strokeWidth={2.5}
-              size={20}
-              className={`transition-transform duration-300 ${
-                openSection === "About" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+        {publishedMenu && publishedMenu.length > 0 ? (
+          publishedMenu.map((item) => {
+            const isMega = item.type === "menu";
+            const sectionKey = item.id;
+            const isOpen = openSection === sectionKey || openSection === item.title;
+            const isProductMenu =
+              item.isStatic ||
+              item.id === "nav-products" ||
+              item.title.toLowerCase() === "products";
 
-          {openSection === "About" && (
-            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {aboutItems.map((item) => {
-                const isActive = pathname === item.link;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={onClose}
-                    className={`block text-base cursor-pointer ${
-                      isActive
-                        ? "text-[#FF0009] font-bold"
-                        : "hover:text-primary"
-                    }`}
+            if (isMega) {
+              return (
+                <div key={item.id} className="border-b">
+                  <button
+                    onClick={() => toggleSection(sectionKey)}
+                    className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
                   >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                    <span>{item.title}</span>
+                    <ChevronDown
+                      strokeWidth={2.5}
+                      size={20}
+                      className={`transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""
+                        }`}
+                    />
+                  </button>
 
-        {/* Products Accordion (Expanded by default) */}
-        <div className="border-b">
-          <button
-            onClick={() => toggleSection("Products")}
-            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-          >
-            <span>Products</span>
-            <ChevronDown
-              strokeWidth={2.5}
-              size={20}
-              className={`transition-transform duration-300 ${
-                openSection === "Products" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+                  {isOpen && (
+                    <div className="bg-surface border-t p-5 space-y-1.5 transition-all duration-300">
+                      {isProductMenu ? (
+                        productCategories.map((cat) => {
+                          const isCatOpen = openCategory === cat.name;
+                          return (
+                            <div key={cat.name} className="space-y-1">
+                              <button
+                                onClick={() => toggleCategory(cat.name)}
+                                className="flex items-center justify-between w-full text-base font-medium cursor-pointer text-left focus:outline-none"
+                              >
+                                <span>{cat.name}</span>
+                                {isCatOpen ? (
+                                  <Minus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
+                                ) : (
+                                  <Plus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
+                                )}
+                              </button>
 
-          {openSection === "Products" && (
-            <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
-              {productCategories.map((cat) => {
-                const isCatOpen = openCategory === cat.name;
-                return (
-                  <div key={cat.name} className="space-y-1">
-                    <button
-                      onClick={() => toggleCategory(cat.name)}
-                      className="flex items-center justify-between w-full text-base font-medium cursor-pointer text-left focus:outline-none"
-                    >
-                      <span className="">{cat.name}</span>
-                      {isCatOpen ? (
-                        <Minus
-                          size={18}
-                          strokeWidth={2.5}
-                          className="text-[#FF0009]"
-                        />
-                      ) : (
-                        <Plus
-                          size={18}
-                          strokeWidth={2.5}
-                          className="text-[#FF0009]"
-                        />
-                      )}
-                    </button>
-
-                    {isCatOpen && (
-                      <div className="space-y-1">
-                        {cat.products.map((prod: string) => {
-                          const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
-                          const isActive = pathname === productLink;
+                              {isCatOpen && (
+                                <div className="space-y-1">
+                                  {cat.products.map((prod: string) => {
+                                    const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
+                                    const isActive = pathname === productLink;
+                                    return (
+                                      <Link
+                                        key={prod}
+                                        href={productLink}
+                                        onClick={onClose}
+                                        className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
+                                          }`}
+                                      >
+                                        <CornerDownRight size={16} strokeWidth={2.5} className="text-[#FF0009]" />
+                                        <span>{prod}</span>
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
+                      ) : item.subItems && item.subItems.length > 0 ? (
+                        item.subItems.map((sub) => {
+                          if (sub.type === "external_link") {
+                            return (
+                              <a
+                                key={sub.id || sub.title}
+                                href={sub.url}
+                                target={sub.target || "_blank"}
+                                rel="noopener noreferrer"
+                                onClick={onClose}
+                                className="block text-base hover:text-primary cursor-pointer py-1"
+                              >
+                                {sub.title}
+                              </a>
+                            );
+                          }
+                          const isActive = pathname === sub.url;
                           return (
                             <Link
-                              key={prod}
-                              href={productLink}
+                              key={sub.id || sub.title}
+                              href={sub.url}
                               onClick={onClose}
-                              className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${
-                                isActive
-                                  ? "text-[#FF0009]"
-                                  : "hover:text-primary"
-                              }`}
+                              className={`block text-base cursor-pointer py-1 ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
+                                }`}
                             >
-                              <CornerDownRight
-                                size={16}
-                                strokeWidth={2.5}
-                                className="text-[#FF0009] -mt-1.5"
-                              />
-                              <span>{prod}</span>
+                              {sub.title}
                             </Link>
                           );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                        })
+                      ) : (
+                        <div className="text-xs text-foreground/50 italic">No items</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
-        {/* Applications Accordion */}
-        <div className="border-b">
-          <button
-            onClick={() => toggleSection("Applications")}
-            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-          >
-            <span>Applications</span>
-            <ChevronDown
-              strokeWidth={2.5}
-              size={20}
-              className={`transition-transform duration-300 ${
-                openSection === "Applications" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          {openSection === "Applications" && (
-            <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
-              {appItems.map((item) => {
-                const isActive = pathname === item.link;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.link}
+            if (item.type === "external_link") {
+              return (
+                <div key={item.id} className="border-b">
+                  <a
+                    href={item.url || "#"}
+                    target={item.target || "_blank"}
+                    rel="noopener noreferrer"
                     onClick={onClose}
-                    className={`block text-base cursor-pointer ${
-                      isActive
-                        ? "text-[#FF0009] font-bold"
-                        : "hover:text-primary"
-                    }`}
+                    className="block py-3 text-xl font-bold hover:text-primary cursor-pointer"
                   >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                    {item.title}
+                  </a>
+                </div>
+              );
+            }
 
-        {/* Knowledge Hub Accordion */}
-        <div className="border-b">
-          <button
-            onClick={() => toggleSection("KnowledgeHub")}
-            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-          >
-            <span>Knowledge Hub</span>
-            <ChevronDown
-              strokeWidth={2.5}
-              size={20}
-              className={`transition-transform duration-300 ${
-                openSection === "KnowledgeHub" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          {openSection === "KnowledgeHub" && (
-            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {propKnowledgeItems.map((item) => {
-                const isActive = pathname === item.link;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={onClose}
-                    className={`block text-base cursor-pointer ${
-                      isActive
-                        ? "text-[#FF0009] font-bold"
-                        : "hover:text-primary"
+            return (
+              <div key={item.id} className="border-b">
+                <Link
+                  href={item.url || "#"}
+                  onClick={onClose}
+                  className={`block py-3 text-xl font-bold cursor-pointer ${pathname === item.url ? "text-[#FF0009]" : "hover:text-primary"
                     }`}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Partner Accordion */}
-        <div className="border-b">
-          <button
-            onClick={() => toggleSection("Partner")}
-            className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-          >
-            <span>Partner</span>
-            <ChevronDown
-              strokeWidth={2.5}
-              size={20}
-              className={`transition-transform duration-300 ${
-                openSection === "Partner" ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          {openSection === "Partner" && (
-            <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
-              {partnerItems.map((item) => {
-                const isActive = pathname === item.link;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={onClose}
-                    className={`block text-base cursor-pointer ${
-                      isActive
-                        ? "text-[#FF0009] font-bold"
-                        : "hover:text-primary"
+                >
+                  {item.title}
+                </Link>
+              </div>
+            );
+          })
+        ) : (
+          /* Fallback static rendering if publishedMenu is empty */
+          <>
+            <div className="border-b">
+              <button
+                onClick={() => toggleSection("About")}
+                className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+              >
+                <span>About</span>
+                <ChevronDown
+                  strokeWidth={2.5}
+                  size={20}
+                  className={`transition-transform duration-300 ${openSection === "About" ? "rotate-180" : ""
                     }`}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                />
+              </button>
 
-        {/* Contact Pill Button (Centered at bottom of scroll area) */}
+              {openSection === "About" && (
+                <div className="bg-surface border-t px-6 py-5 space-y-2 transition-all duration-300">
+                  {aboutItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.link}
+                      onClick={onClose}
+                      className="block text-base hover:text-primary"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="border-b">
+              <button
+                onClick={() => toggleSection("Products")}
+                className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+              >
+                <span>Products</span>
+                <ChevronDown
+                  strokeWidth={2.5}
+                  size={20}
+                  className={`transition-transform duration-300 ${openSection === "Products" ? "rotate-180" : ""
+                    }`}
+                />
+              </button>
+
+              {openSection === "Products" && (
+                <div className="bg-surface border-t px-6 py-5 space-y-1.5 transition-all duration-300">
+                  {productCategories.map((cat) => (
+                    <div key={cat.name} className="space-y-1">
+                      <button
+                        onClick={() => toggleCategory(cat.name)}
+                        className="flex items-center justify-between w-full text-base font-medium cursor-pointer"
+                      >
+                        <span>{cat.name}</span>
+                        {openCategory === cat.name ? <Minus size={18} /> : <Plus size={18} />}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Contact Pill Button */}
         <div className="flex justify-center pt-6 pb-4">
           <Link
             href="/contact"
@@ -388,6 +362,7 @@ export default function MobileNav({
           </Link>
         </div>
       </div>
+
 
       {/* Bottom Brand Gradient Strip */}
       <div className="w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571] shrink-0" />

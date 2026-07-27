@@ -912,4 +912,60 @@ export const api = {
       return undefined;
     }
   },
+
+  // MENU MANAGEMENT
+  getHeaderMenu: async (): Promise<{ draftItems: any[]; publishedItems: any[] }> => {
+    try {
+      const res = await client.get("/menus/header");
+      const menu = res.data?.data?.menu;
+      return {
+        draftItems: menu?.draftItems || [],
+        publishedItems: menu?.publishedItems || [],
+      };
+    } catch (err) {
+      console.error("Failed to fetch header menu:", err);
+      return { draftItems: [], publishedItems: [] };
+    }
+  },
+  updateDraftHeaderMenu: async (items: any[]): Promise<any> => {
+    const res = await client.put("/menus/header", { items });
+    return res.data?.data?.menu;
+  },
+  publishHeaderMenu: async (): Promise<any> => {
+    const res = await client.post("/menus/header/publish");
+    return res.data?.data?.menu;
+  },
+  resetHeaderMenu: async (): Promise<any> => {
+    const res = await client.post("/menus/header/reset");
+    return res.data?.data?.menu;
+  },
+
+  // FOOTER MENU MANAGEMENT
+  getFooterMenu: async (): Promise<{ draftItems: any[]; publishedItems: any[] }> => {
+    try {
+      const res = await client.get("/menus/footer");
+      const menu = res.data?.data?.menu;
+      return {
+        draftItems: menu?.draftItems || [],
+        publishedItems: menu?.publishedItems || [],
+      };
+    } catch (err) {
+      console.error("Failed to fetch footer menu:", err);
+      return { draftItems: [], publishedItems: [] };
+    }
+  },
+  updateDraftFooterMenu: async (items: any[]): Promise<any> => {
+    const res = await client.put("/menus/footer", { items });
+    return res.data?.data?.menu;
+  },
+  publishFooterMenu: async (): Promise<any> => {
+    const res = await client.post("/menus/footer/publish");
+    return res.data?.data?.menu;
+  },
+  resetFooterMenu: async (): Promise<any> => {
+    const res = await client.post("/menus/footer/reset");
+    return res.data?.data?.menu;
+  },
 };
+
+

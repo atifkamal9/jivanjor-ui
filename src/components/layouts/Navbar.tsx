@@ -12,34 +12,41 @@ import {
 import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
 import { api } from "@/lib/api";
+import { MenuItem, DEFAULT_HEADER_MENU } from "@/lib/menuTypes";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const toggleMenu = () => setOpen(!open);
 
-  const [activeMenu, setActiveMenu] = useState<
-    "about" | "products" | "applications" | "knowledge" | "partner" | null
-  >(null);
+  const [publishedMenu, setPublishedMenu] = useState<MenuItem[]>(DEFAULT_HEADER_MENU);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [hoveredAboutItem, setHoveredAboutItem] = useState<string | null>(null);
   const [hoveredAppItem, setHoveredAppItem] = useState<string | null>(null);
   const [hoveredKnowledgeItem, setHoveredKnowledgeItem] = useState<string | null>(null);
+  const [hoveredGenericSubItem, setHoveredGenericSubItem] = useState<string | null>(null);
   const [pages, setPages] = useState<any[]>([]);
   const [seos, setSeos] = useState<any[]>([]);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [blogCategories, setBlogCategories] = useState<any[]>([]);
 
+
   useEffect(() => {
     async function loadNavData() {
       try {
-        const [pagesList, seosList, catsList, activeBlogTemplate] = await Promise.all([
+        const [pagesList, seosList, catsList, activeBlogTemplate, menuRes] = await Promise.all([
           api.getPages(),
           api.getSeoMetadata(),
           api.getCategories(),
-          api.getActiveTemplateForPage("blog").catch(() => null)
+          api.getActiveTemplateForPage("blog").catch(() => null),
+          api.getHeaderMenu().catch(() => ({ draftItems: [], publishedItems: [] })),
         ]);
         setPages(pagesList);
         setSeos(seosList);
         setDbCategories(catsList);
+
+        if (menuRes?.publishedItems && menuRes.publishedItems.length > 0) {
+          setPublishedMenu(menuRes.publishedItems);
+        }
 
         if (activeBlogTemplate) {
           const rawSec = activeBlogTemplate.rawSections || activeBlogTemplate.sections;
@@ -50,7 +57,7 @@ export default function Navbar() {
         }
 
         // Find first main category and make it the active one
-        const firstMain = catsList.find((cat) => !cat.parent_category);
+        const firstMain = catsList.find((cat: any) => !cat.parent_category);
         if (firstMain) {
           setActiveCategory(firstMain.name);
         }
@@ -60,6 +67,7 @@ export default function Navbar() {
     }
     loadNavData();
   }, []);
+
 
   // ── About ──────────────────────────────────────────────────────────────────
   const defaultAboutData: Record<string, { desc: string; img: string }> = {
@@ -350,15 +358,14 @@ export default function Navbar() {
     dynamicProductCategories[0] ||
     productCategories[0];
 
-  const handleMenuEnter = (
-    menu: "about" | "products" | "applications" | "knowledge" | "partner" | null
-  ) => {
+  const handleMenuEnter = (menu: string | null) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
     setActiveMenu(menu);
   };
+
 
   const handleMenuLeave = () => {
     timeoutRef.current = setTimeout(() => {
@@ -395,79 +402,62 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
-          <div
-            className="relative py-4"
-            onMouseEnter={() => handleMenuEnter("about")}
-            onMouseLeave={handleMenuLeave}
-          >
-            <Link
-              href="/about"
-              className={`cursor-pointer transition-colors ${activeMenu === "about" ? "text-primary" : "hover:text-primary"
-                }`}
-            >
-              About
-            </Link>
-          </div>
+          {publishedMenu.map((item) => {
+            const isMega = item.type === "menu";
+            const menuKey = item.id;
+            const isActive = activeMenu === menuKey || activeMenu === item.title.toLowerCase();
+            const isProducts =
+              item.isStatic ||
+              item.id === "nav-products" ||
+              item.title.toLowerCase() === "products";
 
-          <div
-            className="relative py-4"
-            onMouseEnter={() => handleMenuEnter("products")}
-            onMouseLeave={handleMenuLeave}
-          >
-            <Link
-              href="/categories"
-              className={`flex items-center gap-1 cursor-pointer transition-colors ${activeMenu === "products" ? "text-[#FF0009]" : "hover:text-[#FF0009]"
-                }`}
-            >
-              Products
-            </Link>
-          </div>
+            const activeColor = isProducts ? "text-[#FF0009]" : "text-primary";
+            const hoverColor = isProducts ? "hover:text-[#FF0009]" : "hover:text-primary";
+            const colorClass = isActive ? activeColor : hoverColor;
 
-          <div
-            className="relative py-4"
-            onMouseEnter={() => handleMenuEnter("applications")}
-            onMouseLeave={handleMenuLeave}
-          >
-            <Link
-              href="/applications"
-              className={`cursor-pointer transition-colors ${activeMenu === "applications" ? "text-primary" : "hover:text-primary"
-                }`}
-            >
-              Applications
-            </Link>
-          </div>
+            if (isMega) {
+              return (
+                <div
+                  key={item.id}
+                  className="relative py-4"
+                  onMouseEnter={() => handleMenuEnter(menuKey)}
+                  onMouseLeave={handleMenuLeave}
+                >
+                  {/* Notice Rule #4: Main menu title with megamenu option does not directly link to any URL */}
+                  <span
+                    onClick={() => setActiveMenu(isActive ? null : menuKey)}
+                    className={`cursor-pointer transition-colors ${colorClass}`}
+                  >
+                    {item.title}
+                  </span>
+                </div>
+              );
+            }
 
-          <div
-            className="relative py-4"
-            onMouseEnter={() => handleMenuEnter("knowledge")}
-            onMouseLeave={handleMenuLeave}
-          >
-            <Link
-              href="/blog"
-              className={`cursor-pointer transition-colors ${activeMenu === "knowledge" ? "text-primary" : "hover:text-primary"
-                }`}
-            >
-              Knowledge Hub
-            </Link>
-          </div>
+            if (item.type === "external_link") {
+              return (
+                <a
+                  key={item.id}
+                  href={item.url || "#"}
+                  target={item.target || "_blank"}
+                  rel="noopener noreferrer"
+                  className={`cursor-pointer transition-colors py-4 ${hoverColor}`}
+                >
+                  {item.title}
+                </a>
+              );
+            }
 
-          <div
-            className="relative py-4"
-            onMouseEnter={() => handleMenuEnter("partner")}
-            onMouseLeave={handleMenuLeave}
-          >
-            <Link
-              href="/partner"
-              className={`cursor-pointer transition-colors ${activeMenu === "partner" ? "text-primary" : "hover:text-primary"
-                }`}
-            >
-              Partner
-            </Link>
-          </div>
-
-          <Link href="/contact" className="hover:text-primary transition-colors py-4">
-            Contact
-          </Link>
+            return (
+              <Link
+                key={item.id}
+                href={item.url || "#"}
+                className={`cursor-pointer transition-colors py-4 ${hoverColor}`}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
 
           <Link href="#" className="hover:scale-110 transition-colors py-4">
             <Image
@@ -478,6 +468,7 @@ export default function Navbar() {
             />
           </Link>
         </div>
+
 
         {/* Backdrop Overlay with Blur */}
         <div
@@ -497,140 +488,158 @@ export default function Navbar() {
           onMouseEnter={() => handleMenuEnter(activeMenu)}
           onMouseLeave={handleMenuLeave}
         >
-          {/* Products panel */}
-          {activeMenu === "products" && (
-            <div className="flex">
-              {/* Left Column: Top-level Category List */}
-              <div className="flex flex-col min-w-75 p-6 bg-surface">
-                {dynamicProductCategories.map((cat) => (
-                  <button
-                    key={cat.name}
-                    onMouseEnter={() => setActiveCategory(cat.name)}
-                    onClick={() => setActiveCategory(cat.name)}
-                    className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${activeCategory === cat.name
-                      ? "font-bold"
-                      : "font-normal hover:font-bold"
-                      }`}
-                  >
-                    <span className="leading-[200%]!">{cat.name}</span>
-                    {activeCategory === cat.name && (
-                      <ChevronRight size={16} strokeWidth={2} className="text-primary" />
-                    )}
-                  </button>
-                ))}
-              </div>
+          {(() => {
+            const activeItem = publishedMenu.find(
+              (m) => m.id === activeMenu || m.title.toLowerCase() === activeMenu?.toLowerCase()
+            );
 
-              {/* Middle Column: Sub-products list */}
-              <div className="flex flex-col flex-1 p-8">
-                {activeCategoryData.products.map((prod: any) => (
-                  <Link
-                    href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
-                    key={prod.name}
-                    className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    {prod.name}
-                  </Link>
-                ))}
-              </div>
+            const isProductMenu =
+              activeItem?.isStatic ||
+              activeItem?.id === "nav-products" ||
+              activeItem?.title.toLowerCase() === "products" ||
+              activeMenu === "products";
 
-              {/* Right Column: Category Image + View All Button */}
-              <div className="flex flex-col py-6 min-w-65 pr-8">
-                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
-                  <Image
-                    src={activeCategoryData.categoryImage}
-                    alt={activeCategoryData.name}
-                    fill
-                    className="object-cover"
-                  />
+            if (isProductMenu) {
+              return (
+                <div className="flex">
+                  {/* Left Column: Top-level Category List */}
+                  <div className="flex flex-col min-w-75 p-6 bg-surface">
+                    {dynamicProductCategories.map((cat) => (
+                      <button
+                        key={cat.name}
+                        onMouseEnter={() => setActiveCategory(cat.name)}
+                        onClick={() => setActiveCategory(cat.name)}
+                        className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${activeCategory === cat.name ? "font-bold" : "font-normal hover:font-bold"
+                          }`}
+                      >
+                        <span className="leading-[200%]!">{cat.name}</span>
+                        {activeCategory === cat.name && (
+                          <ChevronRight size={16} strokeWidth={2} className="text-primary" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Middle Column: Sub-products list */}
+                  <div className="flex flex-col flex-1 p-8">
+                    {activeCategoryData.products.map((prod: any) => (
+                      <Link
+                        href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
+                        key={prod.name}
+                        className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        {prod.name}
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Right Column: Category Image + View All Button */}
+                  <div className="flex flex-col py-6 min-w-65 pr-8">
+                    <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                      <Image
+                        src={activeCategoryData.categoryImage}
+                        alt={activeCategoryData.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <Link
+                      href="/categories"
+                      onClick={() => setActiveMenu(null)}
+                      className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
+                    >
+                      View All Products
+                    </Link>
+                  </div>
                 </div>
-                <Link
-                  href="/categories"
-                  onClick={() => setActiveMenu(null)}
-                  className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
-                >
-                  View All Products
-                </Link>
-              </div>
-            </div>
-          )}
+              );
+            }
 
-          {/* About / Applications / Knowledge / Partner panel */}
-          {activeMenu !== "products" && activeMenu !== null && (
-            <div className="flex">
-              {/* Left Column: Links */}
-              <div className="flex flex-col min-w-75 min-h-75 p-6 bg-surface">
-                {(activeMenu === "about"
-                  ? dynamicAboutItems
-                  : activeMenu === "applications"
-                    ? dynamicAppItems
-                    : activeMenu === "knowledge"
-                      ? dynamicKnowledgeItems
-                      : partnerItems
-                ).map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.link}
-                    onClick={() => {
-                      setActiveMenu(null);
-                      setHoveredAboutItem(null);
-                      setHoveredAppItem(null);
-                      setHoveredKnowledgeItem(null);
-                    }}
-                    onMouseEnter={() => {
-                      if (activeMenu === "about") {
-                        setHoveredAboutItem(item.link);
-                      } else if (activeMenu === "applications") {
-                        setHoveredAppItem(item.link);
-                      } else if (activeMenu === "knowledge") {
-                        setHoveredKnowledgeItem(item.name);
+            if (!activeItem) return null;
+
+            // Render custom or standard subItems
+            const subItems = activeItem.subItems || [];
+
+            return (
+              <div className="flex">
+                {/* Left Column: Sub-item Links */}
+                <div className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12">
+                  {subItems.length > 0 ? (
+                    subItems.map((sub) => {
+                      if (sub.type === "external_link") {
+                        return (
+                          <Link
+                            key={sub.id || sub.title}
+                            href={sub.url}
+                            target={sub.target || "_blank"}
+                            rel="noopener noreferrer"
+                            onClick={() => setActiveMenu(null)}
+                            onMouseEnter={() => setHoveredGenericSubItem(sub.description || sub.title)}
+                            className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                          >
+                            {sub.title}
+                          </Link>
+                        );
                       }
-                    }}
-                    className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
+                      return (
+                        <Link
+                          key={sub.id || sub.title}
+                          href={sub.url}
+                          onClick={() => setActiveMenu(null)}
+                          onMouseEnter={() => setHoveredGenericSubItem(sub.description || sub.title)}
+                          className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                        >
+                          {sub.title}
+                        </Link>
+                      );
+                    })
+                  ) : (
+                    <div className="text-xs text-foreground/50 italic py-4">No sub-items configured</div>
+                  )}
+                </div>
 
-              {/* Middle Column: Copy */}
-              <div className="flex flex-col flex-1 p-8">
-                <p className="text-lg text-foreground">
-                  {activeMenu === "about"
-                    ? aboutDescription
-                    : activeMenu === "applications"
-                      ? appDescription
-                      : activeMenu === "knowledge"
-                        ? knowledgeDescription
-                        : "Partner with Jivanjor, India's most trusted adhesive partner. Become a dealer, or download the Achievers Club app to access contractor rewards and tracking benefits."}
-                </p>
-              </div>
+                {/* Middle Column: Copy */}
+                <div className="flex flex-col flex-1 p-8">
+                  <p className="text-lg text-foreground">
+                    {hoveredGenericSubItem ||
+                      (activeItem.id === "nav-about"
+                        ? aboutDescription
+                        : activeItem.id === "nav-applications"
+                          ? appDescription
+                          : activeItem.id === "nav-knowledge"
+                            ? knowledgeDescription
+                            : `${activeItem.title} - Explore Jivanjor adhesive products and solutions.`)}
+                  </p>
+                </div>
 
-              {/* Right Column: Image */}
-              <div className="flex flex-col py-6 min-w-65 pr-8">
-                <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
-                  <Image
-                    src={
-                      activeMenu === "about"
-                        ? aboutImage
-                        : activeMenu === "applications"
-                          ? appImage
-                          : activeMenu === "knowledge"
-                            ? knowledgeImage
-                            : "/images/contractor/contractor-app-promo.png"
-                    }
-                    alt={activeMenu ?? "menu"}
-                    fill
-                    className="object-cover"
-                  />
+                {/* Right Column: Image */}
+                <div className="flex flex-col py-6 min-w-65 pr-8">
+                  <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                    <Image
+                      src={
+                        activeItem.id === "nav-about"
+                          ? aboutImage
+                          : activeItem.id === "nav-applications"
+                            ? appImage
+                            : activeItem.id === "nav-knowledge"
+                              ? knowledgeImage
+                              : "/images/hero.png"
+                      }
+                      alt={activeItem.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Bottom brand gradient strip */}
           <div className="absolute bottom-0 w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
         </div>
+
 
         {/* Mobile Controls */}
         <div className="flex items-center gap-2 lg:hidden mr-2">
@@ -667,6 +676,7 @@ export default function Navbar() {
         {open ? (
           <MobileNav
             onClose={() => setOpen(false)}
+            publishedMenu={publishedMenu}
             aboutItems={dynamicAboutItems}
             appItems={dynamicAppItems}
             knowledgeItems={dynamicKnowledgeItems}
@@ -685,6 +695,7 @@ export default function Navbar() {
             }
           />
         ) : null}
+
       </nav>
     </header>
   );
