@@ -4,77 +4,61 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { api, Category, Page } from "@/lib/api";
+import { FooterSectionItem, DEFAULT_FOOTER_MENU } from "@/lib/menuTypes";
 
-const footerSections = [
+const fallbackFooterSections = [
   {
     id: "products",
     title: "Products",
     links: [
-      {
-        text: "Super Premium Adhesive",
-        href: "/categories/super-premium",
-      },
-      { text: "Speciality Adhesive", href: "/categories/speciality" },
-      { text: "Regular Adhesive", href: "/categories/regular" },
-      {
-        text: "Water Proof Grade Adhesive",
-        href: "/categories/waterproof",
-      },
-      {
-        text: "Wood Ancillaries",
-        href: "/categories/wood-ancillaries",
-      },
-      { text: "ECO", href: "/categories/eco" },
-      {
-        text: "Wood Preservative",
-        href: "/categories/wood-preservative",
-      },
+      { text: "Super Premium Adhesive", href: "/categories/super-premium", target: "_self" },
+      { text: "Speciality Adhesive", href: "/categories/speciality", target: "_self" },
+      { text: "Regular Adhesive", href: "/categories/regular", target: "_self" },
+      { text: "Water Proof Grade Adhesive", href: "/categories/waterproof", target: "_self" },
+      { text: "Wood Ancillaries", href: "/categories/wood-ancillaries", target: "_self" },
+      { text: "ECO", href: "/categories/eco", target: "_self" },
+      { text: "Wood Preservative", href: "/categories/wood-preservative", target: "_self" },
     ],
   },
   {
     id: "about",
     title: "About Jivanjor",
     links: [
-      { text: "About Jivanjor", href: "/about" },
-      { text: "Research & Innovation", href: "/about/research-and-innovation" },
-      {
-        text: "Quality & Performance Promise",
-        href: "/about/quality-and-performance-promise",
-      },
-      { text: "TVCs", href: "/about/tvc" },
-      { text: "Market Presence", href: "/about/market-presence" },
+      { text: "About Jivanjor", href: "/about", target: "_self" },
+      { text: "Research & Innovation", href: "/about/research-and-innovation", target: "_self" },
+      { text: "Quality & Performance Promise", href: "/about/quality-and-performance-promise", target: "_self" },
+      { text: "TVCs", href: "/about/tvc", target: "_self" },
+      { text: "Market Presence", href: "/about/market-presence", target: "_self" },
     ],
   },
   {
     id: "support",
     title: "Support & Compliance",
     links: [
-      { text: "Technical Resources", href: "/resources" },
-      { text: "Become a Dealer", href: "/partner" },
-      { text: "Contractor Connect", href: "/contractor" },
-      { text: "Privacy Policy", href: "/privacy" },
-      { text: "Terms of Use", href: "/privacy#terms" },
-      { text: "Sitemap", href: "/sitemap" },
-      { text: "Contact Us", href: "/contact" },
+      { text: "Technical Resources", href: "/resources", target: "_self" },
+      { text: "Become a Dealer", href: "/partner", target: "_self" },
+      { text: "Contractor Connect", href: "/contractor", target: "_self" },
+      { text: "Privacy Policy", href: "/privacy", target: "_self" },
+      { text: "Terms of Use", href: "/privacy#terms", target: "_self" },
+      { text: "Sitemap", href: "/sitemap", target: "_self" },
+      { text: "Contact Us", href: "/contact", target: "_self" },
     ],
   },
 ];
 
 export default function Footer() {
   const [openSection, setOpenSection] = useState("products");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [pages, setPages] = useState<Page[]>([]);
+  const [publishedFooter, setPublishedFooter] = useState<FooterSectionItem[]>(DEFAULT_FOOTER_MENU);
 
   useEffect(() => {
     let isMounted = true;
-    Promise.all([
-      api.getCategories().catch(() => []),
-      api.getPages().catch(() => []),
-    ]).then(([catList, pageList]) => {
-      if (isMounted) {
-        setCategories(catList);
-        setPages(pageList);
+    api.getFooterMenu().then((res) => {
+      if (isMounted && res?.publishedItems && res.publishedItems.length > 0) {
+        setPublishedFooter(res.publishedItems);
+        setOpenSection(res.publishedItems[0]?.id || "products");
       }
+    }).catch((err) => {
+      console.error("Failed to load published footer menu:", err);
     });
     return () => {
       isMounted = false;
@@ -85,62 +69,17 @@ export default function Footer() {
     setOpenSection((prev) => (prev === id ? "" : id));
   };
 
-  // Build Dynamic Product Links
-  const subCats = categories.filter((c) => c.parent_category);
-  const rootCats = categories.filter((c) => !c.parent_category);
-  const displayCats = subCats.length > 0 ? subCats : rootCats;
-
-  const dynamicProductLinks = displayCats.length > 0
-    ? displayCats
-        .sort((a: any, b: any) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
-        .map((cat) => ({
-          text: cat.name,
-          href: `/categories/${cat.slug}`,
-        }))
-    : footerSections[0].links;
-
-  // Build Dynamic About Links
-  const dynamicAboutLinks = pages.length > 0
-    ? pages
-        .filter((p) => {
-          try {
-            const sec = typeof p.sections === "string" ? JSON.parse(p.sections) : p.sections;
-            return p.slug === "about" || sec?.layoutType === "about";
-          } catch {
-            return p.slug === "about";
-          }
-        })
-        .map((p) => {
-          const sec = typeof p.sections === "string" ? JSON.parse(p.sections ?? "{}") : (p.sections ?? {});
-          return {
-            text: p.title,
-            href: p.slug === "about" ? "/about" : `/about/${p.slug}`,
-            navOrder: sec?.navOrder as number | undefined,
-          };
-        })
-        .sort((a, b) => {
-          if (a.navOrder != null && b.navOrder != null) return a.navOrder - b.navOrder;
-          if (a.navOrder != null) return -1;
-          if (b.navOrder != null) return 1;
-          if (a.href === "/about") return -1;
-          if (b.href === "/about") return 1;
-          return a.text.localeCompare(b.text);
-        })
-    : footerSections[1].links;
-
-  const dynamicFooterSections = [
-    {
-      id: "products",
-      title: "Products",
-      links: dynamicProductLinks,
-    },
-    {
-      id: "about",
-      title: "About Jivanjor",
-      links: dynamicAboutLinks,
-    },
-    footerSections[2],
-  ];
+  const dynamicFooterSections = publishedFooter.length > 0
+    ? publishedFooter.map((sec) => ({
+      id: sec.id,
+      title: sec.title,
+      links: (sec.subItems || []).map((sub) => ({
+        text: sub.title,
+        href: sub.url,
+        target: sub.target || "_self",
+      })),
+    }))
+    : fallbackFooterSections;
 
   return (
     <footer className="relative overflow-hidden font-google-sans bg-white">
@@ -203,18 +142,29 @@ export default function Footer() {
             {/* Right columns */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-12 lg:gap-20">
               {dynamicFooterSections.map((section) => (
-                <div key={section.title} className="min-w-55">
+                <div key={section.id || section.title} className="min-w-55">
                   <h3 className="font-bold text-xl mb-4">{section.title}</h3>
 
                   <ul className="space-y-1">
                     {section.links.map((link) => (
                       <li key={link.text}>
-                        <Link
-                          href={link.href}
-                          className="text-lg text-foreground hover:text-primary transition"
-                        >
-                          {link.text}
-                        </Link>
+                        {link.target === "_blank" || link.href.startsWith("http") ? (
+                          <Link
+                            href={link.href}
+                            target={link.target || "_blank"}
+                            rel="noopener noreferrer"
+                            className="text-lg text-foreground hover:text-primary transition cursor-pointer"
+                          >
+                            {link.text}
+                          </Link>
+                        ) : (
+                          <Link
+                            href={link.href}
+                            className="text-lg text-foreground hover:text-primary transition"
+                          >
+                            {link.text}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -226,7 +176,8 @@ export default function Footer() {
           <div className="mt-14 border-b border-[#2E3192]" />
         </div>
       </section>
-      {/* Mobilr footer */}
+
+      {/* Mobile footer */}
       <section className="flex flex-col gap-8 px-6 py-12 md:hidden">
         {/* watermark */}
         <div className="absolute inset-0 bottom-0 opacity-50 pointer-events-none">
@@ -251,7 +202,7 @@ export default function Footer() {
             const isOpen = openSection === fs.id;
 
             return (
-              <div key={fs.id}>
+              <div key={fs.id || fs.title}>
                 <button
                   onClick={() => toggleSection(fs.id)}
                   className="flex items-center justify-between w-full"
@@ -260,21 +211,31 @@ export default function Footer() {
                   {isOpen ? <X size={24} /> : <Plus size={24} />}
                 </button>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    isOpen
-                      ? "max-h-125 opacity-100 pt-2 pb-10"
-                      : "max-h-0 opacity-0"
-                  }`}
+                  className={`overflow-hidden transition-all duration-300 ${isOpen
+                    ? "max-h-125 opacity-100 pt-2 pb-10"
+                    : "max-h-0 opacity-0"
+                    }`}
                 >
                   <ul className="space-y-1">
                     {fs.links.map((item) => (
                       <li key={item.text} className="text-lg">
-                        <Link
-                          href={item.href}
-                          className="text-foreground hover:text-primary transition"
-                        >
-                          {item.text}
-                        </Link>
+                        {item.target === "_blank" || item.href.startsWith("http") ? (
+                          <Link
+                            href={item.href}
+                            target={item.target || "_blank"}
+                            rel="noopener noreferrer"
+                            className="text-foreground hover:text-primary transition cursor-pointer"
+                          >
+                            {item.text}
+                          </Link>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="text-foreground hover:text-primary transition"
+                          >
+                            {item.text}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
