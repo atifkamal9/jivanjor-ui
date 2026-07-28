@@ -7,6 +7,7 @@ export interface SubMenuItem {
   url: string;
   target?: '_self' | '_blank';
   description?: string;
+  image?: string | null;
   order: number;
 }
 
@@ -16,11 +17,13 @@ export interface MenuItem {
   type: MenuType;
   url?: string | null;
   target?: '_self' | '_blank';
+  image?: string | null;
   isStatic?: boolean;
   isMegaMenu?: boolean;
   order: number;
   subItems?: SubMenuItem[];
 }
+
 
 export interface HeaderMenuData {
   id: string;

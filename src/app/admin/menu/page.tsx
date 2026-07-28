@@ -12,6 +12,7 @@ import {
   FooterLinkItem,
   DEFAULT_FOOTER_MENU,
 } from "@/lib/menuTypes";
+import ImageUpload from "@/components/admin/ImageUpload";
 import {
   GripVertical,
   Plus,
@@ -33,7 +34,9 @@ import {
   Info,
   LayoutTemplate,
   Footprints,
+  Image as ImageIcon,
 } from "lucide-react";
+
 
 export default function AdminMenuPage() {
   // Active Tab: "header" | "footer"
@@ -79,11 +82,13 @@ export default function AdminMenuPage() {
     type: MenuType;
     url: string;
     target: "_self" | "_blank";
+    image: string;
   }>({
     title: "",
     type: "menu",
     url: "",
     target: "_self",
+    image: "",
   });
 
   // Header Sub Item Modal state
@@ -96,13 +101,16 @@ export default function AdminMenuPage() {
     url: string;
     target: "_self" | "_blank";
     description: string;
+    image: string;
   }>({
     title: "",
     type: "page",
     url: "",
     target: "_self",
     description: "",
+    image: "",
   });
+
 
   // Footer Section Modal state
   const [footerSecModalOpen, setFooterSecModalOpen] = useState(false);
@@ -477,7 +485,7 @@ export default function AdminMenuPage() {
   // ── HEADER MODAL HANDLERS ──────────────────────────────────────────────
   const openAddMainModal = () => {
     setEditingMainIndex(null);
-    setMainFormData({ title: "", type: "menu", url: "", target: "_self" });
+    setMainFormData({ title: "", type: "menu", url: "", target: "_self", image: "" });
     setMainModalOpen(true);
   };
 
@@ -489,6 +497,7 @@ export default function AdminMenuPage() {
       type: item.type,
       url: item.url || "",
       target: item.target || "_self",
+      image: item.image || "",
     });
     setMainModalOpen(true);
   };
@@ -510,6 +519,7 @@ export default function AdminMenuPage() {
         type: mainFormData.type,
         url: urlValue,
         target: mainFormData.type === "external_link" ? mainFormData.target : "_self",
+        image: mainFormData.image.trim() || null,
         isMegaMenu: mainFormData.type === "menu",
       };
     } else {
@@ -519,6 +529,7 @@ export default function AdminMenuPage() {
         type: mainFormData.type,
         url: urlValue,
         target: mainFormData.type === "external_link" ? mainFormData.target : "_self",
+        image: mainFormData.image.trim() || null,
         isMegaMenu: mainFormData.type === "menu",
         isStatic: false,
         order: newItems.length + 1,
@@ -555,7 +566,7 @@ export default function AdminMenuPage() {
     }
     setTargetMainIndex(mainIdx);
     setEditingSubIndex(null);
-    setSubFormData({ title: "", type: "page", url: "", target: "_self", description: "" });
+    setSubFormData({ title: "", type: "page", url: "", target: "_self", description: "", image: "" });
     setSubModalOpen(true);
   };
 
@@ -570,6 +581,7 @@ export default function AdminMenuPage() {
       url: sub.url,
       target: sub.target || "_self",
       description: sub.description || "",
+      image: sub.image || "",
     });
     setSubModalOpen(true);
   };
@@ -593,6 +605,7 @@ export default function AdminMenuPage() {
         url: subFormData.url.trim(),
         target: subFormData.type === "external_link" ? subFormData.target : "_self",
         description: subFormData.description.trim(),
+        image: subFormData.image.trim() || null,
       };
     } else {
       const newSub: SubMenuItem = {
@@ -602,6 +615,7 @@ export default function AdminMenuPage() {
         url: subFormData.url.trim(),
         target: subFormData.type === "external_link" ? subFormData.target : "_self",
         description: subFormData.description.trim(),
+        image: subFormData.image.trim() || null,
         order: currentSubItems.length + 1,
       };
       currentSubItems.push(newSub);
@@ -613,6 +627,7 @@ export default function AdminMenuPage() {
     await saveHeaderDraft(newItems);
     showToast(editingSubIndex !== null ? "Sub-item updated" : "Sub-item added", "success");
   };
+
 
   const handleDeleteSubItem = async (mainIdx: number, subIdx: number) => {
     if (headerItems[mainIdx].isStatic) {
@@ -1373,6 +1388,21 @@ export default function AdminMenuPage() {
                   </div>
                 )}
 
+                <div>
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">
+                    Mega Menu Preview Image (Optional)
+                  </label>
+                  <p className="text-[11px] text-foreground/50 mb-2">
+                    Upload a custom image to display on the right side of this mega menu container.
+                  </p>
+                  <ImageUpload
+                    value={mainFormData.image}
+                    onChange={(url) => setMainFormData({ ...mainFormData, image: url })}
+                    size="compact"
+                    folder="menu"
+                  />
+                </div>
+
                 <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
                   <button
                     type="button"
@@ -1482,6 +1512,22 @@ export default function AdminMenuPage() {
                     className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary resize-none"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">
+                    Hover Preview Image (Optional)
+                  </label>
+                  <p className="text-[11px] text-foreground/50 mb-2">
+                    When hovering over this sub-link, this custom image will display in the mega menu right column.
+                  </p>
+                  <ImageUpload
+                    value={subFormData.image}
+                    onChange={(url) => setSubFormData({ ...subFormData, image: url })}
+                    size="compact"
+                    folder="menu"
+                  />
+                </div>
+
 
                 <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
                   <button
