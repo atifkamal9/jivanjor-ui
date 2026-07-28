@@ -24,7 +24,9 @@ export default function Navbar() {
   const [hoveredAppItem, setHoveredAppItem] = useState<string | null>(null);
   const [hoveredKnowledgeItem, setHoveredKnowledgeItem] = useState<string | null>(null);
   const [hoveredGenericSubItem, setHoveredGenericSubItem] = useState<string | null>(null);
+  const [hoveredSubItemObj, setHoveredSubItemObj] = useState<any | null>(null);
   const [pages, setPages] = useState<any[]>([]);
+
   const [seos, setSeos] = useState<any[]>([]);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [blogCategories, setBlogCategories] = useState<any[]>([]);
@@ -363,6 +365,10 @@ export default function Navbar() {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
+    if (activeMenu !== menu) {
+      setHoveredGenericSubItem(null);
+      setHoveredSubItemObj(null);
+    }
     setActiveMenu(menu);
   };
 
@@ -373,6 +379,8 @@ export default function Navbar() {
       setHoveredAboutItem(null);
       setHoveredAppItem(null);
       setHoveredKnowledgeItem(null);
+      setHoveredGenericSubItem(null);
+      setHoveredSubItemObj(null);
     }, 200);
   };
 
@@ -561,6 +569,21 @@ export default function Navbar() {
             // Render custom or standard subItems
             const subItems = activeItem.subItems || [];
 
+            const fallbackImage =
+              activeItem.id === "nav-about"
+                ? aboutImage
+                : activeItem.id === "nav-applications"
+                  ? appImage
+                  : activeItem.id === "nav-knowledge"
+                    ? knowledgeImage
+                    : "/images/hero.png";
+
+            const displayImage =
+              hoveredSubItemObj?.image ||
+              activeItem.image ||
+              fallbackImage ||
+              "/images/hero.png";
+
             return (
               <div className="flex">
                 {/* Left Column: Sub-item Links */}
@@ -575,7 +598,10 @@ export default function Navbar() {
                             target={sub.target || "_blank"}
                             rel="noopener noreferrer"
                             onClick={() => setActiveMenu(null)}
-                            onMouseEnter={() => setHoveredGenericSubItem(sub.description || sub.title)}
+                            onMouseEnter={() => {
+                              setHoveredGenericSubItem(sub.description || sub.title);
+                              setHoveredSubItemObj(sub);
+                            }}
                             className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                           >
                             {sub.title}
@@ -587,7 +613,10 @@ export default function Navbar() {
                           key={sub.id || sub.title}
                           href={sub.url}
                           onClick={() => setActiveMenu(null)}
-                          onMouseEnter={() => setHoveredGenericSubItem(sub.description || sub.title)}
+                          onMouseEnter={() => {
+                            setHoveredGenericSubItem(sub.description || sub.title);
+                            setHoveredSubItemObj(sub);
+                          }}
                           className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                         >
                           {sub.title}
@@ -615,26 +644,19 @@ export default function Navbar() {
 
                 {/* Right Column: Image */}
                 <div className="flex flex-col py-6 min-w-65 pr-8">
-                  <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                  <div className="relative w-full min-h-42 rounded-2xl overflow-hidden bg-surface/50">
                     <Image
-                      src={
-                        activeItem.id === "nav-about"
-                          ? aboutImage
-                          : activeItem.id === "nav-applications"
-                            ? appImage
-                            : activeItem.id === "nav-knowledge"
-                              ? knowledgeImage
-                              : "/images/hero.png"
-                      }
+                      src={displayImage}
                       alt={activeItem.title}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-all duration-300"
                     />
                   </div>
                 </div>
               </div>
             );
           })()}
+
 
           {/* Bottom brand gradient strip */}
           <div className="absolute bottom-0 w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
