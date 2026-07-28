@@ -966,6 +966,13 @@ export const api = {
     const res = await client.post("/menus/footer/reset");
     return res.data?.data?.menu;
   },
+
+  // AUTH & SECURITY
+  changePassword: async (data: { currentPassword?: string; newPassword?: string }): Promise<any> => {
+    const res = await client.post("/auth/change-password", data);
+    return res.data;
+  },
 };
+
 
 
