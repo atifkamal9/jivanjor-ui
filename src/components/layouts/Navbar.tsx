@@ -11,7 +11,8 @@ import {
 } from "@/lib/nav";
 import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
-import { api } from "@/lib/api";
+import { api, SiteSettings } from "@/lib/api";
+
 import { MenuItem, DEFAULT_HEADER_MENU } from "@/lib/menuTypes";
 
 export default function Navbar() {
@@ -30,21 +31,24 @@ export default function Navbar() {
   const [seos, setSeos] = useState<any[]>([]);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [blogCategories, setBlogCategories] = useState<any[]>([]);
-
+  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
 
   useEffect(() => {
     async function loadNavData() {
       try {
-        const [pagesList, seosList, catsList, activeBlogTemplate, menuRes] = await Promise.all([
+        const [pagesList, seosList, catsList, activeBlogTemplate, menuRes, settingsRes] = await Promise.all([
           api.getPages(),
           api.getSeoMetadata(),
           api.getCategories(),
           api.getActiveTemplateForPage("blog").catch(() => null),
           api.getHeaderMenu().catch(() => ({ draftItems: [], publishedItems: [] })),
+          api.getSettings().catch(() => null),
         ]);
         setPages(pagesList);
         setSeos(seosList);
         setDbCategories(catsList);
+        if (settingsRes) setSiteSettings(settingsRes);
+
 
         if (menuRes?.publishedItems && menuRes.publishedItems.length > 0) {
           setPublishedMenu(menuRes.publishedItems);
@@ -399,14 +403,15 @@ export default function Navbar() {
       <nav className="flex items-center justify-between max-w-360 mx-auto w-full px-6 font-google-sans relative">
         <Link href="/" className="shrink-0">
           <Image
-            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto"
-            src="/images/logo.png"
+            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto object-contain"
+            src={siteSettings?.desktopLogo || "/images/logo.png"}
             alt="Jivanjor Logo"
             loading="eager"
             width={120}
             height={72}
           />
         </Link>
+
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">

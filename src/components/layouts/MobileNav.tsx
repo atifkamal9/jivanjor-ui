@@ -11,7 +11,9 @@ import {
   partnerItems,
 } from "@/lib/nav";
 
+import { api } from "@/lib/api";
 import { MenuItem } from "@/lib/menuTypes";
+
 
 interface CategoryItem {
   name: string;
@@ -116,9 +118,16 @@ export default function MobileNav({
   const [openCategory, setOpenCategory] = useState<string | null>(
     getInitialCategory(),
   );
+  const [mobileLogoSrc, setMobileLogoSrc] = useState<string>("/images/logo.png");
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    api.getSettings().then((s) => {
+      if (s?.mobileLogo || s?.desktopLogo) {
+        setMobileLogoSrc(s.mobileLogo || s.desktopLogo || "/images/logo.png");
+      }
+    }).catch(() => {});
+
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -138,12 +147,11 @@ export default function MobileNav({
       <div className="flex items-center justify-between px-6 py-4">
         <Link href="/" onClick={onClose} className="shrink-0">
           <Image
-            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto"
-            src="/images/logo.png"
+            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto object-contain"
+            src={mobileLogoSrc}
             alt="Jivanjor Logo"
             width={112}
             height={56}
-            priority
           />
         </Link>
       </div>

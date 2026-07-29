@@ -68,6 +68,21 @@ export interface Material {
   description: string;
 }
 
+export interface SiteSettings {
+  id?: string;
+  desktopLogo?: string;
+  mobileLogo?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+    linkedin?: string;
+    twitter?: string;
+  };
+  updatedAt?: string;
+}
+
+
 export interface UseCase {
   id: string;
   title: string;
@@ -972,7 +987,33 @@ export const api = {
     const res = await client.post("/auth/change-password", data);
     return res.data;
   },
+
+  // SITE GENERAL & BRANDING SETTINGS
+  getSettings: async (): Promise<SiteSettings> => {
+    try {
+      const res = await client.get("/settings");
+      return res.data?.data?.settings || {};
+    } catch (err) {
+      console.error("Failed to fetch site settings:", err);
+      return {
+        desktopLogo: "/images/logo.png",
+        mobileLogo: "/images/logo.png",
+        socialLinks: {
+          facebook: "https://facebook.com",
+          instagram: "https://instagram.com",
+          youtube: "https://youtube.com",
+          linkedin: "https://linkedin.com",
+          twitter: "https://x.com",
+        },
+      };
+    }
+  },
+  updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
+    const res = await client.put("/settings", data);
+    return res.data?.data?.settings;
+  },
 };
+
 
 
 

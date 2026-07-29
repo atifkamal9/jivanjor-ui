@@ -49,21 +49,32 @@ const fallbackFooterSections = [
 export default function Footer() {
   const [openSection, setOpenSection] = useState("products");
   const [publishedFooter, setPublishedFooter] = useState<FooterSectionItem[]>(DEFAULT_FOOTER_MENU);
+  const [siteSettings, setSiteSettings] = useState<any>(null);
 
   useEffect(() => {
     let isMounted = true;
-    api.getFooterMenu().then((res) => {
-      if (isMounted && res?.publishedItems && res.publishedItems.length > 0) {
-        setPublishedFooter(res.publishedItems);
-        setOpenSection(res.publishedItems[0]?.id || "products");
+    Promise.all([
+      api.getFooterMenu().catch(() => ({ draftItems: [], publishedItems: [] })),
+      api.getSettings().catch(() => null),
+    ]).then(([res, settings]) => {
+      if (isMounted) {
+        if (res?.publishedItems && res.publishedItems.length > 0) {
+          setPublishedFooter(res.publishedItems);
+          setOpenSection(res.publishedItems[0]?.id || "products");
+        }
+        if (settings) {
+          setSiteSettings(settings);
+        }
       }
     }).catch((err) => {
-      console.error("Failed to load published footer menu:", err);
+      console.error("Failed to load footer data:", err);
     });
+
     return () => {
       isMounted = false;
     };
   }, []);
+
 
   const toggleSection = (id: string) => {
     setOpenSection((prev) => (prev === id ? "" : id));
@@ -99,45 +110,58 @@ export default function Footer() {
             {/* Left section */}
             <div className="shrink-0">
               <Image
-                src="/images/logo.png"
+                src={siteSettings?.desktopLogo || "/images/logo.png"}
                 alt="Jivanjor"
                 width={260}
                 height={120}
-                className="w-55 md:w-65"
+                className="w-55 md:w-65 object-contain"
               />
               {/* Social Icons */}
-              <div className="flex items-center justify-center gap-2.5 mt-8">
-                <Link href="/">
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <Link
+                  href={siteSettings?.socialLinks?.facebook || "https://facebook.com"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
                     src="/images/facebook.svg"
                     width={20}
                     height={20}
-                    alt="Social Media"
-                    className="aspect-square transition"
+                    alt="Facebook"
+                    className="aspect-square transition hover:scale-110"
                   />
                 </Link>
 
-                <Link href="/">
+                <Link
+                  href={siteSettings?.socialLinks?.instagram || "https://instagram.com"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
                     src="/images/instagram.svg"
                     width={20}
                     height={20}
-                    alt="Social Media"
-                    className="aspect-square transition"
+                    alt="Instagram"
+                    className="aspect-square transition hover:scale-110"
                   />
                 </Link>
 
-                <Link href="/">
+                <Link
+                  href={siteSettings?.socialLinks?.youtube || "https://youtube.com"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
                     src="/images/youtube.svg"
                     width={30}
                     height={30}
-                    alt="Social Media"
-                    className="aspect-square transition"
+                    alt="YouTube"
+                    className="aspect-square transition hover:scale-110"
                   />
                 </Link>
               </div>
             </div>
+
 
             {/* Right columns */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-12 lg:gap-20">
@@ -190,11 +214,11 @@ export default function Footer() {
         </div>
         <div className="self-center">
           <Image
-            src="/images/logo.png"
+            src={siteSettings?.mobileLogo || siteSettings?.desktopLogo || "/images/logo.png"}
             alt="Jivanjor"
             width={260}
             height={120}
-            className="w-55 md:w-65"
+            className="w-55 md:w-65 object-contain"
           />
         </div>
         <div className="p-2 w-full space-y-2">
@@ -244,34 +268,46 @@ export default function Footer() {
             );
           })}
         </div>
-        <div className="flex items-center justify-start gap-2.5">
-          <Link href="/">
+        <div className="flex items-center justify-start gap-3">
+          <Link
+            href={siteSettings?.socialLinks?.facebook || "https://facebook.com"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src="/images/facebook.svg"
               width={24}
               height={40}
-              alt="Social Media"
-              className="aspect-square transition"
+              alt="Facebook"
+              className="aspect-square transition hover:scale-110"
             />
           </Link>
 
-          <Link href="/">
+          <Link
+            href={siteSettings?.socialLinks?.instagram || "https://instagram.com"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src="/images/instagram.svg"
               width={24}
               height={40}
-              alt="Social Media"
-              className="aspect-square transition"
+              alt="Instagram"
+              className="aspect-square transition hover:scale-110"
             />
           </Link>
 
-          <Link href="/">
+          <Link
+            href={siteSettings?.socialLinks?.youtube || "https://youtube.com"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src="/images/youtube.svg"
               width={36}
               height={40}
-              alt="Social Media"
-              className="aspect-square transition"
+              alt="YouTube"
+              className="aspect-square transition hover:scale-110"
             />
           </Link>
         </div>
@@ -280,3 +316,4 @@ export default function Footer() {
     </footer>
   );
 }
+

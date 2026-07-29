@@ -83,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (pathname === "/admin/products" || pathname === "/admin/categories") {
       setProductsOpen(true);
     }
-    if (pathname === "/admin/menu" || pathname === "/admin/security") {
+    if (pathname === "/admin/menu" || pathname === "/admin/security" || pathname === "/admin/settings") {
       setSettingsOpen(true);
     }
   }, [pathname]);
@@ -116,10 +116,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (activeItem) return activeItem.name;
     if (pathname === "/admin/products") return "Products";
     if (pathname === "/admin/categories") return "Product Categories";
+    if (pathname === "/admin/settings") return "General Settings";
     if (pathname === "/admin/menu") return "Menus";
     if (pathname === "/admin/security") return "Security Settings";
     return "Admin Panel";
   };
+
 
 
   // Helper render function for Products collapsible menu (Desktop)
@@ -265,18 +267,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Helper render function for Settings collapsible menu (Desktop)
   const renderDesktopSettingsAccordion = () => {
-    const isChildActive = pathname === "/admin/menu" || pathname === "/admin/security";
+    const isChildActive = pathname === "/admin/settings" || pathname === "/admin/menu" || pathname === "/admin/security";
 
     if (isCollapsed) {
       return (
         <Link
-          href="/admin/menu"
+          href="/admin/settings"
           className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${
             isChildActive
               ? "bg-primary/10 text-primary"
               : "text-foreground/75 hover:bg-surface hover:text-foreground"
           }`}
-          title="Settings (Menus & Security)"
+          title="Settings (General, Menus & Security)"
         >
           <Settings
             className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
@@ -317,6 +319,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
             
             <Link
+              href="/admin/settings"
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
+                pathname === "/admin/settings"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+              <span>General & Branding</span>
+            </Link>
+
+            <Link
               href="/admin/menu"
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
                 pathname === "/admin/menu"
@@ -347,7 +361,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Helper render function for Settings collapsible menu (Mobile)
   const renderMobileSettingsAccordion = () => {
-    const isChildActive = pathname === "/admin/menu" || pathname === "/admin/security";
+    const isChildActive = pathname === "/admin/settings" || pathname === "/admin/menu" || pathname === "/admin/security";
 
     return (
       <div className="w-full">
@@ -373,6 +387,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative pl-7 py-1 space-y-1 mt-1">
             <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
             
+            <Link
+              href="/admin/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
+                pathname === "/admin/settings"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary" : "bg-foreground/20"}`} />
+              <span>General & Branding</span>
+            </Link>
+
             <Link
               href="/admin/menu"
               onClick={() => setMobileMenuOpen(false)}
@@ -403,6 +430,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     );
   };
+
 
 
   return (
