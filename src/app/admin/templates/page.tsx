@@ -2732,18 +2732,6 @@ export default function TemplatesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Knowledge base Description Subtitle
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={homeSections.knowledgeBase.subtitle || ""}
-                          onChange={(e) => updateSectionField("knowledgeBase", "subtitle", e.target.value)}
-                          placeholder="Explore insights and tips..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
-                        />
-                      </div>
                     </div>
 
                     {/* List of Dynamic Resource Cards */}
@@ -2759,7 +2747,7 @@ export default function TemplatesPage() {
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-4">
                         {homeSections.knowledgeBase.items?.map((item: any, idx: number) => (
                           <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
                             <button

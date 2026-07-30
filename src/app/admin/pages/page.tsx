@@ -3280,138 +3280,138 @@ export default function PagesPage() {
                         {(formData.sections.testimonials.items || []).map((item: any, idx: number) => {
                           const totalPageItems = (formData.sections.testimonials.items || []).length;
                           return (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("testimonials", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="flex items-center gap-2 pr-10">
-                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
-                              <div className="flex items-center gap-1 ml-auto">
-                                <button
-                                  type="button"
-                                  onClick={() => moveItem("testimonials", idx, "up")}
-                                  disabled={idx === 0}
-                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                                  title="Move up"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => moveItem("testimonials", idx, "down")}
-                                  disabled={idx === totalPageItems - 1}
-                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                                  title="Move down"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                </button>
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                              <button
+                                type="button"
+                                onClick={() => removeItem("testimonials", idx)}
+                                className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                              <div className="flex items-center gap-2 pr-10">
+                                <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
+                                <div className="flex items-center gap-1 ml-auto">
+                                  <button
+                                    type="button"
+                                    onClick={() => moveItem("testimonials", idx, "up")}
+                                    disabled={idx === 0}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move up"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveItem("testimonials", idx, "down")}
+                                    disabled={idx === totalPageItems - 1}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move down"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
-                                <select
-                                  value={item.type || "text"}
-                                  onChange={(e) => updateItemField("testimonials", idx, "type", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer"
-                                >
-                                  <option value="text">Text Quote Card</option>
-                                  <option value="video">Video Card</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
-                                <input
-                                  type="text"
-                                  value={item.name || ""}
-                                  onChange={(e) => updateItemField("testimonials", idx, "name", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
-                                  placeholder="Mr. Imran Saifi"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-2">
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
-                                <input
-                                  type="text"
-                                  value={item.role || ""}
-                                  onChange={(e) => updateItemField("testimonials", idx, "role", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                                  placeholder="Contractor Carpenter"
-                                />
-                              </div>
-                            </div>
-
-                            {item.type === "video" ? (
-                              <div className="space-y-3 border-t border-border/50 pt-2">
+                              <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Video URL (YouTube or Direct MP4 Link)</label>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
+                                  <select
+                                    value={item.type || "text"}
+                                    onChange={(e) => updateItemField("testimonials", idx, "type", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer"
+                                  >
+                                    <option value="text">Text Quote Card</option>
+                                    <option value="video">Video Card</option>
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
                                   <input
                                     type="text"
-                                    value={item.videoUrl || ""}
-                                    onChange={(e) => updateItemField("testimonials", idx, "videoUrl", e.target.value)}
-                                    placeholder="https://www.youtube.com/watch?v=..."
-                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                    value={item.name || ""}
+                                    onChange={(e) => updateItemField("testimonials", idx, "name", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
+                                    placeholder="Mr. Imran Saifi"
                                   />
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              </div>
+
+                              <div className="grid grid-cols-1 gap-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
+                                  <input
+                                    type="text"
+                                    value={item.role || ""}
+                                    onChange={(e) => updateItemField("testimonials", idx, "role", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                    placeholder="Contractor Carpenter"
+                                  />
+                                </div>
+                              </div>
+
+                              {item.type === "video" ? (
+                                <div className="space-y-3 border-t border-border/50 pt-2">
                                   <div>
-                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Video URL (YouTube or Direct MP4 Link)</label>
+                                    <input
+                                      type="text"
+                                      value={item.videoUrl || ""}
+                                      onChange={(e) => updateItemField("testimonials", idx, "videoUrl", e.target.value)}
+                                      placeholder="https://www.youtube.com/watch?v=..."
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                    />
+                                  </div>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <div>
+                                      <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                      <ImageUpload
+                                        value={item.image || ""}
+                                        onChange={(url) => updateItemField("testimonials", idx, "image", url)}
+                                        folder="templates"
+                                        size="compact"
+                                        aspect="video"
+                                      />
+                                    </div>
+                                    <div className="flex items-center gap-2 pt-4 pl-2">
+                                      <input
+                                        type="checkbox"
+                                        id={`homeShowPlayButton-${idx}`}
+                                        checked={item.showPlayButton !== false}
+                                        onChange={(e) => updateItemField("testimonials", idx, "showPlayButton", e.target.checked)}
+                                        className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                      />
+                                      <label htmlFor={`homeShowPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                        Show Play Button
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="border-t border-border/50 pt-2 space-y-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                    <textarea
+                                      rows={2}
+                                      value={item.quote || ""}
+                                      onChange={(e) => updateItemField("testimonials", idx, "quote", e.target.value)}
+                                      placeholder="Aquabond kitchen ka specialist hai."
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Optional Avatar Image</label>
                                     <ImageUpload
                                       value={item.image || ""}
                                       onChange={(url) => updateItemField("testimonials", idx, "image", url)}
                                       folder="templates"
                                       size="compact"
-                                      aspect="video"
+                                      aspect="square"
                                     />
                                   </div>
-                                  <div className="flex items-center gap-2 pt-4 pl-2">
-                                    <input
-                                      type="checkbox"
-                                      id={`homeShowPlayButton-${idx}`}
-                                      checked={item.showPlayButton !== false}
-                                      onChange={(e) => updateItemField("testimonials", idx, "showPlayButton", e.target.checked)}
-                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
-                                    />
-                                    <label htmlFor={`homeShowPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
-                                      Show Play Button
-                                    </label>
-                                  </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <div className="border-t border-border/50 pt-2 space-y-2">
-                                <div>
-                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
-                                  <textarea
-                                    rows={2}
-                                    value={item.quote || ""}
-                                    onChange={(e) => updateItemField("testimonials", idx, "quote", e.target.value)}
-                                    placeholder="Aquabond kitchen ka specialist hai."
-                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Optional Avatar Image</label>
-                                  <ImageUpload
-                                    value={item.image || ""}
-                                    onChange={(url) => updateItemField("testimonials", idx, "image", url)}
-                                    folder="templates"
-                                    size="compact"
-                                    aspect="square"
-                                  />
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
+                              )}
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
@@ -3438,18 +3438,6 @@ export default function PagesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={formData.sections.knowledgeBase.subtitle || ""}
-                          onChange={(e) => updateSectionField("knowledgeBase", "subtitle", e.target.value)}
-                          placeholder="Explore insights..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
-                        />
-                      </div>
                     </div>
 
                     {/* Articles items */}
@@ -3465,60 +3453,148 @@ export default function PagesPage() {
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {formData.sections.knowledgeBase.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("knowledgeBase", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background animate-pulse-subtle"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Article #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("knowledgeBase", idx, "title", e.target.value)}
-                                placeholder="Article Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <div className="grid grid-cols-2 gap-2 mb-2">
-                                <div className="space-y-1">
-                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Desktop Image</span>
-                                  <ImageUpload
-                                    value={item.image || ""}
-                                    onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
-                                    folder="pages"
-                                  />
-                                </div>
-                                <div className="space-y-1">
-                                  <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Mobile/Tablet Image</span>
-                                  <ImageUpload
-                                    value={item.mobileImage || ""}
-                                    onChange={(url) => updateItemField("knowledgeBase", idx, "mobileImage", url)}
-                                    folder="pages"
-                                  />
+                      <div className="space-y-4">
+                        {formData.sections.knowledgeBase.items?.map((item: any, idx: number) => {
+                          const totalKBItems = (formData.sections.knowledgeBase.items || []).length;
+                          return (
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                              <button
+                                type="button"
+                                onClick={() => removeItem("knowledgeBase", idx)}
+                                className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background animate-pulse-subtle"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                              <div className="flex items-center gap-2 pr-10">
+                                <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Article #{idx + 1}</span>
+                                <div className="flex items-center gap-1 ml-auto">
+                                  <button
+                                    type="button"
+                                    onClick={() => moveItem("knowledgeBase", idx, "up")}
+                                    disabled={idx === 0}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move up"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveItem("knowledgeBase", idx, "down")}
+                                    disabled={idx === totalKBItems - 1}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move down"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                  </button>
                                 </div>
                               </div>
-                              <textarea
-                                rows={2}
-                                value={item.summary}
-                                onChange={(e) => updateItemField("knowledgeBase", idx, "summary", e.target.value)}
-                                placeholder="Article Summary"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <input
-                                type="text"
-                                value={item.link || ""}
-                                onChange={(e) => updateItemField("knowledgeBase", idx, "link", e.target.value)}
-                                placeholder="Link Target (e.g. #)"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                              />
+                              <div>
+                                <input
+                                  type="text"
+                                  value={item.title}
+                                  onChange={(e) => updateItemField("knowledgeBase", idx, "title", e.target.value)}
+                                  placeholder="Article Title"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
+                                />
+                                <div className="grid grid-cols-2 gap-2 mb-2">
+                                  <div className="space-y-1">
+                                    <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Desktop Image</span>
+                                    <ImageUpload
+                                      value={item.image || ""}
+                                      onChange={(url) => updateItemField("knowledgeBase", idx, "image", url)}
+                                      folder="pages"
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <span className="block text-[9px] font-bold text-foreground/45 uppercase tracking-wider">Mobile/Tablet Image</span>
+                                    <ImageUpload
+                                      value={item.mobileImage || ""}
+                                      onChange={(url) => updateItemField("knowledgeBase", idx, "mobileImage", url)}
+                                      folder="pages"
+                                      aspect="square"
+                                    />
+                                  </div>
+                                </div>
+                                <textarea
+                                  rows={2}
+                                  value={item.summary}
+                                  onChange={(e) => updateItemField("knowledgeBase", idx, "summary", e.target.value)}
+                                  placeholder="Article Summary"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
+                                />
+                                <input
+                                  type="text"
+                                  value={item.link || ""}
+                                  onChange={(e) => updateItemField("knowledgeBase", idx, "link", e.target.value)}
+                                  placeholder="Link Target (e.g. #)"
+                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Latest Blog Settings */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div>
+                        <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Latest Blog Card Settings</span>
+                        <p className="text-[11px] text-foreground/50 font-medium">Customize the card title, text content, and CTA button at the bottom of the Knowledge section.</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border bg-surface/30 rounded-2xl">
+                        <div>
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            Blog Card Title
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.sections.knowledgeBase.blogTitle || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogTitle", e.target.value)}
+                            placeholder="Latest Blogs"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            CTA Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.sections.knowledgeBase.blogCtaText || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogCtaText", e.target.value)}
+                            placeholder="Learn More"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            Blog Text Content
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={formData.sections.knowledgeBase.blogText || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogText", e.target.value)}
+                            placeholder="Hear from the carpenters, contractors and dealers who rely on Jivanjor..."
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary resize-none font-medium"
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            CTA Target Link URL
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.sections.knowledgeBase.blogCtaLink || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogCtaLink", e.target.value)}
+                            placeholder="/blog"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-medium outline-none focus:border-primary"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -5368,110 +5444,110 @@ export default function PagesPage() {
                         {(formData.sections.professionals.testimonials || []).map((item: any, idx: number) => {
                           const totalProfItems = (formData.sections.professionals.testimonials || []).length;
                           return (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeProfessionalsTestimonial(idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <div className="flex items-center gap-2 pr-10">
-                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
-                              <div className="flex items-center gap-1 ml-auto">
-                                <button
-                                  type="button"
-                                  onClick={() => moveProfessionalsTestimonial(idx, "up")}
-                                  disabled={idx === 0}
-                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                                  title="Move up"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => moveProfessionalsTestimonial(idx, "down")}
-                                  disabled={idx === totalProfItems - 1}
-                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                                  title="Move down"
-                                >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                </button>
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                              <button
+                                type="button"
+                                onClick={() => removeProfessionalsTestimonial(idx)}
+                                className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                              <div className="flex items-center gap-2 pr-10">
+                                <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
+                                <div className="flex items-center gap-1 ml-auto">
+                                  <button
+                                    type="button"
+                                    onClick={() => moveProfessionalsTestimonial(idx, "up")}
+                                    disabled={idx === 0}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move up"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6" /></svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => moveProfessionalsTestimonial(idx, "down")}
+                                    disabled={idx === totalProfItems - 1}
+                                    className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                    title="Move down"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
-                                <select
-                                  value={item.type || "text"}
-                                  onChange={(e) => updateItemField("professionals", idx, "type", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer border-border"
-                                >
-                                  <option value="text">Text Quote Card</option>
-                                  <option value="video">Video Card</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
-                                <input
-                                  type="text"
-                                  value={item.name || ""}
-                                  onChange={(e) => updateItemField("professionals", idx, "name", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold border-border"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-2">
-                              <div>
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
-                                <input
-                                  type="text"
-                                  value={item.role || ""}
-                                  onChange={(e) => updateItemField("professionals", idx, "role", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs border-border"
-                                />
-                              </div>
-                            </div>
-
-                            {item.type === "video" ? (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border/50 pt-2">
+                              <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
-                                  <ImageUpload
-                                    value={item.image || ""}
-                                    onChange={(url) => updateItemField("professionals", idx, "image", url)}
-                                    folder="templates"
-                                    size="compact"
-                                  />
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Type</label>
+                                  <select
+                                    value={item.type || "text"}
+                                    onChange={(e) => updateItemField("professionals", idx, "type", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer border-border"
+                                  >
+                                    <option value="text">Text Quote Card</option>
+                                    <option value="video">Video Card</option>
+                                  </select>
                                 </div>
-                                <div className="flex items-center gap-2 pt-4 pl-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Name</label>
                                   <input
-                                    type="checkbox"
-                                    id={`showPlayButton-${idx}`}
-                                    checked={!!item.showPlayButton}
-                                    onChange={(e) => updateItemField("professionals", idx, "showPlayButton", e.target.checked)}
-                                    className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                    type="text"
+                                    value={item.name || ""}
+                                    onChange={(e) => updateItemField("professionals", idx, "name", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold border-border"
                                   />
-                                  <label htmlFor={`showPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
-                                    Show Play Button
-                                  </label>
                                 </div>
                               </div>
-                            ) : (
-                              <div className="border-t border-border/50 pt-2">
-                                <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
-                                <textarea
-                                  rows={2}
-                                  value={item.quote || ""}
-                                  onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
-                                  className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                                />
+
+                              <div className="grid grid-cols-1 gap-2">
+                                <div>
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Author Role</label>
+                                  <input
+                                    type="text"
+                                    value={item.role || ""}
+                                    onChange={(e) => updateItemField("professionals", idx, "role", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs border-border"
+                                  />
+                                </div>
                               </div>
-                            )}
-                          </div>
-                        );
+
+                              {item.type === "video" ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border/50 pt-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                    <ImageUpload
+                                      value={item.image || ""}
+                                      onChange={(url) => updateItemField("professionals", idx, "image", url)}
+                                      folder="templates"
+                                      size="compact"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-2 pt-4 pl-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`showPlayButton-${idx}`}
+                                      checked={!!item.showPlayButton}
+                                      onChange={(e) => updateItemField("professionals", idx, "showPlayButton", e.target.checked)}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                    />
+                                    <label htmlFor={`showPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Show Play Button
+                                    </label>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="border-t border-border/50 pt-2">
+                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                  <textarea
+                                    rows={2}
+                                    value={item.quote || ""}
+                                    onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
+                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
