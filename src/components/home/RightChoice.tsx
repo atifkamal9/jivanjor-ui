@@ -6,10 +6,12 @@ import Link from "next/link";
 interface RightChoiceProps {
   data?: {
     title?: string;
-    subtitle?: string;
+    bgImage?: string;
+    bgImageMobile?: string;
     items?: Array<{
       name?: string;
       title?: string;
+      icon?: string;
       link?: string;
     }>;
   };
@@ -29,43 +31,45 @@ function mapAdhesiveIcon(index: number) {
 
 export default function RightChoice({ data }: RightChoiceProps) {
   const title = data?.title || "Find The Right Adhesive";
+  const bgImage = data?.bgImage || "/images/Rectangle 5.png";
+  const bgImageMobile = data?.bgImageMobile || "/images/Rectangle 5 (1).png";
   const items = data?.items || [];
 
   const defaultAdhesiveTypes = [
-    { icon: "/icons/chair.png", title: "Furniture and Woodwork", link: "#" },
+    { icon: "/icons/chair.png", title: "Furniture and Woodwork", link: "/applications" },
     {
       icon: "/icons/cabinet.png",
       title: "Kitchen Cabinets & Storage",
-      link: "#",
+      link: "/applications",
     },
     {
       icon: "/icons/woodfloor.png",
       title: "Laminates & Surface Finishings",
-      link: "#",
+      link: "/applications",
     },
     {
       icon: "/icons/wooden plank.png",
       title: "Moisture-Prone Woodwork",
-      link: "#",
+      link: "/applications",
     },
     {
       icon: "/icons/checklist.png",
       title: "PVC, Acrylic & Edge Finishing",
-      link: "#",
+      link: "/applications",
     },
     {
       icon: "/icons/house.png",
       title: "Home Repairs & Special Fixing",
-      link: "#",
+      link: "/applications",
     },
   ];
 
   const types =
     items && items.length > 0
-      ? items.map((item, idx) => ({
-        icon: mapAdhesiveIcon(idx),
-        title: item.name || item.title || "",
-        link: item.link || "#",
+      ? items.slice(0, 6).map((item, idx) => ({
+        icon: item.icon && item.icon.trim() !== "" ? item.icon : mapAdhesiveIcon(idx),
+        title: item.name || item.title || defaultAdhesiveTypes[idx % 6].title,
+        link: item.link || "/applications",
       }))
       : defaultAdhesiveTypes;
 
@@ -74,17 +78,19 @@ export default function RightChoice({ data }: RightChoiceProps) {
       <div className="absolute inset-0 bg-linear-to-r from-[#772571] to-[#FF0009] h-21 lg:hidden" />
       <div className="absolute inset-0 top-21 lg:top-0">
         <Image
-          src="/images/Rectangle 5.png"
+          src={bgImage}
           className="hidden lg:block object-fill"
-          alt="Right Choice"
+          alt="Right Choice Background"
           priority
+          unoptimized
           fill
         />
         <Image
-          src="/images/Rectangle 5 (1).png"
+          src={bgImageMobile}
           className="object-fill lg:hidden"
-          alt="Right Choice"
+          alt="Right Choice Background Mobile"
           priority
+          unoptimized
           fill
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
@@ -94,10 +100,10 @@ export default function RightChoice({ data }: RightChoiceProps) {
           <Heading className="text-white">{title}</Heading>
         </div>
         <div className="flex flex-wrap gap-4 justify-items-center justify-center max-w-full xl:max-w-153">
-          {types.map((type) => (
+          {types.map((type, idx) => (
             <Link
-              href="/applications"
-              key={type.title}
+              href={type.link || "/applications"}
+              key={`${type.title}-${idx}`}
               className="relative flex flex-col items-center justify-between text-center group cursor-pointer bg-white w-43 md:w-48 h-42 md:h-51 p-4 md:p-5 rounded-2xl overflow-hidden transition-all duration-300 ease-out transform hover:-translate-y-1"
             >
               {/* Graceful Hover Gradient Overlay */}
@@ -107,9 +113,10 @@ export default function RightChoice({ data }: RightChoiceProps) {
                 <Image
                   src={type.icon}
                   alt={type.title}
-                  className="aspect-square bg-transparent! invert group-hover:invert-0! transition-all duration-300"
+                  className="aspect-square bg-transparent! invert group-hover:invert-0! transition-all duration-300 object-contain"
                   height={48}
                   width={48}
+                  unoptimized
                 />
                 <p className="font-medium text-base lg:text-lg group-hover:text-white transition-colors duration-300">
                   {type.title}

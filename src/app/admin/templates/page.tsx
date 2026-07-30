@@ -84,24 +84,26 @@ const defaultHomeSections = {
   },
   findAdhesive: {
     title: "Find The Right Adhesive",
-    subtitle: "Select your application category to discover matched adhesives engineered for maximum hold.",
+    bgImage: "/images/Rectangle 5.png",
+    bgImageMobile: "/images/Rectangle 5 (1).png",
     items: [
-      { name: "Furniture and Woodwork", link: "#" },
-      { name: "Kitchen Cabinets & Storage", link: "#" },
-      { name: "Laminates & Surface Finishings", link: "#" },
-      { name: "Moisture-Prone Woodwork", link: "#" },
-      { name: "PVC, Acrylic & Edge Finishing", link: "#" },
-      { name: "Home Repairs & Special Fixing", link: "#" }
+      { icon: "/icons/chair.png", name: "Furniture and Woodwork", link: "/applications" },
+      { icon: "/icons/cabinet.png", name: "Kitchen Cabinets & Storage", link: "/applications" },
+      { icon: "/icons/woodfloor.png", name: "Laminates & Surface Finishings", link: "/applications" },
+      { icon: "/icons/wooden plank.png", name: "Moisture-Prone Woodwork", link: "/applications" },
+      { icon: "/icons/checklist.png", name: "PVC, Acrylic & Edge Finishing", link: "/applications" },
+      { icon: "/icons/house.png", name: "Home Repairs & Special Fixing", link: "/applications" }
     ]
   },
   whyTrustUs: {
     title: "Why Professionals Trust Jivanjor",
-    subtitle: "Over decades, builders and contractors have endorsed Jivanjor for quality, innovation, and support.",
+    bgImage: "/images/Professional.png",
+    bgImageMobile: "/images/Professional-mobile.png",
     items: [
-      { title: "Consistent Quality", description: "Every batch is rigorously tested in our labs to ensure matching bonding performance." },
-      { title: "Ease of Application", description: "Engineered viscosity allows smooth, even spreading with minimal effort." },
-      { title: "Range of Products", description: "A tailored product for every surface—from solid wood to rigid PVC and terrace concrete." },
-      { title: "Preferred by Experts", description: "Loved by leading interior designers, architects, and professional carpentry guilds." }
+      { icon: "/images/Asterisk.png", title: "Consistent Quality" },
+      { icon: "/images/Up-and-down.png", title: "Ease of Application" },
+      { icon: "/images/Connection-point.png", title: "Range of Products" },
+      { icon: "/images/Tag.png", title: "Preferred by Experts" }
     ]
   },
   showcaseGrid: {
@@ -2076,68 +2078,151 @@ export default function TemplatesPage() {
                         </label>
                         <input
                           type="text"
-                          value={homeSections.findAdhesive.title}
+                          value={homeSections.findAdhesive.title || ""}
                           onChange={(e) => updateSectionField("findAdhesive", "title", e.target.value)}
                           placeholder="Find The Right Adhesive"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
                         />
                       </div>
-                      <div className="md:col-span-2">
+
+                      {/* Desktop Background Image */}
+                      <div>
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle
+                          Desktop Background Image
                         </label>
-                        <textarea
-                          rows={2}
-                          value={homeSections.findAdhesive.subtitle || ""}
-                          onChange={(e) => updateSectionField("findAdhesive", "subtitle", e.target.value)}
-                          placeholder="Select your application category..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        <ImageUpload
+                          value={homeSections.findAdhesive.bgImage || ""}
+                          onChange={(url) => updateSectionField("findAdhesive", "bgImage", url)}
+                          folder="templates"
+                        />
+                      </div>
+
+                      {/* Mobile Background Image */}
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Mobile Background Image
+                        </label>
+                        <ImageUpload
+                          value={homeSections.findAdhesive.bgImageMobile || ""}
+                          onChange={(url) => updateSectionField("findAdhesive", "bgImageMobile", url)}
+                          folder="templates"
                         />
                       </div>
                     </div>
 
-                    {/* Categories Links */}
-                    <div className="space-y-4">
+                    {/* 6 Fixed Categories Links */}
+                    <div className="space-y-4 pt-4 border-t border-border">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Application Pathways Categories</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("findAdhesive", { name: "New Category Pathway", link: "#" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Category Link
-                        </button>
+                        <div>
+                          <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Application Pathways (6 Fixed Links)</span>
+                          <p className="text-[11px] text-foreground/50 font-medium">Select predefined icons or input custom icon URLs for each pathway.</p>
+                        </div>
+                        <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black">
+                          6 / 6 Links
+                        </span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.findAdhesive.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative flex flex-col gap-2">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("findAdhesive", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Link #{idx + 1}</span>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-                              <input
-                                type="text"
-                                value={item.name}
-                                onChange={(e) => updateItemField("findAdhesive", idx, "name", e.target.value)}
-                                placeholder="Category Name"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
-                              />
-                              <input
-                                type="text"
-                                value={item.link || ""}
-                                onChange={(e) => updateItemField("findAdhesive", idx, "link", e.target.value)}
-                                placeholder="Link Target (e.g. #)"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                              />
-                            </div>
-                          </div>
-                        ))}
+                        {(() => {
+                          const items = homeSections.findAdhesive.items || [];
+                          const defaults = [
+                            { icon: "/icons/chair.png", name: "Furniture and Woodwork", link: "/applications" },
+                            { icon: "/icons/cabinet.png", name: "Kitchen Cabinets & Storage", link: "/applications" },
+                            { icon: "/icons/woodfloor.png", name: "Laminates & Surface Finishings", link: "/applications" },
+                            { icon: "/icons/wooden plank.png", name: "Moisture-Prone Woodwork", link: "/applications" },
+                            { icon: "/icons/checklist.png", name: "PVC, Acrylic & Edge Finishing", link: "/applications" },
+                            { icon: "/icons/house.png", name: "Home Repairs & Special Fixing", link: "/applications" },
+                          ];
+                          const fixedItems = [...items];
+                          while (fixedItems.length < 6) {
+                            fixedItems.push(defaults[fixedItems.length % 6]);
+                          }
+                          const finalSix = fixedItems.slice(0, 6);
+
+                          const predefinedIcons = [
+                            { label: "Chair / Furniture", value: "/icons/chair.png" },
+                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
+                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
+                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
+                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
+                            { label: "House / Home Repairs", value: "/icons/house.png" },
+                            { label: "Product Range Icon", value: "/images/about/Ad-product.svg" },
+                            { label: "Support Spanner Icon", value: "/images/about/Spanner.svg" },
+                            { label: "Growth Dynamics Icon", value: "/images/about/Positive-dynamics.svg" },
+                            { label: "Variants Tag Icon", value: "/images/about/variants.svg" },
+                            { label: "Distribution Touchpoints", value: "/images/about/distribution.svg" },
+                            { label: "Professionals Group", value: "/images/about/professionals.svg" },
+                            { label: "Pan-India Presence", value: "/images/about/presence.svg" },
+                            { label: "Facilities Factory", value: "/images/about/facilities.svg" },
+                          ];
+
+                          return finalSix.map((item: any, idx: number) => {
+                            const currentIcon = item.icon || defaults[idx % 6].icon;
+
+                            return (
+                              <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl flex flex-col gap-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] font-black uppercase bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+                                    Link #{idx + 1}
+                                  </span>
+                                  {/* Live Icon Preview */}
+                                  <div className="flex items-center gap-2 bg-background p-1.5 px-2.5 rounded-xl border border-border">
+                                    <div className="w-6 h-6 relative shrink-0">
+                                      <Image src={currentIcon} alt="" fill className="object-contain" unoptimized />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Row 1: Select Icon & Category Title in same row */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Select Icon
+                                    </label>
+                                    <select
+                                      value={currentIcon}
+                                      onChange={(e) => updateItemField("findAdhesive", idx, "icon", e.target.value)}
+                                      className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold cursor-pointer outline-none focus:border-primary"
+                                    >
+                                      {predefinedIcons.map((ic) => (
+                                        <option key={ic.value} value={ic.value}>
+                                          {ic.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Category Title
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.name || item.title || ""}
+                                      onChange={(e) => updateItemField("findAdhesive", idx, "name", e.target.value)}
+                                      placeholder="Category Title"
+                                      className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* Row 2: Link Target URL full width */}
+                                <div>
+                                  <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                    Link Target URL
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={item.link || "/applications"}
+                                    onChange={(e) => updateItemField("findAdhesive", idx, "link", e.target.value)}
+                                    placeholder="Link Target (e.g. /applications)"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          });
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -2157,68 +2242,131 @@ export default function TemplatesPage() {
                         </label>
                         <input
                           type="text"
-                          value={homeSections.whyTrustUs.title}
+                          value={homeSections.whyTrustUs.title || ""}
                           onChange={(e) => updateSectionField("whyTrustUs", "title", e.target.value)}
                           placeholder="Why Professionals Trust Jivanjor"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
                         />
                       </div>
-                      <div className="md:col-span-2">
+
+                      {/* Desktop Image */}
+                      <div>
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle
+                          Desktop Image
                         </label>
-                        <textarea
-                          rows={2}
-                          value={homeSections.whyTrustUs.subtitle || ""}
-                          onChange={(e) => updateSectionField("whyTrustUs", "subtitle", e.target.value)}
-                          placeholder="Over decades, builders have endorsed..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        <ImageUpload
+                          value={homeSections.whyTrustUs.bgImage || homeSections.whyTrustUs.image || ""}
+                          onChange={(url) => updateSectionField("whyTrustUs", "bgImage", url)}
+                          folder="templates"
+                        />
+                      </div>
+
+                      {/* Mobile Image */}
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Mobile Image
+                        </label>
+                        <ImageUpload
+                          value={homeSections.whyTrustUs.bgImageMobile || homeSections.whyTrustUs.imageMobile || ""}
+                          onChange={(url) => updateSectionField("whyTrustUs", "bgImageMobile", url)}
+                          folder="templates"
+                          aspect="square"
                         />
                       </div>
                     </div>
 
-                    {/* Trust Items */}
-                    <div className="space-y-4">
+                    {/* Fixed 4 Trust Factor Items */}
+                    <div className="space-y-4 pt-4 border-t border-border">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Trust Factors Checklist</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("whyTrustUs", { title: "Consistent Quality", description: "Batch checked..." })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Trust Factor
-                        </button>
+                        <div>
+                          <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Trust Factors (4 Fixed Items)</span>
+                          <p className="text-[11px] text-foreground/50 font-medium">Select icons and titles for trust factors shown on homepage.</p>
+                        </div>
+                        <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black">
+                          4 / 4 Factors
+                        </span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.whyTrustUs.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("whyTrustUs", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Item #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("whyTrustUs", idx, "title", e.target.value)}
-                                placeholder="Factor Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => updateItemField("whyTrustUs", idx, "description", e.target.value)}
-                                placeholder="Factor Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                              />
-                            </div>
-                          </div>
-                        ))}
+                        {(() => {
+                          const items = homeSections.whyTrustUs.items || [];
+                          const defaults = [
+                            { icon: "/images/Asterisk.png", title: "Consistent Quality" },
+                            { icon: "/images/Up-and-down.png", title: "Ease of Application" },
+                            { icon: "/images/Connection-point.png", title: "Range of Products" },
+                            { icon: "/images/Tag.png", title: "Preferred by Experts" },
+                          ];
+                          const fixedItems = [...items];
+                          while (fixedItems.length < 4) {
+                            fixedItems.push(defaults[fixedItems.length % 4]);
+                          }
+                          const finalFour = fixedItems.slice(0, 4);
+
+                          const predefinedTrustIcons = [
+                            { label: "Asterisk / Star Quality", value: "/images/Asterisk.png" },
+                            { label: "Up & Down Spreading", value: "/images/Up-and-down.png" },
+                            { label: "Connection Point Range", value: "/images/Connection-point.png" },
+                            { label: "Tag / Expert Choice", value: "/images/Tag.png" },
+                            { label: "Chair / Furniture", value: "/icons/chair.png" },
+                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
+                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
+                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
+                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
+                            { label: "House / Home Repairs", value: "/icons/house.png" },
+                          ];
+
+                          return finalFour.map((item: any, idx: number) => {
+                            const currentIcon = item.icon || defaults[idx % 4].icon;
+
+                            return (
+                              <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl flex flex-col gap-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] font-black uppercase text-primary">
+                                    Item #{idx + 1}
+                                  </span>
+                                  {/* Live Icon Preview */}
+                                  <div className="flex items-center gap-2 p-2 rounded-xl bg-surface border border-border">
+                                    <div className="w-6 h-6 relative shrink-0">
+                                      <Image src={currentIcon} alt="" fill className="object-contain" unoptimized />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Row: Factor Title & Select Icon in same row */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Factor Title
+                                    </label>
+                                    <input
+                                      type="text"
+                                      value={item.title || item.name || ""}
+                                      onChange={(e) => updateItemField("whyTrustUs", idx, "title", e.target.value)}
+                                      placeholder="Factor Title"
+                                      className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Select Icon
+                                    </label>
+                                    <select
+                                      value={currentIcon}
+                                      onChange={(e) => updateItemField("whyTrustUs", idx, "icon", e.target.value)}
+                                      className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold cursor-pointer outline-none focus:border-primary"
+                                    >
+                                      {predefinedTrustIcons.map((ic) => (
+                                        <option key={ic.value} value={ic.value}>
+                                          {ic.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          });
+                        })()}
                       </div>
                     </div>
                   </div>
