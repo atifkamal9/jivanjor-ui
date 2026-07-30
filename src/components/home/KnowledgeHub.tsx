@@ -69,36 +69,36 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
     items && items.length > 0
       ? items.map((item, idx) => ({
         title: item.title || "",
-        image: item.imageUrl || item.image || mapKnowledgeImage(idx),
+        image: item.image || item.imageUrl || mapKnowledgeImage(idx),
         mobileImage:
-          item.imageUrl || item.mobileImage || mapKnowledgeImage(idx),
+          item.mobileImage || item.image || item.imageUrl || mapKnowledgeImage(idx),
         link: item.link || "#",
       }))
       : defaultCards;
 
   return (
     <section className="relative py-8 md:py-12 overflow-hidden">
-      <div className="mx-auto max-w-360 justify-center leading-normal px-4 sm:px-6 w-full">
-        <Heading className="text-center mb-6">{title}</Heading>
-        <div className="flex flex-col gap-6 py-6 w-full">
+      <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
+        <Heading className="text-center">{title}</Heading>
+        <div className="flex flex-col gap-6 py-6">
           {cards.map((c, idx) => (
             <div
               key={`${c.title}-${idx}`}
-              className="bg-surface overflow-hidden rounded-[20px] w-full"
+              className="bg-surface overflow-hidden rounded-[20px]"
             >
-              <div className="flex flex-col md:flex-row w-full items-center justify-between">
-                <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-4">
-                  <h3 className="font-medium text-2xl md:text-[46px] w-full">
+              <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-3">
+                  <h3 className="font-medium text-2xl md:text-[46px] max-w-68 sm:max-w-96 px-7.5 sm:px-0">
                     {c.title}
                   </h3>
                   <a
                     href={c.link}
-                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-5 py-1.5 text-primary hover:bg-primary/5 transition-colors"
+                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-4 py-1 text-primary hover:bg-primary/5 transition-colors"
                   >
                     Learn More
                   </a>
                 </div>
-                <div className="hidden md:block relative flex-1 w-full md:w-1/2 min-h-90">
+                <div className="hidden md:block relative flex-1 min-w-100 xl:min-w-179 min-h-90">
                   <Image
                     fill
                     src={c.image}
@@ -106,7 +106,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                     className="object-cover rounded-[20px]"
                   />
                 </div>
-                <div className="md:hidden relative flex-1 w-full min-h-48">
+                <div className="md:hidden relative flex-1 min-w-59 min-h-38">
                   <Image
                     fill
                     src={c.mobileImage}
