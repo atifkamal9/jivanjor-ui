@@ -1737,9 +1737,9 @@ export default function PagesPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
             {/* Sidebar tabs */}
-            <div className="w-full lg:w-1/4 flex flex-col gap-1.5 shrink-0 bg-surface/30 p-3 border border-border rounded-2xl h-fit">
+            <div className="w-full lg:w-64 xl:w-72 flex flex-col gap-1.5 shrink-0 bg-surface/30 p-3 border border-border rounded-2xl sticky top-4 self-start">
               {tabsList.map((tab) => {
                 const TabIcon = tab.icon;
                 return (
@@ -1770,7 +1770,7 @@ export default function PagesPage() {
             </div>
 
             {/* Input Canvas Panels */}
-            <div className="flex-1 bg-background border border-border p-6 rounded-3xl shadow-sm min-h-[60vh] flex flex-col justify-between">
+            <div className="flex-1 bg-background border border-border p-6 rounded-3xl shadow-sm overflow-y-auto max-h-[calc(100vh-12rem)] flex flex-col justify-between [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <div className="space-y-6">
                 {activeTab === "general" && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
@@ -2547,26 +2547,58 @@ export default function PagesPage() {
                                 </div>
                               </div>
 
-                              {/* Category Name Input */}
-                              <div>
-                                <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
-                                  Category Title / Tab Name
-                                </label>
-                                <input
-                                  type="text"
-                                  value={cat.name || ""}
-                                  onChange={(e) => {
-                                    const currentCats = [...(formData.sections.productRange.categories || [])];
-                                    currentCats[cIdx] = { ...currentCats[cIdx], name: e.target.value };
-                                    updateSectionField("productRange", "categories", currentCats);
-                                  }}
-                                  placeholder="e.g. Super Premium"
-                                  className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                                />
+                              {/* Sub-Category Selector from Database & Tab Name Input */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
+                                    Select System Sub-Category / Category
+                                  </label>
+                                  <select
+                                    value={cat.categoryId || ""}
+                                    onChange={(e) => {
+                                      const selectedId = e.target.value;
+                                      const matchedCat = availableCategories.find(
+                                        (c) => c.id === selectedId || c.slug === selectedId
+                                      );
+                                      const currentCats = [...(formData.sections.productRange.categories || [])];
+                                      currentCats[cIdx] = {
+                                        ...currentCats[cIdx],
+                                        categoryId: selectedId,
+                                        name: matchedCat ? matchedCat.name : (currentCats[cIdx].name || `Category ${cIdx + 1}`),
+                                      };
+                                      updateSectionField("productRange", "categories", currentCats);
+                                    }}
+                                    className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary cursor-pointer font-medium"
+                                  >
+                                    <option value="">-- Choose Sub-Category --</option>
+                                    {availableCategories.map((c) => (
+                                      <option key={c.id} value={c.id}>
+                                        {c.parent_category ? `${c.parent_category} → ${c.name}` : c.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                <div>
+                                  <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
+                                    Display Tab Title / Custom Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={cat.name || ""}
+                                    onChange={(e) => {
+                                      const currentCats = [...(formData.sections.productRange.categories || [])];
+                                      currentCats[cIdx] = { ...currentCats[cIdx], name: e.target.value };
+                                      updateSectionField("productRange", "categories", currentCats);
+                                    }}
+                                    placeholder="e.g. Super Premium"
+                                    className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                  />
+                                </div>
                               </div>
 
                               {/* Selected Products checklist for this category (Max 10) */}
-                              <div className="space-y-2 pt-2">
+                              <div className="space-y-3 pt-2">
                                 <div className="flex items-center justify-between">
                                   <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
                                     Selected Products for "{cat.name || `Category ${cIdx + 1}`}"
@@ -2575,6 +2607,87 @@ export default function PagesPage() {
                                     {selectedIds.length} / 10 Products Max
                                   </span>
                                 </div>
+
+                                {/* Drag & Drop Selected Products Reorder Bar */}
+                                {selectedIds.length > 0 && (
+                                  <div className="space-y-2 p-3.5 border border-primary/30 bg-primary/5 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-[11px] font-black uppercase text-primary tracking-wider flex items-center gap-1.5">
+                                        <GripVertical className="h-3.5 w-3.5" />
+                                        <span>Drag & Drop to Rearrange Display Order</span>
+                                      </span>
+                                      <span className="text-[10px] text-foreground/50 font-semibold">
+                                        Order: 1st → Last in Carousel
+                                      </span>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                      {selectedIds.map((prodId: string, pIdx: number) => {
+                                        const prod = availableProducts.find((p) => p.id === prodId || p.slug === prodId);
+                                        const prodName = prod ? (prod.name || (prod as any).title || prodId) : prodId;
+                                        const prodImg = prod ? (prod.image || (prod as any).imageUrl) : null;
+
+                                        return (
+                                          <div
+                                            key={prodId}
+                                            draggable={true}
+                                            onDragStart={(e) => {
+                                              e.dataTransfer.setData("text/plain", prodId);
+                                              e.dataTransfer.effectAllowed = "move";
+                                            }}
+                                            onDragOver={(e) => {
+                                              e.preventDefault();
+                                              e.dataTransfer.dropEffect = "move";
+                                            }}
+                                            onDrop={(e) => {
+                                              e.preventDefault();
+                                              const draggedId = e.dataTransfer.getData("text/plain");
+                                              if (!draggedId || draggedId === prodId) return;
+
+                                              const currentCats = [...(formData.sections.productRange.categories || [])];
+                                              const currentSelected = [...(currentCats[cIdx].selectedProductIds || [])];
+
+                                              const sourceIndex = currentSelected.indexOf(draggedId);
+                                              const targetIndex = currentSelected.indexOf(prodId);
+
+                                              if (sourceIndex !== -1 && targetIndex !== -1) {
+                                                const [moved] = currentSelected.splice(sourceIndex, 1);
+                                                currentSelected.splice(targetIndex, 0, moved);
+                                                currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: currentSelected };
+                                                updateSectionField("productRange", "categories", currentCats);
+                                              }
+                                            }}
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border hover:border-primary/60 rounded-lg text-xs font-bold shadow-2xs cursor-grab active:cursor-grabbing transition group select-none"
+                                          >
+                                            <GripVertical className="h-3.5 w-3.5 text-foreground/40 group-hover:text-primary shrink-0" />
+                                            <span className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[10px] font-black flex items-center justify-center shrink-0">
+                                              {pIdx + 1}
+                                            </span>
+                                            {prodImg && (
+                                              <div className="w-5 h-5 relative shrink-0">
+                                                <Image src={prodImg} alt="" fill className="object-contain" unoptimized />
+                                              </div>
+                                            )}
+                                            <span className="truncate max-w-[130px]">{prodName}</span>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const currentCats = [...(formData.sections.productRange.categories || [])];
+                                                const updated = selectedIds.filter((id: string) => id !== prodId);
+                                                currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: updated };
+                                                updateSectionField("productRange", "categories", currentCats);
+                                              }}
+                                              className="text-foreground/40 hover:text-red-600 transition ml-0.5"
+                                              title="Remove product"
+                                            >
+                                              <X className="h-3.5 w-3.5" />
+                                            </button>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
 
                                 {availableProducts.length === 0 ? (
                                   <div className="p-3 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">

@@ -1,4 +1,5 @@
-import { Hero, Categories, RightChoice } from "@/components/resources";
+import { Hero, Categories } from "@/components/resources";
+import { RightChoice } from "@/components/categories";
 
 export default function Resources() {
   return (

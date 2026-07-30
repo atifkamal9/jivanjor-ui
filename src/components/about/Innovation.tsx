@@ -7,6 +7,8 @@ interface InnovationProps {
   data?: {
     title?: string;
     bgImage?: string;
+    mobileBgImage?: string;
+    mobileImage?: string;
     items?: Array<{
       title?: string;
       desc?: string;
@@ -19,6 +21,7 @@ interface InnovationProps {
 export default function Innovation({ data }: InnovationProps) {
   const title = data?.title || "Built on Innovation That Drives Performance";
   const bgImage = data?.bgImage || "/images/about/about-innovation-bg.png";
+  const mobileBgImage = data?.mobileBgImage || data?.mobileImage || bgImage;
   const defaultCards = [
     {
       title: "Equipped R&D",
@@ -59,7 +62,7 @@ export default function Innovation({ data }: InnovationProps) {
       <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative w-full z-10 pb-4 md:pb-0">
         <div className="relative md:hidden min-h-116 min-w-100 w-full h-full">
           <Image
-            src={bgImage}
+            src={mobileBgImage}
             alt="R&D Lab background"
             fill
             className="object-cover object-center"

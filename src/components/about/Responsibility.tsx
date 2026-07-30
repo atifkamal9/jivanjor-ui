@@ -17,6 +17,7 @@ interface ResponsibilityProps {
       title?: string;
       subtitle?: string;
       image?: string;
+      mobileImage?: string;
       items?: Array<{
         title?: string;
         desc?: string;
@@ -92,6 +93,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
   const sustainabilityTitle = data?.sustainability?.title || "A Responsible Approach to Manufacturing";
   const sustainabilitySubtitle = data?.sustainability?.subtitle || "JACPL follows a long-term sustainability approach focused on protecting the environment, managing resources responsibly and reducing the impact of business operations.";
   const sustainabilityImage = data?.sustainability?.image || "/images/about/windmill.png";
+  const sustainabilityMobileImage = data?.sustainability?.mobileImage || sustainabilityImage;
   const practices = data?.sustainability?.items && data.sustainability.items.length > 0 ? data.sustainability.items : defaultPractices;
 
   return (
@@ -238,7 +240,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
           </div>
           <div className="lg:hidden relative w-full min-h-100 rounded-2xl overflow-hidden mt-6">
             <Image
-              src={sustainabilityImage}
+              src={sustainabilityMobileImage}
               alt="Windmill representing sustainability"
               fill
               className="object-cover"
@@ -249,4 +251,3 @@ export default function Responsibility({ data }: ResponsibilityProps) {
     </section>
   );
 }
-

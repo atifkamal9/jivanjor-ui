@@ -1441,6 +1441,7 @@ export default function TemplatesPage() {
                                 updateSectionField("hero", "media", newMedia);
                               }}
                               folder="templates"
+                              aspect="square"
                             />
                             <span className="text-[10px] text-foreground/40 font-medium">Recommended aspect ratio: 4:5 or 9:16 (e.g. 750x1334)</span>
                           </div>
@@ -2907,53 +2908,85 @@ export default function TemplatesPage() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Promise Feature Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("promise", { title: "New Quality Pillar", desc: "Description...", icon: "/images/about/Ad-product.svg" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Promise Card
-                        </button>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.promise.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("promise", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title || ""}
-                                onChange={(e) => updateItemField("promise", idx, "title", e.target.value)}
-                                placeholder="Card Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.desc || ""}
-                                onChange={(e) => updateItemField("promise", idx, "desc", e.target.value)}
-                                placeholder="Card Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Icon Image</span>
-                                <ImageUpload
-                                  value={item.icon || ""}
-                                  onChange={(url) => updateItemField("promise", idx, "icon", url)}
-                                  folder="templates"
-                                  size="compact"
+                        {homeSections.promise.items?.map((item: any, idx: number) => {
+                          const predefinedIcons = [
+                            { label: "Adhesive Product / Quality", value: "/images/about/Ad-product.svg" },
+                            { label: "Leaves / Sustainability", value: "/images/about/Leaves.svg" },
+                            { label: "Presence / Handshake", value: "/images/about/presence.svg" },
+                            { label: "Professionals / Carpenter", value: "/images/about/professionals.svg" },
+                            { label: "Dealers / Network", value: "/images/about/dealers.svg" },
+                            { label: "Chair / Furniture", value: "/icons/chair.png" },
+                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
+                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
+                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
+                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
+                            { label: "House / Home Repairs", value: "/icons/house.png" }
+                          ];
+                          const currentIcon = item.icon || "/images/about/Ad-product.svg";
+
+                          return (
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl flex flex-col gap-3 relative">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black uppercase text-primary">
+                                  Card #{idx + 1}
+                                </span>
+                                {/* Live Icon Preview */}
+                                <div className="flex items-center gap-2 p-1.5 rounded-xl bg-surface">
+                                  <div className="w-6 h-6 relative shrink-0">
+                                    <Image src={currentIcon} alt="" fill className="object-contain" unoptimized />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                    Card Title
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={item.title || ""}
+                                    onChange={(e) => updateItemField("promise", idx, "title", e.target.value)}
+                                    placeholder="Card Title"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                    Select Icon
+                                  </label>
+                                  <select
+                                    value={currentIcon}
+                                    onChange={(e) => updateItemField("promise", idx, "icon", e.target.value)}
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold cursor-pointer outline-none focus:border-primary"
+                                  >
+                                    {predefinedIcons.map((ic) => (
+                                      <option key={ic.value} value={ic.value}>
+                                        {ic.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                  Card Description
+                                </label>
+                                <textarea
+                                  rows={2}
+                                  value={item.desc || ""}
+                                  onChange={(e) => updateItemField("promise", idx, "desc", e.target.value)}
+                                  placeholder="Card Description"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary resize-none font-medium"
                                 />
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -2979,12 +3012,24 @@ export default function TemplatesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
-                      <div className="md:col-span-2 space-y-1">
-                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Background Lab Image</span>
+                      <div className="space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Desktop Background Image (1440x600)</span>
                         <ImageUpload
                           value={homeSections.innovation.bgImage || ""}
                           onChange={(url) => updateSectionField("innovation", "bgImage", url)}
                           folder="templates"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Mobile Background Image (800x600)</span>
+                        <ImageUpload
+                          value={homeSections.innovation.mobileBgImage || homeSections.innovation.mobileImage || ""}
+                          onChange={(url) => {
+                            updateSectionField("innovation", "mobileBgImage", url);
+                            updateSectionField("innovation", "mobileImage", url);
+                          }}
+                          folder="templates"
+                          aspect="square"
                         />
                       </div>
                       <div>
@@ -3017,26 +3062,12 @@ export default function TemplatesPage() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Innovation Pillars</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("innovation", { title: "New Chemistry Standard", desc: "Description detail..." })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Pillar
-                        </button>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {homeSections.innovation.items?.map((item: any, idx: number) => (
                           <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-2">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("innovation", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Pillar #{idx + 1}</span>
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit block">Pillar #{idx + 1}</span>
                             <div>
                               <input
                                 type="text"
@@ -3169,12 +3200,21 @@ export default function TemplatesPage() {
                             className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs resize-none"
                           />
                         </div>
-                        <div className="md:col-span-2 space-y-1">
-                          <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Illustration / Photo</span>
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Desktop Illustration / Photo (500x400)</span>
                           <ImageUpload
                             value={homeSections.responsibility.sustainability?.image || ""}
                             onChange={(url) => updateNestedField("responsibility", "sustainability", "image", url)}
                             folder="templates"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Mobile Illustration / Photo (800x400)</span>
+                          <ImageUpload
+                            value={homeSections.responsibility.sustainability?.mobileImage || ""}
+                            onChange={(url) => updateNestedField("responsibility", "sustainability", "mobileImage", url)}
+                            folder="templates"
+                            aspect="square"
                           />
                         </div>
                       </div>
@@ -3183,34 +3223,12 @@ export default function TemplatesPage() {
                       <div className="space-y-3">
                         <div className="flex items-center justify-between border-t border-border pt-4">
                           <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Environmental Practices (Leaves list)</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const currItems = homeSections.responsibility.sustainability?.items || [];
-                              const newItems = [...currItems, { title: "Save Energy", desc: "Energy checks..." }];
-                              updateNestedField("responsibility", "sustainability", "items", newItems);
-                            }}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                          >
-                            <Plus className="h-3.5 w-3.5" /> Add Practice item
-                          </button>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {homeSections.responsibility.sustainability?.items?.map((item: any, itemIdx: number) => (
                             <div key={itemIdx} className="p-3 bg-background border border-border rounded-xl relative space-y-2">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const currItems = homeSections.responsibility.sustainability?.items || [];
-                                  const newItems = currItems.filter((_: any, i: number) => i !== itemIdx);
-                                  updateNestedField("responsibility", "sustainability", "items", newItems);
-                                }}
-                                className="absolute top-2 right-2 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                              <span className="text-[9px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded-full w-fit">Item #{itemIdx + 1}</span>
+                              <span className="text-[9px] font-black uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded-full w-fit block">Item #{itemIdx + 1}</span>
                               <input
                                 type="text"
                                 value={item.title || ""}
@@ -3279,53 +3297,83 @@ export default function TemplatesPage() {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Statistics Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("presence", { value: "100+", label: "Stat Label", icon: "/images/about/presence.svg" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Stat Card
-                        </button>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.presence.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("presence", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Stat #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.value || ""}
-                                onChange={(e) => updateItemField("presence", idx, "value", e.target.value)}
-                                placeholder="Stat Value (e.g. 27,000+)"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-bold mb-2"
-                              />
-                              <input
-                                type="text"
-                                value={item.label || ""}
-                                onChange={(e) => updateItemField("presence", idx, "label", e.target.value)}
-                                placeholder="Stat Label"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Icon Image</span>
-                                <ImageUpload
-                                  value={item.icon || ""}
-                                  onChange={(url) => updateItemField("presence", idx, "icon", url)}
-                                  folder="templates"
-                                  size="compact"
+                        {homeSections.presence.items?.map((item: any, idx: number) => {
+                          const predefinedIcons = [
+                            { label: "Presence / Handshake", value: "/images/about/presence.svg" },
+                            { label: "Professionals / Carpenter", value: "/images/about/professionals.svg" },
+                            { label: "Dealers / Network", value: "/images/about/dealers.svg" },
+                            { label: "Chair / Furniture", value: "/icons/chair.png" },
+                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
+                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
+                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
+                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
+                            { label: "House / Home Repairs", value: "/icons/house.png" }
+                          ];
+                          const currentIcon = item.icon || "/images/about/presence.svg";
+
+                          return (
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl flex flex-col gap-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black uppercase text-primary">
+                                  Stat #{idx + 1}
+                                </span>
+                                {/* Live Icon Preview */}
+                                <div className="flex items-center gap-2 p-1.5 rounded-xl bg-surface">
+                                  <div className="w-6 h-6 relative shrink-0">
+                                    <Image src={currentIcon} alt="" fill className="object-contain" unoptimized />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                    Stat Value
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={item.value || ""}
+                                    onChange={(e) => updateItemField("presence", idx, "value", e.target.value)}
+                                    placeholder="Stat Value (e.g. 27,000+)"
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-bold outline-none focus:border-primary"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                    Select Icon
+                                  </label>
+                                  <select
+                                    value={currentIcon}
+                                    onChange={(e) => updateItemField("presence", idx, "icon", e.target.value)}
+                                    className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold cursor-pointer outline-none focus:border-primary"
+                                  >
+                                    {predefinedIcons.map((ic) => (
+                                      <option key={ic.value} value={ic.value}>
+                                        {ic.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                  Stat Label
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.label || ""}
+                                  onChange={(e) => updateItemField("presence", idx, "label", e.target.value)}
+                                  placeholder="Stat Label"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
                                 />
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 

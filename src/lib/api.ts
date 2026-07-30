@@ -79,6 +79,12 @@ export interface SiteSettings {
     linkedin?: string;
     twitter?: string;
   };
+  rightChoiceBanner?: {
+    title?: string;
+    subtitle?: string;
+    ctaText?: string;
+    ctaLink?: string;
+  };
   updatedAt?: string;
 }
 
@@ -1004,6 +1010,12 @@ export const api = {
           youtube: "https://youtube.com",
           linkedin: "https://linkedin.com",
           twitter: "https://x.com",
+        },
+        rightChoiceBanner: {
+          title: "Need Help Choosing the Right Adhesive?",
+          subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+          ctaText: "Submit Your Query",
+          ctaLink: "/contact",
         },
       };
     }

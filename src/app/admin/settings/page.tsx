@@ -35,6 +35,12 @@ export default function AdminSettingsPage() {
     linkedin: "",
     twitter: "",
   });
+  const [rightChoiceBanner, setRightChoiceBanner] = useState({
+    title: "",
+    subtitle: "",
+    ctaText: "",
+    ctaLink: "",
+  });
 
   useEffect(() => {
     loadSettings();
@@ -52,6 +58,12 @@ export default function AdminSettingsPage() {
         youtube: res.socialLinks?.youtube || "",
         linkedin: res.socialLinks?.linkedin || "",
         twitter: res.socialLinks?.twitter || "",
+      });
+      setRightChoiceBanner({
+        title: res.rightChoiceBanner?.title || "",
+        subtitle: res.rightChoiceBanner?.subtitle || "",
+        ctaText: res.rightChoiceBanner?.ctaText || "",
+        ctaLink: res.rightChoiceBanner?.ctaLink || "",
       });
     } catch (err) {
       console.error("Failed to load settings:", err);
@@ -80,6 +92,12 @@ export default function AdminSettingsPage() {
           linkedin: socialLinks.linkedin.trim(),
           twitter: socialLinks.twitter.trim(),
         },
+        rightChoiceBanner: {
+          title: rightChoiceBanner.title.trim(),
+          subtitle: rightChoiceBanner.subtitle.trim(),
+          ctaText: rightChoiceBanner.ctaText.trim(),
+          ctaLink: rightChoiceBanner.ctaLink.trim(),
+        },
       });
 
       if (updated) {
@@ -92,9 +110,15 @@ export default function AdminSettingsPage() {
           linkedin: updated.socialLinks?.linkedin || "",
           twitter: updated.socialLinks?.twitter || "",
         });
+        setRightChoiceBanner({
+          title: updated.rightChoiceBanner?.title || "",
+          subtitle: updated.rightChoiceBanner?.subtitle || "",
+          ctaText: updated.rightChoiceBanner?.ctaText || "",
+          ctaLink: updated.rightChoiceBanner?.ctaLink || "",
+        });
       }
 
-      showToast("Branding & social media settings saved successfully!", "success");
+      showToast("Branding & settings saved successfully!", "success");
     } catch (err) {
       console.error("Failed to save settings:", err);
       showToast("Failed to save settings", "error");
@@ -307,7 +331,67 @@ export default function AdminSettingsPage() {
                   />
                 </div>
               </div>
+            </div>
 
+            {/* Card 3: Right Choice Adhesive Banner Settings */}
+            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
+              <div className="flex items-center gap-3 pb-4 border-b border-border">
+                <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                  <Sliders className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-foreground">Right Choice Adhesive Banner Settings</h2>
+                  <p className="text-[11px] text-foreground/50 mt-0.5">
+                    Configure global content texts and CTA button for the &quot;Need Help Choosing the Right Adhesive?&quot; banner across category and application pages.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">Banner Title / Heading</label>
+                  <input
+                    type="text"
+                    value={rightChoiceBanner.title}
+                    onChange={(e) => setRightChoiceBanner({ ...rightChoiceBanner, title: e.target.value })}
+                    placeholder="Need Help Choosing the Right Adhesive?"
+                    className="w-full p-2.5 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary font-medium"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">Banner Description / Subtitle</label>
+                  <textarea
+                    rows={2}
+                    value={rightChoiceBanner.subtitle}
+                    onChange={(e) => setRightChoiceBanner({ ...rightChoiceBanner, subtitle: e.target.value })}
+                    placeholder="Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution."
+                    className="w-full p-2.5 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary font-medium resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">CTA Button Text</label>
+                  <input
+                    type="text"
+                    value={rightChoiceBanner.ctaText}
+                    onChange={(e) => setRightChoiceBanner({ ...rightChoiceBanner, ctaText: e.target.value })}
+                    placeholder="Submit Your Query"
+                    className="w-full p-2.5 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">CTA Button Target Link</label>
+                  <input
+                    type="text"
+                    value={rightChoiceBanner.ctaLink}
+                    onChange={(e) => setRightChoiceBanner({ ...rightChoiceBanner, ctaLink: e.target.value })}
+                    placeholder="/contact"
+                    className="w-full p-2.5 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary font-medium"
+                  />
+                </div>
+              </div>
             </div>
           </form>
         )}
