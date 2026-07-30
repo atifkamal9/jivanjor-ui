@@ -5,6 +5,11 @@ interface KnowledgeHubProps {
   data?: {
     title?: string;
     subtitle?: string;
+    blogTitle?: string;
+    blogText?: string;
+    blogDescription?: string;
+    blogCtaText?: string;
+    blogCtaLink?: string;
     items?: Array<{
       title?: string;
       summary?: string;
@@ -31,6 +36,13 @@ function mapKnowledgeImage(index: number) {
 export default function KnowledgeHub({ data }: KnowledgeHubProps) {
   const title = data?.title || "Knowledge Base & Guides";
   const items = data?.items || [];
+  const blogTitle = data?.blogTitle || "Latest Blogs";
+  const blogText =
+    data?.blogText ||
+    data?.blogDescription ||
+    "Hear from the carpenters, contractors and dealers who rely on Jivanjor for real projects.";
+  const blogCtaText = data?.blogCtaText || "Learn More";
+  const blogCtaLink = data?.blogCtaLink || "/blog";
 
   const defaultCards = [
     {
@@ -66,27 +78,27 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
 
   return (
     <section className="relative py-8 md:py-12 overflow-hidden">
-      <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
-        <Heading className="text-center">{title}</Heading>
-        <div className="flex flex-col gap-6 py-6">
+      <div className="mx-auto max-w-360 justify-center leading-normal px-4 sm:px-6 w-full">
+        <Heading className="text-center mb-6">{title}</Heading>
+        <div className="flex flex-col gap-6 py-6 w-full">
           {cards.map((c, idx) => (
             <div
               key={`${c.title}-${idx}`}
-              className="bg-surface overflow-hidden rounded-[20px]"
+              className="bg-surface overflow-hidden rounded-[20px] w-full"
             >
-              <div className="flex flex-col md:flex-row">
-                <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-3">
-                  <h3 className="font-medium text-2xl md:text-[46px] max-w-68 sm:max-w-96 px-7.5 sm:px-0">
+              <div className="flex flex-col md:flex-row w-full items-center justify-between">
+                <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-4">
+                  <h3 className="font-medium text-2xl md:text-[46px] w-full">
                     {c.title}
                   </h3>
                   <a
                     href={c.link}
-                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-4 py-1 text-primary hover:bg-primary/5 transition-colors"
+                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-5 py-1.5 text-primary hover:bg-primary/5 transition-colors"
                   >
                     Learn More
                   </a>
                 </div>
-                <div className="hidden md:block relative flex-1 min-w-100 xl:min-w-179 min-h-90">
+                <div className="hidden md:block relative flex-1 w-full md:w-1/2 min-h-90">
                   <Image
                     fill
                     src={c.image}
@@ -94,7 +106,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                     className="object-cover rounded-[20px]"
                   />
                 </div>
-                <div className="md:hidden relative flex-1 min-w-59 min-h-38">
+                <div className="md:hidden relative flex-1 w-full min-h-48">
                   <Image
                     fill
                     src={c.mobileImage}
@@ -106,11 +118,11 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
             </div>
           ))}
           {/* Blog Card */}
-          <div className="bg-surface relative overflow-hidden rounded-[20px]">
-            <div className="flex flex-col md:flex-row">
-              <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 px-16 py-10 space-y-4">
+          <div className="bg-surface relative overflow-hidden rounded-[20px] w-full">
+            <div className="flex flex-col md:flex-row w-full">
+              <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 px-8 md:px-16 py-8 md:py-10 space-y-4">
                 <h3 className="font-medium text-2xl md:text-[46px]">
-                  Latest Blogs
+                  {blogTitle}
                 </h3>
                 <div className="absolute bottom-0 left-0 pointer-events-none w-60 h-40 md:w-120 md:h-70">
                   <Image
@@ -121,18 +133,15 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                   />
                 </div>
               </div>
-              <div className="relative flex flex-col items-center text-center md:items-start md:text-start flex-1 min-h-fit md:min-h-80 px-10 py-6 md:py-12 md:px-0 md:pr-10 space-y-4">
+              <div className="relative flex flex-col items-center text-center md:items-start md:text-start flex-1 w-full md:w-1/2 min-h-fit md:min-h-80 px-6 py-6 md:py-12 md:px-0 md:pr-10 space-y-4">
                 <p className="text-sm md:text-2xl max-w-124 font-google-sans text-foreground/80">
-                  Hear from the carpenters, contractors and dealers who rely on
-                  Jivanjor for real projects. Hear from the carpenters,
-                  contractors and dealers who rely on Jivanjor for real
-                  projects.
+                  {blogText}
                 </p>
                 <a
-                  href="/blog"
-                  className="inline-flex items-center justify-center font-medium min-w-35 px-4 py-2 rounded-[20px] text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
+                  href={blogCtaLink}
+                  className="inline-flex items-center justify-center font-medium min-w-35 px-5 py-2 rounded-[20px] text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center cursor-pointer"
                 >
-                  Learn More
+                  {blogCtaText}
                 </a>
               </div>
             </div>

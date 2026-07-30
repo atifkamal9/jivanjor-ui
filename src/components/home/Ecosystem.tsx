@@ -45,7 +45,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             {ctaText}
           </a>
         </div>
-        <Gallery items={data?.items} />
+        <Gallery items={data?.items} images={(data as any)?.images} />
       </div>
       <div className="hidden xl:block relative p-12.5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}

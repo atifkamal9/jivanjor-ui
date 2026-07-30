@@ -108,10 +108,21 @@ const defaultHomeSections = {
   showcaseGrid: {
     title: "Built Around India’s Woodworking Professionals",
     subtitle: "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.",
+    images: {
+      img1Desktop: "/images/Rectangle 30.png",
+      img1Mobile: "/images/Rectangle 30.png",
+      img2Desktop: "/images/Rectangle 35.png",
+      img2Mobile: "/images/Rectangle 35.png",
+      img3Desktop: "/images/Rectangle 79.png",
+      img3Mobile: "/images/Rectangle 79.png",
+      img4Desktop: "/images/Rectangle 34.png",
+      img4Mobile: "/images/Rectangle 34 (1).png",
+      img5Desktop: "/images/Rectangle 37.png",
+      img5Mobile: "/images/Rectangle 37.png",
+    },
     items: [
-      { title: "Technical Resources", description: "Step-by-step tutorials, safety datasheets, and best practices for modern carpenter guilds.", link: "#" },
-      { title: "Our Market Presence", description: "Available at 15,000+ retail outlets across India, backed by robust distribution networks.", link: "#" },
-      { title: "Industry Endorsed", description: "Recognized by woodworking associations for superior chemical safety and durability.", link: "#" }
+      { title: "Technical Resources", link: "/resources" },
+      { title: "Our Market Presence", link: "/applications" }
     ]
   },
   ctaPromo: {
@@ -1362,6 +1373,60 @@ export default function PagesPage() {
           [sectionKey]: {
             ...prev.sections?.[sectionKey],
             items,
+          },
+        },
+      };
+    });
+  };
+
+  const moveItem = (sectionKey: string, idx: number, direction: "up" | "down") => {
+    setFormData((prev: any) => {
+      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      const newIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (newIdx < 0 || newIdx >= items.length) return prev;
+      [items[idx], items[newIdx]] = [items[newIdx], items[idx]];
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...prev.sections[sectionKey],
+            items,
+          },
+        },
+      };
+    });
+  };
+
+  const moveProfessionalsTestimonial = (idx: number, direction: "up" | "down") => {
+    setFormData((prev: any) => {
+      const items = [...(prev.sections?.professionals?.testimonials || [])];
+      const newIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (newIdx < 0 || newIdx >= items.length) return prev;
+      [items[idx], items[newIdx]] = [items[newIdx], items[idx]];
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          professionals: {
+            ...prev.sections?.professionals,
+            testimonials: items,
+          },
+        },
+      };
+    });
+  };
+
+  const removeProfessionalsTestimonial = (idx: number) => {
+    setFormData((prev: any) => {
+      const items = (prev.sections?.professionals?.testimonials || []).filter((_: any, i: number) => i !== idx);
+      return {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          professionals: {
+            ...prev.sections?.professionals,
+            testimonials: items,
           },
         },
       };
@@ -2887,10 +2952,10 @@ export default function PagesPage() {
                         </label>
                         <input
                           type="text"
-                          value={formData.sections.showcaseGrid.title}
+                          value={formData.sections.showcaseGrid.title || ""}
                           onChange={(e) => updateSectionField("showcaseGrid", "title", e.target.value)}
                           placeholder="Built Around India's Woodworking Professionals"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background font-medium"
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -2907,55 +2972,174 @@ export default function PagesPage() {
                       </div>
                     </div>
 
-                    {/* Showcase Items */}
-                    <div className="space-y-4">
+                    {/* Grid Images Upload Section */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div>
+                        <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Grid Media Assets (5 Image Slots)</span>
+                        <p className="text-[11px] text-foreground/50 font-medium">Upload desktop and mobile images for each of the 5 positions in the showcase grid.</p>
+                      </div>
+
+                      {(() => {
+                        const imgs = formData.sections.showcaseGrid.images || {};
+                        const updateImg = (key: string, url: string) => {
+                          setFormData((prev: any) => ({
+                            ...prev,
+                            sections: {
+                              ...prev.sections,
+                              showcaseGrid: {
+                                ...prev.sections.showcaseGrid,
+                                images: {
+                                  ...(prev.sections.showcaseGrid?.images || {}),
+                                  [key]: url,
+                                },
+                              },
+                            },
+                          }));
+                        };
+
+                        const gridSlots = [
+                          {
+                            title: "Image #1 (Top Left Banner)",
+                            size: "Recommended: 600 x 320px (Desktop) | 400 x 400px (Mobile)",
+                            deskKey: "img1Desktop",
+                            mobKey: "img1Mobile",
+                            defaultDesk: "/images/Rectangle 30.png",
+                            defaultMob: "/images/Rectangle 30.png",
+                          },
+                          {
+                            title: "Image #2 (Top Right Showcase)",
+                            size: "Recommended: 300 x 320px (Desktop) | 400 x 600px (Mobile)",
+                            deskKey: "img2Desktop",
+                            mobKey: "img2Mobile",
+                            defaultDesk: "/images/Rectangle 35.png",
+                            defaultMob: "/images/Rectangle 35.png",
+                          },
+                          {
+                            title: "Image #3 (Bottom Left Feature)",
+                            size: "Recommended: 300 x 320px (Desktop) | 400 x 400px (Mobile)",
+                            deskKey: "img3Desktop",
+                            mobKey: "img3Mobile",
+                            defaultDesk: "/images/Rectangle 79.png",
+                            defaultMob: "/images/Rectangle 79.png",
+                          },
+                          {
+                            title: "Image #4 (Bottom Sub-banner)",
+                            size: "Recommended: 300 x 144px (Desktop) | 400 x 600px (Mobile)",
+                            deskKey: "img4Desktop",
+                            mobKey: "img4Mobile",
+                            defaultDesk: "/images/Rectangle 34.png",
+                            defaultMob: "/images/Rectangle 34 (1).png",
+                          },
+                          {
+                            title: "Image #5 (Bottom Right Banner)",
+                            size: "Recommended: 600 x 320px (Desktop) | 400 x 400px (Mobile)",
+                            deskKey: "img5Desktop",
+                            mobKey: "img5Mobile",
+                            defaultDesk: "/images/Rectangle 37.png",
+                            defaultMob: "/images/Rectangle 37.png",
+                          },
+                        ];
+
+                        return (
+                          <div className="grid grid-cols-1 gap-4">
+                            {gridSlots.map((slot, sIdx) => (
+                              <div key={sIdx} className="p-4 border border-border bg-surface/30 rounded-2xl space-y-3">
+                                <div className="flex items-center justify-between flex-wrap gap-2">
+                                  <span className="text-xs font-black uppercase text-primary tracking-wider">{slot.title}</span>
+                                  <span className="text-[11px] font-bold text-foreground/60 bg-background px-2.5 py-1 rounded-lg border border-border">
+                                    {slot.size}
+                                  </span>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Desktop Image
+                                    </label>
+                                    <ImageUpload
+                                      value={imgs[slot.deskKey] || slot.defaultDesk}
+                                      onChange={(url) => updateImg(slot.deskKey, url)}
+                                      folder="pages"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                      Mobile Image
+                                    </label>
+                                    <ImageUpload
+                                      value={imgs[slot.mobKey] || slot.defaultMob}
+                                      onChange={(url) => updateImg(slot.mobKey, url)}
+                                      folder="pages"
+                                      aspect="square"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    {/* 2 Fixed Showcase Text Cards */}
+                    <div className="space-y-4 pt-4 border-t border-border">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Showcase Grid Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("showcaseGrid", { title: "Technical Resources", description: "Pro guides...", link: "#" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Showcase Card
-                        </button>
+                        <div>
+                          <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Showcase Grid Cards (2 Fixed Cards)</span>
+                          <p className="text-[11px] text-foreground/50 font-medium">Configure titles and link URLs for the 2 dark cards in the resource grid.</p>
+                        </div>
+                        <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black">
+                          2 / 2 Cards
+                        </span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {formData.sections.showcaseGrid.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("showcaseGrid", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title}
-                                onChange={(e) => updateItemField("showcaseGrid", idx, "title", e.target.value)}
-                                placeholder="Card Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description}
-                                onChange={(e) => updateItemField("showcaseGrid", idx, "description", e.target.value)}
-                                placeholder="Card Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <input
-                                type="text"
-                                value={item.link || ""}
-                                onChange={(e) => updateItemField("showcaseGrid", idx, "link", e.target.value)}
-                                placeholder="Link Target (e.g. #)"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                              />
+                        {(() => {
+                          const items = formData.sections.showcaseGrid.items || [];
+                          const defaults = [
+                            { title: "Technical Resources", link: "/resources" },
+                            { title: "Our Market Presence", link: "/applications" },
+                          ];
+                          const fixedItems = [...items];
+                          while (fixedItems.length < 2) {
+                            fixedItems.push(defaults[fixedItems.length % 2]);
+                          }
+                          const finalTwo = fixedItems.slice(0, 2);
+
+                          return finalTwo.map((item: any, idx: number) => (
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl flex flex-col gap-3">
+                              <span className="text-[10px] font-black uppercase text-primary">
+                                Card #{idx + 1}
+                              </span>
+
+                              <div>
+                                <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                  Card Title
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.title || ""}
+                                  onChange={(e) => updateItemField("showcaseGrid", idx, "title", e.target.value)}
+                                  placeholder="Card Title"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                                  Link Target URL
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.link || ""}
+                                  onChange={(e) => updateItemField("showcaseGrid", idx, "link", e.target.value)}
+                                  placeholder="Link Target (e.g. /resources)"
+                                  className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ));
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -3093,7 +3277,9 @@ export default function PagesPage() {
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(formData.sections.testimonials.items || []).map((item: any, idx: number) => (
+                        {(formData.sections.testimonials.items || []).map((item: any, idx: number) => {
+                          const totalPageItems = (formData.sections.testimonials.items || []).length;
+                          return (
                           <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
                             <button
                               type="button"
@@ -3102,7 +3288,29 @@ export default function PagesPage() {
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Testimonial #{idx + 1}</span>
+                            <div className="flex items-center gap-2 pr-10">
+                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
+                              <div className="flex items-center gap-1 ml-auto">
+                                <button
+                                  type="button"
+                                  onClick={() => moveItem("testimonials", idx, "up")}
+                                  disabled={idx === 0}
+                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                  title="Move up"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveItem("testimonials", idx, "down")}
+                                  disabled={idx === totalPageItems - 1}
+                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                  title="Move down"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </button>
+                              </div>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-3">
                               <div>
@@ -3203,7 +3411,8 @@ export default function PagesPage() {
                               </div>
                             )}
                           </div>
-                        ))}
+                        );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -5156,16 +5365,40 @@ export default function PagesPage() {
                         </button>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(formData.sections.professionals.testimonials || []).map((item: any, idx: number) => (
+                        {(formData.sections.professionals.testimonials || []).map((item: any, idx: number) => {
+                          const totalProfItems = (formData.sections.professionals.testimonials || []).length;
+                          return (
                           <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
                             <button
                               type="button"
-                              onClick={() => removeItem("professionals", idx)}
+                              onClick={() => removeProfessionalsTestimonial(idx)}
                               className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Testimonial #{idx + 1}</span>
+                            <div className="flex items-center gap-2 pr-10">
+                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full">Testimonial #{idx + 1}</span>
+                              <div className="flex items-center gap-1 ml-auto">
+                                <button
+                                  type="button"
+                                  onClick={() => moveProfessionalsTestimonial(idx, "up")}
+                                  disabled={idx === 0}
+                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                  title="Move up"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => moveProfessionalsTestimonial(idx, "down")}
+                                  disabled={idx === totalProfItems - 1}
+                                  className="p-1 rounded-lg border border-border bg-background hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                                  title="Move down"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                </button>
+                              </div>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-3">
                               <div>
@@ -5238,7 +5471,8 @@ export default function PagesPage() {
                               </div>
                             )}
                           </div>
-                        ))}
+                        );
+                        })}
                       </div>
                     </div>
                   </div>

@@ -168,6 +168,10 @@ const defaultHomeSections = {
   knowledgeBase: {
     title: "Knowledge Base & Guides",
     subtitle: "Explore insights, tips, and chemistry guides from our experts to optimize your bonding applications.",
+    blogTitle: "Latest Blogs",
+    blogText: "Hear from the carpenters, contractors and dealers who rely on Jivanjor for real projects.",
+    blogCtaText: "Learn More",
+    blogCtaLink: "/blog",
     items: [
       { title: "Choosing the Right Adhesive", summary: "A masterclass on selecting between standard PVA, quick-drying fast bonds, and high-performance polyurethanes.", link: "#" },
       { title: "Application Tips", summary: "Pro tips for surface preparation, wood moisture content checks, clamping times, and curing environment controls.", link: "#" },
@@ -2809,6 +2813,68 @@ export default function TemplatesPage() {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    </div>
+
+                    {/* Latest Blog Settings */}
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <div>
+                        <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">Latest Blog Card Settings</span>
+                        <p className="text-[11px] text-foreground/50 font-medium">Customize the card title, text content, and CTA button at the bottom of the Knowledge section.</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-border bg-surface/30 rounded-2xl">
+                        <div>
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            Blog Card Title
+                          </label>
+                          <input
+                            type="text"
+                            value={homeSections.knowledgeBase.blogTitle || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogTitle", e.target.value)}
+                            placeholder="Latest Blogs"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            CTA Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={homeSections.knowledgeBase.blogCtaText || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogCtaText", e.target.value)}
+                            placeholder="Learn More"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold outline-none focus:border-primary"
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            Blog Text Content
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={homeSections.knowledgeBase.blogText || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogText", e.target.value)}
+                            placeholder="Hear from the carpenters, contractors and dealers who rely on Jivanjor..."
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary resize-none font-medium"
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-extrabold uppercase text-foreground/60 mb-1">
+                            CTA Target Link URL
+                          </label>
+                          <input
+                            type="text"
+                            value={homeSections.knowledgeBase.blogCtaLink || ""}
+                            onChange={(e) => updateSectionField("knowledgeBase", "blogCtaLink", e.target.value)}
+                            placeholder="/blog"
+                            className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-medium outline-none focus:border-primary"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

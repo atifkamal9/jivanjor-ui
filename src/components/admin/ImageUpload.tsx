@@ -101,18 +101,18 @@ export default function ImageUpload({
   // 4. Author: Square
   const compactShapeClass =
     aspect === "icon"
-      ? "w-16 h-16"
+      ? "w-16"
       : aspect === "author"
-      ? "w-20 h-20"
-      : aspect === "product"
-      ? "w-28 h-28"
-      : aspect === "square"
-      ? "w-24 h-24"
-      : aspect === "cover" || aspect === "banner" || aspect === "rectangle"
-      ? "w-48 h-24"
-      : aspect === "video"
-      ? "w-40 h-24"
-      : "w-36 h-24";
+        ? "w-20"
+        : aspect === "product"
+          ? "w-28"
+          : aspect === "square"
+            ? "w-24"
+            : aspect === "cover" || aspect === "banner" || aspect === "rectangle"
+              ? "w-48"
+              : aspect === "video"
+                ? "w-40"
+                : "w-36";
 
   if (size === "compact") {
     return (
@@ -126,9 +126,8 @@ export default function ImageUpload({
         />
         <div
           onClick={triggerInput}
-          className={`${compactShapeClass} shrink-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-all ${
-            dragActive ? "border-red-500 bg-red-50/10" : ""
-          }`}
+          className={`${compactShapeClass} h-auto shrink-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-950 flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group hover:border-red-500 transition-all ${dragActive ? "border-red-500 bg-red-50/10" : ""
+            }`}
           onDragEnter={handleDrag}
           onDragOver={handleDrag}
           onDragLeave={handleDrag}
@@ -187,16 +186,16 @@ export default function ImageUpload({
     aspect === "cover" || aspect === "banner" || aspect === "rectangle"
       ? "w-full aspect-[21/9] sm:aspect-[24/9] min-h-[160px]"
       : aspect === "video"
-      ? "w-full aspect-video min-h-[180px]"
-      : aspect === "product"
-      ? "w-40 h-40 aspect-square"
-      : aspect === "author"
-      ? "w-32 h-32 aspect-square"
-      : aspect === "icon"
-      ? "w-20 h-20 aspect-square"
-      : aspect === "square"
-      ? "w-52 h-52 sm:w-60 sm:h-60 aspect-square"
-      : "w-full aspect-[21/9] min-h-[160px]";
+        ? "w-full aspect-video min-h-[180px]"
+        : aspect === "product"
+          ? "w-40 aspect-square"
+          : aspect === "author"
+            ? "w-32 aspect-square"
+            : aspect === "icon"
+              ? "w-20 aspect-square"
+              : aspect === "square"
+                ? "w-52 sm:w-60 sm:h-60 aspect-square"
+                : "w-full aspect-[21/9] min-h-[160px]";
 
   return (
     <div className={`space-y-2 font-sans ${className}`}>
@@ -218,13 +217,12 @@ export default function ImageUpload({
         onDragLeave={handleDrag}
         onDrop={handleDrop}
         onClick={triggerInput}
-        className={`${defaultShapeClass} border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${
-          dragActive
-            ? "border-red-500 bg-red-50/10"
-            : value
+        className={`${defaultShapeClass} h-auto border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-4 cursor-pointer transition-all duration-300 relative overflow-hidden group ${dragActive
+          ? "border-red-500 bg-red-50/10"
+          : value
             ? "border-gray-200 dark:border-zinc-800"
             : "border-gray-200 dark:border-zinc-800 hover:border-red-500 hover:bg-gray-50/30 dark:hover:bg-zinc-800/10"
-        }`}
+          }`}
       >
         {uploading ? (
           <div className="flex flex-col items-center gap-2">
