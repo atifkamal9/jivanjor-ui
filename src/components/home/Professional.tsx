@@ -36,9 +36,9 @@ export default function Professional({ data }: ProfessionalProps) {
   const features =
     items && items.length > 0
       ? items.map((item, idx) => ({
-          icon: mapFeatureIcon(idx),
-          title: item.title || item.name || "",
-        }))
+        icon: mapFeatureIcon(idx),
+        title: item.title || item.name || "",
+      }))
       : defaultFeatures;
 
   return (

@@ -18,6 +18,7 @@ import {
   Link2,
   AtSign,
 } from "lucide-react";
+import Image from "next/image";
 
 
 export default function AdminSettingsPage() {
@@ -108,32 +109,23 @@ export default function AdminSettingsPage() {
         {/* Toast Notification */}
         {toastMessage && (
           <div
-            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl border text-sm font-bold animate-[slideIn_0.2s_ease-out] ${
-              toastMessage.type === "success"
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-background backdrop-blur-md"
-                : "bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 bg-background backdrop-blur-md"
-            }`}
+            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl border text-sm font-bold animate-[slideIn_0.2s_ease-out] ${toastMessage.type === "success"
+              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-background backdrop-blur-md"
+              : "bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 bg-background backdrop-blur-md"
+              }`}
           >
             <Sparkles className="h-5 w-5 shrink-0" />
             <span>{toastMessage.text}</span>
           </div>
         )}
 
-        {/* Breadcrumb Navigation & Page Title */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background p-6 rounded-2xl border border-border shadow-xs">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-bold text-foreground/50">
-              <Link href="/admin" className="hover:text-primary transition-colors">
-                Dashboard
-              </Link>
-              <ChevronRight className="h-3.5 w-3.5" />
-              <span>Settings</span>
-              <ChevronRight className="h-3.5 w-3.5" />
-              <span className="text-foreground font-black">General & Branding</span>
-            </div>
-
-            <h1 className="text-xl font-extrabold text-foreground">General & Branding Settings</h1>
-            <p className="text-xs text-foreground/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* Header */}
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50">
+              General & Branding Settings
+            </h1>
+            <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
               Configure site logos for mobile and desktop views, plus official social media profiles.
             </p>
           </div>
@@ -146,12 +138,12 @@ export default function AdminSettingsPage() {
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Saving Settings...</span>
+                <span>Saving...</span>
               </>
             ) : (
               <>
                 <CheckCircle2 className="h-4 w-4" />
-                <span>Save All Settings</span>
+                <span>Save</span>
               </>
             )}
           </button>
@@ -160,7 +152,7 @@ export default function AdminSettingsPage() {
         {loading ? (
           <div className="p-12 text-center bg-background rounded-2xl border border-border">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent" />
-            <p className="text-xs font-bold text-foreground/60 mt-3">Loading settings...</p>
+            <p className="text-xs font-bold text-foreground/60 mt-3">Loading...</p>
           </div>
         ) : (
           <form onSubmit={handleSaveSettings} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -225,7 +217,13 @@ export default function AdminSettingsPage() {
                 {/* Facebook */}
                 <div>
                   <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
-                    <Globe className="h-4 w-4 text-blue-600" />
+                    <Image
+                      src="/images/facebook.svg"
+                      className="aspect-square"
+                      width={16}
+                      height={16}
+                      alt="Facebook"
+                    />
                     <span>Facebook URL</span>
                   </label>
                   <input
@@ -233,14 +231,20 @@ export default function AdminSettingsPage() {
                     value={socialLinks.facebook}
                     onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
                     placeholder="https://facebook.com/your-page"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
 
                 {/* Instagram */}
                 <div>
                   <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
-                    <Link2 className="h-4 w-4 text-pink-600" />
+                    <Image
+                      src="/images/instagram.svg"
+                      className="aspect-square"
+                      width={16}
+                      height={16}
+                      alt="Instagram"
+                    />
                     <span>Instagram URL</span>
                   </label>
                   <input
@@ -248,14 +252,20 @@ export default function AdminSettingsPage() {
                     value={socialLinks.instagram}
                     onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
                     placeholder="https://instagram.com/your-handle"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
 
                 {/* YouTube */}
                 <div>
                   <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
-                    <Video className="h-4 w-4 text-red-600" />
+                    <Image
+                      src="/images/youtube.svg"
+                      className="aspect-square"
+                      width={20}
+                      height={20}
+                      alt="YouTube"
+                    />
                     <span>YouTube Channel URL</span>
                   </label>
                   <input
@@ -263,7 +273,7 @@ export default function AdminSettingsPage() {
                     value={socialLinks.youtube}
                     onChange={(e) => setSocialLinks({ ...socialLinks, youtube: e.target.value })}
                     placeholder="https://youtube.com/@your-channel"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
 
@@ -278,7 +288,7 @@ export default function AdminSettingsPage() {
                     value={socialLinks.linkedin}
                     onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
                     placeholder="https://linkedin.com/company/your-company"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
 
@@ -293,7 +303,7 @@ export default function AdminSettingsPage() {
                     value={socialLinks.twitter}
                     onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
                     placeholder="https://x.com/your-handle"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
               </div>
