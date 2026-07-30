@@ -8,6 +8,7 @@ import { api, Product } from "@/lib/api";
 
 export interface ProductRangeCategory {
   id?: string;
+  categoryId?: string;
   name: string;
   selectedProductIds?: string[];
 }
@@ -76,16 +77,16 @@ export default function ProductRange({ data }: ProductRangeProps) {
   let carouselItems: Product[] = [];
   if (dbProducts.length > 0) {
     if (activeSelectedProductIds.length > 0) {
-      carouselItems = dbProducts.filter(
-        (p) =>
-          activeSelectedProductIds.includes(p.id) ||
-          activeSelectedProductIds.includes(p.slug)
-      ).slice(0, 10);
+      carouselItems = activeSelectedProductIds
+        .map((idOrSlug) => dbProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug))
+        .filter(Boolean)
+        .slice(0, 10) as Product[];
     }
     // Fallback if no specific products selected for this category
     if (carouselItems.length === 0) {
       carouselItems = dbProducts.filter(
         (p: any) =>
+          (currentCategoryObj?.categoryId && (p.category_id === currentCategoryObj.categoryId || p.category_id?.toLowerCase() === currentCategoryObj.categoryId.toLowerCase())) ||
           p.category_id?.toLowerCase() === activeCategoryName.toLowerCase() ||
           p.category?.toLowerCase() === activeCategoryName.toLowerCase()
       ).slice(0, 10);

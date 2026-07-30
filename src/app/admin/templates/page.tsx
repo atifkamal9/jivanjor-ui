@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, Page, PageTemplate, Product } from "@/lib/api";
+import { api, Page, PageTemplate, Product, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MediaUpload from "@/components/admin/MediaUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
@@ -27,7 +27,9 @@ import {
   LayoutTemplate,
   AlertCircle,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  GripVertical,
+  X
 } from "lucide-react";
 
 const isVideo = (url: string) =>
@@ -649,6 +651,7 @@ export default function TemplatesPage() {
   const [templates, setTemplates] = useState<PageTemplate[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
   const [availableProducts, setAvailableProducts] = useState<Product[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -673,14 +676,16 @@ export default function TemplatesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [templatesList, pagesList, productsList] = await Promise.all([
+      const [templatesList, pagesList, productsList, categoriesList] = await Promise.all([
         api.getTemplates(),
         api.getPages(),
-        api.getProducts().catch(() => [])
+        api.getProducts().catch(() => []),
+        api.getCategories().catch(() => []),
       ]);
       setTemplates(templatesList);
       setPages(pagesList);
       setAvailableProducts(productsList);
+      setAvailableCategories(categoriesList);
     } catch (err) {
       console.error("Failed to load templates/pages", err);
     } finally {
@@ -1847,26 +1852,58 @@ export default function TemplatesPage() {
                                 </div>
                               </div>
 
-                              {/* Category Name Input */}
-                              <div>
-                                <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
-                                  Category Title / Tab Name
-                                </label>
-                                <input
-                                  type="text"
-                                  value={cat.name || ""}
-                                  onChange={(e) => {
-                                    const currentCats = [...(homeSections.productRange.categories || [])];
-                                    currentCats[cIdx] = { ...currentCats[cIdx], name: e.target.value };
-                                    updateSectionField("productRange", "categories", currentCats);
-                                  }}
-                                  placeholder="e.g. Super Premium"
-                                  className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                                />
+                              {/* Sub-Category Selector from Database & Tab Name Input */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
+                                    Select System Sub-Category / Category
+                                  </label>
+                                  <select
+                                    value={cat.categoryId || ""}
+                                    onChange={(e) => {
+                                      const selectedId = e.target.value;
+                                      const matchedCat = availableCategories.find(
+                                        (c) => c.id === selectedId || c.slug === selectedId
+                                      );
+                                      const currentCats = [...(homeSections.productRange.categories || [])];
+                                      currentCats[cIdx] = {
+                                        ...currentCats[cIdx],
+                                        categoryId: selectedId,
+                                        name: matchedCat ? matchedCat.name : (currentCats[cIdx].name || `Category ${cIdx + 1}`),
+                                      };
+                                      updateSectionField("productRange", "categories", currentCats);
+                                    }}
+                                    className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary cursor-pointer font-medium"
+                                  >
+                                    <option value="">-- Choose Sub-Category --</option>
+                                    {availableCategories.map((c) => (
+                                      <option key={c.id} value={c.id}>
+                                        {c.parent_category ? `${c.parent_category} → ${c.name}` : c.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                <div>
+                                  <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
+                                    Display Tab Title / Custom Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={cat.name || ""}
+                                    onChange={(e) => {
+                                      const currentCats = [...(homeSections.productRange.categories || [])];
+                                      currentCats[cIdx] = { ...currentCats[cIdx], name: e.target.value };
+                                      updateSectionField("productRange", "categories", currentCats);
+                                    }}
+                                    placeholder="e.g. Super Premium"
+                                    className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                  />
+                                </div>
                               </div>
 
                               {/* Selected Products checklist for this category (Max 10) */}
-                              <div className="space-y-2 pt-2">
+                              <div className="space-y-3 pt-2">
                                 <div className="flex items-center justify-between">
                                   <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
                                     Selected Products for "{cat.name || `Category ${cIdx + 1}`}"
@@ -1875,6 +1912,87 @@ export default function TemplatesPage() {
                                     {selectedIds.length} / 10 Products Max
                                   </span>
                                 </div>
+
+                                {/* Drag & Drop Selected Products Reorder Bar */}
+                                {selectedIds.length > 0 && (
+                                  <div className="space-y-2 p-3.5 border border-primary/30 bg-primary/5 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-[11px] font-black uppercase text-primary tracking-wider flex items-center gap-1.5">
+                                        <GripVertical className="h-3.5 w-3.5" />
+                                        <span>Drag & Drop to Rearrange Display Order</span>
+                                      </span>
+                                      <span className="text-[10px] text-foreground/50 font-semibold">
+                                        Order: 1st → Last in Carousel
+                                      </span>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2">
+                                      {selectedIds.map((prodId: string, pIdx: number) => {
+                                        const prod = availableProducts.find((p) => p.id === prodId || p.slug === prodId);
+                                        const prodName = prod ? (prod.name || (prod as any).title || prodId) : prodId;
+                                        const prodImg = prod ? (prod.image || (prod as any).imageUrl) : null;
+
+                                        return (
+                                          <div
+                                            key={prodId}
+                                            draggable={true}
+                                            onDragStart={(e) => {
+                                              e.dataTransfer.setData("text/plain", prodId);
+                                              e.dataTransfer.effectAllowed = "move";
+                                            }}
+                                            onDragOver={(e) => {
+                                              e.preventDefault();
+                                              e.dataTransfer.dropEffect = "move";
+                                            }}
+                                            onDrop={(e) => {
+                                              e.preventDefault();
+                                              const draggedId = e.dataTransfer.getData("text/plain");
+                                              if (!draggedId || draggedId === prodId) return;
+
+                                              const currentCats = [...(homeSections.productRange.categories || [])];
+                                              const currentSelected = [...(currentCats[cIdx].selectedProductIds || [])];
+
+                                              const sourceIndex = currentSelected.indexOf(draggedId);
+                                              const targetIndex = currentSelected.indexOf(prodId);
+
+                                              if (sourceIndex !== -1 && targetIndex !== -1) {
+                                                const [moved] = currentSelected.splice(sourceIndex, 1);
+                                                currentSelected.splice(targetIndex, 0, moved);
+                                                currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: currentSelected };
+                                                updateSectionField("productRange", "categories", currentCats);
+                                              }
+                                            }}
+                                            className="flex items-center gap-2 px-3 py-1.5 bg-background border border-border hover:border-primary/60 rounded-lg text-xs font-bold shadow-2xs cursor-grab active:cursor-grabbing transition group select-none"
+                                          >
+                                            <GripVertical className="h-3.5 w-3.5 text-foreground/40 group-hover:text-primary shrink-0" />
+                                            <span className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[10px] font-black flex items-center justify-center shrink-0">
+                                              {pIdx + 1}
+                                            </span>
+                                            {prodImg && (
+                                              <div className="w-5 h-5 relative shrink-0">
+                                                <Image src={prodImg} alt="" fill className="object-contain" unoptimized />
+                                              </div>
+                                            )}
+                                            <span className="truncate max-w-[130px]">{prodName}</span>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const currentCats = [...(homeSections.productRange.categories || [])];
+                                                const updated = selectedIds.filter((id: string) => id !== prodId);
+                                                currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: updated };
+                                                updateSectionField("productRange", "categories", currentCats);
+                                              }}
+                                              className="text-foreground/40 hover:text-red-600 transition ml-0.5"
+                                              title="Remove product"
+                                            >
+                                              <X className="h-3.5 w-3.5" />
+                                            </button>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
 
                                 {availableProducts.length === 0 ? (
                                   <div className="p-3 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
@@ -1905,11 +2023,10 @@ export default function TemplatesPage() {
                                         <div
                                           key={prod.id}
                                           onClick={toggleProd}
-                                          className={`p-2.5 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all ${
-                                            isSelected
-                                              ? "border-primary bg-primary/10 shadow-xs"
-                                              : "border-border bg-background/50 hover:border-foreground/20"
-                                          }`}
+                                          className={`p-2.5 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all ${isSelected
+                                            ? "border-primary bg-primary/10 shadow-xs"
+                                            : "border-border bg-background/50 hover:border-foreground/20"
+                                            }`}
                                         >
                                           <input
                                             type="checkbox"

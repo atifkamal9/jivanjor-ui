@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, Page, PageTemplate, Product } from "@/lib/api";
+import { api, Page, PageTemplate, Product, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MediaUpload from "@/components/admin/MediaUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
@@ -693,6 +693,7 @@ export default function PagesPage() {
 
   const [seos, setSeos] = useState<any[]>([]);
   const [availableProducts, setAvailableProducts] = useState<Product[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [seoMetaTitle, setSeoMetaTitle] = useState("");
   const [seoMetaDescription, setSeoMetaDescription] = useState("");
   const [seoCanonicalUrl, setSeoCanonicalUrl] = useState("");
@@ -781,16 +782,18 @@ export default function PagesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [pagesList, tempsList, seosList, productsList] = await Promise.all([
+      const [pagesList, tempsList, seosList, productsList, categoriesList] = await Promise.all([
         api.getPages(),
         api.getTemplates(),
         api.getSeoMetadata(),
-        api.getProducts().catch(() => [])
+        api.getProducts().catch(() => []),
+        api.getCategories().catch(() => []),
       ]);
       setPages(pagesList);
       setTemplates(tempsList);
       setSeos(seosList);
       setAvailableProducts(productsList);
+      setAvailableCategories(categoriesList);
     } catch (err) {
       console.error("Failed to load pages/templates", err);
     } finally {
