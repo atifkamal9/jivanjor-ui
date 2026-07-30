@@ -114,8 +114,12 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
   return (
     <section className="relative leading-normal mx-auto max-w-7xl w-full px-10 pt-6 pb-12">
       <Swiper
+        key={cards.map((c) => c.title).join("-")}
         modules={[Navigation]}
+        observer={true}
+        observeParents={true}
         watchOverflow={false}
+        centerInsufficientSlides={true}
         loop={false}
         spaceBetween={16}
         slidesPerView={1}
@@ -128,7 +132,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
           480: {
             slidesPerView: 1,
           },
-          768: {
+          640: {
             slidesPerView: 2,
           },
           1024: {
@@ -138,7 +142,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
             slidesPerView: 4,
           },
         }}
-        className="overflow-visible!"
+        className="w-full [overflow-x:clip]! [overflow-y:visible]!"
       >
         {cards.map((card, idx) => (
           <SwiperSlide
@@ -158,7 +162,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
                     unoptimized
                     src={card.image}
                     alt={card.title}
-                    className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
+                    className="object-contain group-hover:-translate-y-1 transition-all duration-300 z-100"
                   />
                 )}
               </div>

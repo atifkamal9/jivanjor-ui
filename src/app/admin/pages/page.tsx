@@ -73,37 +73,13 @@ const defaultHomeSections = {
   },
   productRange: {
     title: "A Complete Adhesive Range for Modern Woodworking",
-    subtitle: "From premium wood glues to water-resistant formulations, explore adhesives trusted by master carpenters across India.",
-    items: [
-      {
-        title: "Champion Super",
-        description: "Premium white carpentry adhesive providing superior initial grab and high bonding strength.",
-        tag: "Best Seller",
-        image: "/images/Champion Super.png",
-        cta: { text: "Learn More", actionPath: "#" }
-      },
-      {
-        title: "Aquabond",
-        description: "Heatproof and waterproof adhesive made with Cross Linking Polymer.",
-        tag: "Waterproof Grade",
-        image: "/images/Aquabond.png",
-        cta: { text: "Learn More", actionPath: "#" }
-      },
-      {
-        title: "Foambond",
-        description: "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        tag: "Speciality",
-        image: "/images/Foambond.png",
-        cta: { text: "Learn More", actionPath: "#" }
-      },
-      {
-        title: "Watershield",
-        description: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        tag: "Eco Friendly",
-        image: "/images/Watershield.png",
-        cta: { text: "Learn More", actionPath: "#" }
-      }
-    ]
+    categories: [
+      { id: "cat-1", name: "Super Premium", selectedProductIds: [] },
+      { id: "cat-2", name: "Speciality", selectedProductIds: [] },
+      { id: "cat-3", name: "Regular", selectedProductIds: [] },
+      { id: "cat-4", name: "Waterproof Grade", selectedProductIds: [] },
+      { id: "cat-5", name: "ECO", selectedProductIds: [] },
+    ],
   },
   findAdhesive: {
     title: "Find The Right Adhesive",
@@ -948,6 +924,12 @@ export default function PagesPage() {
             }
           }
 
+          const rawPR = rawData.productRange || {};
+          let prCategories = rawPR.categories;
+          if (!Array.isArray(prCategories) || prCategories.length === 0) {
+            prCategories = [...defaultHomeSections.productRange.categories];
+          }
+
           pageSections = {
             layoutType: "home",
             hero: {
@@ -955,7 +937,10 @@ export default function PagesPage() {
               actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
               slides: heroSlides
             },
-            productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+            productRange: {
+              title: rawPR.title || defaultHomeSections.productRange.title,
+              categories: prCategories
+            },
             findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
             whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
             showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
@@ -1093,6 +1078,12 @@ export default function PagesPage() {
             }
           }
 
+          const rawPR = rawData.productRange || {};
+          let prCategories = rawPR.categories;
+          if (!Array.isArray(prCategories) || prCategories.length === 0) {
+            prCategories = [...defaultHomeSections.productRange.categories];
+          }
+
           pageSections = {
             layoutType: "home",
             hero: {
@@ -1100,7 +1091,10 @@ export default function PagesPage() {
               actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
               slides: heroSlides
             },
-            productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+            productRange: {
+              title: rawPR.title || defaultHomeSections.productRange.title,
+              categories: prCategories
+            },
             findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
             whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
             showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
@@ -1214,6 +1208,12 @@ export default function PagesPage() {
             heroSlides = [...defaultHomeSections.hero.slides];
           }
         }
+        const rawPR = rawData.productRange || {};
+        let prCategories = rawPR.categories;
+        if (!Array.isArray(prCategories) || prCategories.length === 0) {
+          prCategories = [...defaultHomeSections.productRange.categories];
+        }
+
         resetSections = {
           layoutType: "home",
           hero: {
@@ -1221,7 +1221,10 @@ export default function PagesPage() {
             actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
             slides: heroSlides
           },
-          productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
+          productRange: {
+            title: rawPR.title || defaultHomeSections.productRange.title,
+            categories: prCategories
+          },
           findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
           whyTrustUs: { ...defaultHomeSections.whyTrustUs, ...rawData.whyTrustUs },
           showcaseGrid: { ...defaultHomeSections.showcaseGrid, ...rawData.showcaseGrid },
@@ -2358,99 +2361,216 @@ export default function PagesPage() {
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Grid className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Product Range Section</h3>
+                      <h3 className="text-base font-extrabold text-foreground">Product Range Section Settings</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Product Range Section Heading
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.sections.productRange.title}
-                          onChange={(e) => updateSectionField("productRange", "title", e.target.value)}
-                          placeholder="A Complete Adhesive Range for Modern Woodworking"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Product Range Description/Subtitle
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={formData.sections.productRange.subtitle || ""}
-                          onChange={(e) => updateSectionField("productRange", "subtitle", e.target.value)}
-                          placeholder="From premium wood glues to waterproof formulas..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
-                        />
-                      </div>
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Section Main Heading
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.sections.productRange.title || ""}
+                        onChange={(e) => updateSectionField("productRange", "title", e.target.value)}
+                        placeholder="A Complete Adhesive Range for Modern Woodworking"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
+                      />
                     </div>
 
-                    {/* Products Module Selector */}
-                    <div className="space-y-4 pt-4 border-t border-border">
-                      <div className="flex flex-col space-y-1">
-                        <span className="text-xs font-black uppercase text-foreground/70 tracking-wider">
-                          Select Featured Products (From Products Module)
-                        </span>
-                        <p className="text-xs text-foreground/50">
-                          Select which products to display in the Product Range section on the home page landing page. If no products are selected, all published products from the Products Module will automatically be shown.
-                        </p>
-                      </div>
-
-                      {availableProducts.length === 0 ? (
-                        <div className="p-4 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
-                          No products found in the Products Module. Create products in <a href="/admin/products" className="text-primary underline">Admin Products</a> first.
+                    {/* Categories Setup (Max 5 categories, Max 10 products per category) */}
+                    <div className="space-y-6 border-t border-border pt-6 mt-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-base font-extrabold text-foreground">Categories Setup (Max 5 Categories)</h3>
+                          <p className="text-xs text-foreground/50 font-medium mt-0.5">
+                            Configure up to 5 categories for the section tabs. For each category section, select up to 10 products.
+                          </p>
                         </div>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                          {availableProducts.map((prod) => {
-                            const selectedIds: string[] = formData.sections.productRange.selectedProductIds || [];
-                            const isSelected = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug);
+                        <button
+                          type="button"
+                          disabled={(formData.sections.productRange.categories || []).length >= 5}
+                          onClick={() => {
+                            const currentCats = [...(formData.sections.productRange.categories || [])];
+                            if (currentCats.length >= 5) return;
+                            currentCats.push({
+                              id: `cat-${Date.now()}`,
+                              name: `Category ${currentCats.length + 1}`,
+                              selectedProductIds: [],
+                            });
+                            updateSectionField("productRange", "categories", currentCats);
+                          }}
+                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer shadow-xs shrink-0"
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span>Add Category ({(formData.sections.productRange.categories || []).length}/5)</span>
+                        </button>
+                      </div>
 
-                            const toggleProd = () => {
-                              const updated = isSelected
-                                ? selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug)
-                                : [...selectedIds, prod.id];
-                              updateSectionField("productRange", "selectedProductIds", updated);
-                            };
+                      {/* Categories List */}
+                      <div className="space-y-4">
+                        {((formData.sections.productRange.categories || []) as any[]).map((cat: any, cIdx: number) => {
+                          const selectedIds: string[] = cat.selectedProductIds || [];
 
-                            return (
-                              <div
-                                key={prod.id}
-                                onClick={toggleProd}
-                                className={`p-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isSelected
-                                  ? "border-primary bg-primary/10 shadow-xs"
-                                  : "border-border bg-surface/30 hover:border-foreground/20"
-                                  }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isSelected}
-                                  onChange={toggleProd}
-                                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                                />
-                                {prod.image && (
-                                  <div className="w-10 h-10 relative shrink-0">
-                                    <Image
-                                      src={prod.image}
-                                      alt={prod.name}
-                                      fill
-                                      unoptimized
-                                      className="object-contain"
-                                    />
-                                  </div>
-                                )}
-                                <div className="min-w-0 flex-1">
-                                  <div className="text-xs font-bold text-foreground truncate">{prod.name}</div>
-                                  <div className="text-[10px] text-foreground/50 truncate">{prod.slug}</div>
+                          return (
+                            <div key={cat.id || cIdx} className="p-5 border border-border bg-surface/30 rounded-2xl space-y-4">
+                              <div className="flex items-center justify-between pb-3 border-b border-border">
+                                <div className="flex items-center gap-3">
+                                  <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black">
+                                    Category #{cIdx + 1}
+                                  </span>
+                                  <span className="text-xs font-bold text-foreground">
+                                    {cat.name || `Category ${cIdx + 1}`}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-1.5">
+                                  {/* Move Up */}
+                                  <button
+                                    type="button"
+                                    disabled={cIdx === 0}
+                                    onClick={() => {
+                                      const currentCats = [...(formData.sections.productRange.categories || [])];
+                                      if (cIdx > 0) {
+                                        const item = currentCats.splice(cIdx, 1)[0];
+                                        currentCats.splice(cIdx - 1, 0, item);
+                                        updateSectionField("productRange", "categories", currentCats);
+                                      }
+                                    }}
+                                    className="p-1.5 rounded-lg border border-border hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                                    title="Move Up"
+                                  >
+                                    <ChevronUp className="h-4 w-4 text-foreground/70" />
+                                  </button>
+
+                                  {/* Move Down */}
+                                  <button
+                                    type="button"
+                                    disabled={cIdx === (formData.sections.productRange.categories || []).length - 1}
+                                    onClick={() => {
+                                      const currentCats = [...(formData.sections.productRange.categories || [])];
+                                      if (cIdx < currentCats.length - 1) {
+                                        const item = currentCats.splice(cIdx, 1)[0];
+                                        currentCats.splice(cIdx + 1, 0, item);
+                                        updateSectionField("productRange", "categories", currentCats);
+                                      }
+                                    }}
+                                    className="p-1.5 rounded-lg border border-border hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                                    title="Move Down"
+                                  >
+                                    <ChevronDown className="h-4 w-4 text-foreground/70" />
+                                  </button>
+
+                                  {/* Delete Category */}
+                                  {(formData.sections.productRange.categories || []).length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const currentCats = (formData.sections.productRange.categories || []).filter((_: any, i: number) => i !== cIdx);
+                                        updateSectionField("productRange", "categories", currentCats);
+                                      }}
+                                      className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 border border-red-500/20 transition cursor-pointer ml-1"
+                                      title="Delete Category"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  )}
                                 </div>
                               </div>
-                            );
-                          })}
-                        </div>
-                      )}
+
+                              {/* Category Name Input */}
+                              <div>
+                                <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
+                                  Category Title / Tab Name
+                                </label>
+                                <input
+                                  type="text"
+                                  value={cat.name || ""}
+                                  onChange={(e) => {
+                                    const currentCats = [...(formData.sections.productRange.categories || [])];
+                                    currentCats[cIdx] = { ...currentCats[cIdx], name: e.target.value };
+                                    updateSectionField("productRange", "categories", currentCats);
+                                  }}
+                                  placeholder="e.g. Super Premium"
+                                  className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                                />
+                              </div>
+
+                              {/* Selected Products checklist for this category (Max 10) */}
+                              <div className="space-y-2 pt-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
+                                    Selected Products for "{cat.name || `Category ${cIdx + 1}`}"
+                                  </span>
+                                  <span className={`text-[11px] font-bold ${selectedIds.length >= 10 ? "text-amber-500 font-extrabold" : "text-foreground/50"}`}>
+                                    {selectedIds.length} / 10 Products Max
+                                  </span>
+                                </div>
+
+                                {availableProducts.length === 0 ? (
+                                  <div className="p-3 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
+                                    No products found in Products Module.
+                                  </div>
+                                ) : (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-60 overflow-y-auto p-1">
+                                    {availableProducts.map((prod) => {
+                                      const isSelected = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug);
+
+                                      const toggleProd = () => {
+                                        let updated: string[];
+                                        if (isSelected) {
+                                          updated = selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug);
+                                        } else {
+                                          if (selectedIds.length >= 10) {
+                                            alert(`Maximum 10 products allowed for "${cat.name}". Please deselect a product before adding more.`);
+                                            return;
+                                          }
+                                          updated = [...selectedIds, prod.id];
+                                        }
+                                        const currentCats = [...(formData.sections.productRange.categories || [])];
+                                        currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: updated };
+                                        updateSectionField("productRange", "categories", currentCats);
+                                      };
+
+                                      return (
+                                        <div
+                                          key={prod.id}
+                                          onClick={toggleProd}
+                                          className={`p-2.5 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all ${
+                                            isSelected
+                                              ? "border-primary bg-primary/10 shadow-xs"
+                                              : "border-border bg-background/50 hover:border-foreground/20"
+                                          }`}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            checked={isSelected}
+                                            onChange={toggleProd}
+                                            className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer shrink-0"
+                                          />
+                                          {prod.image && (
+                                            <div className="w-8 h-8 relative shrink-0">
+                                              <Image
+                                                src={prod.image}
+                                                alt={prod.name}
+                                                fill
+                                                unoptimized
+                                                className="object-contain"
+                                              />
+                                            </div>
+                                          )}
+                                          <div className="min-w-0 flex-1">
+                                            <div className="text-xs font-bold text-foreground truncate">{prod.name}</div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 )}
