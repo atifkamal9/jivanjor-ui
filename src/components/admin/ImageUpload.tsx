@@ -11,7 +11,7 @@ interface ImageUploadProps {
   label?: string;
   size?: "default" | "compact";
   className?: string;
-  aspect?: "square" | "video" | "banner" | "rectangle" | "default";
+  aspect?: "cover" | "icon" | "product" | "author" | "square" | "video" | "banner" | "rectangle" | "default";
 }
 
 export default function ImageUpload({
@@ -94,14 +94,24 @@ export default function ImageUpload({
     fileInputRef.current?.click();
   };
 
-  // Determine compact size dimensions based on aspect prop
+  // Determine compact size dimensions based on aspect prop:
+  // 1. Cover: Large rectangle
+  // 2. Icon: Small square
+  // 3. Product: A bit larger than icon square
+  // 4. Author: Square
   const compactShapeClass =
-    aspect === "square"
+    aspect === "icon"
+      ? "w-16 h-16"
+      : aspect === "author"
+      ? "w-20 h-20"
+      : aspect === "product"
+      ? "w-28 h-28"
+      : aspect === "square"
       ? "w-24 h-24"
+      : aspect === "cover" || aspect === "banner" || aspect === "rectangle"
+      ? "w-48 h-24"
       : aspect === "video"
       ? "w-40 h-24"
-      : aspect === "banner" || aspect === "rectangle"
-      ? "w-44 h-24"
       : "w-36 h-24";
 
   if (size === "compact") {
@@ -168,12 +178,22 @@ export default function ImageUpload({
     );
   }
 
-  // Determine default size shape class based on aspect prop
+  // Determine default size shape class based on aspect prop:
+  // 1. Cover: Large rectangle (21:9 or 16:9)
+  // 2. Icon: Small square (1:1)
+  // 3. Product: Larger square (1:1)
+  // 4. Author: Square (1:1 avatar)
   const defaultShapeClass =
-    aspect === "banner" || aspect === "rectangle"
+    aspect === "cover" || aspect === "banner" || aspect === "rectangle"
       ? "w-full aspect-[21/9] sm:aspect-[24/9] min-h-[160px]"
       : aspect === "video"
       ? "w-full aspect-video min-h-[180px]"
+      : aspect === "product"
+      ? "w-40 h-40 aspect-square"
+      : aspect === "author"
+      ? "w-32 h-32 aspect-square"
+      : aspect === "icon"
+      ? "w-20 h-20 aspect-square"
       : aspect === "square"
       ? "w-52 h-52 sm:w-60 sm:h-60 aspect-square"
       : "w-full aspect-[21/9] min-h-[160px]";

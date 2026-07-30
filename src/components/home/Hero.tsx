@@ -12,16 +12,33 @@ import "swiper/css/effect-fade";
 const isVideo = (url: string) =>
   /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
 
+export interface HeroSlideData {
+  id?: string;
+  type?: "image" | "video";
+  bgImage?: string;
+  bgImagePhone?: string;
+  videoUrl?: string;
+  video?: string;
+  cta1?: {
+    text?: string;
+    link?: string;
+  };
+  cta2?: {
+    text?: string;
+    link?: string;
+  };
+  title?: string;
+}
+
 interface HeroProps {
   data?: {
     title?: string;
-    subtitle?: string; // fallback
-    desc?: string; // user request
+    subtitle?: string;
     badgeText?: string;
-    backgroundImage?: string; // fallback
-    bgImage?: string; // user request
-    ctaText?: string; // fallback
-    ctaLink?: string; // fallback
+    backgroundImage?: string;
+    bgImage?: string;
+    ctaText?: string;
+    ctaLink?: string;
     video?: string;
     actionButtons?: {
       primary?: {
@@ -34,15 +51,26 @@ interface HeroProps {
       };
     };
     media?: string[];
+    slides?: HeroSlideData[];
   };
 }
 
 interface SlideItem {
   id: string;
+  type: "image" | "video";
   bgImage: string;
   bgImagePhone: string;
   hasVideo: boolean;
   videoUrl?: string;
+  cta1?: {
+    text?: string;
+    link?: string;
+  };
+  cta2?: {
+    text?: string;
+    link?: string;
+  };
+  title?: string;
 }
 
 export default function Hero({ data }: HeroProps) {
@@ -52,44 +80,86 @@ export default function Hero({ data }: HeroProps) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const slides: SlideItem[] = data?.media && data.media.length > 0
-    ? data.media.map((url, idx) => {
-      const isVid = isVideo(url);
+  const slides: SlideItem[] = data?.slides && data.slides.length > 0
+    ? data.slides.map((s, idx) => {
+      const isVid = s.type === "video" || isVideo(s.videoUrl || s.video || "");
+      const desktopImg = s.bgImage || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
+      const mobileImg = s.bgImagePhone || s.bgImage || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
       return {
-        id: `slide-${idx}`,
-        bgImage: isVid ? "/images/video-thumbnail.png" : url,
-        bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+        id: s.id || `slide-${idx}`,
+        type: isVid ? "video" : "image",
+        bgImage: desktopImg,
+        bgImagePhone: mobileImg,
         hasVideo: isVid,
-        videoUrl: isVid ? url : "",
+        videoUrl: s.videoUrl || s.video || "",
+        cta1: s.cta1,
+        cta2: s.cta2,
+        title: s.title,
       };
     })
-    : [
-      {
-        id: "slide-1",
-        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
-        bgImagePhone:
-          data?.bgImage || data?.backgroundImage || "/images/hero.png",
-        hasVideo: false,
-        videoUrl: "",
-      },
-      {
-        id: "slide-2",
-        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
-        bgImagePhone:
-          data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
-        hasVideo: false,
-        videoUrl: "",
-      },
-      {
-        id: "slide-3",
-        bgImage:
-          data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-        bgImagePhone:
-          data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-        hasVideo: true,
-        videoUrl: "/videos/hero-background.mp4",
-      },
-    ];
+    : (data?.media && data.media.length > 0
+      ? data.media.map((url, idx) => {
+        const isVid = isVideo(url);
+        return {
+          id: `slide-${idx}`,
+          type: isVid ? "video" : "image",
+          bgImage: isVid ? "/images/video-thumbnail.png" : url,
+          bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+          hasVideo: isVid,
+          videoUrl: isVid ? url : "",
+        };
+      })
+      : [
+        {
+          id: "slide-1",
+          type: "image",
+          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+          hasVideo: false,
+          videoUrl: "",
+          cta1: {
+            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
+          },
+          cta2: {
+            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+            link: data?.actionButtons?.secondary?.actionPath || "/about",
+          },
+        },
+        {
+          id: "slide-2",
+          type: "image",
+          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
+          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
+          hasVideo: false,
+          videoUrl: "",
+          cta1: {
+            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
+          },
+          cta2: {
+            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+            link: data?.actionButtons?.secondary?.actionPath || "/about",
+          },
+        },
+        {
+          id: "slide-3",
+          type: "video",
+          bgImage: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+          hasVideo: true,
+          videoUrl: "/videos/hero-background.mp4",
+          cta1: {
+            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
+          },
+          cta2: {
+            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+            link: data?.actionButtons?.secondary?.actionPath || "/about",
+          },
+        },
+      ]
+    );
 
   const handlePlayVideo = () => {
     if (isPlayingVideo) {
@@ -117,6 +187,12 @@ export default function Hero({ data }: HeroProps) {
 
   const currentSlide = slides[activeIndex];
   const showPlayButton = currentSlide?.hasVideo;
+
+  const activeTitle = currentSlide?.title || data?.title || "Dependable Bonds for Indian Homes";
+  const activeCta1Text = currentSlide?.cta1?.text || data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
+  const activeCta1Link = currentSlide?.cta1?.link || data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section";
+  const activeCta2Text = currentSlide?.cta2?.text || data?.actionButtons?.secondary?.text || "About Jivanjor";
+  const activeCta2Link = currentSlide?.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
 
   return (
     <section className="relative w-full h-146.75 xl:h-164.5 overflow-hidden bg-black text-white">
@@ -228,23 +304,27 @@ export default function Hero({ data }: HeroProps) {
           <div className="absolute bottom-26.5 xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto">
             {/* Title */}
             <h1 className="text-[40px] xl:text-[70px] font-amethysta tracking-[0%] text-white leading-[0.95] max-w-82.25 xl:max-w-184">
-              {data?.title || "Dependable Bonds for Indian Homes"}
+              {activeTitle}
             </h1>
 
             {/* Action Buttons */}
             <div className="flex items-center mt-4.25 xl:mt-1 gap-4.25 xl:gap-3.75">
-              <a
-                href={data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section"}
-                className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
-              >
-                {data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products"}
-              </a>
-              <a
-                href={data?.actionButtons?.secondary?.actionPath || "/about"}
-                className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
-              >
-                {data?.actionButtons?.secondary?.text || "About Jivanjor"}
-              </a>
+              {activeCta1Text && (
+                <a
+                  href={activeCta1Link}
+                  className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
+                >
+                  {activeCta1Text}
+                </a>
+              )}
+              {activeCta2Text && (
+                <a
+                  href={activeCta2Link}
+                  className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
+                >
+                  {activeCta2Text}
+                </a>
+              )}
             </div>
           </div>
         </div>

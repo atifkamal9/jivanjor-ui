@@ -27,6 +27,8 @@ import {
   Award,
   Layers,
   GripVertical,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 const isVideo = (url: string) =>
@@ -35,15 +37,38 @@ const isVideo = (url: string) =>
 const defaultHomeSections = {
   hero: {
     title: "Dependable Bonds for Indian Homes",
-    desc: "Superior strength adhesives crafted with state-of-the-art polymer chemistry to safeguard your woodworking and furniture creations for a lifetime.",
     actionButtons: {
       primary: { text: "Explore Products", actionPath: "#product-section" },
       secondary: { text: "About Jivanjor", actionPath: "/about" },
     },
-    media: [
-      "/images/hero.png",
-      "/images/hero (1).png",
-      "/videos/hero-background.mp4",
+    slides: [
+      {
+        id: "slide-1",
+        type: "image",
+        bgImage: "/images/hero.png",
+        bgImagePhone: "/images/hero.png",
+        videoUrl: "",
+        cta1: { text: "Explore Products", link: "#product-section" },
+        cta2: { text: "About Jivanjor", link: "/about" }
+      },
+      {
+        id: "slide-2",
+        type: "image",
+        bgImage: "/images/hero (1).png",
+        bgImagePhone: "/images/hero (1) mobile.png",
+        videoUrl: "",
+        cta1: { text: "Explore Products", link: "#product-section" },
+        cta2: { text: "About Jivanjor", link: "/about" }
+      },
+      {
+        id: "slide-3",
+        type: "video",
+        bgImage: "/images/video-thumbnail.png",
+        bgImagePhone: "/images/video-thumbnail.png",
+        videoUrl: "/videos/hero-background.mp4",
+        cta1: { text: "Explore Products", link: "#product-section" },
+        cta2: { text: "About Jivanjor", link: "/about" }
+      }
     ],
   },
   productRange: {
@@ -903,25 +928,32 @@ export default function PagesPage() {
           };
         } else {
           const rawHero = rawData.hero || {};
-          let heroMedia = rawHero.media;
-          if (!heroMedia) {
-            if (rawHero.slides) {
-              heroMedia = rawHero.slides.map((s: any) => s.video || s.bgImage).filter(Boolean);
-            } else if (rawHero.bgImage || rawHero.video) {
-              heroMedia = [rawHero.bgImage, rawHero.video].filter(Boolean);
+          let heroSlides = rawHero.slides;
+          if (!Array.isArray(heroSlides) || heroSlides.length === 0) {
+            if (Array.isArray(rawHero.media) && rawHero.media.length > 0) {
+              heroSlides = rawHero.media.map((url: string, idx: number) => {
+                const isVid = isVideo(url);
+                return {
+                  id: `slide-${idx + 1}`,
+                  type: isVid ? "video" : "image",
+                  bgImage: isVid ? "/images/video-thumbnail.png" : url,
+                  bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+                  videoUrl: isVid ? url : "",
+                  cta1: rawHero.actionButtons?.primary ? { text: rawHero.actionButtons.primary.text, link: rawHero.actionButtons.primary.actionPath } : { text: "Explore Products", link: "#product-section" },
+                  cta2: rawHero.actionButtons?.secondary ? { text: rawHero.actionButtons.secondary.text, link: rawHero.actionButtons.secondary.actionPath } : { text: "About Jivanjor", link: "/about" },
+                };
+              });
+            } else {
+              heroSlides = [...defaultHomeSections.hero.slides];
             }
-          }
-          if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
-            heroMedia = [...defaultHomeSections.hero.media];
           }
 
           pageSections = {
             layoutType: "home",
             hero: {
               title: rawHero.title || defaultHomeSections.hero.title,
-              desc: rawHero.desc || defaultHomeSections.hero.desc,
               actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
-              media: heroMedia
+              slides: heroSlides
             },
             productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
             findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
@@ -1041,25 +1073,32 @@ export default function PagesPage() {
           };
         } else {
           const rawHero = rawData.hero || {};
-          let heroMedia = rawHero.media;
-          if (!heroMedia) {
-            if (rawHero.slides) {
-              heroMedia = rawHero.slides.map((s: any) => s.video || s.bgImage).filter(Boolean);
-            } else if (rawHero.bgImage || rawHero.video) {
-              heroMedia = [rawHero.bgImage, rawHero.video].filter(Boolean);
+          let heroSlides = rawHero.slides;
+          if (!Array.isArray(heroSlides) || heroSlides.length === 0) {
+            if (Array.isArray(rawHero.media) && rawHero.media.length > 0) {
+              heroSlides = rawHero.media.map((url: string, idx: number) => {
+                const isVid = isVideo(url);
+                return {
+                  id: `slide-${idx + 1}`,
+                  type: isVid ? "video" : "image",
+                  bgImage: isVid ? "/images/video-thumbnail.png" : url,
+                  bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+                  videoUrl: isVid ? url : "",
+                  cta1: rawHero.actionButtons?.primary ? { text: rawHero.actionButtons.primary.text, link: rawHero.actionButtons.primary.actionPath } : { text: "Explore Products", link: "#product-section" },
+                  cta2: rawHero.actionButtons?.secondary ? { text: rawHero.actionButtons.secondary.text, link: rawHero.actionButtons.secondary.actionPath } : { text: "About Jivanjor", link: "/about" },
+                };
+              });
+            } else {
+              heroSlides = [...defaultHomeSections.hero.slides];
             }
-          }
-          if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
-            heroMedia = [...defaultHomeSections.hero.media];
           }
 
           pageSections = {
             layoutType: "home",
             hero: {
               title: rawHero.title || defaultHomeSections.hero.title,
-              desc: rawHero.desc || defaultHomeSections.hero.desc,
               actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
-              media: heroMedia
+              slides: heroSlides
             },
             productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
             findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
@@ -1156,17 +1195,31 @@ export default function PagesPage() {
         };
       } else {
         const rawHero = rawData.hero || {};
-        let heroMedia = rawHero.media || [];
-        if (!Array.isArray(heroMedia) || heroMedia.length === 0) {
-          heroMedia = [...defaultHomeSections.hero.media];
+        let heroSlides = rawHero.slides;
+        if (!Array.isArray(heroSlides) || heroSlides.length === 0) {
+          if (Array.isArray(rawHero.media) && rawHero.media.length > 0) {
+            heroSlides = rawHero.media.map((url: string, idx: number) => {
+              const isVid = isVideo(url);
+              return {
+                id: `slide-${idx + 1}`,
+                type: isVid ? "video" : "image",
+                bgImage: isVid ? "/images/video-thumbnail.png" : url,
+                bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+                videoUrl: isVid ? url : "",
+                cta1: rawHero.actionButtons?.primary ? { text: rawHero.actionButtons.primary.text, link: rawHero.actionButtons.primary.actionPath } : { text: "Explore Products", link: "#product-section" },
+                cta2: rawHero.actionButtons?.secondary ? { text: rawHero.actionButtons.secondary.text, link: rawHero.actionButtons.secondary.actionPath } : { text: "About Jivanjor", link: "/about" },
+              };
+            });
+          } else {
+            heroSlides = [...defaultHomeSections.hero.slides];
+          }
         }
         resetSections = {
           layoutType: "home",
           hero: {
             title: rawHero.title || defaultHomeSections.hero.title,
-            desc: rawHero.desc || defaultHomeSections.hero.desc,
             actionButtons: rawHero.actionButtons || defaultHomeSections.hero.actionButtons,
-            media: heroMedia
+            slides: heroSlides
           },
           productRange: { ...defaultHomeSections.productRange, ...rawData.productRange },
           findAdhesive: { ...defaultHomeSections.findAdhesive, ...rawData.findAdhesive },
@@ -1760,11 +1813,10 @@ export default function PagesPage() {
                                   onDragStart={(e) => handleSubpageDragStart(e, sub.id)}
                                   onDragOver={handleSubpageDragOver}
                                   onDrop={(e) => handleSubpageDrop(e, sub, siblingSubpages)}
-                                  className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${
-                                    isCurrent
-                                      ? "bg-primary/10 border-primary/40 shadow-xs"
-                                      : "bg-background/80 hover:bg-surface border-border"
-                                  } ${draggedSubpageId === sub.id ? "opacity-30 border-dashed border-primary" : ""}`}
+                                  className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing ${isCurrent
+                                    ? "bg-primary/10 border-primary/40 shadow-xs"
+                                    : "bg-background/80 hover:bg-surface border-border"
+                                    } ${draggedSubpageId === sub.id ? "opacity-30 border-dashed border-primary" : ""}`}
                                 >
                                   <div className="flex items-center gap-3">
                                     <div className="p-1 rounded hover:bg-surface text-foreground/40 hover:text-foreground transition-colors" title="Drag to reorder">
@@ -1923,23 +1975,11 @@ export default function PagesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
                         />
                       </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Hero Description Paragraph
-                        </label>
-                        <textarea
-                          rows={3}
-                          value={formData.sections.hero.desc || ""}
-                          onChange={(e) => updateSectionField("hero", "desc", e.target.value)}
-                          placeholder="Explain premium quality formulations..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
-                        />
-                      </div>
                     </div>
 
                     {/* Hero Action Buttons */}
                     <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
-                      <h4 className="text-xs font-black uppercase text-primary tracking-wider">CTA Action Buttons Setup</h4>
+                      <h4 className="text-xs font-black uppercase text-primary tracking-wider">Default CTA Action Buttons Setup</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Primary Button */}
                         <div className="space-y-3">
@@ -2019,71 +2059,296 @@ export default function PagesPage() {
                         </div>
                       </div>
                     ) : (
-                      <>
-                        <div className="flex flex-col border-t border-border pt-6 mt-4 gap-3">
-                          <div className="flex items-center gap-2">
-                            <Layout className="h-5 w-5 text-primary" />
-                            <h3 className="text-base font-extrabold text-foreground">Hero Background Media (Images/Videos)</h3>
+                      <div className="space-y-6 border-t border-border pt-6 mt-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-base font-extrabold text-foreground">Hero Banners Manager (Slideshow)</h3>
+                            <p className="text-xs text-foreground/50 font-medium mt-0.5">
+                              Add multiple hero banners with individual image/video types, mobile/desktop imagery, video links, custom CTAs, and order management.
+                            </p>
                           </div>
-                          <p className="text-xs text-foreground/50 font-medium">
-                            At least one background image or video is mandatory for the hero slideshow.
-                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const currentSlides = [...(formData.sections.hero.slides || [])];
+                              currentSlides.push({
+                                id: `slide-${Date.now()}`,
+                                type: "image",
+                                bgImage: "/images/hero.png",
+                                bgImagePhone: "/images/hero.png",
+                                videoUrl: "",
+                                cta1: { text: "Explore Products", link: "#product-section" },
+                                cta2: { text: "About Jivanjor", link: "/about" }
+                              });
+                              updateSectionField("hero", "slides", currentSlides);
+                            }}
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition cursor-pointer shadow-xs shrink-0"
+                          >
+                            <Plus className="h-4 w-4" />
+                            <span>Add Hero Banner</span>
+                          </button>
                         </div>
 
-                        {/* Media Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {(formData.sections.hero.media || []).map((mediaUrl: string, idx: number) => {
-                            const isVid = isVideo(mediaUrl);
+                        {/* Banner Slides List */}
+                        <div className="space-y-4">
+                          {((formData.sections.hero.slides || []) as any[]).map((slide: any, sIdx: number) => {
+                            const isVid = slide.type === "video";
                             return (
-                              <div key={idx} className="relative aspect-video rounded-xl border border-border overflow-hidden bg-surface group">
+                              <div key={slide.id || sIdx} className="p-5 border border-border bg-surface/30 rounded-2xl space-y-4 relative">
+                                <div className="flex items-center justify-between pb-3 border-b border-border">
+                                  <div className="flex items-center gap-3">
+                                    <span className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-black">
+                                      Banner #{sIdx + 1}
+                                    </span>
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${isVid ? "bg-purple-500/10 text-purple-600" : "bg-blue-500/10 text-blue-600"}`}>
+                                      {isVid ? "Video Banner" : "Image Banner"}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5">
+                                    {/* Move Up */}
+                                    <button
+                                      type="button"
+                                      disabled={sIdx === 0}
+                                      onClick={() => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        if (sIdx > 0) {
+                                          const item = currentSlides.splice(sIdx, 1)[0];
+                                          currentSlides.splice(sIdx - 1, 0, item);
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }
+                                      }}
+                                      className="p-1.5 rounded-lg border border-border hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                                      title="Move Up"
+                                    >
+                                      <ChevronUp className="h-4 w-4 text-foreground/70" />
+                                    </button>
+
+                                    {/* Move Down */}
+                                    <button
+                                      type="button"
+                                      disabled={sIdx === (formData.sections.hero.slides || []).length - 1}
+                                      onClick={() => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        if (sIdx < currentSlides.length - 1) {
+                                          const item = currentSlides.splice(sIdx, 1)[0];
+                                          currentSlides.splice(sIdx + 1, 0, item);
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }
+                                      }}
+                                      className="p-1.5 rounded-lg border border-border hover:bg-surface disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                                      title="Move Down"
+                                    >
+                                      <ChevronDown className="h-4 w-4 text-foreground/70" />
+                                    </button>
+
+                                    {/* Delete Slide */}
+                                    {(formData.sections.hero.slides || []).length > 1 && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const currentSlides = (formData.sections.hero.slides || []).filter((_: any, i: number) => i !== sIdx);
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 border border-red-500/20 transition cursor-pointer ml-1"
+                                        title="Delete Banner"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Type Switcher */}
+                                <div className="space-y-1.5">
+                                  <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                    Banner Type
+                                  </label>
+                                  <div className="flex items-center gap-3">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        currentSlides[sIdx] = { ...currentSlides[sIdx], type: "image" };
+                                        updateSectionField("hero", "slides", currentSlides);
+                                      }}
+                                      className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer border ${!isVid ? "bg-primary text-white border-primary" : "bg-background text-foreground/70 border-border"}`}
+                                    >
+                                      🖼️ Image Banner
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        currentSlides[sIdx] = { ...currentSlides[sIdx], type: "video" };
+                                        updateSectionField("hero", "slides", currentSlides);
+                                      }}
+                                      className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer border ${isVid ? "bg-primary text-white border-primary" : "bg-background text-foreground/70 border-border"}`}
+                                    >
+                                      🎥 Video Banner
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Media Inputs depending on type */}
                                 {isVid ? (
-                                  <video src={mediaUrl} className="w-full h-full object-cover" muted playsInline />
+                                  <div className="space-y-4 pt-2">
+                                    <div className="space-y-2">
+                                      <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                        Video Link / File URL
+                                      </label>
+                                      <MediaUpload
+                                        value={slide.videoUrl || ""}
+                                        onChange={(url) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], videoUrl: url };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        folder="templates"
+                                        accept="video"
+                                      />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div className="space-y-2">
+                                        <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                          Fallback Desktop Image
+                                        </label>
+                                        <ImageUpload
+                                          value={slide.bgImage || ""}
+                                          onChange={(url) => {
+                                            const currentSlides = [...(formData.sections.hero.slides || [])];
+                                            currentSlides[sIdx] = { ...currentSlides[sIdx], bgImage: url };
+                                            updateSectionField("hero", "slides", currentSlides);
+                                          }}
+                                          folder="templates"
+                                          aspect="banner"
+                                          size="default"
+                                        />
+                                      </div>
+                                      <div className="space-y-2">
+                                        <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                          Fallback Mobile Image
+                                        </label>
+                                        <ImageUpload
+                                          value={slide.bgImagePhone || ""}
+                                          onChange={(url) => {
+                                            const currentSlides = [...(formData.sections.hero.slides || [])];
+                                            currentSlides[sIdx] = { ...currentSlides[sIdx], bgImagePhone: url };
+                                            updateSectionField("hero", "slides", currentSlides);
+                                          }}
+                                          folder="templates"
+                                          aspect="square"
+                                          size="default"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
                                 ) : (
-                                  <img src={mediaUrl} alt={`Media ${idx}`} className="w-full h-full object-cover" />
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                    <div className="space-y-2">
+                                      <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                        Desktop Image
+                                      </label>
+                                      <ImageUpload
+                                        value={slide.bgImage || ""}
+                                        onChange={(url) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], bgImage: url };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        folder="templates"
+                                        aspect="banner"
+                                        size="default"
+                                      />
+                                      <span className="text-[10px] text-foreground/40 font-medium">Recommended: 16:9 (e.g. 1920x1080)</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                        Mobile Image
+                                      </label>
+                                      <ImageUpload
+                                        value={slide.bgImagePhone || ""}
+                                        onChange={(url) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], bgImagePhone: url };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        folder="templates"
+                                        aspect="square"
+                                        size="default"
+                                      />
+                                      <span className="text-[10px] text-foreground/40 font-medium">Recommended: 4:5 or 9:16 (e.g. 750x1334)</span>
+                                    </div>
+                                  </div>
                                 )}
 
-                                {/* Remove button (only if more than 1 item) */}
-                                {(formData.sections.hero.media || []).length > 1 && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const newMedia = (formData.sections.hero.media || []).filter((_: any, i: number) => i !== idx);
-                                      updateSectionField("hero", "media", newMedia);
-                                    }}
-                                    className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer shadow-md border border-red-700"
-                                    title="Delete media file"
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                  </button>
-                                )}
+                                {/* Per-banner Call-to-action Buttons */}
+                                <div className="pt-3 border-t border-border/60 space-y-3">
+                                  <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
+                                    Individual Banner CTAs (Call-To-Actions)
+                                  </span>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* CTA 1 */}
+                                    <div className="space-y-2 bg-background/60 p-3 rounded-xl border border-border">
+                                      <span className="text-[10px] font-bold uppercase text-primary">CTA 1 (Primary)</span>
+                                      <input
+                                        type="text"
+                                        value={slide.cta1?.text ?? ""}
+                                        onChange={(e) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], cta1: { ...currentSlides[sIdx].cta1, text: e.target.value } };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        placeholder="e.g. Explore Products"
+                                        className="w-full px-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={slide.cta1?.link ?? ""}
+                                        onChange={(e) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], cta1: { ...currentSlides[sIdx].cta1, link: e.target.value } };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        placeholder="e.g. #product-section"
+                                        className="w-full px-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary"
+                                      />
+                                    </div>
 
-                                <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white uppercase tracking-wider">
-                                  {isVid ? "Video" : "Image"}
+                                    {/* CTA 2 */}
+                                    <div className="space-y-2 bg-background/60 p-3 rounded-xl border border-border">
+                                      <span className="text-[10px] font-bold uppercase text-primary">CTA 2 (Secondary)</span>
+                                      <input
+                                        type="text"
+                                        value={slide.cta2?.text ?? ""}
+                                        onChange={(e) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], cta2: { ...currentSlides[sIdx].cta2, text: e.target.value } };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        placeholder="e.g. About Jivanjor"
+                                        className="w-full px-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary"
+                                      />
+                                      <input
+                                        type="text"
+                                        value={slide.cta2?.link ?? ""}
+                                        onChange={(e) => {
+                                          const currentSlides = [...(formData.sections.hero.slides || [])];
+                                          currentSlides[sIdx] = { ...currentSlides[sIdx], cta2: { ...currentSlides[sIdx].cta2, link: e.target.value } };
+                                          updateSectionField("hero", "slides", currentSlides);
+                                        }}
+                                        placeholder="e.g. /about"
+                                        className="w-full px-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary"
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             );
                           })}
                         </div>
-
-                        {/* Add Media upload zone */}
-                        <div className="mt-4">
-                          <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                            Upload New Image or Video
-                          </label>
-                          <MediaUpload
-                            value=""
-                            onChange={(url) => {
-                              if (url) {
-                                const newMedia = [...(formData.sections.hero.media || [])];
-                                newMedia.push(url);
-                                updateSectionField("hero", "media", newMedia);
-                              }
-                            }}
-                            folder="templates"
-                            accept="any"
-                          />
-                        </div>
-                      </>
+                      </div>
                     )}
                   </div>
                 )}
