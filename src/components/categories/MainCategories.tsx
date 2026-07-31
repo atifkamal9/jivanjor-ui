@@ -41,10 +41,10 @@ interface MainCategoryData {
 const slugify = (text: string) =>
   text
     ? text
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
     : "";
 
 const STATIC_MAIN_CATEGORIES_DATA: MainCategoryData[] = [
@@ -370,16 +370,22 @@ export default function MainCategories() {
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
+  const [defaultCardBg, setDefaultCardBg] = useState("/images/placeholder.png");
+
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [cats, prods] = await Promise.all([
+        const [cats, prods, settings] = await Promise.all([
           api.getCategories(),
           api.getProducts(),
+          api.getSettings().catch(() => null),
         ]);
         setCategories(cats);
         setProducts(prods);
+        if (settings?.categoryCardBg) {
+          setDefaultCardBg(settings.categoryCardBg);
+        }
       } catch (err) {
         console.error("Failed to load category/product data, falling back to static content:", err);
       } finally {
@@ -398,7 +404,16 @@ export default function MainCategories() {
           name: cat.name,
           slug: cat.slug,
           subCategories: subCats.map((sub) => {
-            const subProducts = products.filter((p) => p.category_id === sub.id);
+            const subProducts = products.filter((p) => {
+              const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
+              return catIds.some(
+                (id) =>
+                  id === sub.id ||
+                  id.toLowerCase() === sub.id.toLowerCase() ||
+                  id.toLowerCase() === sub.name.toLowerCase() ||
+                  (sub.slug && id.toLowerCase() === sub.slug.toLowerCase())
+              );
+            });
             return {
               name: sub.name,
               slug: sub.slug,
@@ -425,6 +440,7 @@ export default function MainCategories() {
                       : "bg-[#0498AA]",
                   badge: sub.name,
                   image: p.image || "/images/Watershield.png",
+                  backgroundImage: p.backgroundImage || "",
                   features: featuresList,
                 };
               }),
@@ -827,7 +843,8 @@ export default function MainCategories() {
                       priority
                       alt="Product Backdrop"
                       className="object-cover object-center"
-                      src="/images/placeholder.png"
+                      src={defaultCardBg || "/images/placeholder.png"}
+                      unoptimized
                     />
                     {/* <div className="absolute inset-0 bg-black/5" /> */}
                     <div className="relative aspect-video w-36 md:w-40 h-36 md:h-40 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
@@ -836,6 +853,7 @@ export default function MainCategories() {
                         src={product.image}
                         alt={product.title}
                         className="object-contain"
+                        unoptimized
                       />
                     </div>
                   </div>

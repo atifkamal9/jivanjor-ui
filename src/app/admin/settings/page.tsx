@@ -28,6 +28,8 @@ export default function AdminSettingsPage() {
 
   const [desktopLogo, setDesktopLogo] = useState("");
   const [mobileLogo, setMobileLogo] = useState("");
+  const [categoryHeroCover, setCategoryHeroCover] = useState("");
+  const [categoryCardBg, setCategoryCardBg] = useState("");
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
     instagram: "",
@@ -52,6 +54,8 @@ export default function AdminSettingsPage() {
       const res = await api.getSettings();
       setDesktopLogo(res.desktopLogo || "");
       setMobileLogo(res.mobileLogo || "");
+      setCategoryHeroCover(res.categoryHeroCover || "");
+      setCategoryCardBg(res.categoryCardBg || "");
       setSocialLinks({
         facebook: res.socialLinks?.facebook || "",
         instagram: res.socialLinks?.instagram || "",
@@ -85,6 +89,8 @@ export default function AdminSettingsPage() {
       const updated = await api.updateSettings({
         desktopLogo: desktopLogo.trim() || undefined,
         mobileLogo: mobileLogo.trim() || undefined,
+        categoryHeroCover: categoryHeroCover.trim() || undefined,
+        categoryCardBg: categoryCardBg.trim() || undefined,
         socialLinks: {
           facebook: socialLinks.facebook.trim(),
           instagram: socialLinks.instagram.trim(),
@@ -103,6 +109,8 @@ export default function AdminSettingsPage() {
       if (updated) {
         setDesktopLogo(updated.desktopLogo || "");
         setMobileLogo(updated.mobileLogo || "");
+        setCategoryHeroCover(updated.categoryHeroCover || "");
+        setCategoryCardBg(updated.categoryCardBg || "");
         setSocialLinks({
           facebook: updated.socialLinks?.facebook || "",
           instagram: updated.socialLinks?.instagram || "",
@@ -333,7 +341,52 @@ export default function AdminSettingsPage() {
               </div>
             </div>
 
-            {/* Card 3: Right Choice Adhesive Banner Settings */}
+            {/* Card 3: Category Page Branding & Background Images */}
+            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
+              <div className="flex items-center gap-3 pb-4 border-b border-border">
+                <div className="p-2.5 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400">
+                  <ImageIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-foreground">Category Page Cover & Card Backgrounds</h2>
+                  <p className="text-[11px] text-foreground/50 mt-0.5">
+                    Customize top hero banners and default product card backdrops for the main Category page.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Category Page Hero Cover */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-foreground/80">Category Page Hero Cover Banner</label>
+                  <p className="text-[11px] text-foreground/50">
+                    Top hero backdrop image rendered at the top of <code>/categories</code> page. (Fallback: <code>/images/main-category-hero.png</code>)
+                  </p>
+                  <ImageUpload
+                    value={categoryHeroCover}
+                    onChange={(url) => setCategoryHeroCover(url)}
+                    folder="branding"
+                    aspect="cover"
+                  />
+                </div>
+
+                {/* Category Card Background Image */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-foreground/80">Category Product Card Backdrop Image</label>
+                  <p className="text-[11px] text-foreground/50">
+                    Default room/closet backdrop image displayed behind product cans on category cards. (Fallback: <code>/images/placeholder.png</code>)
+                  </p>
+                  <ImageUpload
+                    value={categoryCardBg}
+                    onChange={(url) => setCategoryCardBg(url)}
+                    folder="branding"
+                    aspect="square"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: Right Choice Adhesive Banner Settings */}
             <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
               <div className="flex items-center gap-3 pb-4 border-b border-border">
                 <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">

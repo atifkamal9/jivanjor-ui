@@ -1,8 +1,28 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function Hero() {
+  const [heroCover, setHeroCover] = useState("/images/main-category-hero.png");
+
+  useEffect(() => {
+    async function fetchCover() {
+      try {
+        const settings = await api.getSettings();
+        if (settings?.categoryHeroCover) {
+          setHeroCover(settings.categoryHeroCover);
+        }
+      } catch (err) {
+        console.error("Failed to load category hero cover from settings:", err);
+      }
+    }
+    fetchCover();
+  }, []);
+
   return (
     <section className="relative">
       <div className="flex items-center gap-1.5 md:hidden px-6 pt-4 text-xs font-medium">
@@ -44,11 +64,12 @@ export default function Hero() {
           </div>
         </div>
         <Image
-          src="/images/main-category-hero.png"
+          src={heroCover}
           fill
           alt="Category Hero"
           sizes="100vw"
           className="object-cover object-center hidden md:block"
+          unoptimized
         />
       </div>
     </section>

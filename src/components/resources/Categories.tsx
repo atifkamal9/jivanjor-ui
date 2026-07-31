@@ -356,7 +356,16 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
     const subCategoriesList: SubCategoryData[] = [];
 
     for (const sub of subs) {
-      const subProds = prods.filter(p => p.category_id === sub.id);
+      const subProds = prods.filter((p) => {
+        const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
+        return catIds.some(
+          (id) =>
+            id === sub.id ||
+            id.toLowerCase() === sub.id.toLowerCase() ||
+            id.toLowerCase() === sub.name.toLowerCase() ||
+            (sub.slug && id.toLowerCase() === sub.slug.toLowerCase())
+        );
+      });
       if (subProds.length === 0) continue;
 
       const productsList: ProductCard[] = subProds.map(p => {

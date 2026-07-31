@@ -84,12 +84,15 @@ export default function ProductRange({ data }: ProductRangeProps) {
     }
     // Fallback if no specific products selected for this category
     if (carouselItems.length === 0) {
-      carouselItems = dbProducts.filter(
-        (p: any) =>
-          (currentCategoryObj?.categoryId && (p.category_id === currentCategoryObj.categoryId || p.category_id?.toLowerCase() === currentCategoryObj.categoryId.toLowerCase())) ||
-          p.category_id?.toLowerCase() === activeCategoryName.toLowerCase() ||
-          p.category?.toLowerCase() === activeCategoryName.toLowerCase()
-      ).slice(0, 10);
+      carouselItems = dbProducts.filter((p: any) => {
+        const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
+        const targetId = currentCategoryObj?.categoryId?.toLowerCase();
+        const targetName = activeCategoryName.toLowerCase();
+        return catIds.some((id: string) => {
+          const lower = id.toLowerCase();
+          return (targetId && lower === targetId) || lower === targetName || (p.category && p.category.toLowerCase() === targetName);
+        });
+      }).slice(0, 10);
     }
     if (carouselItems.length === 0) {
       carouselItems = dbProducts.slice(0, 10);

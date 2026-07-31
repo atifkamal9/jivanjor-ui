@@ -20,6 +20,7 @@ export interface Product {
   material_id: string;
   metadata: string; // comma-separated or JSON
   image?: string;
+  backgroundImage?: string;
   themeColor?: string;
   overviewBullets?: { text: string; icon: string }[];
   techSpecs?: { key: string; value: string }[];
@@ -74,6 +75,8 @@ export interface SiteSettings {
   id?: string;
   desktopLogo?: string;
   mobileLogo?: string;
+  categoryHeroCover?: string;
+  categoryCardBg?: string;
   socialLinks?: {
     facebook?: string;
     instagram?: string;
@@ -286,12 +289,15 @@ function mapProductFromBackend(prod: any): Product {
   let techResourceDescription = "";
   let techResourceFileUrl = "";
 
+  let backgroundImage = "";
+
   if (prod.metadata) {
     if (typeof prod.metadata === "string") {
       metadataStr = prod.metadata;
     } else if (typeof prod.metadata === "object") {
-      if ("themeColor" in prod.metadata) {
+      if ("themeColor" in prod.metadata || "backgroundImage" in prod.metadata) {
         themeColor = prod.metadata.themeColor || "#0498AA";
+        backgroundImage = prod.metadata.backgroundImage || prod.metadata.bg_image || "";
 
         let rawBullets = prod.metadata.overviewBullets || [];
         overviewBullets = rawBullets.map((b: any, idx: number) => {
@@ -412,6 +418,7 @@ function mapProductFromBackend(prod: any): Product {
       prod.image ||
       "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop",
     themeColor,
+    backgroundImage,
     overviewBullets,
     techSpecs,
     packSizes,
@@ -590,6 +597,7 @@ export const api = {
       metadata: {
         tags: product.metadata,
         themeColor: product.themeColor || "#0498AA",
+        backgroundImage: product.backgroundImage || "",
         overviewBullets: product.overviewBullets || [],
         techSpecs: product.techSpecs || [],
         packSizes: product.packSizes || [],
@@ -1009,6 +1017,8 @@ export const api = {
       return {
         desktopLogo: "/images/logo.png",
         mobileLogo: "/images/logo.png",
+        categoryHeroCover: "/images/main-category-hero.png",
+        categoryCardBg: "/images/placeholder.png",
         socialLinks: {
           facebook: "https://facebook.com",
           instagram: "https://instagram.com",

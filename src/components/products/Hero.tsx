@@ -118,8 +118,8 @@ export default function Hero({ product, category }: HeroProps) {
         <div className="order-1 lg:order-2 w-full lg:w-[60%] relative h-72 sm:h-100 lg:h-full overflow-hidden">
           {/* Desktop Kitchen Backdrop Image */}
           <Image
-            src="/images/products-cover.png"
-            alt="Kitchen background"
+            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
+            alt={`${productName} background`}
             fill
             priority
             className="hidden lg:block object-cover"
@@ -128,8 +128,8 @@ export default function Hero({ product, category }: HeroProps) {
 
           {/* Mobile Kitchen Backdrop Image */}
           <Image
-            src="/images/products-cover.png"
-            alt="Kitchen background mobile"
+            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
+            alt={`${productName} background mobile`}
             fill
             priority
             className="block lg:hidden object-cover"

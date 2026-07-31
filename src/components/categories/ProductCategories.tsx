@@ -328,7 +328,16 @@ export default function ProductCategories({ category, data }: Props) {
 
   const categoriesData = categories.length > 0 && currentSubcategory
     ? siblingSubcategories.map((sub) => {
-      const subProducts = products.filter((p) => p.category_id === sub.id);
+      const subProducts = products.filter((p) => {
+        const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
+        return catIds.some(
+          (id) =>
+            id === sub.id ||
+            id.toLowerCase() === sub.id.toLowerCase() ||
+            id.toLowerCase() === sub.name.toLowerCase() ||
+            (sub.slug && id.toLowerCase() === sub.slug.toLowerCase())
+        );
+      });
       return {
         name: sub.name,
         title: sub.name || "Adhesives by Jivanjor",

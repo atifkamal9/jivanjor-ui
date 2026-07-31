@@ -56,7 +56,9 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
   // Load related products from product configurations
   let displayedProducts: any[] = [];
   if (product?.relatedProducts && product.relatedProducts.length > 0 && allProducts.length > 0) {
-    displayedProducts = allProducts.filter(p => product.relatedProducts.includes(p.id));
+    displayedProducts = product.relatedProducts
+      .map((id: string) => allProducts.find((p) => p.id === id))
+      .filter(Boolean);
   }
 
   // Fallback: Show other products in the database if list is empty
@@ -96,8 +98,12 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
         </div>
         <div className="w-full mt-24">
           <Swiper
+            key={displayedProducts.map((p) => p.title).join("-")}
             modules={[Navigation]}
+            observer={true}
+            observeParents={true}
             watchOverflow={false}
+            centerInsufficientSlides={true}
             loop={false}
             spaceBetween={16}
             slidesPerView={1}
@@ -110,7 +116,7 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
               480: {
                 slidesPerView: 1,
               },
-              768: {
+              640: {
                 slidesPerView: 2,
               },
               1024: {
@@ -120,7 +126,7 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
                 slidesPerView: 4,
               },
             }}
-            className="overflow-visible!"
+            className="w-full [overflow-x:clip]! [overflow-y:visible]!"
           >
             {displayedProducts.map((card, idx) => (
               <SwiperSlide

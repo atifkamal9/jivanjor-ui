@@ -23,6 +23,7 @@ import {
   HelpCircle,
   Files,
   CopyPlus,
+  GripVertical,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -55,6 +56,7 @@ export default function ProductsPage() {
     material_id: "",
     metadata: "",
     image: "",
+    backgroundImage: "",
     themeColor: "#0498AA",
     overviewBullets: [] as { text: string; icon: string }[],
     techSpecs: [] as { key: string; value: string }[],
@@ -168,6 +170,7 @@ export default function ProductsPage() {
       material_id: materials[0]?.id || "",
       metadata: "",
       image: "",
+      backgroundImage: "",
       themeColor: "#0498AA",
       overviewBullets: [
         { text: "Water Resistant", icon: "image 18.svg" },
@@ -260,6 +263,7 @@ export default function ProductsPage() {
       material_id: product.material_id,
       metadata: product.metadata,
       image: product.image || "",
+      backgroundImage: product.backgroundImage || "",
       themeColor: product.themeColor || "#0498AA",
       overviewBullets: product.overviewBullets || [],
       techSpecs: product.techSpecs || [],
@@ -348,6 +352,7 @@ export default function ProductsPage() {
       material_id: product.material_id,
       metadata: product.metadata,
       image: product.image || "",
+      backgroundImage: product.backgroundImage || "",
       themeColor: product.themeColor || "#0498AA",
       overviewBullets: product.overviewBullets || [],
       techSpecs: product.techSpecs || [],
@@ -435,7 +440,9 @@ export default function ProductsPage() {
       const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
         p.description.toLowerCase().includes(search.toLowerCase()) ||
         p.metadata.toLowerCase().includes(search.toLowerCase());
-      const matchesCategory = filterCategory ? p.category_id === filterCategory : true;
+      const matchesCategory = filterCategory
+        ? Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).includes(filterCategory)
+        : true;
       const matchesMaterial = filterMaterial ? p.material_id === filterMaterial : true;
       return matchesSearch && matchesCategory && matchesMaterial;
     })
@@ -551,9 +558,9 @@ export default function ProductsPage() {
                         <tr key={p.id} className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20 transition-colors">
                           <td className="px-6 py-5 min-w-[260px]">
                             <div className="flex items-center gap-4">
-                              <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 dark:bg-zinc-850 dark:border-zinc-800 overflow-hidden flex items-center justify-center shrink-0 shadow-2xs">
+                              <div className="h-12 w-12 overflow-hidden flex items-center justify-center shrink-0">
                                 {p.image ? (
-                                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+                                  <img src={p.image} alt={p.name} className="h-full w-full object-contain" />
                                 ) : (
                                   <ImageIcon className="h-5 w-5 text-gray-300 dark:text-zinc-600" />
                                 )}
@@ -583,9 +590,8 @@ export default function ProductsPage() {
                                   return (
                                     <span
                                       key={cId}
-                                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shadow-2xs ${
-                                        isPrimary ? "" : "opacity-80"
-                                      }`}
+                                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shadow-2xs ${isPrimary ? "" : "opacity-80"
+                                        }`}
                                       style={{ color: p.themeColor || "#0498AA", backgroundColor: (p.themeColor || "#0498AA") + "1F" }}
                                     >
                                       {cObj.name}
@@ -861,11 +867,10 @@ export default function ProductsPage() {
                             return (
                               <span
                                 key={catId}
-                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold transition ${
-                                  isPrimary
-                                    ? "bg-red-600 text-white shadow-xs"
-                                    : "bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 border border-gray-200 dark:border-zinc-700"
-                                }`}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold transition ${isPrimary
+                                  ? "bg-red-600 text-white shadow-xs"
+                                  : "bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 border border-gray-200 dark:border-zinc-700"
+                                  }`}
                               >
                                 <span>{label}</span>
                                 {isPrimary && <span className="text-[9px] uppercase bg-white/20 px-1.5 py-0.2 rounded font-black">Primary</span>}
@@ -938,13 +943,22 @@ export default function ProductsPage() {
                       </div>
                     </div>
 
-                    <ImageUpload
-                      label="Illustration Image"
-                      value={formData.image}
-                      onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
-                      folder="products"
-                      aspect="square"
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <ImageUpload
+                        label="Product Pack / Can Image"
+                        value={formData.image}
+                        onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
+                        folder="products"
+                        aspect="square"
+                      />
+                      <ImageUpload
+                        label="Product Background Image"
+                        value={formData.backgroundImage}
+                        onChange={(url) => setFormData((prev) => ({ ...prev, backgroundImage: url }))}
+                        folder="products"
+                        aspect="cover"
+                      />
+                    </div>
 
                     <div>
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
@@ -1231,31 +1245,123 @@ export default function ProductsPage() {
                           className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Select Related Products
-                        </label>
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 uppercase tracking-wider">
+                            Select Related Products
+                          </label>
+                          <span className="text-[11px] font-extrabold text-red-600 bg-red-50 dark:bg-red-955/20 border border-red-200 dark:border-red-900/30 px-2.5 py-0.5 rounded-full">
+                            {formData.relatedProducts.length} Products Selected
+                          </span>
+                        </div>
+
+                        {/* Drag & Drop Selected Products Reorder Bar */}
+                        {formData.relatedProducts.length > 0 && (
+                          <div className="space-y-2 p-3.5 border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-955/10 rounded-xl">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-extrabold uppercase text-red-600 tracking-wider flex items-center gap-1.5">
+                                <GripVertical className="h-3.5 w-3.5" />
+                                <span>DRAG & DROP TO REARRANGE DISPLAY ORDER</span>
+                              </span>
+                              <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-semibold">
+                                Order: 1st → Last in Carousel
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 pt-1">
+                              {formData.relatedProducts.map((relId: string, pIdx: number) => {
+                                const prod = products.find((p) => p.id === relId);
+                                const prodName = prod ? prod.name : relId;
+                                const prodImg = prod?.image;
+
+                                return (
+                                  <div
+                                    key={relId}
+                                    draggable={true}
+                                    onDragStart={(e) => {
+                                      e.dataTransfer.setData("text/plain", relId);
+                                      e.dataTransfer.effectAllowed = "move";
+                                    }}
+                                    onDragOver={(e) => {
+                                      e.preventDefault();
+                                      e.dataTransfer.dropEffect = "move";
+                                    }}
+                                    onDrop={(e) => {
+                                      e.preventDefault();
+                                      const draggedId = e.dataTransfer.getData("text/plain");
+                                      if (!draggedId || draggedId === relId) return;
+
+                                      const currentSelected = [...formData.relatedProducts];
+                                      const sourceIndex = currentSelected.indexOf(draggedId);
+                                      const targetIndex = currentSelected.indexOf(relId);
+
+                                      if (sourceIndex !== -1 && targetIndex !== -1) {
+                                        const [moved] = currentSelected.splice(sourceIndex, 1);
+                                        currentSelected.splice(targetIndex, 0, moved);
+                                        setFormData((prev) => ({ ...prev, relatedProducts: currentSelected }));
+                                      }
+                                    }}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:border-red-500 rounded-xl text-xs font-bold shadow-2xs cursor-grab active:cursor-grabbing transition group select-none"
+                                  >
+                                    <GripVertical className="h-3.5 w-3.5 text-gray-400 group-hover:text-red-600 shrink-0" />
+                                    <span className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-955/40 text-red-600 text-[10px] font-black flex items-center justify-center shrink-0">
+                                      {pIdx + 1}
+                                    </span>
+                                    {prodImg && (
+                                      <div className="w-5 h-5 relative shrink-0">
+                                        <img src={prodImg} alt="" className="w-full h-full object-contain" />
+                                      </div>
+                                    )}
+                                    <span className="truncate max-w-[130px]">{prodName}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const updated = formData.relatedProducts.filter((id: string) => id !== relId);
+                                        setFormData((prev) => ({ ...prev, relatedProducts: updated }));
+                                      }}
+                                      className="text-gray-400 hover:text-red-600 transition ml-0.5 cursor-pointer"
+                                      title="Remove product"
+                                    >
+                                      <X className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Checkbox list of available products */}
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 max-h-48 overflow-y-auto">
-                          {products.filter(p => p.id !== editingId).map(p => {
+                          {products.filter((p) => p.id !== editingId).map((p) => {
                             const isChecked = formData.relatedProducts.includes(p.id);
                             return (
-                              <label key={p.id} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-850 hover:bg-red-50/50 dark:hover:bg-red-955/10 cursor-pointer select-none text-xs font-bold">
+                              <label
+                                key={p.id}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition cursor-pointer select-none text-xs font-bold ${
+                                  isChecked
+                                    ? "bg-red-50/60 dark:bg-red-955/20 border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-200"
+                                    : "bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-850 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300"
+                                }`}
+                              >
                                 <input
                                   type="checkbox"
                                   checked={isChecked}
-                                  onChange={() => setFormData(prev => {
-                                    const list = isChecked
-                                      ? prev.relatedProducts.filter(id => id !== p.id)
-                                      : [...prev.relatedProducts, p.id];
-                                    return { ...prev, relatedProducts: list };
-                                  })}
-                                  className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4"
+                                  onChange={() =>
+                                    setFormData((prev) => {
+                                      const list = isChecked
+                                        ? prev.relatedProducts.filter((id) => id !== p.id)
+                                        : [...prev.relatedProducts, p.id];
+                                      return { ...prev, relatedProducts: list };
+                                    })
+                                  }
+                                  className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4 cursor-pointer"
                                 />
                                 <span className="truncate">{p.name}</span>
                               </label>
                             );
                           })}
-                          {products.filter(p => p.id !== editingId).length === 0 && (
+                          {products.filter((p) => p.id !== editingId).length === 0 && (
                             <span className="text-xs text-gray-400 italic">No other products configured in catalogue.</span>
                           )}
                         </div>

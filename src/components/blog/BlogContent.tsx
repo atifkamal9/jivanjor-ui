@@ -188,8 +188,6 @@ export default function BlogContent({
 
   const authorName = articleData?.author || "Jivanjor Product Experts";
 
-  console.log("articleData---->", articleData);
-
   if (!articleData) {
     return (
       <div className="w-full max-w-360 mx-auto px-5 py-20 text-center font-google-sans space-y-4">
