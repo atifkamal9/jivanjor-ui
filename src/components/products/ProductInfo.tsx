@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import ProductFeatures from "./ProductFeatures";
@@ -16,6 +17,7 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
   const [isManualScroll, setIsManualScroll] = useState(false);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const documentUrl = product?.techResourceFileUrl ?? "/docs/technical.pdf";
 
   const tabs: { name: TabName; label: string; icon: React.ReactNode }[] = [
     {
@@ -186,11 +188,10 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
               <button
                 key={tab.name}
                 onClick={() => handleTabClick(tab.name)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${
-                  isActive
-                    ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
-                    : "hover:bg-surface transition-colors"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${isActive
+                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
+                  : "hover:bg-surface transition-colors"
+                  }`}
               >
                 <span className={isActive ? "invert brightness-0" : ""}>
                   {tab.icon}
@@ -210,11 +211,10 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
             <button
               key={tab.name}
               onClick={() => handleTabClick(tab.name)}
-              className={`flex flex-col items-center justify-center gap-1 p-1.5 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${
-                isActive
-                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
-                  : "hover:text-black"
-              }`}
+              className={`flex flex-col items-center justify-center gap-1 p-1.5 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${isActive
+                ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
+                : "hover:text-black"
+                }`}
             >
               <div
                 className={`w-5 h-5 flex items-center justify-center ${isActive ? "invert brightness-0" : ""}`}
@@ -245,9 +245,9 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                     alt="badge"
                   />
                 </div>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
-                    {product?.techSpecsDescription || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
-                  </p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
+                  {product?.techSpecsDescription || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
+                </p>
               </div>
 
               {/* Split specifications grid */}
@@ -323,20 +323,14 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                   </div>
 
                   {/* PDF technical data sheet download action */}
-                  {product?.documentUrl ? (
-                    <a
-                      href={product.documentUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block w-full sm:w-auto text-center bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer"
-                    >
-                      Download Technical Data Sheet
-                    </a>
-                  ) : (
-                    <button className="w-full sm:w-auto self-center md:self-start bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer text-center">
-                      Download Technical Data Sheet
-                    </button>
-                  )}
+                  <Link
+                    href={documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full sm:w-auto text-center bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer"
+                  >
+                    Download Technical Data Sheet
+                  </Link>
                 </div>
               </div>
             </div>

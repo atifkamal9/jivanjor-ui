@@ -1387,19 +1387,6 @@ export default function ProductsPage() {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                        TDS Document Link (PDF)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.documentUrl}
-                        onChange={(e) => setFormData(prev => ({ ...prev, documentUrl: e.target.value }))}
-                        placeholder="/docs/technical.pdf"
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-                      />
-                    </div>
-
                     {/* Technical Specs */}
                     <div>
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
