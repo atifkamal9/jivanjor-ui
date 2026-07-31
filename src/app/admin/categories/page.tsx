@@ -215,9 +215,17 @@ export default function CategoriesPage() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentMainCategories = filteredMainCategories.slice(indexOfFirstItem, indexOfLastItem);
 
+  const isRootCategory = !formData.parent_category;
+
+  useEffect(() => {
+    if (isRootCategory && activeTab === "content") {
+      setActiveTab("general");
+    }
+  }, [isRootCategory, activeTab]);
+
   const tabsList = [
     { id: "general", label: "General Properties", icon: Sliders },
-    { id: "content", label: "Dynamic Page Content", icon: FileText },
+    ...(!isRootCategory ? [{ id: "content", label: "Dynamic Page Content", icon: FileText }] : []),
     { id: "seo", label: "SEO Metadata", icon: Search },
   ];
 

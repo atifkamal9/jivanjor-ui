@@ -956,7 +956,7 @@ export default function ProductsPage() {
                         value={formData.backgroundImage}
                         onChange={(url) => setFormData((prev) => ({ ...prev, backgroundImage: url }))}
                         folder="products"
-                        aspect="cover"
+                        aspect="video"
                       />
                     </div>
 
@@ -1338,11 +1338,10 @@ export default function ProductsPage() {
                             return (
                               <label
                                 key={p.id}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition cursor-pointer select-none text-xs font-bold ${
-                                  isChecked
-                                    ? "bg-red-50/60 dark:bg-red-955/20 border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-200"
-                                    : "bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-850 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300"
-                                }`}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition cursor-pointer select-none text-xs font-bold ${isChecked
+                                  ? "bg-red-50/60 dark:bg-red-955/20 border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-200"
+                                  : "bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-850 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300"
+                                  }`}
                               >
                                 <input
                                   type="checkbox"
