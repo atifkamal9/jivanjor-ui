@@ -281,19 +281,43 @@ export default function Navbar() {
     },
   };
 
-  const dynamicKnowledgeItems =
-    blogCategories.length > 0
-      ? [
-        { name: "Latest Blogs", link: "/blog?category=Latest%20Blogs" },
-        ...blogCategories
-          .filter((cat: any) => cat.name && cat.name.toLowerCase() !== "latest blogs")
-          .map((cat: any) => ({
-            name: cat.name,
-            link: `/blog?category=${encodeURIComponent(cat.name)}`,
-          })),
-        { name: "Technical Resources", link: "/resources" }
-      ]
-      : knowledgeItems;
+  const dynamicKnowledgeItems = (() => {
+    const knowledgeMenu = publishedMenu.find(
+      (m) => m.id === "nav-knowledge" || m.title.toLowerCase() === "knowledge center"
+    );
+
+    let items: Array<{ name: string; link: string; order?: number }> = [];
+
+    if (knowledgeMenu?.subItems && knowledgeMenu.subItems.length > 0) {
+      items = knowledgeMenu.subItems.map((sub: any) => ({
+        name: sub.title,
+        link: sub.url || `/blog?category=${encodeURIComponent(sub.title)}`,
+        order: sub.order ?? 0,
+      }));
+    } else if (blogCategories.length > 0) {
+      items = blogCategories.map((cat: any, idx: number) => ({
+        name: cat.name,
+        link: `/blog?category=${encodeURIComponent(cat.name)}`,
+        order: idx + 1,
+      }));
+    } else {
+      items = knowledgeItems.map((k, idx) => ({ ...k, order: idx + 1 }));
+    }
+
+    // Merge any missing blog categories dynamically
+    const existingNames = new Set(items.map((i) => i.name.toLowerCase()));
+    blogCategories.forEach((cat: any, idx: number) => {
+      if (cat.name && !existingNames.has(cat.name.toLowerCase())) {
+        items.push({
+          name: cat.name,
+          link: `/blog?category=${encodeURIComponent(cat.name)}`,
+          order: items.length + idx + 1,
+        });
+      }
+    });
+
+    return items.sort((a, b) => (a.order || 0) - (b.order || 0));
+  })();
 
   const currentKnowledgeItem =
     hoveredKnowledgeItem || (dynamicKnowledgeItems[0]?.name || "Choosing The Right Adhesive");
@@ -571,8 +595,18 @@ export default function Navbar() {
 
             if (!activeItem) return null;
 
-            // Render custom or standard subItems
-            const subItems = activeItem.subItems || [];
+            const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
+            const subItems = isKnowledgeNav
+              ? dynamicKnowledgeItems.map((item, idx) => ({
+                  id: `sub-know-${idx}`,
+                  title: item.name,
+                  type: "page",
+                  url: item.link,
+                  order: item.order ?? (idx + 1),
+                  description: undefined,
+                  target: undefined,
+                })).sort((a, b) => (a.order || 0) - (b.order || 0))
+              : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
 
             const fallbackImage =
               activeItem.id === "nav-about"
@@ -604,6 +638,7 @@ export default function Navbar() {
                             rel="noopener noreferrer"
                             onClick={() => setActiveMenu(null)}
                             onMouseEnter={() => {
+                              if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                               setHoveredGenericSubItem(sub.description || sub.title);
                               setHoveredSubItemObj(sub);
                             }}
@@ -619,6 +654,7 @@ export default function Navbar() {
                           href={sub.url}
                           onClick={() => setActiveMenu(null)}
                           onMouseEnter={() => {
+                            if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                             setHoveredGenericSubItem(sub.description || sub.title);
                             setHoveredSubItemObj(sub);
                           }}

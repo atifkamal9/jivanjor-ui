@@ -117,8 +117,20 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
     };
   }, []);
 
-  const defaultLists = BLOG_CATEGORY_FILTERS;
-  const displayLists = categories && categories.length > 0 ? categories : defaultLists;
+  const apiCategories = Array.from(new Set(apiPosts.map((p) => p.category))).filter(Boolean);
+  const combinedCategoryNames = Array.from(
+    new Set([...BLOG_CATEGORY_FILTERS.map((f) => f.name), ...apiCategories])
+  );
+
+  const displayLists: BlogCategory[] = categories && categories.length > 0
+    ? categories
+    : combinedCategoryNames.map((name) => {
+        const found = BLOG_CATEGORY_FILTERS.find((f) => f.name === name);
+        return {
+          name,
+          icon: found ? found.icon : "/images/blog/image 47.svg",
+        };
+      });
 
   const Blogs: BlogPost[] = [
     // Category: Application Tips

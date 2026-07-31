@@ -13,6 +13,7 @@ import {
   DEFAULT_FOOTER_MENU,
 } from "@/lib/menuTypes";
 import ImageUpload from "@/components/admin/ImageUpload";
+import { FALLBACK_BLOG_CATEGORIES } from "@/lib/blog-categories";
 import {
   GripVertical,
   Plus,
@@ -138,14 +139,64 @@ export default function AdminMenuPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [headerRes, footerRes, pagesRes] = await Promise.all([
+      const [headerRes, footerRes, pagesRes, blogTemplateRes, blogPostsRes] = await Promise.all([
         api.getHeaderMenu(),
         api.getFooterMenu(),
         api.getPages().catch(() => []),
+        api.getActiveTemplateForPage("blog").catch(() => null),
+        api.getBlogPosts().catch(() => []),
       ]);
 
-      const initialHeaderDraft = headerRes.draftItems.length > 0 ? headerRes.draftItems : DEFAULT_HEADER_MENU;
-      const initialHeaderPub = headerRes.publishedItems.length > 0 ? headerRes.publishedItems : DEFAULT_HEADER_MENU;
+      let templateCats: string[] = [];
+      const listSection = (blogTemplateRes as any)?.rawSections?.list || (blogTemplateRes as any)?.sections?.find((s: any) => s.type === "list" || s.id === "list");
+      if (listSection?.categories && Array.isArray(listSection.categories)) {
+        templateCats = listSection.categories.map((c: any) => typeof c === "string" ? c : c.name).filter(Boolean);
+      }
+      const postCats = blogPostsRes.map((b: any) => b.category).filter(Boolean);
+      const allBlogCategories = Array.from(
+        new Set([
+          ...FALLBACK_BLOG_CATEGORIES,
+          ...templateCats,
+          ...postCats,
+        ])
+      ).filter(Boolean);
+
+      const syncKnowledgeSubItems = (menuList: MenuItem[]): MenuItem[] => {
+        return menuList.map((item) => {
+          if (item.id === "nav-knowledge" || item.title.toLowerCase() === "knowledge center") {
+            const existingSubItems = item.subItems || [];
+            const existingTitles = new Set(existingSubItems.map((s) => s.title.toLowerCase()));
+
+            const updatedSubItems = [...existingSubItems];
+
+            allBlogCategories.forEach((catName) => {
+              if (!existingTitles.has(catName.toLowerCase())) {
+                updatedSubItems.push({
+                  id: `sub-know-dyn-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+                  title: catName,
+                  type: "page",
+                  url: `/blog?category=${encodeURIComponent(catName)}`,
+                  order: updatedSubItems.length + 1,
+                });
+              }
+            });
+
+            const reindexed = updatedSubItems.map((s, idx) => ({
+              ...s,
+              order: s.order || idx + 1,
+            }));
+
+            return { ...item, subItems: reindexed };
+          }
+          return item;
+        });
+      };
+
+      const rawHeaderDraft = headerRes.draftItems.length > 0 ? headerRes.draftItems : DEFAULT_HEADER_MENU;
+      const rawHeaderPub = headerRes.publishedItems.length > 0 ? headerRes.publishedItems : DEFAULT_HEADER_MENU;
+
+      const initialHeaderDraft = syncKnowledgeSubItems(rawHeaderDraft);
+      const initialHeaderPub = syncKnowledgeSubItems(rawHeaderPub);
 
       const initialFooterDraft = footerRes.draftItems.length > 0 ? footerRes.draftItems : DEFAULT_FOOTER_MENU;
       const initialFooterPub = footerRes.publishedItems.length > 0 ? footerRes.publishedItems : DEFAULT_FOOTER_MENU;

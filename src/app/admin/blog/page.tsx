@@ -5,7 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { api, BlogPost, SeoMetadata } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
-import { BLOG_POST_CATEGORIES } from "@/lib/blog-categories";
+import { BLOG_POST_CATEGORIES, FALLBACK_BLOG_CATEGORIES } from "@/lib/blog-categories";
 import {
   Plus,
   Search,
@@ -79,6 +79,15 @@ export default function BlogPage() {
   // ContentEditable Editor Ref
   const editorRef = useRef<HTMLDivElement>(null);
 
+  const FALLBACK_AUTHOR = {
+    name: "Jivanjor Editor",
+    avatar: "/images/blog/image 47.svg",
+    bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
+  };
+
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>(BLOG_POST_CATEGORIES);
+  const [authorsList, setAuthorsList] = useState<Array<{ name: string; avatar: string; bio: string }>>([FALLBACK_AUTHOR]);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -95,8 +104,35 @@ export default function BlogPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await api.getBlogPosts();
+      const [data, blogTemplate] = await Promise.all([
+        api.getBlogPosts(),
+        api.getActiveTemplateForPage("blog").catch(() => null),
+      ]);
       setBlogs(data);
+
+      let templateCats: string[] = [];
+      let templateAuthors: any[] = [];
+      const listSection = (blogTemplate as any)?.rawSections?.list || (blogTemplate as any)?.sections?.find((s: any) => s.type === "list" || s.id === "list");
+      if (listSection?.categories && Array.isArray(listSection.categories)) {
+        templateCats = listSection.categories.map((c: any) => typeof c === "string" ? c : c.name).filter(Boolean);
+      }
+      if (listSection?.authors && Array.isArray(listSection.authors) && listSection.authors.length > 0) {
+        templateAuthors = listSection.authors;
+      }
+
+      const postCats = data.map((b: any) => b.category).filter(Boolean);
+
+      const blogCats = Array.from(
+        new Set([
+          ...FALLBACK_BLOG_CATEGORIES,
+          ...templateCats,
+          ...postCats,
+        ])
+      ).filter(Boolean);
+      setDynamicCategories(blogCats);
+
+      const mergedAuthors = templateAuthors.length > 0 ? templateAuthors : [FALLBACK_AUTHOR];
+      setAuthorsList(mergedAuthors);
     } catch (err) {
       console.error("Failed to load blog posts", err);
     } finally {
@@ -125,9 +161,9 @@ export default function BlogPage() {
       content: "<p>Write your article content here...</p>",
       category: BLOG_POST_CATEGORIES[0] || "Application Tips",
       tagsInput: "woodworking, carpentry, adhesives",
-      author: "Admin Editor",
-      author_description: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals.",
-      author_avatar: "",
+      author: authorsList[0]?.name || FALLBACK_AUTHOR.name,
+      author_description: authorsList[0]?.bio || FALLBACK_AUTHOR.bio,
+      author_avatar: authorsList[0]?.avatar || FALLBACK_AUTHOR.avatar,
       publish_date: new Date().toISOString().split("T")[0],
       image: "",
       tldr: "",
@@ -476,11 +512,10 @@ export default function BlogPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setComposerTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  composerTab === tab.id
-                    ? "bg-white dark:bg-zinc-900 text-red-600 shadow-sm border border-gray-200 dark:border-zinc-700"
-                    : "text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${composerTab === tab.id
+                  ? "bg-white dark:bg-zinc-900 text-red-600 shadow-sm border border-gray-200 dark:border-zinc-700"
+                  : "text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-200"
+                  }`}
               >
                 {tab.icon}
                 {tab.label}
@@ -496,8 +531,8 @@ export default function BlogPage() {
                 <>
                   {!composerPreview ? (
                     <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div className="lg:col-span-7 xl:col-span-8 space-y-4">
                           <div>
                             <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                               Article Title
@@ -508,7 +543,7 @@ export default function BlogPage() {
                               value={formData.title}
                               onChange={(e) => handleTitleChange(e.target.value)}
                               placeholder="e.g. Mechanics of Polyvinyl Acetate bonding"
-                              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
+                              className="w-full px-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50/50 text-base font-bold outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
                             />
                           </div>
 
@@ -553,7 +588,7 @@ export default function BlogPage() {
                                 onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
                                 className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm font-semibold outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
                               >
-                                {BLOG_POST_CATEGORIES.map((cat) => (
+                                {dynamicCategories.map((cat) => (
                                   <option key={cat} value={cat}>
                                     {cat}
                                   </option>
@@ -578,16 +613,32 @@ export default function BlogPage() {
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                                Author/Publisher Name
+                                Author / Publisher
                               </label>
-                              <input
-                                type="text"
-                                required
-                                value={formData.author}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, author: e.target.value }))}
-                                placeholder="e.g. Dr. Wood Glue"
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
-                              />
+                              <select
+                                value={formData.author || authorsList[0]?.name || FALLBACK_AUTHOR.name}
+                                onChange={(e) => {
+                                  const selectedName = e.target.value;
+                                  const found = authorsList.find((a) => a.name === selectedName);
+                                  if (found) {
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      author: found.name,
+                                      author_avatar: found.avatar || prev.author_avatar,
+                                      author_description: found.bio || prev.author_description,
+                                    }));
+                                  } else {
+                                    setFormData((prev) => ({ ...prev, author: selectedName }));
+                                  }
+                                }}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm font-semibold outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
+                              >
+                                {authorsList.map((author) => (
+                                  <option key={author.name} value={author.name}>
+                                    {author.name}
+                                  </option>
+                                ))}
+                              </select>
                             </div>
 
                             <div>
@@ -603,34 +654,14 @@ export default function BlogPage() {
                               />
                             </div>
                           </div>
-
-                          <div>
-                            <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                              Author Bio / Description
-                            </label>
-                            <textarea
-                              rows={2}
-                              value={formData.author_description}
-                              onChange={(e) => setFormData((prev) => ({ ...prev, author_description: e.target.value }))}
-                              placeholder="e.g. Knowledge shaped by Jivanjor's team of product specialists, woodworking experts..."
-                              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none font-medium"
-                            />
-                          </div>
                         </div>
 
-                        <div className="space-y-4 flex flex-col justify-between">
+                        <div className="lg:col-span-5 xl:col-span-4 space-y-4 flex flex-col justify-between">
                           <ImageUpload
                             label="Hero Banner Image"
                             value={formData.image}
                             onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
                             folder="blog"
-                            aspect="square"
-                          />
-                          <ImageUpload
-                            label="Author Avatar Photo"
-                            value={formData.author_avatar}
-                            onChange={(url) => setFormData((prev) => ({ ...prev, author_avatar: url }))}
-                            folder="authors"
                             aspect="square"
                           />
                         </div>

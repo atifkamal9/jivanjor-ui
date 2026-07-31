@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate, Product, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
 import MediaUpload from "@/components/admin/MediaUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
 import {
@@ -20,6 +21,7 @@ import {
   Shield,
   Grid,
   FileText,
+  User,
   Sliders,
   Layout,
   MessageSquare,
@@ -1019,6 +1021,7 @@ export default function TemplatesPage() {
               ? [
                 { id: "hero", label: "Hero Banner", icon: Layout },
                 { id: "list", label: "Browse Categories", icon: FileText },
+                { id: "authors", label: "Blog Authors", icon: User },
               ]
               : currentLayoutType === "contractor"
                 ? [
@@ -4502,20 +4505,114 @@ export default function TemplatesPage() {
                             />
                             <div className="space-y-1">
                               <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Category Icon</span>
-                              <ImageUpload
-                                value={cat.icon || ""}
-                                onChange={(url) => {
-                                  const cats = [...(homeSections.list?.categories || [])];
-                                  cats[idx] = { ...cats[idx], icon: url };
-                                  updateSectionField("list", "categories", cats);
-                                }}
-                                folder="templates"
-                                size="compact"
-                              />
+                              <CategoryIconPicker
+                               value={cat.icon || ""}
+                               onChange={(url) => {
+                                 const cats = [...(homeSections.list?.categories || [])];
+                                 cats[idx] = { ...cats[idx], icon: url };
+                                 updateSectionField("list", "categories", cats);
+                               }}
+                             />
                             </div>
                           </div>
                         ))}
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Blog Authors Setup Tab ── */}
+                {activeTab === "authors" && currentLayoutType === "blog" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <User className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Blog Authors</h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const authors = [...(homeSections.list?.authors || []), { name: "New Author", avatar: "/images/blog/image 47.svg", bio: "" }];
+                          updateSectionField("list", "authors", authors);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
+                      >
+                        <Plus className="h-3.5 w-3.5" /> Add Author
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(homeSections.list?.authors || [
+                        {
+                          name: "Jivanjor Editor",
+                          avatar: "/images/blog/image 47.svg",
+                          bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
+                        }
+                      ]).map((author: any, idx: number) => (
+                        <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-4">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const authors = (homeSections.list?.authors || []).filter((_: any, i: number) => i !== idx);
+                              updateSectionField("list", "authors", authors);
+                            }}
+                            className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                          <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Author #{idx + 1}</span>
+                          
+                          <div>
+                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                              Author/Publisher Name
+                            </label>
+                            <input
+                              type="text"
+                              value={author.name || ""}
+                              onChange={(e) => {
+                                const authors = [...(homeSections.list?.authors || [])];
+                                authors[idx] = { ...authors[idx], name: e.target.value };
+                                updateSectionField("list", "authors", authors);
+                              }}
+                              placeholder="e.g. Jivanjor Editor"
+                              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                              Author Avatar Photo
+                            </label>
+                            <ImageUpload
+                              value={author.avatar || ""}
+                              onChange={(url) => {
+                                const authors = [...(homeSections.list?.authors || [])];
+                                authors[idx] = { ...authors[idx], avatar: url };
+                                updateSectionField("list", "authors", authors);
+                              }}
+                              folder="authors"
+                              size="compact"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                              Author Bio / Description
+                            </label>
+                            <textarea
+                              rows={3}
+                              value={author.bio || ""}
+                              onChange={(e) => {
+                                const authors = [...(homeSections.list?.authors || [])];
+                                authors[idx] = { ...authors[idx], bio: e.target.value };
+                                updateSectionField("list", "authors", authors);
+                              }}
+                              placeholder="Author bio description..."
+                              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-medium resize-none"
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
