@@ -15,6 +15,8 @@ export interface Product {
   slug: string;
   description: string;
   category_id: string;
+  category_ids?: string[];
+  categoryIds?: string[];
   material_id: string;
   metadata: string; // comma-separated or JSON
   image?: string;
@@ -402,6 +404,8 @@ function mapProductFromBackend(prod: any): Product {
     slug: prod.slug,
     description: prod.description || "",
     category_id: prod.categoryId,
+    category_ids: prod.categoryIds || prod.category_ids || (prod.categoryId ? [prod.categoryId] : []),
+    categoryIds: prod.categoryIds || prod.category_ids || (prod.categoryId ? [prod.categoryId] : []),
     material_id: prod.materialId || "",
     metadata: metadataStr,
     image:
@@ -581,6 +585,7 @@ export const api = {
       name: product.name,
       description: product.description,
       categoryId: product.category_id,
+      categoryIds: product.category_ids || product.categoryIds || [product.category_id],
       materialId: product.material_id || null,
       metadata: {
         tags: product.metadata,

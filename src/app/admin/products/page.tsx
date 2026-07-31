@@ -51,6 +51,7 @@ export default function ProductsPage() {
     slug: "",
     description: "",
     category_id: "",
+    category_ids: [] as string[],
     material_id: "",
     metadata: "",
     image: "",
@@ -156,11 +157,14 @@ export default function ProductsPage() {
     setSelectedMainCategoryId(defaultMainId);
     setSelectedSubCategoryId(defaultSubId);
 
+    const primaryCatId = defaultSubId || defaultMainId || "";
+
     setFormData({
       name: "",
       slug: "",
       description: "",
-      category_id: defaultSubId || defaultMainId || "",
+      category_id: primaryCatId,
+      category_ids: primaryCatId ? [primaryCatId] : [],
       material_id: materials[0]?.id || "",
       metadata: "",
       image: "",
@@ -244,11 +248,15 @@ export default function ProductsPage() {
     setSelectedMainCategoryId(mainId);
     setSelectedSubCategoryId(subId);
 
+    const rawCatIds = product.category_ids || product.categoryIds || [];
+    const mergedCatIds = Array.from(new Set([product.category_id, ...rawCatIds])).filter(Boolean);
+
     setFormData({
       name: product.name,
       slug: product.slug,
       description: product.description,
       category_id: product.category_id,
+      category_ids: mergedCatIds,
       material_id: product.material_id,
       metadata: product.metadata,
       image: product.image || "",
@@ -328,11 +336,15 @@ export default function ProductsPage() {
     const baseSlug = product.slug.endsWith("-copy") ? product.slug : `${product.slug}-copy`;
     const duplicateSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
 
+    const rawCatIds = product.category_ids || product.categoryIds || [];
+    const mergedCatIds = Array.from(new Set([product.category_id, ...rawCatIds])).filter(Boolean);
+
     setFormData({
       name: duplicateName,
       slug: duplicateSlug,
       description: product.description,
       category_id: product.category_id,
+      category_ids: mergedCatIds,
       material_id: product.material_id,
       metadata: product.metadata,
       image: product.image || "",
@@ -514,18 +526,17 @@ export default function ProductsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Product</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Category</th>
-                    {/* <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Substrate</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Attributes</th> */}
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
+                  <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 text-xs font-extrabold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 w-72 sm:w-80 min-w-[260px]">Product</th>
+                    <th className="px-6 py-4 w-80 min-w-[280px]">Category</th>
+                    <th className="px-6 py-4 min-w-[260px]">Description</th>
+                    <th className="px-6 py-4 w-32 min-w-[120px] text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                      <td colSpan={4} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
                         <div className="flex flex-col items-center gap-3">
                           <div className="h-6 w-6 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
                           <span>Retrieving product catalog from database...</span>
@@ -538,28 +549,56 @@ export default function ProductsPage() {
                       const material = materials.find((m) => m.id === p.material_id);
                       return (
                         <tr key={p.id} className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20 transition-colors">
-                          <td className="p-5">
-                            <div className="flex items-center gap-3.5">
-                              <div className="h-12 w-12 rounded-xl bg-gray-50 border border-gray-100 dark:bg-zinc-850 dark:border-zinc-800 overflow-hidden flex items-center justify-center shrink-0">
+                          <td className="px-6 py-5 min-w-[260px]">
+                            <div className="flex items-center gap-4">
+                              <div className="h-12 w-12 rounded-2xl bg-gray-50 border border-gray-100 dark:bg-zinc-850 dark:border-zinc-800 overflow-hidden flex items-center justify-center shrink-0 shadow-2xs">
                                 {p.image ? (
                                   <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
                                 ) : (
                                   <ImageIcon className="h-5 w-5 text-gray-300 dark:text-zinc-600" />
                                 )}
                               </div>
-                              <div className="min-w-0">
-                                <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 truncate">{p.name}</p>
-                                <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-semibold tracking-wider">{p.slug}</p>
+                              <div className="min-w-0 flex-1">
+                                <p className="font-black text-sm text-gray-900 dark:text-zinc-50 truncate">{p.name}</p>
+                                <p className="text-[11px] text-gray-400 dark:text-zinc-500 font-semibold tracking-wider">{p.slug}</p>
                               </div>
                             </div>
                           </td>
-                          <td className="p-5">
-                            <span
-                              className={`px-2.5 py-1 rounded-lg text-xs font-bold`}
-                              style={{ color: p.themeColor, backgroundColor: p.themeColor + "0D" }}
-                            >
-                              {category ? category.name : "Uncategorized"}
-                            </span>
+                          <td className="px-6 py-5 min-w-[280px]">
+                            <div className="flex flex-wrap gap-2 max-w-sm">
+                              {(() => {
+                                const allCatIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
+                                if (allCatIds.length === 0) {
+                                  return (
+                                    <span className="px-3 py-1 rounded-xl text-xs font-bold bg-gray-100 text-gray-500 dark:bg-zinc-800 dark:text-zinc-400">
+                                      Uncategorized
+                                    </span>
+                                  );
+                                }
+                                return allCatIds.map((cId) => {
+                                  const cObj = categories.find((c) => c.id === cId);
+                                  if (!cObj) return null;
+                                  const isPrimary = cId === p.category_id;
+
+                                  return (
+                                    <span
+                                      key={cId}
+                                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all shadow-2xs ${
+                                        isPrimary ? "" : "opacity-80"
+                                      }`}
+                                      style={{ color: p.themeColor || "#0498AA", backgroundColor: (p.themeColor || "#0498AA") + "1F" }}
+                                    >
+                                      {cObj.name}
+                                    </span>
+                                  );
+                                });
+                              })()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-5 min-w-[260px] max-w-md">
+                            <p className="text-xs text-gray-600 dark:text-zinc-300 font-medium line-clamp-2 leading-relaxed" title={p.description}>
+                              {p.description || "No description provided."}
+                            </p>
                           </td>
                           {/* <td className="p-5">
                             <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400">
@@ -575,7 +614,7 @@ export default function ProductsPage() {
                               ))}
                             </div>
                           </td> */}
-                          <td className="p-5 text-right">
+                          <td className="px-6 py-5 text-right font-medium">
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => handleOpenEdit(p)}
@@ -605,7 +644,7 @@ export default function ProductsPage() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                      <td colSpan={4} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
                         No products configured in products pool.
                       </td>
                     </tr>
@@ -732,7 +771,7 @@ export default function ProductsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Assign Main Category
+                          Primary Main Category
                         </label>
                         <select
                           value={selectedMainCategoryId}
@@ -742,9 +781,11 @@ export default function ProductsPage() {
                             const subs = categories.filter((c) => c.parent_category === mainId);
                             const firstSubId = subs.length > 0 ? subs[0].id : "";
                             setSelectedSubCategoryId(firstSubId);
+                            const primaryId = firstSubId || mainId;
                             setFormData((prev) => ({
                               ...prev,
-                              category_id: firstSubId || mainId,
+                              category_id: primaryId,
+                              category_ids: Array.from(new Set([primaryId, ...prev.category_ids])),
                             }));
                           }}
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 cursor-pointer"
@@ -761,16 +802,18 @@ export default function ProductsPage() {
 
                       <div>
                         <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                          Assign Sub-Category
+                          Primary Sub-Category
                         </label>
                         <select
                           value={selectedSubCategoryId}
                           onChange={(e) => {
                             const subId = e.target.value;
                             setSelectedSubCategoryId(subId);
+                            const primaryId = subId || selectedMainCategoryId;
                             setFormData((prev) => ({
                               ...prev,
-                              category_id: subId || selectedMainCategoryId,
+                              category_id: primaryId,
+                              category_ids: Array.from(new Set([primaryId, ...prev.category_ids])),
                             }));
                           }}
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 cursor-pointer"
@@ -790,6 +833,108 @@ export default function ProductsPage() {
                             <option value="">No subcategories (assign directly to Main Category)</option>
                           )}
                         </select>
+                      </div>
+                    </div>
+
+                    {/* Multi-Category Selector */}
+                    <div className="space-y-3 p-4 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-gray-50/40 dark:bg-zinc-900/40">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+                          <Layers className="h-4 w-4 text-red-600" />
+                          <span>Assign Multiple Categories & Sub-Categories</span>
+                        </label>
+                        <span className="text-[11px] font-extrabold text-red-600 bg-red-50 dark:bg-red-955/20 border border-red-200 dark:border-red-900/30 px-2.5 py-0.5 rounded-full">
+                          {formData.category_ids.length} Categories Selected
+                        </span>
+                      </div>
+
+                      {/* Active Badges */}
+                      {formData.category_ids.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pb-2 border-b border-gray-200 dark:border-zinc-800">
+                          {formData.category_ids.map((catId) => {
+                            const cat = categories.find((c) => c.id === catId);
+                            if (!cat) return null;
+                            const isPrimary = catId === formData.category_id;
+                            const parentCat = cat.parent_category ? categories.find((c) => c.id === cat.parent_category) : null;
+                            const label = parentCat ? `${parentCat.name} → ${cat.name}` : cat.name;
+
+                            return (
+                              <span
+                                key={catId}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold transition ${
+                                  isPrimary
+                                    ? "bg-red-600 text-white shadow-xs"
+                                    : "bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 border border-gray-200 dark:border-zinc-700"
+                                }`}
+                              >
+                                <span>{label}</span>
+                                {isPrimary && <span className="text-[9px] uppercase bg-white/20 px-1.5 py-0.2 rounded font-black">Primary</span>}
+                                {!isPrimary && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const updated = formData.category_ids.filter((id) => id !== catId);
+                                      setFormData((prev) => ({ ...prev, category_ids: updated }));
+                                    }}
+                                    className="hover:text-red-600 transition"
+                                  >
+                                    <X className="h-3.5 w-3.5" />
+                                  </button>
+                                )}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Checkbox Groups by Main Category */}
+                      <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+                        {categories
+                          .filter((c) => !c.parent_category)
+                          .map((mainCat) => {
+                            const subCats = categories.filter((c) => c.parent_category === mainCat.id);
+
+                            return (
+                              <div key={mainCat.id} className="p-3 bg-white dark:bg-zinc-950 border border-gray-200 dark:border-zinc-800 rounded-xl space-y-2">
+                                <div className="font-extrabold text-xs text-gray-900 dark:text-zinc-100 flex items-center gap-2">
+                                  <span className="text-red-600 font-black">●</span>
+                                  <span>{mainCat.name}</span>
+                                  <span className="text-[10px] font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">(Main Category)</span>
+                                </div>
+
+                                {subCats.length > 0 ? (
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-zinc-900">
+                                    {subCats.map((subCat) => {
+                                      const isSubChecked = formData.category_ids.includes(subCat.id);
+
+                                      return (
+                                        <label key={subCat.id} className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-gray-700 dark:text-zinc-300 hover:text-red-600 transition select-none p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-900">
+                                          <input
+                                            type="checkbox"
+                                            checked={isSubChecked}
+                                            onChange={(e) => {
+                                              let updated: string[];
+                                              if (e.target.checked) {
+                                                updated = Array.from(new Set([...formData.category_ids, subCat.id]));
+                                              } else {
+                                                if (subCat.id === formData.category_id) return;
+                                                updated = formData.category_ids.filter((id) => id !== subCat.id);
+                                              }
+                                              setFormData((prev) => ({ ...prev, category_ids: updated }));
+                                            }}
+                                            className="h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
+                                          />
+                                          <span>{subCat.name}</span>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                ) : (
+                                  <p className="text-[11px] text-gray-400 italic pl-4">No sub-categories defined under this main category.</p>
+                                )}
+                              </div>
+                            );
+                          })}
                       </div>
                     </div>
 
@@ -1459,7 +1604,7 @@ export default function ProductsPage() {
                                   return { ...prev, applications: list };
                                 })}
                                 folder="applications"
-                                aspect="square"
+                                aspect="cover"
                               />
                               <ImageUpload
                                 label="Detail Image URL B"
@@ -1470,7 +1615,7 @@ export default function ProductsPage() {
                                   return { ...prev, applications: list };
                                 })}
                                 folder="applications"
-                                aspect="square"
+                                aspect="cover"
                               />
                             </div>
                           </div>
@@ -1531,7 +1676,7 @@ export default function ProductsPage() {
                         value={formData.videoThumbnail}
                         onChange={(url) => setFormData(prev => ({ ...prev, videoThumbnail: url }))}
                         folder="videos"
-                        aspect="square"
+                        aspect="video"
                       />
                     </div>
                   </div>

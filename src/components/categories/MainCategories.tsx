@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 import {
   ChevronRight,
@@ -24,6 +25,7 @@ interface ProductCard {
 
 interface SubCategoryData {
   name: string;
+  slug?: string;
   title: string;
   description: string;
   icon: string;
@@ -32,8 +34,18 @@ interface SubCategoryData {
 
 interface MainCategoryData {
   name: string;
+  slug?: string;
   subCategories: SubCategoryData[];
 }
+
+const slugify = (text: string) =>
+  text
+    ? text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+    : "";
 
 const STATIC_MAIN_CATEGORIES_DATA: MainCategoryData[] = [
   {
@@ -335,6 +347,10 @@ const STATIC_MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 ];
 
 export default function MainCategories() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -364,16 +380,6 @@ export default function MainCategories() {
         ]);
         setCategories(cats);
         setProducts(prods);
-
-        // Find first main category and active subcategory and make them active
-        const firstMain = cats.find((cat) => !cat.parent_category);
-        if (firstMain) {
-          setActiveMainCategory(firstMain.name);
-          const firstSub = cats.find((sub) => sub.parent_category === firstMain.id);
-          if (firstSub) {
-            setActiveSubCategory(firstSub.name);
-          }
-        }
       } catch (err) {
         console.error("Failed to load category/product data, falling back to static content:", err);
       } finally {
@@ -390,6 +396,7 @@ export default function MainCategories() {
         const subCats = categories.filter((sub) => sub.parent_category === cat.id);
         return {
           name: cat.name,
+          slug: cat.slug,
           subCategories: subCats.map((sub) => {
             const subProducts = products.filter((p) => p.category_id === sub.id);
             return {
@@ -428,6 +435,65 @@ export default function MainCategories() {
     : [];
 
   const mainCategoriesToUse = mainCategoriesData.length > 0 ? mainCategoriesData : STATIC_MAIN_CATEGORIES_DATA;
+
+  // Sync state from URL search params
+  useEffect(() => {
+    if (loading) return;
+
+    const paramCat = searchParams.get("category") || searchParams.get("mainCategory") || searchParams.get("cat");
+    const paramSub = searchParams.get("subCategory") || searchParams.get("sub");
+
+    if (paramCat) {
+      const matchedMain = mainCategoriesToUse.find(
+        (c) =>
+          (c.slug && c.slug.toLowerCase() === paramCat.toLowerCase()) ||
+          c.name.toLowerCase() === paramCat.toLowerCase() ||
+          slugify(c.name) === slugify(paramCat)
+      );
+
+      if (matchedMain) {
+        setActiveMainCategory(matchedMain.name);
+        if (paramSub) {
+          const matchedSub = matchedMain.subCategories.find(
+            (s) =>
+              (s.slug && s.slug.toLowerCase() === paramSub.toLowerCase()) ||
+              s.name.toLowerCase() === paramSub.toLowerCase() ||
+              slugify(s.name) === slugify(paramSub)
+          );
+          if (matchedSub) {
+            setActiveSubCategory(matchedSub.name);
+          } else if (matchedMain.subCategories[0]?.name) {
+            setActiveSubCategory(matchedMain.subCategories[0].name);
+          }
+        } else if (matchedMain.subCategories[0]?.name) {
+          setActiveSubCategory(matchedMain.subCategories[0].name);
+        }
+      }
+    } else {
+      // Default to first main category and subcategory if no URL params
+      const firstMain = mainCategoriesToUse[0];
+      if (firstMain) {
+        setActiveMainCategory(firstMain.name);
+        if (firstMain.subCategories[0]?.name) {
+          setActiveSubCategory(firstMain.subCategories[0].name);
+        }
+      }
+    }
+  }, [searchParams, loading, categories]);
+
+  const updateUrlParams = (mainCatName: string, subCatName: string) => {
+    const mainObj = mainCategoriesToUse.find((c) => c.name === mainCatName);
+    const subObj = mainObj?.subCategories.find((s) => s.name === subCatName);
+
+    const mainSlug = mainObj?.slug || slugify(mainCatName);
+    const subSlug = subObj?.slug || slugify(subCatName);
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (mainSlug) params.set("category", mainSlug);
+    if (subSlug) params.set("subCategory", subSlug);
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const currentMainCategoryData =
     mainCategoriesToUse.find((c) => c.name === activeMainCategory) ||
@@ -540,15 +606,19 @@ export default function MainCategories() {
     const categoryData =
       mainCategoriesToUse.find((c) => c.name === name) ||
       mainCategoriesToUse[0];
-    const firstSubName = categoryData.subCategories[0]?.name || "";
+    const firstSubName = categoryData?.subCategories[0]?.name || "";
     setActiveSubCategory(firstSubName);
     setOpenAccordionIndex(0);
     setDropdownOpen(false);
+
+    updateUrlParams(name, firstSubName);
   };
 
   const handleSubCategoryChange = (name: string) => {
     setActiveSubCategory(name);
     setOpenAccordionIndex(0);
+
+    updateUrlParams(activeMainCategory, name);
   };
 
   const toggleAccordion = (index: number) => {
