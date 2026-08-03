@@ -173,25 +173,6 @@ function ListContent({
     indexOfLastBlog,
   );
 
-  // Related Articles data for the right sidebar
-  const relatedArticles = [
-    {
-      title:
-        "Mastering Laminate Bonding: Preventing Bubbles in High-Humidity Environments",
-      image: "/images/blog/Rectangle 140.png",
-    },
-    {
-      title:
-        "Mastering Laminate Bonding: Preventing Bubbles in High-Humidity Environments",
-      image: "/images/applications/Rectangle 141.png",
-    },
-    {
-      title:
-        "Mastering Laminate Bonding: Preventing Bubbles in High-Humidity Environments",
-      image: "/images/blog/Rectangle 142.png",
-    },
-  ];
-
   // Match active article if `article` query param is present
   const activeArticle = articleParam
     ? displayItems.find((a) => {
@@ -219,6 +200,57 @@ function ListContent({
       );
     })
     : null;
+
+  // Dynamic Related Articles: sourced from application articles (useCases) set by admin
+  const dynamicRelatedArticles = (() => {
+    const configuredItems = items;
+
+    if (Array.isArray(configuredItems) && configuredItems.length > 0) {
+      const mapped = configuredItems
+        .map((item: any) => {
+          if (typeof item === "string") {
+            const found = dynamicUseCases.find(
+              (u) => u.id === item || u.slug === item || u.title === item
+            );
+            return found
+              ? {
+                title: found.title,
+                image: found.image || "/images/applications/Rectangle 150.png",
+                slug: found.slug || found.title.replace(/\s+/g, "-").toLowerCase(),
+              }
+              : null;
+          }
+          return {
+            title: item.title || item.name,
+            image: item.image || item.imageUrl || "/images/applications/Rectangle 150.png",
+            slug: item.slug || (item.title ? item.title.replace(/\s+/g, "-").toLowerCase() : ""),
+          };
+        })
+        .filter(Boolean);
+
+      if (mapped.length > 0) return mapped;
+    }
+
+    // Dynamic Fallback: filter application articles excluding active article
+    const filtered = dynamicUseCases.filter(
+      (u) => !activeArticle || (u.title !== activeArticle.title && u.slug !== activeArticle.slug)
+    );
+
+    if (filtered.length > 0) {
+      return filtered.slice(0, 3).map((u) => ({
+        title: u.title,
+        image: u.image || "/images/applications/Rectangle 150.png",
+        slug: u.slug || u.title.replace(/\s+/g, "-").toLowerCase(),
+      }));
+    }
+
+    // System Fallback
+    return defaultApplications.slice(0, 3).map((u) => ({
+      title: u.title,
+      image: u.image,
+      slug: u.title.replace(/\s+/g, "-").toLowerCase(),
+    }));
+  })();
 
   // Social Share URLs
   const encodedUrl = encodeURIComponent(shareUrl);
@@ -500,44 +532,52 @@ function ListContent({
                 </Link>
               </div>
 
-              {/* Related Articles */}
+              {/* Dynamic Related Articles (Application Articles set by admin or dynamically fetched) */}
               <div className="flex flex-col gap-5 lg:sticky lg:top-24">
                 <h3 className="font-amethysta font-normal text-[28px] xl:text-[34px] text-black">
                   Related Articles
                 </h3>
 
                 <div className="flex flex-col gap-5">
-                  {relatedArticles.map((article, idx) => (
-                    <Link
-                      key={idx}
-                      href={`/blog/${article.title.replace(/\s+/g, "-").toLowerCase()}`}
-                      className="flex gap-4 items-start group"
-                    >
-                      <div className="relative shrink-0 w-30 h-30 lg:w-37.5 lg:h-38.5 rounded-[20px] overflow-hidden bg-surface">
-                        <Image
-                          src={article.image}
-                          alt={article.title}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="120px"
-                        />
-                      </div>
-                      <div className="flex-1 flex flex-col h-full gap-3 pt-1">
-                        <p className="font-amethysta font-normal text-sm xl:text-lg text-[#222] group-hover:text-[#ff0009] transition-colors">
-                          {article.title}
-                        </p>
-                        <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-                          style={{
-                            backgroundImage:
-                              "linear-gradient(94.9359deg, rgb(255, 0, 9) 2.7536%, rgb(119, 37, 113) 105.91%)",
-                          }}
-                        >
-                          <ArrowRight size={16} className="text-white" />
+                  {dynamicRelatedArticles.map((article: any, idx: number) => {
+                    const relQuery = encodeURIComponent(article.slug || article.title);
+                    const relHref =
+                      pageSlug && pageSlug !== "applications"
+                        ? `/applications/${pageSlug}?article=${relQuery}`
+                        : `/applications?article=${relQuery}`;
+
+                    return (
+                      <Link
+                        key={idx}
+                        href={relHref}
+                        className="flex gap-4 items-start group cursor-pointer"
+                      >
+                        <div className="relative shrink-0 w-30 h-30 lg:w-37.5 lg:h-38.5 rounded-[20px] overflow-hidden bg-surface">
+                          <Image
+                            src={article.image || "/images/applications/Rectangle 150.png"}
+                            alt={article.title}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="120px"
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  ))}
+                        <div className="flex-1 flex flex-col h-full gap-3 pt-1">
+                          <p className="font-amethysta font-normal text-sm xl:text-lg text-[#222] group-hover:text-[#ff0009] transition-colors">
+                            {article.title}
+                          </p>
+                          <div
+                            className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                            style={{
+                              backgroundImage:
+                                "linear-gradient(94.9359deg, rgb(255, 0, 9) 2.7536%, rgb(119, 37, 113) 105.91%)",
+                            }}
+                          >
+                            <ArrowRight size={16} className="text-white" />
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
                 <Link
                   href="/applications"

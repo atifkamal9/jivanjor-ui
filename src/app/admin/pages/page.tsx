@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, Page, PageTemplate, Product, Category } from "@/lib/api";
+import { api, Page, PageTemplate, Product, Category, UseCase } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
 import MediaUpload from "@/components/admin/MediaUpload";
@@ -680,6 +680,7 @@ export default function PagesPage() {
   const [seos, setSeos] = useState<any[]>([]);
   const [availableProducts, setAvailableProducts] = useState<Product[]>([]);
   const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+  const [availableUseCases, setAvailableUseCases] = useState<UseCase[]>([]);
   const [seoMetaTitle, setSeoMetaTitle] = useState("");
   const [seoMetaDescription, setSeoMetaDescription] = useState("");
   const [seoCanonicalUrl, setSeoCanonicalUrl] = useState("");
@@ -768,18 +769,20 @@ export default function PagesPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [pagesList, tempsList, seosList, productsList, categoriesList] = await Promise.all([
+      const [pagesList, tempsList, seosList, productsList, categoriesList, useCasesList] = await Promise.all([
         api.getPages(),
         api.getTemplates(),
         api.getSeoMetadata(),
         api.getProducts().catch(() => []),
         api.getCategories().catch(() => []),
+        api.getUseCases().catch(() => []),
       ]);
       setPages(pagesList);
       setTemplates(tempsList);
       setSeos(seosList);
       setAvailableProducts(productsList);
       setAvailableCategories(categoriesList);
+      setAvailableUseCases(useCasesList);
     } catch (err) {
       console.error("Failed to load pages/templates", err);
     } finally {
@@ -1486,6 +1489,7 @@ export default function PagesPage() {
             ? [
               { id: "hero", label: "Hero Banner", icon: Layout },
               { id: "relatedProducts", label: "Related Products", icon: Layers },
+              { id: "relatedArticles", label: "Related Articles", icon: Bookmark },
               { id: "faqs", label: "FAQs Accordion", icon: Award },
             ]
             : layoutType === "blog"
@@ -4894,7 +4898,7 @@ export default function PagesPage() {
 
                 {/* ── Related Products Tab ── */}
                 {activeTab === "relatedProducts" && formData.sections?.relatedProducts && formData.sections.layoutType === "applications" && (
-                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out] font-google-sans">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
                       <Layers className="h-5 w-5 text-primary" />
                       <h3 className="text-base font-extrabold text-foreground font-google-sans">Related Products</h3>
@@ -4910,79 +4914,172 @@ export default function PagesPage() {
                           value={formData.sections.relatedProducts.title || ""}
                           onChange={(e) => updateSectionField("relatedProducts", "title", e.target.value)}
                           placeholder="Related Products"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Product Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("relatedProducts", { title: "New Product", description: "Provides a superior bond...", image: "/images/Champion Super.png", color: "bg-[#0083CB]" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Product Card
-                        </button>
-                      </div>
+                    {/* SELECT RELATED PRODUCTS - Drag & Drop + Checkbox Grid (IMAGE 1 UI) */}
+                    {(() => {
+                      const selectedIds = formData.sections.relatedProducts.selectedProductIds ||
+                        (formData.sections.relatedProducts.items || []).map((i: any) => i.id || i.slug || i.title);
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {formData.sections.relatedProducts.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("relatedProducts", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Product #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title || ""}
-                                onChange={(e) => updateItemField("relatedProducts", idx, "title", e.target.value)}
-                                placeholder="Product Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.description || ""}
-                                onChange={(e) => updateItemField("relatedProducts", idx, "description", e.target.value)}
-                                placeholder="Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <input
-                                type="text"
-                                value={item.color || ""}
-                                onChange={(e) => updateItemField("relatedProducts", idx, "color", e.target.value)}
-                                placeholder="bg-[#0083CB]"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Product Image</span>
-                                <ImageUpload
-                                  value={item.image || ""}
-                                  onChange={(url) => updateItemField("relatedProducts", idx, "image", url)}
-                                  folder="templates"
-                                  size="compact"
-                                />
+                      const updateSelectedProducts = (newSelectedIds: string[]) => {
+                        const mappedItems = newSelectedIds.map((id) => {
+                          const prod = availableProducts.find((p) => p.id === id || p.slug === id || p.name === id);
+                          if (prod) {
+                            return {
+                              id: prod.id,
+                              title: prod.name,
+                              description: prod.description || "Provides superior bond & strength.",
+                              image: prod.image || "/images/Champion Super.png",
+                              color: prod.themeColor || "bg-[#0083CB]",
+                              slug: prod.slug,
+                            };
+                          }
+                          return { id, title: id, description: "", image: "/images/Champion Super.png", color: "bg-[#0083CB]" };
+                        });
+
+                        updateSectionField("relatedProducts", "selectedProductIds", newSelectedIds);
+                        updateSectionField("relatedProducts", "items", mappedItems);
+                      };
+
+                      return (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between border-t border-border pt-4">
+                            <span className="text-xs font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+                              SELECT RELATED PRODUCTS
+                            </span>
+                            <span className="px-3 py-1 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-full text-xs font-black border border-red-200 dark:border-red-900/50">
+                              {selectedIds.length} Products Selected
+                            </span>
+                          </div>
+
+                          {/* Red/Pink Dashed Reorder Container */}
+                          {selectedIds.length > 0 && (
+                            <div className="p-4 border-2 border-dashed border-red-200 dark:border-red-900/60 bg-red-50/30 dark:bg-red-950/20 rounded-2xl space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-wider">
+                                  <GripVertical className="h-4 w-4" />
+                                  <span>DRAG & DROP TO REARRANGE DISPLAY ORDER</span>
+                                </div>
+                                <span className="text-[11px] text-foreground/45 font-bold">
+                                  Order: 1st → Last in Carousel
+                                </span>
+                              </div>
+
+                              <div className="flex flex-wrap gap-2.5">
+                                {selectedIds.map((prodId: string, pIdx: number) => {
+                                  const prod = availableProducts.find((p) => p.id === prodId || p.slug === prodId || p.name === prodId);
+                                  const prodName = prod ? prod.name : prodId;
+                                  const prodImg = prod ? prod.image : null;
+
+                                  return (
+                                    <div
+                                      key={prodId}
+                                      draggable={true}
+                                      onDragStart={(e) => {
+                                        e.dataTransfer.setData("text/plain", prodId);
+                                        e.dataTransfer.effectAllowed = "move";
+                                      }}
+                                      onDragOver={(e) => {
+                                        e.preventDefault();
+                                        e.dataTransfer.dropEffect = "move";
+                                      }}
+                                      onDrop={(e) => {
+                                        e.preventDefault();
+                                        const draggedId = e.dataTransfer.getData("text/plain");
+                                        if (!draggedId || draggedId === prodId) return;
+
+                                        const currentSelected = [...selectedIds];
+                                        const srcIdx = currentSelected.indexOf(draggedId);
+                                        const tgtIdx = currentSelected.indexOf(prodId);
+
+                                        if (srcIdx !== -1 && tgtIdx !== -1) {
+                                          const [moved] = currentSelected.splice(srcIdx, 1);
+                                          currentSelected.splice(tgtIdx, 0, moved);
+                                          updateSelectedProducts(currentSelected);
+                                        }
+                                      }}
+                                      className="flex items-center gap-2 px-3.5 py-2 bg-background border border-red-300/80 dark:border-red-900/60 rounded-2xl text-xs font-extrabold shadow-2xs cursor-grab active:cursor-grabbing transition hover:shadow-md select-none"
+                                    >
+                                      <GripVertical className="h-3.5 w-3.5 text-foreground/40 shrink-0" />
+                                      <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-black flex items-center justify-center shrink-0">
+                                        {pIdx + 1}
+                                      </span>
+                                      {prodImg && (
+                                        <div className="w-6 h-6 relative shrink-0">
+                                          <Image src={prodImg} alt="" fill className="object-contain" unoptimized />
+                                        </div>
+                                      )}
+                                      <span className="truncate max-w-[140px] text-foreground font-bold">{prodName}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = selectedIds.filter((id: string) => id !== prodId);
+                                          updateSelectedProducts(updated);
+                                        }}
+                                        className="text-foreground/40 hover:text-red-600 transition ml-1"
+                                        title="Remove product"
+                                      >
+                                        <X className="h-3.5 w-3.5" />
+                                      </button>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
+                          )}
+
+                          {/* Product Checkboxes Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
+                            {availableProducts.map((prod) => {
+                              const isChecked = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug) || selectedIds.includes(prod.name);
+
+                              return (
+                                <label
+                                  key={prod.id}
+                                  className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
+                                    ? "border-red-400 bg-red-50/40 dark:bg-red-950/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                    : "border-border bg-background hover:border-primary/50 text-foreground/80 font-medium"
+                                    }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={(e) => {
+                                      let updated: string[];
+                                      if (e.target.checked) {
+                                        updated = [...selectedIds, prod.id];
+                                      } else {
+                                        updated = selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug && id !== prod.name);
+                                      }
+                                      updateSelectedProducts(updated);
+                                    }}
+                                    className="w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary"
+                                  />
+                                  {prod.image && (
+                                    <div className="w-6 h-6 relative shrink-0">
+                                      <Image src={prod.image} alt="" fill className="object-contain" unoptimized />
+                                    </div>
+                                  )}
+                                  <span className="text-xs font-bold truncate">{prod.name}</span>
+                                </label>
+                              );
+                            })}
                           </div>
-                        ))}
-                      </div>
-                    </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 
-                {/* ── Applications FAQs Tab ── */}
-                {activeTab === "faqs" && formData.sections?.faqs && formData.sections.layoutType === "applications" && (
-                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                {/* ── Related Articles Tab ── */}
+                {activeTab === "relatedArticles" && formData.sections?.layoutType === "applications" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out] font-google-sans">
                     <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Award className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground font-google-sans">FAQs Accordion</h3>
+                      <Bookmark className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground">Related Application Articles</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -4992,71 +5089,170 @@ export default function PagesPage() {
                         </label>
                         <input
                           type="text"
-                          value={formData.sections.faqs.title || ""}
-                          onChange={(e) => updateSectionField("faqs", "title", e.target.value)}
-                          placeholder="FAQs"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={formData.sections.faqs.subtitle || ""}
-                          onChange={(e) => updateSectionField("faqs", "subtitle", e.target.value)}
-                          placeholder="Find quick answers..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                          value={formData.sections.relatedArticles?.title || "Related Articles"}
+                          onChange={(e) => updateSectionField("relatedArticles", "title", e.target.value)}
+                          placeholder="Related Articles"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Troubleshooting FAQ cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("faqs", { question: "New Question?", answer: "Answer here." })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Q&A Item
-                        </button>
-                      </div>
+                    {/* SELECT RELATED ARTICLES - Drag & Drop + Checkbox Grid (IMAGE 1 UI) */}
+                    {(() => {
+                      const relArtSection = formData.sections.relatedArticles || {};
+                      const selectedIds = relArtSection.selectedArticleIds ||
+                        (relArtSection.items || []).map((i: any) => i.id || i.slug || i.title);
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {formData.sections.faqs.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("faqs", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">FAQ #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.question || ""}
-                                onChange={(e) => updateItemField("faqs", idx, "question", e.target.value)}
-                                placeholder="Question Text"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.answer || ""}
-                                onChange={(e) => updateItemField("faqs", idx, "answer", e.target.value)}
-                                placeholder="Detailed Answer description..."
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                              />
-                            </div>
+                      const updateSelectedArticles = (newSelectedIds: string[]) => {
+                        const mappedItems = newSelectedIds.map((id) => {
+                          const art = availableUseCases.find((u) => u.id === id || u.slug === id || u.title === id);
+                          if (art) {
+                            return {
+                              id: art.id,
+                              title: art.title,
+                              description: art.description,
+                              image: art.image || "/images/applications/Rectangle 150.png",
+                              slug: art.slug || art.title.replace(/\s+/g, "-").toLowerCase(),
+                            };
+                          }
+                          return { id, title: id, description: "", image: "/images/applications/Rectangle 150.png", slug: id };
+                        });
+
+                        updateSectionField("relatedArticles", "selectedArticleIds", newSelectedIds);
+                        updateSectionField("relatedArticles", "items", mappedItems);
+                      };
+
+                      return (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between border-t border-border pt-4">
+                            <span className="text-xs font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+                              SELECT RELATED APPLICATION ARTICLES
+                            </span>
+                            <span className="px-3 py-1 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-full text-xs font-black border border-red-200 dark:border-red-900/50">
+                              {selectedIds.length} Articles Selected
+                            </span>
                           </div>
-                        ))}
-                      </div>
-                    </div>
+
+                          {/* Red/Pink Dashed Reorder Container */}
+                          {selectedIds.length > 0 && (
+                            <div className="p-4 border-2 border-dashed border-red-200 dark:border-red-900/60 bg-red-50/30 dark:bg-red-950/20 rounded-2xl space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-wider">
+                                  <GripVertical className="h-4 w-4" />
+                                  <span>DRAG & DROP TO REARRANGE DISPLAY ORDER</span>
+                                </div>
+                                <span className="text-[11px] text-foreground/45 font-bold">
+                                  Order: 1st → Last in Sidebar
+                                </span>
+                              </div>
+
+                              <div className="flex flex-wrap gap-2.5">
+                                {selectedIds.map((artId: string, aIdx: number) => {
+                                  const art = availableUseCases.find((u) => u.id === artId || u.slug === artId || u.title === artId);
+                                  const artTitle = art ? art.title : artId;
+                                  const artImg = art ? art.image : null;
+
+                                  return (
+                                    <div
+                                      key={artId}
+                                      draggable={true}
+                                      onDragStart={(e) => {
+                                        e.dataTransfer.setData("text/plain", artId);
+                                        e.dataTransfer.effectAllowed = "move";
+                                      }}
+                                      onDragOver={(e) => {
+                                        e.preventDefault();
+                                        e.dataTransfer.dropEffect = "move";
+                                      }}
+                                      onDrop={(e) => {
+                                        e.preventDefault();
+                                        const draggedId = e.dataTransfer.getData("text/plain");
+                                        if (!draggedId || draggedId === artId) return;
+
+                                        const currentSelected = [...selectedIds];
+                                        const srcIdx = currentSelected.indexOf(draggedId);
+                                        const tgtIdx = currentSelected.indexOf(artId);
+
+                                        if (srcIdx !== -1 && tgtIdx !== -1) {
+                                          const [moved] = currentSelected.splice(srcIdx, 1);
+                                          currentSelected.splice(tgtIdx, 0, moved);
+                                          updateSelectedArticles(currentSelected);
+                                        }
+                                      }}
+                                      className="flex items-center gap-2 px-3.5 py-2 bg-background border border-red-300/80 dark:border-red-900/60 rounded-2xl text-xs font-extrabold shadow-2xs cursor-grab active:cursor-grabbing transition hover:shadow-md select-none"
+                                    >
+                                      <GripVertical className="h-3.5 w-3.5 text-foreground/40 shrink-0" />
+                                      <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-[11px] font-black flex items-center justify-center shrink-0">
+                                        {aIdx + 1}
+                                      </span>
+                                      {artImg && (
+                                        <div className="w-6 h-6 relative shrink-0 rounded-md overflow-hidden">
+                                          <Image src={artImg} alt="" fill className="object-cover" unoptimized />
+                                        </div>
+                                      )}
+                                      <span className="truncate max-w-[160px] text-foreground font-bold">{artTitle}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = selectedIds.filter((id: string) => id !== artId);
+                                          updateSelectedArticles(updated);
+                                        }}
+                                        className="text-foreground/40 hover:text-red-600 transition ml-1"
+                                        title="Remove article"
+                                      >
+                                        <X className="h-3.5 w-3.5" />
+                                      </button>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Article Checkboxes Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            {availableUseCases.map((art) => {
+                              const isChecked = selectedIds.includes(art.id) || selectedIds.includes(art.slug) || selectedIds.includes(art.title);
+
+                              return (
+                                <label
+                                  key={art.id}
+                                  className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
+                                    ? "border-red-400 bg-red-50/40 dark:bg-red-950/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                    : "border-border bg-background hover:border-primary/50 text-foreground/80 font-medium"
+                                    }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={(e) => {
+                                      let updated: string[];
+                                      if (e.target.checked) {
+                                        updated = [...selectedIds, art.id];
+                                      } else {
+                                        updated = selectedIds.filter((id: string) => id !== art.id && id !== art.slug && id !== art.title);
+                                      }
+                                      updateSelectedArticles(updated);
+                                    }}
+                                    className="w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary"
+                                  />
+                                  {art.image && (
+                                    <div className="w-6 h-6 relative shrink-0 rounded-md overflow-hidden">
+                                      <Image src={art.image} alt="" fill className="object-cover" unoptimized />
+                                    </div>
+                                  )}
+                                  <span className="text-xs font-bold truncate">{art.title}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
+
+
 
                 {/* ── Blog Hero Tab ── */}
                 {activeTab === "hero" && formData.sections?.hero && formData.sections.layoutType === "blog" && (
@@ -5237,7 +5433,7 @@ export default function PagesPage() {
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                           <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Author #{idx + 1}</span>
-                          
+
                           <div>
                             <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
                               Author/Publisher Name

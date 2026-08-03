@@ -10,10 +10,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 interface RelatedProduct {
-  title: string;
-  description: string;
-  image: string;
-  color: string;
+  title?: string;
+  name?: string;
+  description?: string;
+  image?: string;
+  color?: string;
+  themeColor?: string;
+  slug?: string;
 }
 
 const RELATED_PRODUCTS: RelatedProduct[] = [
@@ -50,16 +53,67 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
 interface RelatedProductsProps {
   title?: string;
   items?: RelatedProduct[];
+  product?: any;
+  allProducts?: any[];
 }
 
-export default function RelatedProducts({ title, items }: RelatedProductsProps) {
-  const displayTitle = title || "Related Products";
-  const displayItems = items || RELATED_PRODUCTS;
+export default function RelatedProducts({
+  title,
+  items,
+  product,
+  allProducts = [],
+}: RelatedProductsProps) {
+  const displayTitle = title || product?.relatedTitle || "Related Products";
+
+  // Resolve displayed products dynamically
+  let displayedProducts: any[] = [];
+
+  if (items && items.length > 0) {
+    displayedProducts = items.map((item: any, idx: number) => ({
+      name: item.name || item.title || `Product ${idx + 1}`,
+      description: item.description || "",
+      image: item.image || "",
+      themeColor:
+        item.themeColor ||
+        (item.color && item.color.startsWith("bg-[")
+          ? item.color.replace("bg-[", "").replace("]", "")
+          : item.color) ||
+        "#0083CB",
+      slug:
+        item.slug ||
+        (item.name || item.title || "").toLowerCase().replace(/\s+/g, "-"),
+    }));
+  } else if (
+    product?.relatedProducts &&
+    product.relatedProducts.length > 0 &&
+    allProducts.length > 0
+  ) {
+    displayedProducts = product.relatedProducts
+      .map((id: string) => allProducts.find((p) => p.id === id))
+      .filter(Boolean);
+  }
+
+  // Fallback if list is empty
+  if (displayedProducts.length === 0) {
+    const otherProducts = allProducts.filter((p) => p.id !== product?.id);
+    if (otherProducts.length > 0) {
+      displayedProducts = otherProducts.slice(0, 4);
+    } else {
+      displayedProducts = RELATED_PRODUCTS.map((item, idx) => ({
+        id: `static-${idx}`,
+        name: item.title,
+        description: item.description,
+        image: item.image,
+        themeColor: item.color?.startsWith("bg-[")
+          ? item.color.replace("bg-[", "").replace("]", "")
+          : item.color,
+        slug: item.title?.toLowerCase().replace(/\s+/g, "-"),
+      }));
+    }
+  }
+
   return (
-    <section
-      id="related-products"
-      className="relative overflow-hidden px-5 mt-6 md:mt-10"
-    >
+    <section id="related-products" className="relative overflow-hidden mt-6">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto my-6 max-w-330 px-5 lg:px-8 w-full">
         <div className="text-center space-y-3 max-w-4xl mx-auto mb-6">
           <div className="flex justify-center">
@@ -77,8 +131,12 @@ export default function RelatedProducts({ title, items }: RelatedProductsProps) 
         </div>
         <div className="w-full mt-24">
           <Swiper
+            key={displayedProducts.map((p) => p.name || p.title).join("-")}
             modules={[Navigation]}
+            observer={true}
+            observeParents={true}
             watchOverflow={false}
+            centerInsufficientSlides={true}
             loop={false}
             spaceBetween={16}
             slidesPerView={1}
@@ -91,7 +149,7 @@ export default function RelatedProducts({ title, items }: RelatedProductsProps) 
               480: {
                 slidesPerView: 1,
               },
-              768: {
+              640: {
                 slidesPerView: 2,
               },
               1024: {
@@ -101,33 +159,36 @@ export default function RelatedProducts({ title, items }: RelatedProductsProps) 
                 slidesPerView: 4,
               },
             }}
-            className="overflow-visible!"
+            className="w-full [overflow-x:clip]! [overflow-y:visible]!"
           >
-            {displayItems.map((card, idx) => (
+            {displayedProducts.map((card, idx) => (
               <SwiperSlide
-                key={`${card.title}-${idx}`}
+                key={`${card.name || card.title}-${idx}`}
                 className="overflow-visible! px-1"
               >
                 <Link
-                  href="/products#overview"
+                  href={`/products?product=${card.slug || card.name || card.title}`}
                   className="flex flex-col items-center relative px-4"
                 >
                   <div className="absolute aspect-44/51 group -top-1/4 w-41 h-48 xl:w-55 xl:h-63 object-contain transition-opacity duration-300 ease-out z-100">
                     {/* Floating image */}
-                    <Image
-                      fill
-                      priority
-                      src={card.image}
-                      alt={card.title}
-                      className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
-                    />
+                    {card.image && (
+                      <Image
+                        fill
+                        priority
+                        src={card.image}
+                        alt={card.name || card.title}
+                        className="object-contain z-10 group-hover:-translate-y-1 transition-all duration-300"
+                      />
+                    )}
                   </div>
                   {/* Card */}
                   <div
-                    className={`${card.color} rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88`}
+                    className="rounded-[28px] p-6 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88"
+                    style={{ backgroundColor: card.themeColor || "whitesmoke" }}
                   >
-                    <h3 className="text-2xl font-semibold text-center">
-                      {card.title}
+                    <h3 className="text-2xl font-semibold text-center mb-2">
+                      {card.name || card.title}
                     </h3>
                     <div className="w-full h-px bg-white my-4" />
                     <p className="text-center text-base leading-normal max-w-60">

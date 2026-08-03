@@ -1245,30 +1245,30 @@ export default function ProductsPage() {
                           className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                         />
                       </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 uppercase tracking-wider">
-                            Select Related Products
-                          </label>
-                          <span className="text-[11px] font-extrabold text-red-600 bg-red-50 dark:bg-red-955/20 border border-red-200 dark:border-red-900/30 px-2.5 py-0.5 rounded-full">
+                      <div className="space-y-4 font-google-sans">
+                        <div className="flex items-center justify-between border-t border-border pt-4">
+                          <span className="text-xs font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+                            SELECT RELATED PRODUCTS
+                          </span>
+                          <span className="px-3 py-1 bg-red-50 dark:bg-red-955/40 text-red-600 dark:text-red-400 rounded-full text-xs font-black border border-red-200 dark:border-red-900/50">
                             {formData.relatedProducts.length} Products Selected
                           </span>
                         </div>
 
                         {/* Drag & Drop Selected Products Reorder Bar */}
                         {formData.relatedProducts.length > 0 && (
-                          <div className="space-y-2 p-3.5 border border-red-200 dark:border-red-900/40 bg-red-50/30 dark:bg-red-955/10 rounded-xl">
+                          <div className="p-4 border-2 border-dashed border-red-200 dark:border-red-900/60 bg-red-50/30 dark:bg-red-955/20 rounded-2xl space-y-3">
                             <div className="flex items-center justify-between">
-                              <span className="text-[11px] font-extrabold uppercase text-red-600 tracking-wider flex items-center gap-1.5">
-                                <GripVertical className="h-3.5 w-3.5" />
+                              <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-wider">
+                                <GripVertical className="h-4 w-4" />
                                 <span>DRAG & DROP TO REARRANGE DISPLAY ORDER</span>
-                              </span>
-                              <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-semibold">
+                              </div>
+                              <span className="text-[11px] text-gray-400 dark:text-zinc-500 font-bold">
                                 Order: 1st → Last in Carousel
                               </span>
                             </div>
 
-                            <div className="flex flex-wrap gap-2 pt-1">
+                            <div className="flex flex-wrap gap-2.5">
                               {formData.relatedProducts.map((relId: string, pIdx: number) => {
                                 const prod = products.find((p) => p.id === relId);
                                 const prodName = prod ? prod.name : relId;
@@ -1301,25 +1301,25 @@ export default function ProductsPage() {
                                         setFormData((prev) => ({ ...prev, relatedProducts: currentSelected }));
                                       }
                                     }}
-                                    className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:border-red-500 rounded-xl text-xs font-bold shadow-2xs cursor-grab active:cursor-grabbing transition group select-none"
+                                    className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-zinc-900 border border-red-300/80 dark:border-red-900/60 rounded-2xl text-xs font-extrabold shadow-2xs cursor-grab active:cursor-grabbing transition hover:shadow-md select-none"
                                   >
-                                    <GripVertical className="h-3.5 w-3.5 text-gray-400 group-hover:text-red-600 shrink-0" />
-                                    <span className="w-4 h-4 rounded-full bg-red-100 dark:bg-red-955/40 text-red-600 text-[10px] font-black flex items-center justify-center shrink-0">
+                                    <GripVertical className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                                    <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-955/40 text-red-600 dark:text-red-400 text-[11px] font-black flex items-center justify-center shrink-0">
                                       {pIdx + 1}
                                     </span>
                                     {prodImg && (
-                                      <div className="w-5 h-5 relative shrink-0">
+                                      <div className="w-6 h-6 relative shrink-0">
                                         <img src={prodImg} alt="" className="w-full h-full object-contain" />
                                       </div>
                                     )}
-                                    <span className="truncate max-w-[130px]">{prodName}</span>
+                                    <span className="truncate max-w-[140px] text-gray-800 dark:text-zinc-100 font-bold">{prodName}</span>
                                     <button
                                       type="button"
                                       onClick={() => {
                                         const updated = formData.relatedProducts.filter((id: string) => id !== relId);
                                         setFormData((prev) => ({ ...prev, relatedProducts: updated }));
                                       }}
-                                      className="text-gray-400 hover:text-red-600 transition ml-0.5 cursor-pointer"
+                                      className="text-gray-400 hover:text-red-600 transition ml-1 cursor-pointer"
                                       title="Remove product"
                                     >
                                       <X className="h-3.5 w-3.5" />
@@ -1331,17 +1331,19 @@ export default function ProductsPage() {
                           </div>
                         )}
 
-                        {/* Checkbox list of available products */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-gray-50/50 dark:bg-zinc-955/30 rounded-xl border border-gray-100 dark:border-zinc-800 max-h-48 overflow-y-auto">
+                        {/* Product Checkboxes Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
                           {products.filter((p) => p.id !== editingId).map((p) => {
                             const isChecked = formData.relatedProducts.includes(p.id);
+
                             return (
                               <label
                                 key={p.id}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition cursor-pointer select-none text-xs font-bold ${isChecked
-                                  ? "bg-red-50/60 dark:bg-red-955/20 border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-200"
-                                  : "bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-850 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300"
-                                  }`}
+                                className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${
+                                  isChecked
+                                    ? "border-red-400 bg-red-50/40 dark:bg-red-955/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                    : "border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-red-300 text-gray-700 dark:text-zinc-300 font-medium"
+                                }`}
                               >
                                 <input
                                   type="checkbox"
@@ -1354,9 +1356,14 @@ export default function ProductsPage() {
                                       return { ...prev, relatedProducts: list };
                                     })
                                   }
-                                  className="rounded border-gray-300 text-red-600 focus:ring-red-500 h-4 w-4 cursor-pointer"
+                                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 cursor-pointer accent-red-600"
                                 />
-                                <span className="truncate">{p.name}</span>
+                                {p.image && (
+                                  <div className="w-6 h-6 relative shrink-0">
+                                    <img src={p.image} alt="" className="w-full h-full object-contain" />
+                                  </div>
+                                )}
+                                <span className="text-xs font-bold truncate">{p.name}</span>
                               </label>
                             );
                           })}
