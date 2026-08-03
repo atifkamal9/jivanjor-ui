@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, UseCase, SeoMetadata } from "@/lib/api";
+import { api, UseCase } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
 import {
@@ -262,7 +262,7 @@ export default function UseCasesPage() {
                 <thead className="bg-gray-50/50 dark:bg-zinc-800/40 text-gray-400 dark:text-zinc-500 text-[11px] font-black uppercase tracking-wider border-b border-gray-100 dark:border-zinc-800">
                   <tr>
                     <th className="py-4 px-4">Application Card</th>
-                    <th className="py-4 px-4">Category</th>
+                    <th className="py-4 px-6">Category</th>
                     <th className="py-4 px-4">Summary Description</th>
                     <th className="py-4 px-4 text-right">Actions</th>
                   </tr>
@@ -285,7 +285,7 @@ export default function UseCasesPage() {
                       <tr key={useCase.id} className="hover:bg-gray-50/50 dark:hover:bg-zinc-800/20 transition-colors">
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
-                            <div className="relative w-14 h-10 rounded-xl overflow-hidden bg-gray-100 dark:bg-zinc-800 shrink-0 border border-gray-200 dark:border-zinc-700">
+                            <div className="relative w-14 h-10 rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-800 shrink-0 border border-gray-200 dark:border-zinc-700">
                               <img
                                 src={useCase.image || "/images/applications/Rectangle 150.png"}
                                 alt={useCase.title}
@@ -294,12 +294,11 @@ export default function UseCasesPage() {
                             </div>
                             <div>
                               <div className="font-bold text-gray-900 dark:text-zinc-100">{useCase.title}</div>
-                              <div className="text-xs text-gray-400 dark:text-zinc-500 font-mono">/applications?article={useCase.slug}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="py-4 px-4">
-                          <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-900/50">
+                        <td className="py-4 px-6 whitespace-nowrap">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400 border border-red-200 dark:border-red-900/50">
                             {useCase.category || "General"}
                           </span>
                         </td>
@@ -307,7 +306,7 @@ export default function UseCasesPage() {
                           {useCase.description}
                         </td>
                         <td className="py-4 px-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => handleOpenEdit(useCase)}
                               className="p-2 rounded-xl text-gray-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"

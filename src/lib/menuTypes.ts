@@ -84,12 +84,12 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     order: 3,
     url: null,
     subItems: [
-      { id: 'sub-app-1', title: 'Furniture & Woodwork', type: 'page', url: '/applications', order: 1 },
-      { id: 'sub-app-2', title: 'Laminates & Finishing', type: 'page', url: '/applications', order: 2 },
-      { id: 'sub-app-3', title: 'Kitchen & Storage Units', type: 'page', url: '/applications', order: 3 },
-      { id: 'sub-app-4', title: 'Moisture-Prone Woodwork', type: 'page', url: '/applications', order: 4 },
-      { id: 'sub-app-5', title: 'PVC & Edge Finishing', type: 'page', url: '/applications', order: 5 },
-      { id: 'sub-app-6', title: 'Foam & Acoustic Bonding', type: 'page', url: '/applications', order: 6 },
+      { id: 'sub-app-1', title: 'Furniture & Woodwork', type: 'page', url: '/applications/furniture-woodwork', order: 1 },
+      { id: 'sub-app-2', title: 'Laminates & Finishing', type: 'page', url: '/applications/laminates-finishing', order: 2 },
+      { id: 'sub-app-3', title: 'Kitchen & Storage Units', type: 'page', url: '/applications/kitchen-storage-units', order: 3 },
+      { id: 'sub-app-4', title: 'Moisture-Prone Woodwork', type: 'page', url: '/applications/moisture-prone-woodwork', order: 4 },
+      { id: 'sub-app-5', title: 'PVC & Edge Finishing', type: 'page', url: '/applications/pvc-edge-finishing', order: 5 },
+      { id: 'sub-app-6', title: 'Foam & Acoustic Bonding', type: 'page', url: '/applications/foam-acoustic-bonding', order: 6 },
     ],
   },
   {
@@ -165,3 +165,67 @@ export const DEFAULT_FOOTER_MENU: FooterSectionItem[] = [
     ],
   },
 ];
+
+export function normalizeSubItemUrl(
+  url: string | null | undefined,
+  title: string,
+  parentItem?: { id?: string; title?: string }
+): string {
+  const slugifiedTitle = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const parentTitle = (parentItem?.title || "").toLowerCase();
+  const parentId = parentItem?.id || "";
+
+  const isAppParent = parentId === "nav-applications" || parentTitle.includes("application");
+  const isAboutParent = parentId === "nav-about" || parentTitle.includes("about");
+
+  if (!url || url === "#") {
+    if (isAppParent) {
+      return slugifiedTitle === "applications" ? "/applications" : `/applications/${slugifiedTitle}`;
+    }
+    if (isAboutParent) {
+      return slugifiedTitle === "about" ? "/about" : `/about/${slugifiedTitle}`;
+    }
+    return `/${slugifiedTitle}`;
+  }
+
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("mailto:") ||
+    url.startsWith("#") ||
+    url.startsWith("?") ||
+    url.includes("?")
+  ) {
+    return url;
+  }
+
+  let cleanUrl = url.startsWith("/") ? url : `/${url}`;
+
+  if (isAppParent) {
+    if (cleanUrl === "/applications" && title.toLowerCase() !== "applications" && slugifiedTitle !== "applications") {
+      return `/applications/${slugifiedTitle}`;
+    }
+    if (!cleanUrl.startsWith("/applications/")) {
+      if (cleanUrl === "/applications") return "/applications";
+      const subSlug = cleanUrl.replace(/^\//, "");
+      return `/applications/${subSlug}`;
+    }
+  }
+
+  if (isAboutParent) {
+    if (cleanUrl === "/about" && title.toLowerCase() !== "about" && title.toLowerCase() !== "about jivanjor" && slugifiedTitle !== "about") {
+      return `/about/${slugifiedTitle}`;
+    }
+    if (!cleanUrl.startsWith("/about/")) {
+      if (cleanUrl === "/about") return "/about";
+      const subSlug = cleanUrl.replace(/^\//, "");
+      return `/about/${subSlug}`;
+    }
+  }
+
+  return cleanUrl;
+}

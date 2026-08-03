@@ -238,10 +238,37 @@ export default function AdminMenuPage() {
         { title: "Privacy Policy", slug: "/privacy" },
       ];
 
-      const customPages = pagesRes.map((p: any) => ({
-        title: p.title,
-        slug: p.slug.startsWith("/") ? p.slug : `/${p.slug}`,
-      }));
+      const customPages = pagesRes.map((p: any) => {
+        let rawSlug = p.slug || "";
+        if (rawSlug.startsWith("/")) return { title: p.title, slug: rawSlug };
+
+        let sectionsObj: any = {};
+        try {
+          sectionsObj = typeof p.sections === "string" ? JSON.parse(p.sections) : (p.sections || {});
+        } catch {
+          sectionsObj = {};
+        }
+
+        const layoutType = sectionsObj?.layoutType || "";
+        let pageUrl = `/${rawSlug}`;
+
+        if (layoutType === "applications" && rawSlug !== "applications") {
+          pageUrl = `/applications/${rawSlug}`;
+        } else if (layoutType === "about" && rawSlug !== "about") {
+          pageUrl = `/about/${rawSlug}`;
+        } else if (layoutType === "blog" && rawSlug !== "blog") {
+          pageUrl = `/blog/${rawSlug}`;
+        } else if (layoutType === "categories" && rawSlug !== "categories") {
+          pageUrl = `/categories/${rawSlug}`;
+        } else if (layoutType === "products" && rawSlug !== "products") {
+          pageUrl = `/products/${rawSlug}`;
+        }
+
+        return {
+          title: p.title,
+          slug: pageUrl,
+        };
+      });
 
       const allP = [...staticPages];
       customPages.forEach((cp: { title: string; slug: string }) => {

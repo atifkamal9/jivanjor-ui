@@ -12,7 +12,7 @@ import {
 } from "@/lib/nav";
 
 import { api } from "@/lib/api";
-import { MenuItem } from "@/lib/menuTypes";
+import { MenuItem, normalizeSubItemUrl } from "@/lib/menuTypes";
 
 
 interface CategoryItem {
@@ -228,11 +228,12 @@ export default function MobileNav({
                         })
                       ) : item.subItems && item.subItems.length > 0 ? (
                         item.subItems.map((sub) => {
+                          const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, item);
                           if (sub.type === "external_link") {
                             return (
                               <a
                                 key={sub.id || sub.title}
-                                href={sub.url}
+                                href={normalizedUrl}
                                 target={sub.target || "_blank"}
                                 rel="noopener noreferrer"
                                 onClick={onClose}
@@ -242,11 +243,11 @@ export default function MobileNav({
                               </a>
                             );
                           }
-                          const isActive = pathname === sub.url;
+                          const isActive = pathname === normalizedUrl;
                           return (
                             <Link
                               key={sub.id || sub.title}
-                              href={sub.url}
+                              href={normalizedUrl}
                               onClick={onClose}
                               className={`block text-base cursor-pointer py-1 ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
                                 }`}

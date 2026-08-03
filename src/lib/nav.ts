@@ -27,12 +27,12 @@ export const aboutItems: NavItem[] = [
 ];
 
 export const applicationItems = [
-  { name: "Furniture & Woodwork", link: "/applications" },
-  { name: "Laminates & Finishing", link: "/applications" },
-  { name: "Kitchen & Storage Units", link: "/applications" },
-  { name: "Moisture-Prone Woodwork", link: "/applications" },
-  { name: "PVC & Edge Finishing", link: "/applications" },
-  { name: "Foam & Acoustic Bonding", link: "/applications" },
+  { name: "Furniture & Woodwork", link: "/applications/furniture-woodwork" },
+  { name: "Laminates & Finishing", link: "/applications/laminates-finishing" },
+  { name: "Kitchen & Storage Units", link: "/applications/kitchen-storage-units" },
+  { name: "Moisture-Prone Woodwork", link: "/applications/moisture-prone-woodwork" },
+  { name: "PVC & Edge Finishing", link: "/applications/pvc-edge-finishing" },
+  { name: "Foam & Acoustic Bonding", link: "/applications/foam-acoustic-bonding" },
 ];
 
 export const knowledgeItems: NavItem[] = [

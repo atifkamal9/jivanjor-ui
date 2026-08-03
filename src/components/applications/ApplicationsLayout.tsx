@@ -1,4 +1,6 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { RightChoice } from "@/components/categories";
 import Hero from "./Hero";
 import List from "./List";
@@ -12,12 +14,29 @@ interface ApplicationsLayoutProps {
   pageDescription?: string;
 }
 
-export default function ApplicationsLayout({
+function ApplicationsLayoutContent({
   data,
   pageSlug,
   pageTitle,
   pageDescription,
 }: ApplicationsLayoutProps) {
+  const searchParams = useSearchParams();
+  const isArticleView = Boolean(searchParams.get("article"));
+
+  if (isArticleView) {
+    return (
+      <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
+        <List
+          description={data?.list?.description || data?.list?.subtitle}
+          pageDescription={pageDescription}
+          items={data?.list?.items}
+          pageSlug={pageSlug}
+          pageTitle={pageTitle}
+        />
+      </main>
+    );
+  }
+
   if (!data) {
     return (
       <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
@@ -59,5 +78,13 @@ export default function ApplicationsLayout({
         <RightChoice />
       </div>
     </main>
+  );
+}
+
+export default function ApplicationsLayout(props: ApplicationsLayoutProps) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <ApplicationsLayoutContent {...props} />
+    </Suspense>
   );
 }

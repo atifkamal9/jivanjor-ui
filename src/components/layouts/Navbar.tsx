@@ -13,7 +13,7 @@ import { ChevronRight } from "lucide-react";
 import MobileNav from "./MobileNav";
 import { api, SiteSettings } from "@/lib/api";
 
-import { MenuItem, DEFAULT_HEADER_MENU } from "@/lib/menuTypes";
+import { MenuItem, DEFAULT_HEADER_MENU, normalizeSubItemUrl } from "@/lib/menuTypes";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -629,18 +629,19 @@ export default function Navbar() {
                 <div className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12">
                   {subItems.length > 0 ? (
                     subItems.map((sub) => {
+                      const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, activeItem);
                       if (sub.type === "external_link") {
                         return (
                           <Link
                             key={sub.id || sub.title}
-                            href={sub.url}
+                            href={normalizedUrl}
                             target={sub.target || "_blank"}
                             rel="noopener noreferrer"
                             onClick={() => setActiveMenu(null)}
                             onMouseEnter={() => {
                               if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                               setHoveredGenericSubItem(sub.description || sub.title);
-                              setHoveredSubItemObj(sub);
+                              setHoveredSubItemObj({ ...sub, url: normalizedUrl });
                             }}
                             className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                           >
@@ -651,12 +652,12 @@ export default function Navbar() {
                       return (
                         <Link
                           key={sub.id || sub.title}
-                          href={sub.url}
+                          href={normalizedUrl}
                           onClick={() => setActiveMenu(null)}
                           onMouseEnter={() => {
                             if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                             setHoveredGenericSubItem(sub.description || sub.title);
-                            setHoveredSubItemObj(sub);
+                            setHoveredSubItemObj({ ...sub, url: normalizedUrl });
                           }}
                           className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
                         >
