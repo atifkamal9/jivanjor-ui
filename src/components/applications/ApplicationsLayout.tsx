@@ -7,14 +7,22 @@ import FQAs from "./FAQs";
 
 interface ApplicationsLayoutProps {
   data?: any;
+  pageSlug?: string;
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
-export default function ApplicationsLayout({ data }: ApplicationsLayoutProps) {
+export default function ApplicationsLayout({
+  data,
+  pageSlug,
+  pageTitle,
+  pageDescription,
+}: ApplicationsLayoutProps) {
   if (!data) {
     return (
       <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-        <Hero />
-        <List />
+        <Hero title={pageTitle} />
+        <List pageSlug={pageSlug} pageTitle={pageTitle} pageDescription={pageDescription} />
         <RelatedProducts />
         <FQAs />
         <div className="hidden md:block">
@@ -27,13 +35,16 @@ export default function ApplicationsLayout({ data }: ApplicationsLayoutProps) {
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <Hero
-        title={data.hero?.title}
-        subtitle={data.hero?.breadcrumb}
+        title={data.hero?.title || pageTitle}
+        breadcrumb={data.hero?.breadcrumb}
         image={data.hero?.media?.[0]}
       />
       <List
-        subtitle={data.list?.subtitle}
+        description={data.list?.description || data.list?.subtitle}
+        pageDescription={pageDescription}
         items={data.list?.items}
+        pageSlug={pageSlug}
+        pageTitle={pageTitle}
       />
       <RelatedProducts
         title={data.relatedProducts?.title}

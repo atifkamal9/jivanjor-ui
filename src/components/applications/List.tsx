@@ -2,17 +2,82 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { RightChoice } from "@/components/categories";
+import { api } from "@/lib/api";
 
 interface ListProps {
+  description?: string;
   subtitle?: string;
   items?: any[];
+  pageSlug?: string;
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
-export default function List({ subtitle, items }: ListProps) {
-  const displaySubtitle = subtitle || "Explore Jivanjor adhesives for furniture assembly, plywood work, joinery, cabinets, tables, chairs, boards and everyday wood bonding needs.";
+export default function List({
+  description,
+  subtitle,
+  items,
+  pageSlug,
+  pageTitle,
+  pageDescription,
+}: ListProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [dynamicUseCases, setDynamicUseCases] = useState<any[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+  const [fetchedDescription, setFetchedDescription] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [ucs, pages] = await Promise.all([
+          api.getUseCases().catch(() => []),
+          api.getPages().catch(() => []),
+        ]);
+
+        if (pageSlug) {
+          const matched = pages.find((p: any) => p.slug === pageSlug);
+          if (matched?.description) {
+            setFetchedDescription(matched.description);
+          }
+        }
+
+        if (Array.isArray(ucs) && ucs.length > 0) {
+          let filtered = ucs;
+          if (pageSlug && pageSlug !== "applications") {
+            const normalizedSlug = pageSlug.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const normalizedTitle = (pageTitle || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+            
+            const subpageMatches = ucs.filter((u) => {
+              const catNorm = (u.category || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+              return (
+                catNorm === normalizedSlug ||
+                catNorm === normalizedTitle ||
+                (normalizedSlug && catNorm.includes(normalizedSlug)) ||
+                (normalizedTitle && catNorm.includes(normalizedTitle))
+              );
+            });
+
+            if (subpageMatches.length > 0) {
+              filtered = subpageMatches;
+            }
+          }
+          setDynamicUseCases(filtered);
+        }
+      } catch (err) {
+        console.error("Failed to load dynamic use cases or page description in Applications list:", err);
+      }
+    }
+    fetchData();
+  }, [pageSlug, pageTitle]);
+
+  const displayDescription =
+    description ||
+    subtitle ||
+    pageDescription ||
+    fetchedDescription ||
+    "Explore Jivanjor adhesives for furniture assembly, plywood work, joinery, cabinets, tables, chairs, boards and everyday wood bonding needs.";
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -97,7 +162,16 @@ export default function List({ subtitle, items }: ListProps) {
     },
   ];
 
-  const displayItems = items || defaultApplications;
+  const formattedDynamic = dynamicUseCases.map((u) => ({
+    title: u.title,
+    desc: u.description,
+    image: u.image || "/images/applications/Rectangle 150.png",
+    slug: u.slug || u.title.replace(/\s+/g, "-").toLowerCase(),
+    category: u.category,
+    content: u.content,
+  }));
+
+  const displayItems = dynamicUseCases.length > 0 ? formattedDynamic : (items || defaultApplications);
 
   // Pagination calculation
   const postsPerPage = 6;
@@ -134,16 +208,16 @@ export default function List({ subtitle, items }: ListProps) {
         <div className="flex flex-col">
           <div className="flex flex-col items-center text-center md:items-start md:text-start">
             <p className="font-normal text-lg lg:text-2xl max-w-170">
-              {displaySubtitle}
+              {displayDescription}
             </p>
           </div>
           <div className="flex-1 space-y-6 mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {currentApplications.map((app, idx) => (
-                <Link
+                <div
                   key={idx}
-                  href={`/applications?article=${app.title.replace(/\s+/g, "-").toLowerCase()}`}
-                  className="flex flex-col group"
+                  onClick={() => setSelectedArticle(app)}
+                  className="flex flex-col group cursor-pointer"
                 >
                   <div className="relative w-full h-45 sm:h-60 rounded-[20px] overflow-hidden bg-surface">
                     <Image
@@ -159,11 +233,18 @@ export default function List({ subtitle, items }: ListProps) {
                       {app.title}
                     </h3>
                     <p className="font-normal text-sm lg:text-lg">{app.desc}</p>
-                    <button className="active-gradient-border-surface text-[#ff0009] font-medium text-base p-1.5 w-34.5 rounded-[20px] flex items-center justify-center cursor-pointer hover:bg-[#ff0009] transition-all mt-1">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedArticle(app);
+                      }}
+                      className="active-gradient-border-surface text-[#ff0009] font-medium text-base p-1.5 w-34.5 rounded-[20px] flex items-center justify-center cursor-pointer hover:bg-[#ff0009] transition-all mt-1"
+                    >
                       Learn More
                     </button>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
 
@@ -304,6 +385,67 @@ export default function List({ subtitle, items }: ListProps) {
           </div>
         </aside>
       </div>
+
+      {/* ARTICLE READER MODAL */}
+      {selectedArticle && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-[fadeIn_0.15s_ease-out]">
+          <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 w-full max-w-3xl max-h-[85vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col font-google-sans">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-zinc-800 shrink-0">
+              <div className="space-y-1">
+                {selectedArticle.category && (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400">
+                    {selectedArticle.category}
+                  </span>
+                )}
+                <h2 className="text-xl font-bold text-gray-900 dark:text-zinc-50 font-amethysta">
+                  {selectedArticle.title}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedArticle(null)}
+                className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="p-6 overflow-y-auto space-y-6">
+              {selectedArticle.image && (
+                <div className="relative w-full h-64 rounded-2xl overflow-hidden bg-surface">
+                  <Image
+                    src={selectedArticle.image}
+                    alt={selectedArticle.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+
+              <p className="text-base text-gray-600 dark:text-zinc-300 font-medium leading-relaxed">
+                {selectedArticle.desc}
+              </p>
+
+              {selectedArticle.content ? (
+                <div
+                  className="prose dark:prose-invert max-w-none text-gray-800 dark:text-zinc-200 border-t border-gray-100 dark:border-zinc-800 pt-4"
+                  dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
+                />
+              ) : null}
+            </div>
+
+            <div className="p-4 border-t border-gray-100 dark:border-zinc-800 flex justify-end shrink-0">
+              <button
+                type="button"
+                onClick={() => setSelectedArticle(null)}
+                className="px-6 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-medium text-sm transition-colors cursor-pointer"
+              >
+                Close Guide
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

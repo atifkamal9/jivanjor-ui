@@ -48,19 +48,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ApplicationsSubpage({ params }: PageProps) {
   const { subpage } = await params;
-  
+
   let template = undefined;
+  let matchedPage = undefined;
   try {
-    template = await api.getActiveTemplateForPage(subpage);
+    const [t, pages] = await Promise.all([
+      api.getActiveTemplateForPage(subpage).catch(() => null),
+      api.getPages().catch(() => []),
+    ]);
+    template = t;
+    matchedPage = pages.find((p) => p.slug === subpage);
   } catch (err) {
     console.error(`Failed to load active template for page ${subpage}:`, err);
   }
 
-  if (!template) {
+  if (!template && !matchedPage) {
     notFound();
   }
 
   const sections = template?.rawSections || template?.sections || {};
 
-  return <ApplicationsLayout data={sections} />;
+  return (
+    <ApplicationsLayout
+      data={sections}
+      pageSlug={subpage}
+      pageTitle={matchedPage?.title}
+      pageDescription={matchedPage?.description}
+    />
+  );
 }

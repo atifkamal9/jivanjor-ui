@@ -4,13 +4,13 @@ import { ChevronRight } from "lucide-react";
 
 interface HeroProps {
   title?: string;
-  subtitle?: string;
+  breadcrumb?: string;
   image?: string;
 }
 
-export default function Hero({ title, subtitle, image }: HeroProps) {
+export default function Hero({ title, breadcrumb, image }: HeroProps) {
   const displayTitle = title || "Furniture & Woodwork Adhesive Solutions";
-  const displaySubtitle = subtitle || "Application Tips";
+  const displayBreadcrumb = breadcrumb || "Application Tips";
   const displayImage = image || "/images/applications/Rectangle 2.png";
   return (
     <section className="relative">
@@ -42,8 +42,8 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
                 </Link>
                 {/* Chevron separator */}
                 <ChevronRight size={16} />
-                 <span className="font-normal text-lg text-white/80">
-                  {displaySubtitle}
+                <span className="font-normal text-lg text-white/80">
+                  {displayBreadcrumb}
                 </span>
               </div>
               <h2 className="font-amethysta font-normal text-[34px] sm:text-4xl lg:text-5xl mt-10 md:mt-12 text-center md:text-start">
@@ -52,7 +52,7 @@ export default function Hero({ title, subtitle, image }: HeroProps) {
             </div>
           </div>
         </div>
-         <Image
+        <Image
           src={displayImage}
           fill
           alt="applications Hero"

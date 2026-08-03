@@ -391,42 +391,6 @@ const defaultApplicationsSections = {
       "/images/applications/Rectangle 2.png"
     ]
   },
-  list: {
-    title: "Woodworking Applications List",
-    subtitle: "Browse specialized application areas and get bonding advice.",
-    items: [
-      {
-        title: "Furniture Assembly & Joinery",
-        desc: "For tables, chairs, cabinets, frames and other wood-to-wood bonding needs.",
-        image: "/images/applications/Rectangle 150.png"
-      },
-      {
-        title: "Lamination & Veneering",
-        desc: "For bonding laminates, veneers and decorative surfaces to plywood, MDF or boards.",
-        image: "/images/applications/Rectangle 151.png"
-      },
-      {
-        title: "Edge Banding & Finishing",
-        desc: "For clean edges, surface finishing and exposed board sides.",
-        image: "/images/applications/Rectangle 152.png"
-      },
-      {
-        title: "Wooden Cabinets & Storage Units",
-        desc: "For wardrobes, shelves, drawers, modular storage and daily-use furniture.",
-        image: "/images/applications/Rectangle 153.png"
-      },
-      {
-        title: "Repair & Restoration",
-        desc: "For fixing gaps, loose joints, damaged parts and small woodwork repairs.",
-        image: "/images/applications/Rectangle 154.png"
-      },
-      {
-        title: "Small Assembly & Detail Work",
-        desc: "For quick fixes, smaller wooden parts and intricate woodwork applications.",
-        image: "/images/applications/Rectangle 155.png"
-      }
-    ]
-  },
   relatedProducts: {
     title: "Related Products",
     items: [
@@ -782,7 +746,6 @@ export default function TemplatesPage() {
       merged = {
         layoutType: "applications",
         hero: { ...defaultApplicationsSections.hero, ...rawData.hero },
-        list: { ...defaultApplicationsSections.list, ...rawData.list },
         relatedProducts: { ...defaultApplicationsSections.relatedProducts, ...rawData.relatedProducts },
         faqs: { ...defaultApplicationsSections.faqs, ...rawData.faqs }
       };
@@ -1013,7 +976,6 @@ export default function TemplatesPage() {
           : currentLayoutType === "applications"
             ? [
               { id: "hero", label: "Hero Banner", icon: Layout },
-              { id: "list", label: "Applications List", icon: Grid },
               { id: "relatedProducts", label: "Related Products", icon: Layers },
               { id: "faqs", label: "FAQs Accordion", icon: Award },
             ]
@@ -4126,95 +4088,7 @@ export default function TemplatesPage() {
                   </div>
                 )}
 
-                {/* Applications List Tab */}
-                {activeTab === "list" && homeSections.list && homeSections.layoutType === "applications" && (
-                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Grid className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Applications List</h3>
-                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Title
-                        </label>
-                        <input
-                          type="text"
-                          value={homeSections.list.title || ""}
-                          onChange={(e) => updateSectionField("list", "title", e.target.value)}
-                          placeholder="Woodworking Applications List"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Section Subtitle
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={homeSections.list.subtitle || ""}
-                          onChange={(e) => updateSectionField("list", "subtitle", e.target.value)}
-                          placeholder="Section description..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-black uppercase text-foreground/45 tracking-wider">Application Cards</span>
-                        <button
-                          type="button"
-                          onClick={() => addItem("list", { title: "New Application", desc: "Description here", image: "/images/applications/Rectangle 150.png" })}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase rounded-lg cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" /> Add Application Card
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {homeSections.list.items?.map((item: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => removeItem("list", idx)}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer transition-colors border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Card #{idx + 1}</span>
-                            <div>
-                              <input
-                                type="text"
-                                value={item.title || ""}
-                                onChange={(e) => updateItemField("list", idx, "title", e.target.value)}
-                                placeholder="Application Title"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold mb-2"
-                              />
-                              <textarea
-                                rows={2}
-                                value={item.desc || ""}
-                                onChange={(e) => updateItemField("list", idx, "desc", e.target.value)}
-                                placeholder="Description"
-                                className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs mb-2 resize-none"
-                              />
-                              <div className="space-y-1">
-                                <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Card Image</span>
-                                <ImageUpload
-                                  value={item.image || ""}
-                                  onChange={(url) => updateItemField("list", idx, "image", url)}
-                                  folder="templates"
-                                  size="compact"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Related Products Tab */}
                 {activeTab === "relatedProducts" && homeSections.relatedProducts && homeSections.layoutType === "applications" && (

@@ -99,6 +99,9 @@ export interface UseCase {
   title: string;
   slug: string;
   description: string;
+  content?: string;
+  category?: string;
+  image?: string;
 }
 
 export interface Issue {
@@ -732,6 +735,9 @@ export const api = {
     const payload = {
       title: useCase.title,
       description: useCase.description,
+      content: useCase.content || null,
+      category: useCase.category || null,
+      image: useCase.image || null,
     };
     if (useCase.id) {
       const res = await client.put(`/use-cases/${useCase.id}`, payload);
