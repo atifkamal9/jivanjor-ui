@@ -57,6 +57,7 @@ export default function ProductsPage() {
     name: "",
     slug: "",
     description: "",
+    short_description: "",
     category_id: "",
     category_ids: [] as string[],
     material_id: "",
@@ -175,6 +176,7 @@ export default function ProductsPage() {
       name: "",
       slug: "",
       description: "",
+      short_description: "",
       category_id: primaryCatId,
       category_ids: primaryCatId ? [primaryCatId] : [],
       material_id: materials[0]?.id || "",
@@ -268,6 +270,7 @@ export default function ProductsPage() {
       name: product.name,
       slug: product.slug,
       description: product.description,
+      short_description: product.short_description || product.shortDescription || "",
       category_id: product.category_id,
       category_ids: mergedCatIds,
       material_id: product.material_id,
@@ -357,6 +360,7 @@ export default function ProductsPage() {
       name: duplicateName,
       slug: duplicateSlug,
       description: product.description,
+      short_description: product.short_description || product.shortDescription || "",
       category_id: product.category_id,
       category_ids: mergedCatIds,
       material_id: product.material_id,
@@ -612,8 +616,8 @@ export default function ProductsPage() {
                             </div>
                           </td>
                           <td className="px-6 py-5 min-w-[260px] max-w-md">
-                            <p className="text-xs text-gray-600 dark:text-zinc-300 font-medium line-clamp-2 leading-relaxed" title={p.description}>
-                              {p.description || "No description provided."}
+                            <p className="text-xs text-gray-600 dark:text-zinc-300 font-medium line-clamp-2 leading-relaxed" title={p.short_description || p.description}>
+                              {p.short_description || p.shortDescription || p.description || "No description provided."}
                             </p>
                           </td>
                           {/* <td className="p-5">
@@ -972,19 +976,32 @@ export default function ProductsPage() {
 
                     <div>
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex justify-between items-center">
-                        <span>Product Specifications &amp; Description</span>
-                        <span className={`text-[10px] font-bold ${formData.description.length >= 80 ? "text-red-500" : "text-gray-400"}`}>
-                          {formData.description.length} / 80 chars max
+                        <span>Short Description (Cards &amp; Quick Teaser)</span>
+                        <span className={`text-[10px] font-bold ${formData.short_description.length >= 80 ? "text-amber-500" : "text-gray-400"}`}>
+                          {formData.short_description.length} / 80 chars max
                         </span>
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={80}
+                        value={formData.short_description}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, short_description: e.target.value }))}
+                        placeholder="Brief overview teaser (max 80 characters e.g. Water-resistant, high-strength adhesive...)"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        <span>Full Product Specifications &amp; Detailed Description</span>
                       </label>
                       <textarea
                         required
-                        maxLength={80}
-                        rows={3}
+                        rows={5}
                         value={formData.description}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value.slice(0, 80) }))}
-                        placeholder="Write short product description (max 80 characters)..."
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
+                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+                        placeholder="Write detailed product features, application methods, surface preparation & tech info..."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                       />
                     </div>
                   </div>

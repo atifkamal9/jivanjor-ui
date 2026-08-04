@@ -16,10 +16,12 @@ interface ProductCard {
   title: string;
   slug?: string;
   description: string;
+  shortDescription?: string;
   mobileDesc: string;
   color: string;
   badge: string;
   image: string;
+  backgroundImage?: string;
   features: string[];
 }
 
@@ -28,6 +30,7 @@ interface SubCategoryData {
   slug?: string;
   title: string;
   description: string;
+  shortDescription?: string;
   icon: string;
   products: ProductCard[];
 }
@@ -395,7 +398,7 @@ export default function MainCategories() {
     loadData();
   }, []);
 
-  const mainCategoriesData = categories.length > 0
+  const mainCategoriesData: MainCategoryData[] = categories.length > 0
     ? categories
       .filter((cat) => !cat.parent_category)
       .map((cat) => {
@@ -432,6 +435,7 @@ export default function MainCategories() {
                   title: p.name,
                   slug: p.slug,
                   description: p.description,
+                  shortDescription: p.short_description || p.shortDescription || p.description,
                   mobileDesc: p.description,
                   color: p.name.toLowerCase().includes("aquabond")
                     ? "bg-[#077937]"
@@ -518,7 +522,7 @@ export default function MainCategories() {
   const subCategories = currentMainCategoryData?.subCategories || [];
 
   const currentSubCategoryData =
-    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0] || { name: "", title: "", description: "", icon: "", products: [] };
+    subCategories.find((s) => s.name === activeSubCategory) || subCategories[0] || { name: "", title: "", description: "", shortDescription: "", icon: "", products: [] };
 
   const checkScroll = () => {
     if (scrollContainerRef.current) {

@@ -14,6 +14,8 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
+  short_description?: string;
+  shortDescription?: string;
   category_id: string;
   category_ids?: string[];
   categoryIds?: string[];
@@ -407,11 +409,20 @@ function mapProductFromBackend(prod: any): Product {
     ];
   }
 
+  let shortDescription = "";
+  if (prod.metadata && typeof prod.metadata === "object") {
+    shortDescription = prod.metadata.shortDescription || prod.metadata.short_description || "";
+  } else {
+    shortDescription = prod.shortDescription || prod.short_description || "";
+  }
+
   return {
     id: prod.id,
     name: prod.name,
     slug: prod.slug,
     description: prod.description || "",
+    short_description: shortDescription,
+    shortDescription: shortDescription,
     category_id: prod.categoryId,
     category_ids: prod.categoryIds || prod.category_ids || (prod.categoryId ? [prod.categoryId] : []),
     categoryIds: prod.categoryIds || prod.category_ids || (prod.categoryId ? [prod.categoryId] : []),
@@ -592,10 +603,13 @@ export const api = {
     const payload = {
       name: product.name,
       description: product.description,
+      shortDescription: product.short_description || product.shortDescription || null,
+      short_description: product.short_description || product.shortDescription || null,
       categoryId: product.category_id,
       categoryIds: product.category_ids || product.categoryIds || [product.category_id],
       materialId: product.material_id || null,
       metadata: {
+        shortDescription: product.short_description || product.shortDescription || "",
         tags: product.metadata,
         themeColor: product.themeColor || "#0498AA",
         backgroundImage: product.backgroundImage || "",

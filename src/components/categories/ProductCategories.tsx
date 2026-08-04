@@ -355,6 +355,7 @@ export default function ProductCategories({ category, data }: Props) {
             title: p.name,
             slug: p.slug,
             description: p.description,
+            shortDescription: p.short_description || p.description,
             mobileDesc: p.description,
             color: p.themeColor ?? "#0498AA",
             badge: sub.name,

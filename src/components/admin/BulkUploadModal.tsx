@@ -33,6 +33,7 @@ export interface ParsedRow {
   // Products
   name?: string;
   description?: string;
+  short_description?: string;
   category_name?: string;
   category_id?: string;
   material_name?: string;
@@ -171,12 +172,12 @@ function parseExcel(
           if (entityType === "product") {
             const name = getRowValue(row, ["name", "product_name", "product", "productname", "title"]);
             const description = getRowValue(row, ["description", "desc", "details"]);
+            const shortDescription = getRowValue(row, ["short_description", "shortdescription", "short_desc", "shortdesc", "summary"]);
             const categoryName = getRowValue(row, ["category_name", "category", "categoryname", "cat_name", "catname"]);
             const materialName = getRowValue(row, ["material_name", "material", "materialname", "mat_name"]);
 
             if (!name) warnings.push("'name' is required");
             if (!description) warnings.push("'description' is required");
-            else if (description.length > 80) warnings.push(`'description' exceeds max limit of 80 characters (${description.length} chars)`);
             if (!categoryName) warnings.push("'category_name' is required");
 
             const matchedCat = categories.find(
@@ -193,6 +194,7 @@ function parseExcel(
 
             result.name = name;
             result.description = description;
+            result.short_description = shortDescription;
             result.category_name = categoryName;
             result.category_id = matchedCat?.id || "";
             result.material_name = materialName;
@@ -590,7 +592,8 @@ export default function BulkUploadModal({
                       {(() => {
                         const colDefs = entityType === "product" ? [
                           { col: "name", req: true, note: "Product name" },
-                          { col: "description", req: true, note: "Short description (max 80 chars)" },
+                          { col: "description", req: true, note: "Full detailed product description" },
+                          { col: "short_description", req: false, note: "Short overview description (max 80 chars)" },
                           { col: "category_name", req: true, note: "Must match an existing category name exactly" },
                           { col: "material_name", req: false, note: "Must match an existing material name" },
                           { col: "theme_color", req: false, note: "Hex colour e.g. #0083CB (defaults to #0498AA)" },
