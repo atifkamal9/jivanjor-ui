@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Product, Category, Material } from "@/lib/api";
+import { getUserRole } from "@/lib/auth";
 import ImageUpload from "@/components/admin/ImageUpload";
 import FileUpload from "@/components/admin/FileUpload";
 import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
@@ -94,11 +95,15 @@ export default function ProductsPage() {
   const [seoImage, setSeoImage] = useState("");
   const [existingSeoId, setExistingSeoId] = useState<string | null>(null);
 
+  // User Role
+  const [userRole, setUserRole] = useState("");
+
   // Delete state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setUserRole(getUserRole());
     loadData();
   }, []);
 
@@ -487,13 +492,15 @@ export default function ProductsPage() {
               </p>
             </div>
             <div className="flex items-center gap-3 self-start sm:self-auto">
-              <button
-                onClick={() => setIsBulkModalOpen(true)}
-                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
-              >
-                <Upload className="h-4 w-4" />
-                <span>Bulk Upload</span>
-              </button>
+              {userRole === "SUPER_ADMIN" && (
+                <button
+                  onClick={() => setIsBulkModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span>Bulk Upload</span>
+                </button>
+              )}
               <button
                 onClick={handleOpenAdd}
                 className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all"
@@ -526,17 +533,6 @@ export default function ProductsPage() {
                 <option value="">All Categories</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-
-              <select
-                value={filterMaterial}
-                onChange={(e) => { setFilterMaterial(e.target.value); setCurrentPage(1); }}
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
-              >
-                <option value="">All Materials</option>
-                {materials.map((m) => (
-                  <option key={m.id} value={m.id}>{m.name}</option>
                 ))}
               </select>
             </div>
@@ -1357,11 +1353,10 @@ export default function ProductsPage() {
                             return (
                               <label
                                 key={p.id}
-                                className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${
-                                  isChecked
-                                    ? "border-red-400 bg-red-50/40 dark:bg-red-955/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
-                                    : "border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-red-300 text-gray-700 dark:text-zinc-300 font-medium"
-                                }`}
+                                className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
+                                  ? "border-red-400 bg-red-50/40 dark:bg-red-955/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                  : "border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-red-300 text-gray-700 dark:text-zinc-300 font-medium"
+                                  }`}
                               >
                                 <input
                                   type="checkbox"

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
+import { getUserRole } from "@/lib/auth";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
 import {
@@ -60,10 +61,14 @@ export default function CategoriesPage() {
   const [seoImage, setSeoImage] = useState("");
   const [existingSeoId, setExistingSeoId] = useState<string | null>(null);
 
+  // User Role
+  const [userRole, setUserRole] = useState("");
+
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setUserRole(getUserRole());
     loadData();
   }, []);
 
@@ -248,13 +253,15 @@ export default function CategoriesPage() {
               </p>
             </div>
             <div className="flex items-center gap-3 self-start sm:self-auto">
-              <button
-                onClick={() => setIsBulkModalOpen(true)}
-                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
-              >
-                <Upload className="h-4 w-4" />
-                <span>Bulk Upload</span>
-              </button>
+              {userRole === "SUPER_ADMIN" && (
+                <button
+                  onClick={() => setIsBulkModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span>Bulk Upload</span>
+                </button>
+              )}
               <button
                 onClick={handleOpenAdd}
                 className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all"

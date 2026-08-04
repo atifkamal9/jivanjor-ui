@@ -12,8 +12,10 @@ import {
   Loader2,
   FileSpreadsheet,
   ChevronRight,
+  ShieldAlert,
 } from "lucide-react";
 import { Category, Material } from "@/lib/api";
+import { getUserRole } from "@/lib/auth";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -410,6 +412,32 @@ export default function BulkUploadModal({
   const validRowCount = rows.filter((r) => r._warnings.length === 0).length;
 
   if (!isOpen) return null;
+
+  if (getUserRole() !== "SUPER_ADMIN") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-[fadeIn_0.15s_ease-out]">
+        <div className="relative w-full max-w-md flex flex-col bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-8 border border-gray-100 dark:border-zinc-800 text-center space-y-4">
+          <div className="h-14 w-14 rounded-2xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center mx-auto text-red-600">
+            <ShieldAlert className="h-7 w-7" />
+          </div>
+          <div>
+            <h3 className="text-lg font-extrabold text-gray-900 dark:text-zinc-50">
+              Access Restricted
+            </h3>
+            <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+              Bulk Upload feature is restricted to <strong>Super Admin</strong> users only.
+            </p>
+          </div>
+          <button
+            onClick={handleClose}
+            className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-all cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-[fadeIn_0.15s_ease-out]">
