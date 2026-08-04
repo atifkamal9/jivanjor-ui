@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Product, Category, Material } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import FileUpload from "@/components/admin/FileUpload";
+import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
 import {
   Plus,
   Search,
@@ -24,12 +25,16 @@ import {
   Files,
   CopyPlus,
   GripVertical,
+  Upload,
 } from "lucide-react";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [materials, setMaterials] = useState<Material[]>([]);
+
+  // Bulk Upload
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   // Search & Filters
   const [search, setSearch] = useState("");
@@ -481,13 +486,22 @@ export default function ProductsPage() {
                 Assemble and classify active industrial chemical bonds and adhesives
               </p>
             </div>
-            <button
-              onClick={handleOpenAdd}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all self-start sm:self-auto"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Create Product Profile</span>
-            </button>
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <button
+                onClick={() => setIsBulkModalOpen(true)}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Bulk Upload</span>
+              </button>
+              <button
+                onClick={handleOpenAdd}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Create Product Profile</span>
+              </button>
+            </div>
           </div>
 
           {/* Filters Panel */}
@@ -961,15 +975,19 @@ export default function ProductsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                        Product Specifications & Description
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex justify-between items-center">
+                        <span>Product Specifications &amp; Description</span>
+                        <span className={`text-[10px] font-bold ${formData.description.length >= 80 ? "text-red-500" : "text-gray-400"}`}>
+                          {formData.description.length} / 80 chars max
+                        </span>
                       </label>
                       <textarea
                         required
-                        rows={4}
+                        maxLength={80}
+                        rows={3}
                         value={formData.description}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-                        placeholder="Write detailed chemical bonding performance..."
+                        onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value.slice(0, 80) }))}
+                        placeholder="Write short product description (max 80 characters)..."
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
                       />
                     </div>
@@ -1926,6 +1944,93 @@ export default function ProductsPage() {
           </div>
         </div>
       )}
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        onComplete={loadData}
+        entityType="product"
+        categories={categories}
+        materials={materials}
+        onSave={async (row: ParsedRow) => {
+          const [latestProds, latestCats, latestMats] = await Promise.all([
+            api.getProducts(),
+            api.getCategories(),
+            api.getMaterials()
+          ]);
+
+          let catId = row.category_id;
+          if (!catId && row.category_name) {
+            const matchedCat = latestCats.find(
+              (c) => c.name.toLowerCase() === row.category_name!.toLowerCase()
+            );
+            if (matchedCat) catId = matchedCat.id;
+          }
+          if (!catId && latestCats.length > 0) {
+            catId = latestCats[0].id;
+          }
+
+          let matId = row.material_id;
+          if (!matId && row.material_name) {
+            const matchedMat = latestMats.find(
+              (m) => m.name.toLowerCase() === row.material_name!.toLowerCase()
+            );
+            if (matchedMat) matId = matchedMat.id;
+          }
+
+          const slug = (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+          const existingProd = latestProds.find(
+            (p) => p.name.toLowerCase() === (row.name || "").toLowerCase() || p.slug === slug
+          );
+
+          const defaultOverviewBullets = [
+            { text: "Water Resistant", icon: "image 18.svg" },
+            { text: "Super Fast Setting - 1 Hour", icon: "image 19.svg" },
+            { text: "Anti-Bubble Technology", icon: "image 20.svg" },
+          ];
+          const defaultTechSpecs = [
+            { key: "Appearance", value: "Milk White" },
+            { key: "Solids", value: "50-53%" },
+            { key: "Viscosity", value: "150-250 Poise" },
+            { key: "Coverage", value: "60-70 Sqft/Kg" },
+          ];
+
+          await api.saveProduct({
+            id: existingProd?.id,
+            name: row.name || "",
+            slug,
+            description: (row.description || "").slice(0, 80),
+            category_id: catId || "",
+            category_ids: catId ? [catId] : [],
+            material_id: matId || "",
+            metadata: row.metadata_tags || "",
+            image: row.image || "",
+            backgroundImage: "",
+            themeColor: row.theme_color || "#0498AA",
+            overviewBullets: defaultOverviewBullets,
+            techSpecs: defaultTechSpecs,
+            packSizes: row.pack_sizes && row.pack_sizes.length > 0 ? row.pack_sizes : ["1 Kg", "5 Kg", "20 Kg"],
+            documentUrl: "",
+            usps: [],
+            applications: [],
+            videoUrl: "",
+            videoThumbnail: "/images/Rectangle 4.png",
+            faqs: [],
+            relatedProducts: [],
+            techSpecsDescription: "",
+            appsTitle: "Engineered for the Task at Hand",
+            appsDescription: "",
+            videoTitle: "See product in Action",
+            videoDescription: "",
+            faqsTitle: "FAQs",
+            faqsDescription: "",
+            relatedTitle: "Related Products",
+            techResourceTitle: "",
+            techResourceDescription: "",
+            techResourceFileUrl: "",
+          });
+        }}
+      />
     </AdminLayout>
   );
 }

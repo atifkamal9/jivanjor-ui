@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
 import {
   Plus,
   Search,
@@ -15,6 +16,7 @@ import {
   Sliders,
   Layers,
   FileText,
+  Upload,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -22,6 +24,9 @@ export default function CategoriesPage() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Bulk Upload
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   // Form states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -242,13 +247,22 @@ export default function CategoriesPage() {
                 Define classification structures for nested catalog layout filters
               </p>
             </div>
-            <button
-              onClick={handleOpenAdd}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all self-start sm:self-auto"
-            >
-              <Plus className="h-5 w-5" />
-              <span>Add Category Classification</span>
-            </button>
+            <div className="flex items-center gap-3 self-start sm:self-auto">
+              <button
+                onClick={() => setIsBulkModalOpen(true)}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-sm cursor-pointer transition-all shadow-sm"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Bulk Upload</span>
+              </button>
+              <button
+                onClick={handleOpenAdd}
+                className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Add Category Classification</span>
+              </button>
+            </div>
           </div>
 
           {/* Filters Panel */}
@@ -786,6 +800,52 @@ export default function CategoriesPage() {
           </div>
         </div>
       )}
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        isOpen={isBulkModalOpen}
+        onClose={() => setIsBulkModalOpen(false)}
+        onComplete={loadData}
+        entityType="category"
+        categories={categories}
+        onSave={async (row: ParsedRow) => {
+          const latestCats = await api.getCategories();
+          
+          let parentId = "";
+          if (row.parent_category_name) {
+            const parentCat = latestCats.find(
+              (c) => c.name.toLowerCase() === row.parent_category_name!.toLowerCase()
+            );
+            if (parentCat) {
+              parentId = parentCat.id;
+            }
+          }
+
+          const slug = (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+          const existingCat = latestCats.find(
+            (c) => c.name.toLowerCase() === (row.name || "").toLowerCase() || c.slug === slug
+          );
+
+          await api.saveCategory({
+            id: existingCat?.id,
+            name: row.name || "",
+            slug,
+            description: row.description || "",
+            parent_category: parentId,
+            icon: row.icon || "",
+            categoryTitle: "",
+            categoryDescription: "",
+            resourcesTitle: "",
+            resourcesDescription: "",
+            heroImage: "",
+            researchTitle: "",
+            researchDescription: "",
+            researchCtaText: "",
+            researchCtaLink: "",
+            researchImage1: "",
+            researchImage2: "",
+          });
+        }}
+      />
     </AdminLayout>
   );
 }

@@ -417,9 +417,7 @@ function mapProductFromBackend(prod: any): Product {
     categoryIds: prod.categoryIds || prod.category_ids || (prod.categoryId ? [prod.categoryId] : []),
     material_id: prod.materialId || "",
     metadata: metadataStr,
-    image:
-      prod.image ||
-      "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400&auto=format&fit=crop",
+    image: prod.image || "/images/Watershield.png",
     themeColor,
     backgroundImage,
     overviewBullets,
