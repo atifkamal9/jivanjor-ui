@@ -30,6 +30,7 @@ function ApplicationsLayoutContent({
           description={data?.list?.description || data?.list?.subtitle}
           pageDescription={pageDescription}
           items={data?.list?.items}
+          relatedArticles={data?.relatedArticles}
           pageSlug={pageSlug}
           pageTitle={pageTitle}
         />
@@ -62,6 +63,7 @@ function ApplicationsLayoutContent({
         description={data.list?.description || data.list?.subtitle}
         pageDescription={pageDescription}
         items={data.list?.items}
+        relatedArticles={data.relatedArticles}
         pageSlug={pageSlug}
         pageTitle={pageTitle}
       />

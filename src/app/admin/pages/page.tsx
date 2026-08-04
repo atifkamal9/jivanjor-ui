@@ -416,6 +416,11 @@ const defaultApplicationsSections = {
       }
     ]
   },
+  relatedArticles: {
+    title: "Related Articles",
+    selectedArticleIds: [],
+    items: []
+  },
   faqs: {
     title: "FAQs",
     subtitle: "Find quick answers about product use, coverage, setting time, pack sizes and technical details.",
@@ -863,6 +868,7 @@ export default function PagesPage() {
             layoutType: "applications",
             hero: { ...defaultApplicationsSections.hero, ...rawData.hero },
             relatedProducts: { ...defaultApplicationsSections.relatedProducts, ...rawData.relatedProducts },
+            relatedArticles: { ...defaultApplicationsSections.relatedArticles, ...rawData.relatedArticles },
             faqs: { ...defaultApplicationsSections.faqs, ...rawData.faqs }
           };
         } else if (type === "blog") {
@@ -1016,6 +1022,7 @@ export default function PagesPage() {
             layoutType: "applications",
             hero: { ...defaultApplicationsSections.hero, ...rawData.hero },
             relatedProducts: { ...defaultApplicationsSections.relatedProducts, ...rawData.relatedProducts },
+            relatedArticles: { ...defaultApplicationsSections.relatedArticles, ...rawData.relatedArticles },
             faqs: { ...defaultApplicationsSections.faqs, ...rawData.faqs }
           };
         } else if (type === "blog") {
@@ -1146,6 +1153,7 @@ export default function PagesPage() {
           layoutType: "applications",
           hero: { ...defaultApplicationsSections.hero, ...rawData.hero },
           relatedProducts: { ...defaultApplicationsSections.relatedProducts, ...rawData.relatedProducts },
+          relatedArticles: { ...defaultApplicationsSections.relatedArticles, ...rawData.relatedArticles },
           faqs: { ...defaultApplicationsSections.faqs, ...rawData.faqs }
         };
       } else if (type === "blog") {
@@ -4940,8 +4948,17 @@ export default function PagesPage() {
                           return { id, title: id, description: "", image: "/images/Champion Super.png", color: "bg-[#0083CB]" };
                         });
 
-                        updateSectionField("relatedProducts", "selectedProductIds", newSelectedIds);
-                        updateSectionField("relatedProducts", "items", mappedItems);
+                        setFormData((prev: any) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            relatedProducts: {
+                              ...prev.sections?.relatedProducts,
+                              selectedProductIds: newSelectedIds,
+                              items: mappedItems,
+                            },
+                          },
+                        }));
                       };
 
                       return (
@@ -5118,8 +5135,17 @@ export default function PagesPage() {
                           return { id, title: id, description: "", image: "/images/applications/Rectangle 150.png", slug: id };
                         });
 
-                        updateSectionField("relatedArticles", "selectedArticleIds", newSelectedIds);
-                        updateSectionField("relatedArticles", "items", mappedItems);
+                        setFormData((prev: any) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            relatedArticles: {
+                              ...prev.sections?.relatedArticles,
+                              selectedArticleIds: newSelectedIds,
+                              items: mappedItems,
+                            },
+                          },
+                        }));
                       };
 
                       return (

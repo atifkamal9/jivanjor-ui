@@ -11,6 +11,7 @@ interface ListProps {
   description?: string;
   subtitle?: string;
   items?: any[];
+  relatedArticles?: any;
   pageSlug?: string;
   pageTitle?: string;
   pageDescription?: string;
@@ -20,6 +21,7 @@ function ListContent({
   description,
   subtitle,
   items,
+  relatedArticles,
   pageSlug,
   pageTitle,
   pageDescription,
@@ -201,12 +203,21 @@ function ListContent({
     })
     : null;
 
-  // Dynamic Related Articles: sourced from application articles (useCases) set by admin
+  // Dynamic Related Articles: sourced from application articles (useCases) set by admin or dynamically fetched
   const dynamicRelatedArticles = (() => {
-    const configuredItems = items;
+    // 1. Check if admin explicitly configured related articles in page sections (data.relatedArticles)
+    const relItems = relatedArticles?.items || (Array.isArray(relatedArticles) ? relatedArticles : null);
+    const relIds = relatedArticles?.selectedArticleIds;
 
-    if (Array.isArray(configuredItems) && configuredItems.length > 0) {
-      const mapped = configuredItems
+    let configuredTargetItems: any[] = [];
+    if (Array.isArray(relItems) && relItems.length > 0) {
+      configuredTargetItems = relItems;
+    } else if (Array.isArray(relIds) && relIds.length > 0) {
+      configuredTargetItems = relIds;
+    }
+
+    if (configuredTargetItems.length > 0) {
+      const mapped = configuredTargetItems
         .map((item: any) => {
           if (typeof item === "string") {
             const found = dynamicUseCases.find(
@@ -218,7 +229,11 @@ function ListContent({
                 image: found.image || "/images/applications/Rectangle 150.png",
                 slug: found.slug || found.title.replace(/\s+/g, "-").toLowerCase(),
               }
-              : null;
+              : {
+                title: item,
+                image: "/images/applications/Rectangle 150.png",
+                slug: item.replace(/\s+/g, "-").toLowerCase(),
+              };
           }
           return {
             title: item.title || item.name,
@@ -226,15 +241,23 @@ function ListContent({
             slug: item.slug || (item.title ? item.title.replace(/\s+/g, "-").toLowerCase() : ""),
           };
         })
-        .filter(Boolean);
+        .filter((art) => !activeArticle || (art.title !== activeArticle.title && art.slug !== activeArticle.slug));
 
       if (mapped.length > 0) return mapped;
     }
 
-    // Dynamic Fallback: filter application articles excluding active article
-    const filtered = dynamicUseCases.filter(
-      (u) => !activeArticle || (u.title !== activeArticle.title && u.slug !== activeArticle.slug)
-    );
+    // 2. Dynamic Fallback: Pool all available articles and exclude activeArticle currently being read
+    const allAvailable = dynamicUseCases.length > 0 ? formattedDynamic : displayItems;
+
+    const filtered = allAvailable.filter((u) => {
+      if (!activeArticle) return true;
+      const activeTitleNorm = (activeArticle.title || "").toLowerCase().trim();
+      const activeSlugNorm = (activeArticle.slug || "").toLowerCase().trim();
+      const uTitleNorm = (u.title || "").toLowerCase().trim();
+      const uSlugNorm = (u.slug || "").toLowerCase().trim();
+
+      return uTitleNorm !== activeTitleNorm && uSlugNorm !== activeSlugNorm;
+    });
 
     if (filtered.length > 0) {
       return filtered.slice(0, 3).map((u) => ({
@@ -244,11 +267,18 @@ function ListContent({
       }));
     }
 
-    // System Fallback
-    return defaultApplications.slice(0, 3).map((u) => ({
+    // 3. System Fallback from defaultApplications
+    const defaultFiltered = defaultApplications.filter((u) => {
+      if (!activeArticle) return true;
+      const activeTitleNorm = (activeArticle.title || "").toLowerCase().trim();
+      const uTitleNorm = (u.title || "").toLowerCase().trim();
+      return uTitleNorm !== activeTitleNorm;
+    });
+
+    return defaultFiltered.slice(0, 3).map((u) => ({
       title: u.title,
-      image: u.image,
-      slug: u.title.replace(/\s+/g, "-").toLowerCase(),
+      image: u.image || "/images/applications/Rectangle 150.png",
+      slug: (u as any).slug || u.title.replace(/\s+/g, "-").toLowerCase(),
     }));
   })();
 
@@ -346,7 +376,7 @@ function ListContent({
                 {activeArticle.desc && (
                   <div className="bg-surface p-5 md:px-8 md:py-5 border-l-[5px] border-[#FF0009] w-full">
                     <h4 className="font-google-sans font-bold text-lg md:text-xl text-[#222] dark:text-zinc-100 mb-2">
-                      Summary :
+                      Summary:
                     </h4>
                     <p className="font-google-sans text-base md:text-lg text-[#222] dark:text-zinc-300">
                       {activeArticle.desc}
@@ -535,7 +565,7 @@ function ListContent({
               {/* Dynamic Related Articles (Application Articles set by admin or dynamically fetched) */}
               <div className="flex flex-col gap-5 lg:sticky lg:top-24">
                 <h3 className="font-amethysta font-normal text-[28px] xl:text-[34px] text-black">
-                  Related Articles
+                  {relatedArticles?.title || "Related Articles"}
                 </h3>
 
                 <div className="flex flex-col gap-5">
