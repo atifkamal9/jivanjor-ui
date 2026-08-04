@@ -127,22 +127,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Helper render function for Products collapsible menu (Desktop)
   const renderDesktopProductsAccordion = () => {
     const isChildActive = pathname === "/admin/products" || pathname === "/admin/categories";
-    
+
     if (isCollapsed) {
       return (
         <Link
           href="/admin/products"
-          className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${
-            isChildActive
-              ? "bg-primary/10 text-primary"
-              : "text-foreground/75 hover:bg-surface hover:text-foreground"
-          }`}
+          className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${isChildActive
+            ? "bg-primary/10 text-primary"
+            : "text-foreground/75 hover:bg-surface hover:text-foreground"
+            }`}
           title="Products & Categories"
         >
           <Package
-            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-              isChildActive ? "text-primary" : "text-foreground/45"
-            }`}
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isChildActive ? "text-primary" : "text-foreground/45"
+              }`}
           />
         </Link>
       );
@@ -153,22 +151,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <button
           type="button"
           onClick={() => setProductsOpen(!productsOpen)}
-          className={`w-full flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 cursor-pointer ${
-            isChildActive
-              ? "bg-primary/5 text-primary"
-              : "text-foreground/75 hover:bg-surface hover:text-foreground"
-          }`}
+          className={`w-full flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 cursor-pointer ${isChildActive
+            ? "bg-primary/5 text-primary"
+            : "text-foreground/75 hover:bg-surface hover:text-foreground"
+            }`}
         >
           <Package
-            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-              isChildActive ? "text-primary" : "text-foreground/45"
-            }`}
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isChildActive ? "text-primary" : "text-foreground/45"
+              }`}
           />
           <span className="animate-[fadeIn_0.2s_ease-out] truncate">Products</span>
           <ChevronRight
-            className={`ml-auto h-4 w-4 text-foreground/30 transition-transform duration-200 shrink-0 ${
-              productsOpen ? "rotate-90 text-primary" : ""
-            }`}
+            className={`ml-auto h-4 w-4 text-foreground/30 transition-transform duration-200 shrink-0 ${productsOpen ? "rotate-90 text-primary" : ""
+              }`}
           />
         </button>
 
@@ -176,14 +171,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative pl-9 pr-2 py-1 space-y-1 mt-1 animate-[fadeIn_0.15s_ease-out]">
             {/* Connecting line */}
             <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
-            
+
             <Link
               href="/admin/products"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
-                pathname === "/admin/products"
-                  ? "text-primary font-black"
-                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/products"
+                ? "text-primary font-black"
+                : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
               <span>Products</span>
@@ -191,11 +185,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <Link
               href="/admin/categories"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
-                pathname === "/admin/categories"
-                  ? "text-primary font-black"
-                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/categories"
+                ? "text-primary font-black"
+                : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
               <span>Product Categories</span>
@@ -215,33 +208,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <button
           type="button"
           onClick={() => setProductsOpen(!productsOpen)}
-          className={`w-full flex items-center rounded-lg text-xs font-bold transition-all gap-3 px-3 py-2.5 cursor-pointer ${
-            isChildActive
-              ? "bg-primary/5 text-primary"
-              : "text-foreground/75 hover:bg-surface"
-          }`}
+          className={`w-full flex items-center rounded-lg text-xs font-bold transition-all gap-3 px-3 py-2.5 cursor-pointer ${isChildActive
+            ? "bg-primary/5 text-primary"
+            : "text-foreground/75 hover:bg-surface"
+            }`}
         >
           <Package className="h-4 w-4 shrink-0 text-foreground/45" />
           <span>Products</span>
           <ChevronRight
-            className={`ml-auto h-3.5 w-3.5 text-foreground/30 transition-transform duration-200 shrink-0 ${
-              productsOpen ? "rotate-90 text-primary" : ""
-            }`}
+            className={`ml-auto h-3.5 w-3.5 text-foreground/30 transition-transform duration-200 shrink-0 ${productsOpen ? "rotate-90 text-primary" : ""
+              }`}
           />
         </button>
 
         {productsOpen && (
           <div className="relative pl-7 py-1 space-y-1 mt-1">
             <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
-            
+
             <Link
               href="/admin/products"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
-                pathname === "/admin/products"
-                  ? "text-primary bg-primary/5 font-black"
-                  : "text-foreground/60 hover:bg-surface"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/products"
+                ? "text-primary bg-primary/5 font-black"
+                : "text-foreground/60 hover:bg-surface"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary" : "bg-foreground/20"}`} />
               <span>Products</span>
@@ -250,11 +240,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               href="/admin/categories"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
-                pathname === "/admin/categories"
-                  ? "text-primary bg-primary/5 font-black"
-                  : "text-foreground/60 hover:bg-surface"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/categories"
+                ? "text-primary bg-primary/5 font-black"
+                : "text-foreground/60 hover:bg-surface"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary" : "bg-foreground/20"}`} />
               <span>Product Categories</span>
@@ -273,17 +262,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       return (
         <Link
           href="/admin/settings"
-          className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${
-            isChildActive
-              ? "bg-primary/10 text-primary"
-              : "text-foreground/75 hover:bg-surface hover:text-foreground"
-          }`}
+          className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${isChildActive
+            ? "bg-primary/10 text-primary"
+            : "text-foreground/75 hover:bg-surface hover:text-foreground"
+            }`}
           title="Settings (General, Menus & Security)"
         >
           <Settings
-            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-              isChildActive ? "text-primary" : "text-foreground/45"
-            }`}
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isChildActive ? "text-primary" : "text-foreground/45"
+              }`}
           />
         </Link>
       );
@@ -294,22 +281,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <button
           type="button"
           onClick={() => setSettingsOpen(!settingsOpen)}
-          className={`w-full flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 cursor-pointer ${
-            isChildActive
-              ? "bg-primary/5 text-primary"
-              : "text-foreground/75 hover:bg-surface hover:text-foreground"
-          }`}
+          className={`w-full flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 gap-3 px-4 py-3 cursor-pointer ${isChildActive
+            ? "bg-primary/5 text-primary"
+            : "text-foreground/75 hover:bg-surface hover:text-foreground"
+            }`}
         >
           <Settings
-            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-              isChildActive ? "text-primary" : "text-foreground/45"
-            }`}
+            className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isChildActive ? "text-primary" : "text-foreground/45"
+              }`}
           />
           <span className="animate-[fadeIn_0.2s_ease-out] truncate">Settings</span>
           <ChevronRight
-            className={`ml-auto h-4 w-4 text-foreground/30 transition-transform duration-200 shrink-0 ${
-              settingsOpen ? "rotate-90 text-primary" : ""
-            }`}
+            className={`ml-auto h-4 w-4 text-foreground/30 transition-transform duration-200 shrink-0 ${settingsOpen ? "rotate-90 text-primary" : ""
+              }`}
           />
         </button>
 
@@ -317,14 +301,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative pl-9 pr-2 py-1 space-y-1 mt-1 animate-[fadeIn_0.15s_ease-out]">
             {/* Connecting line */}
             <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
-            
+
             <Link
               href="/admin/settings"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
-                pathname === "/admin/settings"
-                  ? "text-primary font-black"
-                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/settings"
+                ? "text-primary font-black"
+                : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
               <span>General & Branding</span>
@@ -332,11 +315,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <Link
               href="/admin/menu"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
-                pathname === "/admin/menu"
-                  ? "text-primary font-black"
-                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/menu"
+                ? "text-primary font-black"
+                : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
               <span>Menus</span>
@@ -344,11 +326,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <Link
               href="/admin/security"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${
-                pathname === "/admin/security"
-                  ? "text-primary font-black"
-                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
-              }`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/security"
+                ? "text-primary font-black"
+                : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
               <span>Security</span>
@@ -368,33 +349,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <button
           type="button"
           onClick={() => setSettingsOpen(!settingsOpen)}
-          className={`w-full flex items-center rounded-lg text-xs font-bold transition-all gap-3 px-3 py-2.5 cursor-pointer ${
-            isChildActive
-              ? "bg-primary/5 text-primary"
-              : "text-foreground/75 hover:bg-surface"
-          }`}
+          className={`w-full flex items-center rounded-lg text-xs font-bold transition-all gap-3 px-3 py-2.5 cursor-pointer ${isChildActive
+            ? "bg-primary/5 text-primary"
+            : "text-foreground/75 hover:bg-surface"
+            }`}
         >
           <Settings className="h-4 w-4 shrink-0 text-foreground/45" />
           <span>Settings</span>
           <ChevronRight
-            className={`ml-auto h-3.5 w-3.5 text-foreground/30 transition-transform duration-200 shrink-0 ${
-              settingsOpen ? "rotate-90 text-primary" : ""
-            }`}
+            className={`ml-auto h-3.5 w-3.5 text-foreground/30 transition-transform duration-200 shrink-0 ${settingsOpen ? "rotate-90 text-primary" : ""
+              }`}
           />
         </button>
 
         {settingsOpen && (
           <div className="relative pl-7 py-1 space-y-1 mt-1">
             <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
-            
+
             <Link
               href="/admin/settings"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
-                pathname === "/admin/settings"
-                  ? "text-primary bg-primary/5 font-black"
-                  : "text-foreground/60 hover:bg-surface"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/settings"
+                ? "text-primary bg-primary/5 font-black"
+                : "text-foreground/60 hover:bg-surface"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary" : "bg-foreground/20"}`} />
               <span>General & Branding</span>
@@ -403,11 +381,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               href="/admin/menu"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
-                pathname === "/admin/menu"
-                  ? "text-primary bg-primary/5 font-black"
-                  : "text-foreground/60 hover:bg-surface"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/menu"
+                ? "text-primary bg-primary/5 font-black"
+                : "text-foreground/60 hover:bg-surface"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary" : "bg-foreground/20"}`} />
               <span>Menus</span>
@@ -416,11 +393,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               href="/admin/security"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${
-                pathname === "/admin/security"
-                  ? "text-primary bg-primary/5 font-black"
-                  : "text-foreground/60 hover:bg-surface"
-              }`}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/security"
+                ? "text-primary bg-primary/5 font-black"
+                : "text-foreground/60 hover:bg-surface"
+                }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary" : "bg-foreground/20"}`} />
               <span>Security</span>
@@ -485,18 +461,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={overviewItem.href}
                 href={overviewItem.href}
-                className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${
-                  isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
-                } ${isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-foreground/75 hover:bg-surface hover:text-foreground"
-                }`}
+                className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
+                  } ${isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-foreground/75 hover:bg-surface hover:text-foreground"
+                  }`}
                 title={isCollapsed ? overviewItem.name : undefined}
               >
                 <Icon
-                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-                    isActive ? "text-primary" : "text-foreground/45"
-                  }`}
+                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-primary" : "text-foreground/45"
+                    }`}
                 />
                 {!isCollapsed && (
                   <span className="animate-[fadeIn_0.2s_ease-out] truncate">{overviewItem.name}</span>
@@ -513,7 +487,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Remaining Sidebar Items */}
           {SIDEBAR_ITEMS.slice(1)
-            .filter((item) => item.href !== "/admin/templates" || role === "SUPER_ADMIN")
+            .filter((item) => (item.href !== "/admin/templates" && item.href !== "/admin/materials" && item.href !== "/admin/issues") || role === "SUPER_ADMIN")
             .map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -521,18 +495,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${
-                    isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
-                  } ${isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-foreground/75 hover:bg-surface hover:text-foreground"
-                  }`}
+                  className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
+                    } ${isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-foreground/75 hover:bg-surface hover:text-foreground"
+                    }`}
                   title={isCollapsed ? item.name : undefined}
                 >
                   <Icon
-                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${
-                      isActive ? "text-primary" : "text-foreground/45"
-                    }`}
+                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-primary" : "text-foreground/45"
+                      }`}
                   />
                   {!isCollapsed && (
                     <span className="animate-[fadeIn_0.2s_ease-out] truncate">{item.name}</span>
@@ -632,7 +604,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
               {/* Remaining Mobile Links */}
               {SIDEBAR_ITEMS.slice(1)
-                .filter((item) => item.href !== "/admin/templates" || role === "SUPER_ADMIN")
+                .filter((item) => (item.href !== "/admin/templates" && item.href !== "/admin/materials" && item.href !== "/admin/issues") || role === "SUPER_ADMIN")
                 .map((item) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon;

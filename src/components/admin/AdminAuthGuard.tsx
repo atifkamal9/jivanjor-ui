@@ -18,7 +18,13 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
         router.push("/admin/login");
       } else if (auth && isLogin) {
         router.push("/admin");
-      } else if (auth && pathname?.startsWith("/admin/templates") && getUserRole() !== "SUPER_ADMIN") {
+      } else if (
+        auth &&
+        (pathname?.startsWith("/admin/templates") ||
+         pathname?.startsWith("/admin/materials") ||
+         pathname?.startsWith("/admin/issues")) &&
+        getUserRole() !== "SUPER_ADMIN"
+      ) {
         router.push("/admin");
       } else {
         setLoading(false);
