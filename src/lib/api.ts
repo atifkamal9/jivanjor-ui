@@ -587,8 +587,14 @@ export const api = {
   },
 
   // PRODUCTS
-  getProducts: async (): Promise<Product[]> => {
-    const res = await client.get("/products");
+  getProducts: async (params?: { limit?: number; page?: number; categoryId?: string; search?: string }): Promise<Product[]> => {
+    const query = new URLSearchParams();
+    // Default to a high limit so all products are fetched (backend defaults to 10)
+    query.set("limit", String(params?.limit ?? 9999));
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.categoryId) query.set("categoryId", params.categoryId);
+    if (params?.search) query.set("search", params.search);
+    const res = await client.get(`/products?${query.toString()}`);
     const products = res.data?.data?.products || [];
     return Array.isArray(products) ? products.map(mapProductFromBackend) : [];
   },

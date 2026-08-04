@@ -42,7 +42,7 @@ export default function ProductsPage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterMaterial, setFilterMaterial] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // Dependent Category Dropdowns State
   const [selectedMainCategoryId, setSelectedMainCategoryId] = useState("");

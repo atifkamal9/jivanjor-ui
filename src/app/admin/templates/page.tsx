@@ -626,7 +626,7 @@ export default function TemplatesPage() {
   const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // Workspace View State
   const [isFormView, setIsFormView] = useState(false);
