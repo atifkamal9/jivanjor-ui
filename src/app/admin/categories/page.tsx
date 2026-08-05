@@ -816,7 +816,7 @@ export default function CategoriesPage() {
         categories={categories}
         onSave={async (row: ParsedRow) => {
           const latestCats = await api.getCategories();
-          
+
           let parentId = "";
           if (row.parent_category_name) {
             const parentCat = latestCats.find(
@@ -827,30 +827,45 @@ export default function CategoriesPage() {
             }
           }
 
-          const slug = (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+          const slug = row.slug?.trim() || (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
           const existingCat = latestCats.find(
-            (c) => c.name.toLowerCase() === (row.name || "").toLowerCase() || c.slug === slug
+            (c) => c.name.toLowerCase() === (row.name || "").toLowerCase() || c.slug.toLowerCase() === slug.toLowerCase()
           );
 
-          await api.saveCategory({
+          const savedCat = await api.saveCategory({
             id: existingCat?.id,
             name: row.name || "",
             slug,
             description: row.description || "",
             parent_category: parentId,
             icon: row.icon || "",
-            categoryTitle: "",
-            categoryDescription: "",
-            resourcesTitle: "",
-            resourcesDescription: "",
-            heroImage: "",
-            researchTitle: "",
-            researchDescription: "",
-            researchCtaText: "",
-            researchCtaLink: "",
-            researchImage1: "",
-            researchImage2: "",
+            categoryTitle: row.categoryTitle || "",
+            categoryDescription: row.categoryDescription || "",
+            resourcesTitle: row.resourcesTitle || "",
+            resourcesDescription: row.resourcesDescription || "",
+            heroImage: row.heroImage || "",
+            researchTitle: row.researchTitle || "",
+            researchDescription: row.researchDescription || "",
+            researchCtaText: row.researchCtaText || "",
+            researchCtaLink: row.researchCtaLink || "",
+            researchImage1: row.researchImage1 || "",
+            researchImage2: row.researchImage2 || "",
           });
+
+          // Save SEO metadata if SEO fields are present
+          if (row.meta_title || row.meta_description || row.canonical_url || row.seo_image) {
+            const latestSeos = await api.getSeoMetadata();
+            const matchedSeo = latestSeos.find((s) => s.page_type === "category" && s.page_id === savedCat.id);
+            await api.saveSeoMetadata({
+              id: matchedSeo?.id,
+              page_type: "category",
+              page_id: savedCat.id,
+              meta_title: row.meta_title || savedCat.name,
+              meta_description: row.meta_description || savedCat.description || "",
+              canonical_url: row.canonical_url || `https://jivanjor.com/categories?category=${savedCat.slug}`,
+              image: row.seo_image || undefined,
+            });
+          }
         }}
       />
     </AdminLayout>

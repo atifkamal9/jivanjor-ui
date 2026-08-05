@@ -77,6 +77,17 @@ export interface ParsedRow {
   parent_category_name?: string;
   parent_category?: string;
   icon?: string;
+  categoryTitle?: string;
+  categoryDescription?: string;
+  resourcesTitle?: string;
+  resourcesDescription?: string;
+  heroImage?: string;
+  researchTitle?: string;
+  researchDescription?: string;
+  researchCtaText?: string;
+  researchCtaLink?: string;
+  researchImage1?: string;
+  researchImage2?: string;
 
   // Internal
   _rowIndex: number;
@@ -134,9 +145,25 @@ const PRODUCT_TEMPLATE_HEADERS = [
 
 const CATEGORY_TEMPLATE_HEADERS = [
   "name",
-  "description",
   "parent_category_name",
+  "description",
+  "slug",
   "icon",
+  "categoryTitle",
+  "categoryDescription",
+  "resourcesTitle",
+  "resourcesDescription",
+  "heroImage",
+  "researchTitle",
+  "researchDescription",
+  "researchCtaText",
+  "researchCtaLink",
+  "researchImage1",
+  "researchImage2",
+  "meta_title",
+  "meta_description",
+  "canonical_url",
+  "seo_image",
 ];
 
 const PRODUCT_TEMPLATE_EXAMPLE = [
@@ -176,10 +203,26 @@ const PRODUCT_TEMPLATE_EXAMPLE = [
 ];
 
 const CATEGORY_TEMPLATE_EXAMPLE = [
+  "Water Resistant Adhesives",
   "Wood Adhesives",
-  "Adhesives for all wood bonding applications",
-  "",
-  "Layers",
+  "High-performance D3 water-resistant wood adhesives engineered for site rotation and durable bonding.",
+  "water-resistant-adhesives",
+  "Droplets",
+  "Water Resistant Wood Bonding Solutions",
+  "Explore superior moisture resistance technology designed for furniture and woodworking.",
+  "Technical Resources & Data",
+  "Access technical specifications, application guides, and testing documentation.",
+  "https://example.com/images/categories/water-resistant-hero.jpg",
+  "Advanced Moisture Barrier R&D",
+  "Our proprietary formula prevents swelling and joint weakness even under high humidity conditions.",
+  "Explore Technical Data",
+  "/resources",
+  "https://example.com/images/research-1.jpg",
+  "https://example.com/images/research-2.jpg",
+  "Water Resistant Wood Adhesives - Jivanjor",
+  "Discover Jivanjor water-resistant wood adhesives for high-humidity furniture and woodworking applications.",
+  "https://jivanjor.com/categories?category=water-resistant-adhesives",
+  "https://example.com/images/categories/water-resistant-seo.jpg",
 ];
 
 function downloadTemplate(entityType: "product" | "category") {
@@ -514,9 +557,27 @@ function parseExcel(
             result.seo_image = seoImage;
           } else {
             const name = getRowValue(row, ["name", "category_name", "category", "categoryname", "title"]);
+            const slug = getRowValue(row, ["slug", "url_slug", "category_slug"]);
             const description = getRowValue(row, ["description", "desc", "details"]);
             const parentName = getRowValue(row, ["parent_category_name", "parent_category", "parent", "parent_name", "parentcategoryname", "parentcategory"]);
             const icon = getRowValue(row, ["icon", "icon_name", "iconname"]);
+
+            const categoryTitle = cleanVal(getRowValue(row, ["categoryTitle", "category_title"]));
+            const categoryDescription = cleanVal(getRowValue(row, ["categoryDescription", "category_description"]));
+            const resourcesTitle = cleanVal(getRowValue(row, ["resourcesTitle", "resources_title"]));
+            const resourcesDescription = cleanVal(getRowValue(row, ["resourcesDescription", "resources_description"]));
+            const heroImage = cleanVal(getRowValue(row, ["heroImage", "hero_image"]));
+            const researchTitle = cleanVal(getRowValue(row, ["researchTitle", "research_title"]));
+            const researchDescription = cleanVal(getRowValue(row, ["researchDescription", "research_description"]));
+            const researchCtaText = cleanVal(getRowValue(row, ["researchCtaText", "research_cta_text"]));
+            const researchCtaLink = cleanVal(getRowValue(row, ["researchCtaLink", "research_cta_link"]));
+            const researchImage1 = cleanVal(getRowValue(row, ["researchImage1", "research_image_1"]));
+            const researchImage2 = cleanVal(getRowValue(row, ["researchImage2", "research_image_2"]));
+
+            const metaTitle = cleanVal(getRowValue(row, ["meta_title", "metatitle", "seo_title"]));
+            const metaDescription = cleanVal(getRowValue(row, ["meta_description", "metadescription", "seo_description"]));
+            const canonicalUrl = cleanVal(getRowValue(row, ["canonical_url", "canonicalurl", "seo_canonical"]));
+            const seoImage = cleanVal(getRowValue(row, ["seo_image", "seoimage", "social_image"]));
 
             if (!name) warnings.push("'name' is required");
 
@@ -531,10 +592,26 @@ function parseExcel(
               warnings.push(`Parent category "${parentName}" not found in database or file`);
 
             result.name = name;
+            result.slug = cleanVal(slug);
             result.description = description;
             result.parent_category_name = parentName;
             result.parent_category = matchedParentDb?.id || "";
             result.icon = icon;
+            result.categoryTitle = categoryTitle;
+            result.categoryDescription = categoryDescription;
+            result.resourcesTitle = resourcesTitle;
+            result.resourcesDescription = resourcesDescription;
+            result.heroImage = heroImage;
+            result.researchTitle = researchTitle;
+            result.researchDescription = researchDescription;
+            result.researchCtaText = researchCtaText;
+            result.researchCtaLink = researchCtaLink;
+            result.researchImage1 = researchImage1;
+            result.researchImage2 = researchImage2;
+            result.meta_title = metaTitle;
+            result.meta_description = metaDescription;
+            result.canonical_url = canonicalUrl;
+            result.seo_image = seoImage;
           }
 
           return result;
@@ -928,10 +1005,26 @@ export default function BulkUploadModal({
                           { col: "canonical_url", req: false, note: "Canonical URL link" },
                           { col: "seo_image", req: false, note: "Social sharing thumbnail image URL" },
                         ] : [
-                          { col: "name", req: true, note: "Category name" },
-                          { col: "description", req: false, note: "Plain text description" },
-                          { col: "parent_category_name", req: false, note: "Must match an existing top-level category name" },
-                          { col: "icon", req: false, note: "Lucide icon key e.g. Layers" },
+                          { col: "name", req: true, note: "Category/Sub-category name e.g. Water Resistant Adhesives" },
+                          { col: "parent_category_name", req: false, note: "Parent category name (leave blank for top-level main category, fill for sub-category)" },
+                          { col: "description", req: false, note: "Overview description of the category/sub-category" },
+                          { col: "slug", req: false, note: "URL slug (auto-generated from name if blank)" },
+                          { col: "icon", req: false, note: "Lucide icon key or name e.g. Droplets, Layers" },
+                          { col: "categoryTitle", req: false, note: "Hero section header title" },
+                          { col: "categoryDescription", req: false, note: "Hero section sub-description" },
+                          { col: "resourcesTitle", req: false, note: "Resources section header title" },
+                          { col: "resourcesDescription", req: false, note: "Resources section description" },
+                          { col: "heroImage", req: false, note: "Hero banner background image URL" },
+                          { col: "researchTitle", req: false, note: "Research & Development section title" },
+                          { col: "researchDescription", req: false, note: "R&D body description text" },
+                          { col: "researchCtaText", req: false, note: "R&D CTA button text e.g. Explore Tech Data" },
+                          { col: "researchCtaLink", req: false, note: "R&D CTA button link e.g. /resources" },
+                          { col: "researchImage1", req: false, note: "Research feature image 1 URL" },
+                          { col: "researchImage2", req: false, note: "Research feature image 2 URL" },
+                          { col: "meta_title", req: false, note: "SEO Meta Title" },
+                          { col: "meta_description", req: false, note: "SEO Meta Description" },
+                          { col: "canonical_url", req: false, note: "SEO Canonical URL link" },
+                          { col: "seo_image", req: false, note: "Social sharing thumbnail image URL" },
                         ];
                         return colDefs.map((r) => (
                           <tr key={r.col} className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20">
