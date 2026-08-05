@@ -366,7 +366,7 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Build dynamic product categories, respecting the admin-stored order from nav-products.subItems
+  // Build dynamic product categories, respecting admin-stored order from nav-products.subItems
   const dynamicProductCategories = (() => {
     if (dbCategories.length === 0) return productCategories;
 
@@ -389,7 +389,25 @@ export default function Navbar() {
     }
 
     return orderedMainCats.map((cat) => {
-      const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+      let subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+
+      // Apply stored sub-category order from description JSON if available
+      const storedEntry = storedOrder.find((s) => s.id === cat.id);
+      if (storedEntry?.description) {
+        try {
+          const parsed = JSON.parse(storedEntry.description);
+          const subOrderIds: string[] = parsed.subOrder || [];
+          if (subOrderIds.length > 0) {
+            const subOrderMap = new Map(subOrderIds.map((id, i) => [id, i]));
+            subCats = [...subCats].sort((a, b) => {
+              const oa = subOrderMap.has(a.id) ? subOrderMap.get(a.id)! : 9999;
+              const ob = subOrderMap.has(b.id) ? subOrderMap.get(b.id)! : 9999;
+              return oa - ob;
+            });
+          }
+        } catch { /* ignore */ }
+      }
+
       return {
         name: cat.name,
         products: subCats.map((sub) => ({

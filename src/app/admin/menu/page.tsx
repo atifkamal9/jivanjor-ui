@@ -65,6 +65,10 @@ export default function AdminMenuPage() {
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   // Dragged product category index (for the Products static menu reorder)
   const [draggedProductCatIndex, setDraggedProductCatIndex] = useState<number | null>(null);
+  // Expanded product main-cats (to show sub-cat reorder)
+  const [expandedProductCats, setExpandedProductCats] = useState<Record<string, boolean>>({});
+  // Dragged sub-category info within a main category
+  const [draggedProductSubCatInfo, setDraggedProductSubCatInfo] = useState<{ mainCatId: string; subIdx: number } | null>(null);
 
   // Drag & drop state for Header main items
   const [draggedMainIndex, setDraggedMainIndex] = useState<number | null>(null);
@@ -752,13 +756,20 @@ export default function AdminMenuPage() {
     return mainCats;
   };
 
-  // Save the product category order back into nav-products.subItems
-  const saveProductCategoryOrder = async (orderedCats: Category[]) => {
-    const newItems = [...headerItems];
+  // Save the product category order back into nav-products.subItems,
+  // preserving any existing sub-category ordering stored in description.
+  const saveProductCategoryOrder = async (orderedCats: Category[], currentHeaderItems?: typeof headerItems) => {
+    const base = currentHeaderItems ?? headerItems;
+    const newItems = [...base];
     const productsIdx = newItems.findIndex(
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );
     if (productsIdx === -1) return;
+
+    // Preserve existing sub-order descriptions
+    const existingSubItems = newItems[productsIdx].subItems || [];
+    const existingDescMap = new Map(existingSubItems.map((s) => [s.id, s.description || ""]));
+
     newItems[productsIdx] = {
       ...newItems[productsIdx],
       subItems: orderedCats.map((cat, idx) => ({
@@ -767,6 +778,7 @@ export default function AdminMenuPage() {
         type: "page" as const,
         url: `/categories/${cat.slug}`,
         order: idx + 1,
+        description: existingDescMap.get(cat.id) || "",
       })),
     };
     setHeaderItems(newItems);
@@ -824,6 +836,103 @@ export default function AdminMenuPage() {
     reordered[targetIdx] = temp;
     await saveProductCategoryOrder(reordered);
     showToast("Product category order updated", "success");
+  };
+
+  // ── PRODUCT SUB-CATEGORY ORDER HANDLERS ────────────────────────
+  // Returns the ordered list of sub-categories for a given main category.
+  // Priority: stored sub-order in description JSON → API order.
+  const getOrderedSubCats = (mainCatId: string): Category[] => {
+    const rawSubCats = allCategories.filter((c) => c.parent_category === mainCatId);
+    const productsItem = headerItems.find(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    const storedEntry = (productsItem?.subItems || []).find((s) => s.id === mainCatId);
+    if (storedEntry?.description) {
+      try {
+        const parsed = JSON.parse(storedEntry.description);
+        const subOrderIds: string[] = parsed.subOrder || [];
+        if (subOrderIds.length > 0) {
+          const orderMap = new Map(subOrderIds.map((id, i) => [id, i]));
+          return [...rawSubCats].sort((a, b) => {
+            const oa = orderMap.has(a.id) ? orderMap.get(a.id)! : 9999;
+            const ob = orderMap.has(b.id) ? orderMap.get(b.id)! : 9999;
+            return oa - ob;
+          });
+        }
+      } catch { /* ignore parse errors */ }
+    }
+    return rawSubCats;
+  };
+
+  // Persist sub-category ordering into the description field of the matching nav-products subItem.
+  const saveProductSubCategoryOrder = async (mainCatId: string, orderedSubCats: Category[]) => {
+    const newItems = [...headerItems];
+    const productsIdx = newItems.findIndex(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    if (productsIdx === -1) return;
+
+    const existingSubItems = newItems[productsIdx].subItems || [];
+    const updatedSubItems = existingSubItems.map((entry) => {
+      if (entry.id !== mainCatId) return entry;
+      const subOrderDesc = JSON.stringify({ subOrder: orderedSubCats.map((c) => c.id) });
+      return { ...entry, description: subOrderDesc };
+    });
+
+    newItems[productsIdx] = { ...newItems[productsIdx], subItems: updatedSubItems };
+    setHeaderItems(newItems);
+    await saveHeaderDraft(newItems);
+  };
+
+  const handleProductSubCatDragStart = (e: React.DragEvent, mainCatId: string, subIdx: number) => {
+    e.stopPropagation();
+    setDraggedProductSubCatInfo({ mainCatId, subIdx });
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleProductSubCatDragOver = (e: React.DragEvent, mainCatId: string, subIdx: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!draggedProductSubCatInfo || draggedProductSubCatInfo.mainCatId !== mainCatId || draggedProductSubCatInfo.subIdx === subIdx) return;
+
+    const ordered = getOrderedSubCats(mainCatId);
+    const reordered = [...ordered];
+    const dragged = reordered[draggedProductSubCatInfo.subIdx];
+    reordered.splice(draggedProductSubCatInfo.subIdx, 1);
+    reordered.splice(subIdx, 0, dragged);
+    setDraggedProductSubCatInfo({ mainCatId, subIdx });
+
+    // Immediately reflect in state
+    const newItems = [...headerItems];
+    const productsIdx = newItems.findIndex(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    if (productsIdx !== -1) {
+      const existingSubItems = newItems[productsIdx].subItems || [];
+      const updatedSubItems = existingSubItems.map((entry) => {
+        if (entry.id !== mainCatId) return entry;
+        return { ...entry, description: JSON.stringify({ subOrder: reordered.map((c) => c.id) }) };
+      });
+      newItems[productsIdx] = { ...newItems[productsIdx], subItems: updatedSubItems };
+      setHeaderItems(newItems);
+    }
+  };
+
+  const handleProductSubCatDragEnd = async () => {
+    setDraggedProductSubCatInfo(null);
+    await saveHeaderDraft(headerItems);
+  };
+
+  const moveProductSubCat = async (mainCatId: string, subIdx: number, direction: "up" | "down") => {
+    const ordered = getOrderedSubCats(mainCatId);
+    const targetIdx = direction === "up" ? subIdx - 1 : subIdx + 1;
+    if (targetIdx < 0 || targetIdx >= ordered.length) return;
+    const reordered = [...ordered];
+    const temp = reordered[subIdx];
+    reordered[subIdx] = reordered[targetIdx];
+    reordered[targetIdx] = temp;
+    await saveProductSubCategoryOrder(mainCatId, reordered);
+    showToast("Sub-category order updated", "success");
   };
 
   // ── FOOTER MODAL HANDLERS ──────────────────────────────────────────────
@@ -1218,14 +1327,9 @@ export default function AdminMenuPage() {
                         <div className="p-4 bg-surface/40 border-t border-border/40 space-y-2">
                           {mainItem.isStatic ? (
                             <>
-                              <div className="flex items-center gap-2 mb-3">
-                                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                                  <Layers className="h-4 w-4" />
-                                </div>
-                                <div>
-                                  <p className="text-xs font-black text-foreground">Product Category Order</p>
-                                  <p className="text-[10px] text-foreground/55">Drag & drop or use arrows to reorder main categories in the mega menu. Sub-products within each category follow API order.</p>
-                                </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <p className="text-xs font-black text-foreground">Product Category Order</p>
+                                <p className="text-[10px] text-foreground/55 ml-1">· Reorder main categories and their sub-categories for the mega menu.</p>
                               </div>
                               {(() => {
                                 const orderedMainCats = getProductsMenuMainCats();
@@ -1239,56 +1343,112 @@ export default function AdminMenuPage() {
                                 return (
                                   <div className="space-y-2">
                                     {orderedMainCats.map((cat, catIdx) => {
-                                      const subCats = allCategories.filter((c) => c.parent_category === cat.id);
+                                      const orderedSubCats = getOrderedSubCats(cat.id);
+                                      const isSubExpanded = !!expandedProductCats[cat.id];
                                       return (
                                         <div
                                           key={cat.id}
-                                          draggable
-                                          onDragStart={(e) => handleProductCatDragStart(e, catIdx)}
-                                          onDragOver={(e) => handleProductCatDragOver(e, catIdx)}
-                                          onDragEnd={handleProductCatDragEnd}
-                                          className={`flex items-center justify-between p-3 rounded-xl bg-background border transition-all ${
+                                          className={`rounded-xl bg-background border transition-all ${
                                             draggedProductCatIndex === catIdx
                                               ? "border-primary shadow-md ring-2 ring-primary/20 opacity-70"
-                                              : "border-border hover:border-primary/40"
+                                              : "border-border"
                                           }`}
                                         >
-                                          <div className="flex items-center gap-3 min-w-0">
-                                            <div className="cursor-grab active:cursor-grabbing p-1 text-foreground/40 shrink-0">
-                                              <GripVertical className="h-4 w-4" />
-                                            </div>
-                                            <div className="min-w-0">
-                                              <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-foreground truncate">{cat.name}</span>
-                                                <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
-                                                  {subCats.length} sub-cats
-                                                </span>
+                                          {/* Main category row */}
+                                          <div
+                                            draggable
+                                            onDragStart={(e) => handleProductCatDragStart(e, catIdx)}
+                                            onDragOver={(e) => handleProductCatDragOver(e, catIdx)}
+                                            onDragEnd={handleProductCatDragEnd}
+                                            className="flex items-center justify-between p-3"
+                                          >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                              <div className="cursor-grab active:cursor-grabbing p-1 text-foreground/40 shrink-0">
+                                                <GripVertical className="h-4 w-4" />
                                               </div>
-                                              {subCats.length > 0 && (
-                                                <span className="text-[10px] text-foreground/50 block truncate">
-                                                  {subCats.slice(0, 3).map((s) => s.name).join(" · ")}{subCats.length > 3 ? " …" : ""}
-                                                </span>
+                                              <div className="min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                  <span className="text-xs font-bold text-foreground truncate">{cat.name}</span>
+                                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
+                                                    {orderedSubCats.length} sub-cats
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="flex items-center gap-1 shrink-0 ml-2">
+                                              <button
+                                                onClick={() => moveProductCat(catIdx, "up")}
+                                                disabled={catIdx === 0}
+                                                className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                                title="Move category up"
+                                              >
+                                                <ArrowUp className="h-3 w-3" />
+                                              </button>
+                                              <button
+                                                onClick={() => moveProductCat(catIdx, "down")}
+                                                disabled={catIdx === orderedMainCats.length - 1}
+                                                className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                                title="Move category down"
+                                              >
+                                                <ArrowDown className="h-3 w-3" />
+                                              </button>
+                                              {orderedSubCats.length > 0 && (
+                                                <button
+                                                  onClick={() => setExpandedProductCats((prev) => ({ ...prev, [cat.id]: !prev[cat.id] }))}
+                                                  className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface cursor-pointer ml-0.5"
+                                                  title={isSubExpanded ? "Collapse sub-categories" : "Reorder sub-categories"}
+                                                >
+                                                  {isSubExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                                                </button>
                                               )}
                                             </div>
                                           </div>
-                                          <div className="flex items-center gap-1 shrink-0 ml-2">
-                                            <button
-                                              onClick={() => moveProductCat(catIdx, "up")}
-                                              disabled={catIdx === 0}
-                                              className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
-                                              title="Move up"
-                                            >
-                                              <ArrowUp className="h-3 w-3" />
-                                            </button>
-                                            <button
-                                              onClick={() => moveProductCat(catIdx, "down")}
-                                              disabled={catIdx === orderedMainCats.length - 1}
-                                              className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
-                                              title="Move down"
-                                            >
-                                              <ArrowDown className="h-3 w-3" />
-                                            </button>
-                                          </div>
+
+                                          {/* Sub-category reorder panel */}
+                                          {isSubExpanded && orderedSubCats.length > 0 && (
+                                            <div className="border-t border-border/50 bg-surface/50 px-3 pb-3 pt-2 space-y-1.5 rounded-b-xl">
+                                              <p className="text-[10px] font-black text-foreground/50 uppercase tracking-wider mb-2 pl-1">Sub-categories in &ldquo;{cat.name}&rdquo;</p>
+                                              {orderedSubCats.map((sub, subIdx) => (
+                                                <div
+                                                  key={sub.id}
+                                                  draggable
+                                                  onDragStart={(e) => handleProductSubCatDragStart(e, cat.id, subIdx)}
+                                                  onDragOver={(e) => handleProductSubCatDragOver(e, cat.id, subIdx)}
+                                                  onDragEnd={handleProductSubCatDragEnd}
+                                                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg bg-background border transition-all ${
+                                                    draggedProductSubCatInfo?.mainCatId === cat.id && draggedProductSubCatInfo?.subIdx === subIdx
+                                                      ? "border-primary shadow ring-1 ring-primary/20 opacity-70"
+                                                      : "border-border hover:border-primary/30"
+                                                  }`}
+                                                >
+                                                  <div className="flex items-center gap-2 min-w-0">
+                                                    <div className="cursor-grab active:cursor-grabbing p-0.5 text-foreground/30 shrink-0">
+                                                      <GripVertical className="h-3.5 w-3.5" />
+                                                    </div>
+                                                    <span className="text-[11px] font-semibold text-foreground truncate">{sub.name}</span>
+                                                  </div>
+                                                  <div className="flex items-center gap-1 shrink-0 ml-2">
+                                                    <button
+                                                      onClick={() => moveProductSubCat(cat.id, subIdx, "up")}
+                                                      disabled={subIdx === 0}
+                                                      className="p-0.5 rounded border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                                      title="Move sub-category up"
+                                                    >
+                                                      <ArrowUp className="h-2.5 w-2.5" />
+                                                    </button>
+                                                    <button
+                                                      onClick={() => moveProductSubCat(cat.id, subIdx, "down")}
+                                                      disabled={subIdx === orderedSubCats.length - 1}
+                                                      className="p-0.5 rounded border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                                      title="Move sub-category down"
+                                                    >
+                                                      <ArrowDown className="h-2.5 w-2.5" />
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
                                         </div>
                                       );
                                     })}
