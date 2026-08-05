@@ -366,22 +366,42 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const dynamicProductCategories = dbCategories.length > 0
-    ? dbCategories
-      .filter((cat) => !cat.parent_category)
-      .map((cat) => {
-        const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
-        return {
-          name: cat.name,
-          products: subCats.map((sub) => ({
-            name: sub.name,
-            image: "/images/Watershield.png",
-            bgColor: "bg-[#0083CB]"
-          })),
-          categoryImage: "/images/mega-menu.png"
-        };
-      })
-    : productCategories;
+  // Build dynamic product categories, respecting the admin-stored order from nav-products.subItems
+  const dynamicProductCategories = (() => {
+    if (dbCategories.length === 0) return productCategories;
+
+    const mainCats = dbCategories.filter((cat) => !cat.parent_category);
+
+    // Check if there's a stored order in the published menu's nav-products item
+    const productsMenuItem = publishedMenu.find(
+      (m) => m.isStatic || m.id === "nav-products" || m.title.toLowerCase() === "products"
+    );
+    const storedOrder = productsMenuItem?.subItems || [];
+
+    let orderedMainCats = mainCats;
+    if (storedOrder.length > 0) {
+      const orderMap = new Map(storedOrder.map((s) => [s.id, s.order]));
+      orderedMainCats = [...mainCats].sort((a, b) => {
+        const oa = orderMap.get(a.id) ?? 9999;
+        const ob = orderMap.get(b.id) ?? 9999;
+        return oa - ob;
+      });
+    }
+
+    return orderedMainCats.map((cat) => {
+      const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+      return {
+        name: cat.name,
+        products: subCats.map((sub) => ({
+          name: sub.name,
+          slug: sub.slug,
+          image: "/images/Watershield.png",
+          bgColor: "bg-[#0083CB]"
+        })),
+        categoryImage: "/images/mega-menu.png"
+      };
+    });
+  })();
 
   const activeCategoryData =
     dynamicProductCategories.find((c) => c.name === activeCategory) ||
@@ -540,7 +560,7 @@ export default function Navbar() {
               return (
                 <div className="flex">
                   {/* Left Column: Top-level Category List */}
-                  <div className="flex flex-col min-w-75 p-6 bg-surface">
+                  <div className="flex flex-col min-w-75 p-6 pb-12 bg-surface">
                     {dynamicProductCategories.map((cat) => (
                       <button
                         key={cat.name}
@@ -558,7 +578,7 @@ export default function Navbar() {
                   </div>
 
                   {/* Middle Column: Sub-products list */}
-                  <div className="flex flex-col flex-1 p-8">
+                  <div className="flex flex-col flex-1 p-8 pb-12">
                     {activeCategoryData.products.map((prod: any) => (
                       <Link
                         href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
@@ -598,14 +618,14 @@ export default function Navbar() {
             const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
             const subItems = isKnowledgeNav
               ? dynamicKnowledgeItems.map((item, idx) => ({
-                  id: `sub-know-${idx}`,
-                  title: item.name,
-                  type: "page",
-                  url: item.link,
-                  order: item.order ?? (idx + 1),
-                  description: undefined,
-                  target: undefined,
-                })).sort((a, b) => (a.order || 0) - (b.order || 0))
+                id: `sub-know-${idx}`,
+                title: item.name,
+                type: "page",
+                url: item.link,
+                order: item.order ?? (idx + 1),
+                description: undefined,
+                target: undefined,
+              })).sort((a, b) => (a.order || 0) - (b.order || 0))
               : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
 
             const fallbackImage =

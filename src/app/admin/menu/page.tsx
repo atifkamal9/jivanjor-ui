@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api } from "@/lib/api";
+import { api, Category } from "@/lib/api";
 import {
   MenuItem,
   SubMenuItem,
@@ -60,6 +60,11 @@ export default function AdminMenuPage() {
 
   // Dynamic pages for page selector dropdown
   const [availablePages, setAvailablePages] = useState<{ title: string; slug: string }[]>([]);
+
+  // Product mega menu categories (for ordering)
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
+  // Dragged product category index (for the Products static menu reorder)
+  const [draggedProductCatIndex, setDraggedProductCatIndex] = useState<number | null>(null);
 
   // Drag & drop state for Header main items
   const [draggedMainIndex, setDraggedMainIndex] = useState<number | null>(null);
@@ -139,13 +144,16 @@ export default function AdminMenuPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [headerRes, footerRes, pagesRes, blogTemplateRes, blogPostsRes] = await Promise.all([
+      const [headerRes, footerRes, pagesRes, blogTemplateRes, blogPostsRes, categoriesRes] = await Promise.all([
         api.getHeaderMenu(),
         api.getFooterMenu(),
         api.getPages().catch(() => []),
         api.getActiveTemplateForPage("blog").catch(() => null),
         api.getBlogPosts().catch(() => []),
+        api.getCategories().catch(() => [] as Category[]),
       ]);
+
+      setAllCategories(categoriesRes);
 
       let templateCats: string[] = [];
       const listSection = (blogTemplateRes as any)?.rawSections?.list || (blogTemplateRes as any)?.sections?.find((s: any) => s.type === "list" || s.id === "list");
@@ -723,6 +731,101 @@ export default function AdminMenuPage() {
     showToast("Sub-item deleted", "success");
   };
 
+  // ── PRODUCTS MEGA MENU ORDER HANDLERS ──────────────────────────────────
+  // Returns the ordered list of main categories for the Products mega menu.
+  // Priority: stored order in nav-products.subItems → API order.
+  const getProductsMenuMainCats = (): Category[] => {
+    const mainCats = allCategories.filter((c) => !c.parent_category);
+    const productsItem = headerItems.find(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    const storedOrder = productsItem?.subItems || [];
+    if (storedOrder.length > 0) {
+      // Sort main cats according to stored order
+      const orderMap = new Map(storedOrder.map((s) => [s.id, s.order]));
+      return [...mainCats].sort((a, b) => {
+        const oa = orderMap.get(a.id) ?? 9999;
+        const ob = orderMap.get(b.id) ?? 9999;
+        return oa - ob;
+      });
+    }
+    return mainCats;
+  };
+
+  // Save the product category order back into nav-products.subItems
+  const saveProductCategoryOrder = async (orderedCats: Category[]) => {
+    const newItems = [...headerItems];
+    const productsIdx = newItems.findIndex(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    if (productsIdx === -1) return;
+    newItems[productsIdx] = {
+      ...newItems[productsIdx],
+      subItems: orderedCats.map((cat, idx) => ({
+        id: cat.id,
+        title: cat.name,
+        type: "page" as const,
+        url: `/categories/${cat.slug}`,
+        order: idx + 1,
+      })),
+    };
+    setHeaderItems(newItems);
+    await saveHeaderDraft(newItems);
+  };
+
+  const handleProductCatDragStart = (e: React.DragEvent, index: number) => {
+    e.stopPropagation();
+    setDraggedProductCatIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleProductCatDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (draggedProductCatIndex === null || draggedProductCatIndex === index) return;
+    const orderedCats = getProductsMenuMainCats();
+    const reordered = [...orderedCats];
+    const draggedCat = reordered[draggedProductCatIndex];
+    reordered.splice(draggedProductCatIndex, 1);
+    reordered.splice(index, 0, draggedCat);
+    setDraggedProductCatIndex(index);
+    // Immediately reflect in header state
+    const newItems = [...headerItems];
+    const productsIdx = newItems.findIndex(
+      (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+    );
+    if (productsIdx !== -1) {
+      newItems[productsIdx] = {
+        ...newItems[productsIdx],
+        subItems: reordered.map((cat, idx) => ({
+          id: cat.id,
+          title: cat.name,
+          type: "page" as const,
+          url: `/categories/${cat.slug}`,
+          order: idx + 1,
+        })),
+      };
+      setHeaderItems(newItems);
+    }
+  };
+
+  const handleProductCatDragEnd = async () => {
+    setDraggedProductCatIndex(null);
+    await saveHeaderDraft(headerItems);
+  };
+
+  const moveProductCat = async (index: number, direction: "up" | "down") => {
+    const orderedCats = getProductsMenuMainCats();
+    const targetIdx = direction === "up" ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= orderedCats.length) return;
+    const reordered = [...orderedCats];
+    const temp = reordered[index];
+    reordered[index] = reordered[targetIdx];
+    reordered[targetIdx] = temp;
+    await saveProductCategoryOrder(reordered);
+    showToast("Product category order updated", "success");
+  };
+
   // ── FOOTER MODAL HANDLERS ──────────────────────────────────────────────
   const openAddFooterSecModal = () => {
     setEditingFooterSecIdx(null);
@@ -979,7 +1082,7 @@ export default function AdminMenuPage() {
                     <strong>Mega Menu Titles:</strong> Main menu items of type <code>menu</code> do NOT navigate to any URL when clicked. They function purely as dropdown triggers.
                   </li>
                   <li>
-                    <strong>Static Products Menu:</strong> The <code>Products</code> main item position can be re-ordered, but sub-items under Product are automatically generated from Product Categories.
+                    <strong>Static Products Menu:</strong> The <code>Products</code> main item position can be re-ordered, and now you can also <strong>reorder the main product categories</strong> that appear in the mega menu by expanding the Products item and dragging/using the arrow buttons.
                   </li>
                 </ul>
               </div>
@@ -1114,9 +1217,85 @@ export default function AdminMenuPage() {
                       {isMega && isExpanded && (
                         <div className="p-4 bg-surface/40 border-t border-border/40 space-y-2">
                           {mainItem.isStatic ? (
-                            <div className="p-3 bg-background/60 rounded-xl border border-dashed border-border text-center text-xs text-foreground/60">
-                              Product menu sub-items are static categories.
-                            </div>
+                            <>
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                                  <Layers className="h-4 w-4" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-black text-foreground">Product Category Order</p>
+                                  <p className="text-[10px] text-foreground/55">Drag & drop or use arrows to reorder main categories in the mega menu. Sub-products within each category follow API order.</p>
+                                </div>
+                              </div>
+                              {(() => {
+                                const orderedMainCats = getProductsMenuMainCats();
+                                if (orderedMainCats.length === 0) {
+                                  return (
+                                    <div className="p-3 bg-background/60 rounded-xl border border-dashed border-border text-center text-xs text-foreground/50">
+                                      No product categories found. Add categories first from the Products section.
+                                    </div>
+                                  );
+                                }
+                                return (
+                                  <div className="space-y-2">
+                                    {orderedMainCats.map((cat, catIdx) => {
+                                      const subCats = allCategories.filter((c) => c.parent_category === cat.id);
+                                      return (
+                                        <div
+                                          key={cat.id}
+                                          draggable
+                                          onDragStart={(e) => handleProductCatDragStart(e, catIdx)}
+                                          onDragOver={(e) => handleProductCatDragOver(e, catIdx)}
+                                          onDragEnd={handleProductCatDragEnd}
+                                          className={`flex items-center justify-between p-3 rounded-xl bg-background border transition-all ${
+                                            draggedProductCatIndex === catIdx
+                                              ? "border-primary shadow-md ring-2 ring-primary/20 opacity-70"
+                                              : "border-border hover:border-primary/40"
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-3 min-w-0">
+                                            <div className="cursor-grab active:cursor-grabbing p-1 text-foreground/40 shrink-0">
+                                              <GripVertical className="h-4 w-4" />
+                                            </div>
+                                            <div className="min-w-0">
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-foreground truncate">{cat.name}</span>
+                                                <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
+                                                  {subCats.length} sub-cats
+                                                </span>
+                                              </div>
+                                              {subCats.length > 0 && (
+                                                <span className="text-[10px] text-foreground/50 block truncate">
+                                                  {subCats.slice(0, 3).map((s) => s.name).join(" · ")}{subCats.length > 3 ? " …" : ""}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center gap-1 shrink-0 ml-2">
+                                            <button
+                                              onClick={() => moveProductCat(catIdx, "up")}
+                                              disabled={catIdx === 0}
+                                              className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                              title="Move up"
+                                            >
+                                              <ArrowUp className="h-3 w-3" />
+                                            </button>
+                                            <button
+                                              onClick={() => moveProductCat(catIdx, "down")}
+                                              disabled={catIdx === orderedMainCats.length - 1}
+                                              className="p-1 rounded-md border border-border text-foreground/60 hover:bg-surface disabled:opacity-30 cursor-pointer"
+                                              title="Move down"
+                                            >
+                                              <ArrowDown className="h-3 w-3" />
+                                            </button>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })()}
+                            </>
                           ) : subItems.length === 0 ? (
                             <div className="p-3 bg-background/60 rounded-xl border border-dashed border-border text-center text-xs text-foreground/50">
                               No sub-items added yet.
