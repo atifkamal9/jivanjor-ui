@@ -266,6 +266,13 @@ export default function ProductsPage() {
     const rawCatIds = product.category_ids || product.categoryIds || [];
     const mergedCatIds = Array.from(new Set([product.category_id, ...rawCatIds])).filter(Boolean);
 
+    const resolvedRelatedIds = (product.relatedProducts || []).map((rel) => {
+      const matched = products.find(
+        (p) => p.id === rel || p.name.toLowerCase() === rel.toLowerCase() || p.slug.toLowerCase() === rel.toLowerCase()
+      );
+      return matched ? matched.id : rel;
+    });
+
     setFormData({
       name: product.name,
       slug: product.slug,
@@ -287,7 +294,7 @@ export default function ProductsPage() {
       videoUrl: product.videoUrl || "",
       videoThumbnail: product.videoThumbnail || "",
       faqs: product.faqs || [],
-      relatedProducts: product.relatedProducts || [],
+      relatedProducts: resolvedRelatedIds,
       techSpecsDescription: product.techSpecsDescription || "",
       appsTitle: product.appsTitle || "",
       appsDescription: product.appsDescription || "",
@@ -356,6 +363,13 @@ export default function ProductsPage() {
     const rawCatIds = product.category_ids || product.categoryIds || [];
     const mergedCatIds = Array.from(new Set([product.category_id, ...rawCatIds])).filter(Boolean);
 
+    const resolvedRelatedIds = (product.relatedProducts || []).map((rel) => {
+      const matched = products.find(
+        (p) => p.id === rel || p.name.toLowerCase() === rel.toLowerCase() || p.slug.toLowerCase() === rel.toLowerCase()
+      );
+      return matched ? matched.id : rel;
+    });
+
     setFormData({
       name: duplicateName,
       slug: duplicateSlug,
@@ -377,7 +391,7 @@ export default function ProductsPage() {
       videoUrl: product.videoUrl || "",
       videoThumbnail: product.videoThumbnail || "",
       faqs: product.faqs || [],
-      relatedProducts: product.relatedProducts || [],
+      relatedProducts: resolvedRelatedIds,
       techSpecsDescription: product.techSpecsDescription || "",
       appsTitle: product.appsTitle || "",
       appsDescription: product.appsDescription || "",
@@ -1589,22 +1603,39 @@ export default function ProductsPage() {
                               </div>
                               <div>
                                 <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">USP Icon Name</label>
-                                <select
-                                  value={usp.icon}
-                                  onChange={(e) => setFormData(prev => {
-                                    const list = [...prev.usps];
-                                    list[idx].icon = e.target.value;
-                                    return { ...prev, usps: list };
-                                  })}
-                                  className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 cursor-pointer"
-                                >
-                                  <option value="Cycle-arrow.svg">Cycle Arrow (Rotate)</option>
-                                  <option value="Texture.svg">Texture (Spreadability)</option>
-                                  <option value="Asterisk.svg">Asterisk (Safety/Non-toxic)</option>
-                                  <option value="Circles-seven.svg">Circles Seven (Clean Finish)</option>
-                                  <option value="Star.svg">Star (Premium)</option>
-                                  <option value="Shield.svg">Shield (Water Resistance)</option>
-                                </select>
+                                <div className="flex items-center gap-2">
+                                  <select
+                                    value={usp.icon}
+                                    onChange={(e) => setFormData(prev => {
+                                      const list = [...prev.usps];
+                                      list[idx].icon = e.target.value;
+                                      return { ...prev, usps: list };
+                                    })}
+                                    className="flex-1 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 cursor-pointer"
+                                  >
+                                    <option value="Cycle-arrow.svg">Cycle Arrow (Rotate)</option>
+                                    <option value="Texture.svg">Texture (Spreadability)</option>
+                                    <option value="Asterisk.svg">Asterisk (Safety/Non-toxic)</option>
+                                    <option value="Circles-seven.svg">Circles Seven (Clean Finish)</option>
+                                    <option value="Star.svg">Star (Premium)</option>
+                                    <option value="Shield.svg">Shield (Water Resistance)</option>
+                                    <option value="badge.svg">Shield Badge</option>
+                                    <option value="image 18.svg">Teal Water Drop (image 18)</option>
+                                    <option value="image 19.svg">Teal Timer Clock (image 19)</option>
+                                    <option value="image 20.svg">Teal Bubbles (image 20)</option>
+                                  </select>
+                                  <div
+                                    className="flex items-center justify-center p-2 w-9 h-9 rounded-lg shrink-0 border border-black/5"
+                                    style={{ backgroundColor: `${formData.themeColor}` }}
+                                    title="Icon Preview"
+                                  >
+                                    <img
+                                      src={`/icons/${usp.icon}`}
+                                      alt="icon preview"
+                                      className="w-4.5 h-4.5 object-contain"
+                                    />
+                                  </div>
+                                </div>
                               </div>
                             </div>
                             <div>
@@ -1990,16 +2021,24 @@ export default function ProductsPage() {
             if (matchedMat) matId = matchedMat.id;
           }
 
-          const slug = (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
-          const existingProd = latestProds.find(
-            (p) => p.name.toLowerCase() === (row.name || "").toLowerCase() || p.slug === slug
-          );
+          // Match additional categories
+          const extraCatIds: string[] = [];
+          if (row.categories && row.categories.length > 0) {
+            for (const catName of row.categories) {
+              const matched = latestCats.find((c) => c.name.toLowerCase() === catName.toLowerCase());
+              if (matched) extraCatIds.push(matched.id);
+            }
+          }
+          const finalCatIds = Array.from(new Set([catId, ...extraCatIds])).filter(Boolean) as string[];
 
+          // Default overview bullets fallback if none provided
           const defaultOverviewBullets = [
             { text: "Water Resistant", icon: "image 18.svg" },
             { text: "Super Fast Setting - 1 Hour", icon: "image 19.svg" },
             { text: "Anti-Bubble Technology", icon: "image 20.svg" },
           ];
+
+          // Default tech specs fallback if none provided
           const defaultTechSpecs = [
             { key: "Appearance", value: "Milk White" },
             { key: "Solids", value: "50-53%" },
@@ -2007,40 +2046,79 @@ export default function ProductsPage() {
             { key: "Coverage", value: "60-70 Sqft/Kg" },
           ];
 
-          await api.saveProduct({
+          // Match related products (names/slugs to Product IDs)
+          const relatedProductIds: string[] = [];
+          if (row.relatedProducts && row.relatedProducts.length > 0) {
+            for (const relItem of row.relatedProducts) {
+              const cleanItem = relItem.trim().toLowerCase();
+              if (!cleanItem) continue;
+              const matched = latestProds.find(
+                (p) =>
+                  p.name.toLowerCase() === cleanItem ||
+                  p.slug.toLowerCase() === cleanItem ||
+                  p.id === relItem
+              );
+              if (matched) {
+                relatedProductIds.push(matched.id);
+              }
+            }
+          }
+
+          const slug = row.slug?.trim() || (row.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+          const existingProd = latestProds.find(
+            (p) => p.name.toLowerCase() === (row.name || "").toLowerCase() || p.slug.toLowerCase() === slug.toLowerCase()
+          );
+
+          const savedProd = await api.saveProduct({
             id: existingProd?.id,
             name: row.name || "",
             slug,
-            description: (row.description || "").slice(0, 80),
+            description: row.description || row.short_description || "",
+            short_description: row.short_description || (row.description ? row.description.slice(0, 150) : ""),
             category_id: catId || "",
-            category_ids: catId ? [catId] : [],
+            category_ids: finalCatIds,
             material_id: matId || "",
             metadata: row.metadata_tags || "",
             image: row.image || "",
-            backgroundImage: "",
+            backgroundImage: row.backgroundImage || "",
             themeColor: row.theme_color || "#0498AA",
-            overviewBullets: defaultOverviewBullets,
-            techSpecs: defaultTechSpecs,
+            overviewBullets: row.overview_bullets && row.overview_bullets.length > 0 ? row.overview_bullets : defaultOverviewBullets,
+            techSpecs: row.tech_specs && row.tech_specs.length > 0 ? row.tech_specs : defaultTechSpecs,
             packSizes: row.pack_sizes && row.pack_sizes.length > 0 ? row.pack_sizes : ["1 Kg", "5 Kg", "20 Kg"],
-            documentUrl: "",
-            usps: [],
-            applications: [],
-            videoUrl: "",
-            videoThumbnail: "/images/Rectangle 4.png",
-            faqs: [],
-            relatedProducts: [],
-            techSpecsDescription: "",
-            appsTitle: "Engineered for the Task at Hand",
-            appsDescription: "",
-            videoTitle: "See product in Action",
-            videoDescription: "",
-            faqsTitle: "FAQs",
-            faqsDescription: "",
-            relatedTitle: "Related Products",
-            techResourceTitle: "",
-            techResourceDescription: "",
-            techResourceFileUrl: "",
+            documentUrl: row.documentUrl || "",
+            usps: row.usps || [],
+            applications: row.applications && row.applications.length > 0 ? row.applications : [],
+            videoUrl: row.videoUrl || "",
+            videoThumbnail: row.videoThumbnail || "/images/Rectangle 4.png",
+            videoTitle: row.videoTitle || "See product in Action",
+            videoDescription: row.videoDescription || "",
+            faqs: row.faqs || [],
+            faqsTitle: row.faqsTitle || "FAQs",
+            faqsDescription: row.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details.",
+            relatedProducts: relatedProductIds,
+            relatedTitle: row.relatedTitle || "Related Products",
+            techSpecsDescription: row.techSpecsDescription || "",
+            appsTitle: row.appsTitle || "Engineered for the Task at Hand",
+            appsDescription: row.appsDescription || "",
+            techResourceTitle: row.techResourceTitle || "Technical Data Sheet",
+            techResourceDescription: row.techResourceDescription || "",
+            techResourceFileUrl: row.documentUrl || "",
           });
+
+          // Save SEO metadata if SEO fields are present in the row
+          if (row.meta_title || row.meta_description || row.canonical_url || row.seo_image) {
+            const latestSeos = await api.getSeoMetadata();
+            const matchedSeo = latestSeos.find((s) => s.page_type === "product" && s.page_id === savedProd.id);
+            await api.saveSeoMetadata({
+              id: matchedSeo?.id,
+              page_type: "product",
+              page_id: savedProd.id,
+              meta_title: row.meta_title || savedProd.name,
+              meta_description: row.meta_description || savedProd.description || "",
+              canonical_url: row.canonical_url || `https://jivanjor.com/products?product=${savedProd.slug}`,
+              image: row.seo_image || savedProd.image || undefined,
+            });
+          }
         }}
       />
     </AdminLayout>

@@ -30,26 +30,59 @@ export interface BulkUploadModalProps {
 }
 
 export interface ParsedRow {
-  // Products
+  // Core Product & Configuration Fields
   name?: string;
-  description?: string;
-  short_description?: string;
   category_name?: string;
   category_id?: string;
+  categories?: string[];
   material_name?: string;
   material_id?: string;
+  description?: string;
+  short_description?: string;
+  slug?: string;
   theme_color?: string;
-  metadata_tags?: string;
-  pack_sizes?: string[];
   image?: string;
-  // Categories
+  backgroundImage?: string;
+  pack_sizes?: string[];
+  overview_bullets?: { text: string; icon: string }[];
+  metadata_tags?: string;
+
+  // Technical Specs & Dynamic Content Sections
+  tech_specs?: { key: string; value: string }[];
+  techSpecsDescription?: string;
+  usps?: { title: string; description: string; icon: string }[];
+  applications?: { title: string; description: string; imageA: string; imageB: string }[];
+  appsTitle?: string;
+  appsDescription?: string;
+  techResourceTitle?: string;
+  techResourceDescription?: string;
+  documentUrl?: string;
+  videoUrl?: string;
+  videoThumbnail?: string;
+  videoTitle?: string;
+  videoDescription?: string;
+  faqs?: { question: string; answer: string }[];
+  faqsTitle?: string;
+  faqsDescription?: string;
+  relatedProducts?: string[];
+  relatedTitle?: string;
+
+  // SEO Metadata
+  meta_title?: string;
+  meta_description?: string;
+  canonical_url?: string;
+  seo_image?: string;
+
+  // Category Entity Fields
   parent_category_name?: string;
   parent_category?: string;
   icon?: string;
+
   // Internal
   _rowIndex: number;
   _warnings: string[];
 }
+
 
 type Step = "upload" | "select-sheet" | "preview" | "importing" | "done";
 
@@ -61,15 +94,42 @@ interface RowResult {
 
 // ─── Templates ───────────────────────────────────────────────────────────────
 
+// ─── Templates ───────────────────────────────────────────────────────────────
+
 const PRODUCT_TEMPLATE_HEADERS = [
   "name",
-  "description",
   "category_name",
-  "material_name",
-  "theme_color",
-  "metadata_tags",
-  "pack_sizes",
+  "description",
+  "slug",
+  "categories",
+  "themeColor",
   "image",
+  "backgroundImage",
+  "packSizes",
+  "overviewBullets",
+  "metadata",
+  "techSpecs",
+  "techSpecsDescription",
+  "usps",
+  "applications",
+  "appsTitle",
+  "appsDescription",
+  "techResourceTitle",
+  "techResourceDescription",
+  "documentUrl",
+  "videoUrl",
+  "videoThumbnail",
+  "videoTitle",
+  "videoDescription",
+  "faqs",
+  "faqsTitle",
+  "faqsDescription",
+  "relatedProducts",
+  "relatedTitle",
+  "meta_title",
+  "meta_description",
+  "canonical_url",
+  "seo_image",
 ];
 
 const CATEGORY_TEMPLATE_HEADERS = [
@@ -80,14 +140,39 @@ const CATEGORY_TEMPLATE_HEADERS = [
 ];
 
 const PRODUCT_TEMPLATE_EXAMPLE = [
-  "Champion Super",
-  "High-strength adhesive for woodworking",
-  "Wood Adhesives",
-  "PVA",
+  "Jivanjor Aquabond",
+  "Water Resistant",
+  "High-strength water-resistant D3 adhesive for premium woodworking and furniture joinery.",
+  "jivanjor-aquabond",
+  "Woodworking Adhesives | Furniture & Woodwork",
   "#0083CB",
-  "Water Resistant, Fast Setting",
-  "1 Kg|5 Kg|20 Kg",
-  "https://example.com/product.png",
+  "https://example.com/aquabond.png",
+  "https://example.com/aquabond-hero.png",
+  "500g | 1kg | 2kg | 5kg | 10kg | 20kg",
+  "Water Resistant; Anti-Bubble Technology; Super Fast Setting - 1 Hour",
+  "wood glue, waterproof, d3 grade",
+  "Appearance: Milk White | Viscosity: 25000 - 35000 cPs | Solids: 50-53% | Coverage: 60-70 Sqft/Kg",
+  "Aquabond provides excellent water-resistance and superior flow for smooth application.",
+  "Faster Site Rotation: Sets in 1 hour | Smooth Spreadability: Reduces wastage | Solvent-Free Safety: Water-based formulation",
+  "Laminate to Plywood Bonding; Wood to Wood Joinery; Finger Jointing",
+  "Engineered for the Task at Hand",
+  "Explore where Jivanjor Aquabond fits across woodworking applications.",
+  "Technical Data Sheet",
+  "Download official technical documentation and safety guidelines.",
+  "https://example.com/aquabond-tds.pdf",
+  "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "https://example.com/video-thumb.jpg",
+  "See Product in Action",
+  "Watch trade professionals achieve flawless bonding in record time.",
+  "Q: How long does it take to set? A: Superfast setting time of 1 hour under typical site conditions. | Q: Is it waterproof? A: Yes, it meets D3 water resistance standards.",
+  "Frequently Asked Questions",
+  "Find answers to common questions about application, setting time, and coverage.",
+  "Watershield | Champion Super",
+  "Related Products",
+  "Jivanjor Aquabond - D3 Waterproof Wood Adhesive",
+  "Buy Jivanjor Aquabond high-strength D3 waterproof wood adhesive for furniture and plywood assembly.",
+  "https://jivanjor.com/products?product=jivanjor-aquabond",
+  "https://example.com/aquabond-seo.jpg",
 ];
 
 const CATEGORY_TEMPLATE_EXAMPLE = [
@@ -108,7 +193,7 @@ function downloadTemplate(entityType: "product" | "category") {
       : CATEGORY_TEMPLATE_EXAMPLE;
 
   const ws = XLSX.utils.aoa_to_sheet([headers, example]);
-  ws["!cols"] = headers.map(() => ({ wch: 24 }));
+  ws["!cols"] = headers.map(() => ({ wch: 26 }));
 
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(
@@ -136,6 +221,168 @@ function getRowValue(row: Record<string, any>, keys: string[]): string {
     }
   }
   return "";
+}
+
+function cleanVal(str: string): string {
+  if (!str) return "";
+  const trimmed = str.trim();
+  if (trimmed === "-- to be updated --" || trimmed === "--to be updated--") return "";
+  return trimmed;
+}
+
+// Dedicated Parser Helpers for Dynamic Components
+function parseFaqs(raw: string): { question: string; answer: string }[] {
+  const clean = cleanVal(raw);
+  if (!clean) return [];
+
+  const items = clean.includes("|") ? clean.split("|") : clean.split("\n");
+  const result: { question: string; answer: string }[] = [];
+
+  for (let item of items) {
+    item = item.trim();
+    if (!item || item === "-- to be updated --") continue;
+
+    // Pattern 1: Q: Question? A: Answer or Q: Question A: Answer
+    const qaMatch = item.match(/(?:Q\s*:\s*)?(.*?)\s*(?:A\s*:\s*)(.*)/i);
+    if (qaMatch && qaMatch[1] && qaMatch[2]) {
+      const q = qaMatch[1].replace(/^Q\s*:\s*/i, "").trim();
+      const a = qaMatch[2].trim();
+      if (q) {
+        result.push({ question: q, answer: a });
+        continue;
+      }
+    }
+
+    // Pattern 2: Question? Answer
+    const qIndex = item.indexOf("?");
+    if (qIndex !== -1 && qIndex < item.length - 1) {
+      const q = item.slice(0, qIndex + 1).replace(/^Q\s*:\s*/i, "").trim();
+      const a = item.slice(qIndex + 1).replace(/^[:\sA\s*:\s*]+/, "").trim();
+      if (q && a) {
+        result.push({ question: q, answer: a });
+        continue;
+      }
+    }
+
+    // Pattern 3: Question: Answer
+    const colonIdx = item.indexOf(":");
+    if (colonIdx !== -1) {
+      const q = item.slice(0, colonIdx).replace(/^Q\s*:\s*/i, "").trim();
+      const a = item.slice(colonIdx + 1).replace(/^A\s*:\s*/i, "").trim();
+      if (q && a) {
+        result.push({ question: q, answer: a });
+        continue;
+      }
+    }
+
+    // Fallback: Just Question
+    const cleanQ = item.replace(/^Q\s*:\s*/i, "").trim();
+    if (cleanQ) {
+      result.push({ question: cleanQ, answer: "" });
+    }
+  }
+
+  return result;
+}
+
+function parseUsps(raw: string): { title: string; description: string; icon: string }[] {
+  const clean = cleanVal(raw);
+  if (!clean) return [];
+
+  const items = clean.split("|").map((s) => s.trim()).filter(Boolean);
+  const icons = ["Cycle-arrow.svg", "Texture.svg", "Asterisk.svg", "Circles-seven.svg"];
+
+  return items
+    .map((item, idx) => {
+      let title = item;
+      let description = "";
+      const colonIdx = item.indexOf(":");
+      const dashIdx = item.indexOf("-");
+
+      if (colonIdx !== -1) {
+        title = item.slice(0, colonIdx).trim();
+        description = item.slice(colonIdx + 1).trim();
+      } else if (dashIdx !== -1) {
+        title = item.slice(0, dashIdx).trim();
+        description = item.slice(dashIdx + 1).trim();
+      }
+
+      return {
+        title,
+        description: description || `Provides high performance for ${title.toLowerCase()}.`,
+        icon: icons[idx % icons.length],
+      };
+    })
+    .filter((u) => u.title && u.title !== "-- to be updated --");
+}
+
+function parseApplications(raw: string): { title: string; description: string; imageA: string; imageB: string }[] {
+  const clean = cleanVal(raw);
+  if (!clean) return [];
+
+  const items = clean.split(/[\n|;]/).map((s) => s.trim().replace(/,$/, "")).filter(Boolean);
+
+  return items
+    .map((appTitle, idx) => {
+      let title = appTitle;
+      let description = "";
+      const colonIdx = appTitle.indexOf(":");
+
+      if (colonIdx !== -1) {
+        title = appTitle.slice(0, colonIdx).trim();
+        description = appTitle.slice(colonIdx + 1).trim();
+      }
+
+      return {
+        title,
+        description: description || `Engineered for ${title.toLowerCase()} applications.`,
+        imageA: idx % 2 === 0 ? "/images/Rectangle 34.png" : "/images/Rectangle 35.png",
+        imageB: idx % 2 === 0 ? "/images/Rectangle 34 (1).png" : "/images/Rectangle 30.png",
+      };
+    })
+    .filter((a) => a.title && a.title !== "-- to be updated --");
+}
+
+function parseOverviewBullets(raw: string): { text: string; icon: string }[] {
+  const clean = cleanVal(raw);
+  if (!clean) return [];
+
+  const items = clean.split(/[\n|;]/).map((s) => s.trim()).filter(Boolean);
+  const icons = ["image 18.svg", "image 19.svg", "image 20.svg", "Texture.svg"];
+
+  return items
+    .map((text, idx) => ({
+      text,
+      icon: icons[idx % icons.length],
+    }))
+    .filter((b) => b.text && b.text !== "-- to be updated --");
+}
+
+function parseTechSpecs(raw: string): { key: string; value: string }[] {
+  const clean = cleanVal(raw);
+  if (!clean) return [];
+
+  const items = clean.includes("|") ? clean.split("|") : clean.split("\n");
+  const result: { key: string; value: string }[] = [];
+
+  for (const item of items) {
+    const trimmed = item.trim();
+    if (!trimmed || trimmed === "-- to be updated --") continue;
+
+    const colonIdx = trimmed.indexOf(":");
+    if (colonIdx !== -1) {
+      result.push({ key: trimmed.slice(0, colonIdx).trim(), value: trimmed.slice(colonIdx + 1).trim() });
+    } else {
+      const dashIdx = trimmed.indexOf("-");
+      if (dashIdx !== -1) {
+        result.push({ key: trimmed.slice(0, dashIdx).trim(), value: trimmed.slice(dashIdx + 1).trim() });
+      } else {
+        result.push({ key: trimmed, value: "" });
+      }
+    }
+  }
+
+  return result;
 }
 
 function parseExcel(
@@ -171,14 +418,16 @@ function parseExcel(
 
           if (entityType === "product") {
             const name = getRowValue(row, ["name", "product_name", "product", "productname", "title"]);
-            const description = getRowValue(row, ["description", "desc", "details"]);
-            const shortDescription = getRowValue(row, ["short_description", "shortdescription", "short_desc", "shortdesc", "summary"]);
+            let description = getRowValue(row, ["description", "desc", "details", "long_description", "longdescription"]);
+            let shortDescription = getRowValue(row, ["short_description", "shortdescription", "short_desc", "shortdesc", "summary", "brief"]);
             const categoryName = getRowValue(row, ["category_name", "category", "categoryname", "cat_name", "catname"]);
             const materialName = getRowValue(row, ["material_name", "material", "materialname", "mat_name"]);
 
             if (!name) warnings.push("'name' is required");
-            if (!description) warnings.push("'description' is required");
             if (!categoryName) warnings.push("'category_name' is required");
+
+            if (!description && shortDescription) description = shortDescription;
+            if (!shortDescription && description) shortDescription = description.slice(0, 150);
 
             const matchedCat = categories.find(
               (c) => c.name.toLowerCase() === categoryName.toLowerCase()
@@ -190,25 +439,79 @@ function parseExcel(
               (m) => m.name.toLowerCase() === materialName.toLowerCase()
             );
 
-            const packSizesRaw = getRowValue(row, ["pack_sizes", "packsizes", "pack_size", "packsize", "packs", "sizes"]);
+            // Raw strings from Excel
+            const rawSlug = getRowValue(row, ["slug", "url_slug", "product_slug"]);
+            const rawCategories = getRowValue(row, ["categories", "additional_categories"]);
+            const rawThemeColor = getRowValue(row, ["themeColor", "theme_color", "themecolor", "theme", "color"]);
+            const rawImage = getRowValue(row, ["image", "image_url", "imageurl", "photo", "img"]);
+            const rawBgImage = getRowValue(row, ["backgroundImage", "background_image", "hero_image"]);
+            const packSizesRaw = getRowValue(row, ["packSizes", "pack_sizes", "packsizes", "pack_size", "packsize", "packs", "sizes"]);
+            const overviewBulletsRaw = getRowValue(row, ["overviewBullets", "overview_bullets", "overviewbullets", "overview_bullet", "bullets", "key_features"]);
+            const rawMetadata = getRowValue(row, ["metadata", "metadata_tags", "metadatatags", "tags"]);
+
+            const techSpecsRaw = getRowValue(row, ["techSpecs", "tech_specs", "techspecs", "specifications", "specs", "technical_specs"]);
+            const techSpecsDescription = cleanVal(getRowValue(row, ["techSpecsDescription", "tech_specs_description"]));
+            const uspsRaw = getRowValue(row, ["usps", "unique_selling_points", "selling_points"]);
+            const applicationsRaw = getRowValue(row, ["applications", "application", "uses", "use_cases", "usecases"]);
+            const appsTitle = cleanVal(getRowValue(row, ["appsTitle", "apps_title", "applications_title"]));
+            const appsDescription = cleanVal(getRowValue(row, ["appsDescription", "apps_description", "applications_description"]));
+            const techResourceTitle = cleanVal(getRowValue(row, ["techResourceTitle", "tech_resource_title"]));
+            const techResourceDescription = cleanVal(getRowValue(row, ["techResourceDescription", "tech_resource_description"]));
+            const documentUrl = cleanVal(getRowValue(row, ["documentUrl", "document_url", "tds_url", "pdf_url"]));
+            const videoUrl = cleanVal(getRowValue(row, ["videoUrl", "video_url"]));
+            const videoThumbnail = cleanVal(getRowValue(row, ["videoThumbnail", "video_thumbnail"]));
+            const videoTitle = cleanVal(getRowValue(row, ["videoTitle", "video_title"]));
+            const videoDescription = cleanVal(getRowValue(row, ["videoDescription", "video_description"]));
+            const faqsRaw = getRowValue(row, ["faqs", "faq", "frequently_asked_questions"]);
+            const faqsTitle = cleanVal(getRowValue(row, ["faqsTitle", "faqs_title"]));
+            const faqsDescription = cleanVal(getRowValue(row, ["faqsDescription", "faqs_description"]));
+            const relatedProductsRaw = getRowValue(row, ["relatedProducts", "related_products"]);
+            const relatedTitle = cleanVal(getRowValue(row, ["relatedTitle", "related_title"]));
+
+            const metaTitle = cleanVal(getRowValue(row, ["meta_title", "metatitle", "seo_title"]));
+            const metaDescription = cleanVal(getRowValue(row, ["meta_description", "metadescription", "seo_description"]));
+            const canonicalUrl = cleanVal(getRowValue(row, ["canonical_url", "canonicalurl", "seo_canonical"]));
+            const seoImage = cleanVal(getRowValue(row, ["seo_image", "seoimage", "social_image"]));
 
             result.name = name;
-            result.description = description;
-            result.short_description = shortDescription;
             result.category_name = categoryName;
             result.category_id = matchedCat?.id || "";
+            result.categories = rawCategories ? rawCategories.split(/[\n|;]/).map((s) => s.trim()).filter(Boolean) : [];
             result.material_name = materialName;
             result.material_id = matchedMat?.id || "";
-            result.theme_color =
-              getRowValue(row, ["theme_color", "themecolor", "theme", "color"]) || "#0498AA";
-            result.metadata_tags = getRowValue(row, ["metadata_tags", "metadatatags", "tags", "metadata"]);
-            result.pack_sizes = packSizesRaw
-              ? packSizesRaw
-                  .split("|")
-                  .map((s) => s.trim())
-                  .filter(Boolean)
-              : [];
-            result.image = getRowValue(row, ["image", "image_url", "imageurl", "photo", "img"]);
+            result.description = cleanVal(description);
+            result.short_description = cleanVal(shortDescription);
+            result.slug = cleanVal(rawSlug);
+            result.theme_color = cleanVal(rawThemeColor) || "#0498AA";
+            result.image = cleanVal(rawImage);
+            result.backgroundImage = cleanVal(rawBgImage);
+            result.pack_sizes = packSizesRaw ? packSizesRaw.split("|").map((s) => s.trim()).filter((s) => s && s !== "-- to be updated --") : [];
+            result.overview_bullets = parseOverviewBullets(overviewBulletsRaw);
+            result.metadata_tags = cleanVal(rawMetadata);
+
+            result.tech_specs = parseTechSpecs(techSpecsRaw);
+            result.techSpecsDescription = techSpecsDescription;
+            result.usps = parseUsps(uspsRaw);
+            result.applications = parseApplications(applicationsRaw);
+            result.appsTitle = appsTitle;
+            result.appsDescription = appsDescription;
+            result.techResourceTitle = techResourceTitle;
+            result.techResourceDescription = techResourceDescription;
+            result.documentUrl = documentUrl;
+            result.videoUrl = videoUrl;
+            result.videoThumbnail = videoThumbnail;
+            result.videoTitle = videoTitle;
+            result.videoDescription = videoDescription;
+            result.faqs = parseFaqs(faqsRaw);
+            result.faqsTitle = faqsTitle;
+            result.faqsDescription = faqsDescription;
+            result.relatedProducts = relatedProductsRaw ? relatedProductsRaw.split(/[\n|;]/).map((s) => s.trim()).filter((s) => s && s !== "-- to be updated --") : [];
+            result.relatedTitle = relatedTitle;
+
+            result.meta_title = metaTitle;
+            result.meta_description = metaDescription;
+            result.canonical_url = canonicalUrl;
+            result.seo_image = seoImage;
           } else {
             const name = getRowValue(row, ["name", "category_name", "category", "categoryname", "title"]);
             const description = getRowValue(row, ["description", "desc", "details"]);
@@ -591,15 +894,39 @@ export default function BulkUploadModal({
                     <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                       {(() => {
                         const colDefs = entityType === "product" ? [
-                          { col: "name", req: true, note: "Product name" },
-                          { col: "description", req: true, note: "Full detailed product description" },
-                          { col: "short_description", req: false, note: "Short overview description (max 80 chars)" },
-                          { col: "category_name", req: true, note: "Must match an existing category name exactly" },
-                          { col: "material_name", req: false, note: "Must match an existing material name" },
-                          { col: "theme_color", req: false, note: "Hex colour e.g. #0083CB (defaults to #0498AA)" },
-                          { col: "metadata_tags", req: false, note: "Comma-separated tags" },
-                          { col: "pack_sizes", req: false, note: "Pipe-separated e.g. 1 Kg|5 Kg|20 Kg" },
-                          { col: "image", req: false, note: "Full image URL" },
+                          { col: "name", req: true, note: "Product name e.g. Jivanjor Aquabond" },
+                          { col: "category_name", req: true, note: "Primary category name e.g. Water Resistant" },
+                          { col: "description", req: true, note: "Detailed product summary description" },
+                          { col: "slug", req: false, note: "URL slug (auto-generated if empty)" },
+                          { col: "categories", req: false, note: "Additional categories (pipe-separated e.g. Cat 1 | Cat 2)" },
+                          { col: "themeColor", req: false, note: "Hex color e.g. #0083CB (defaults to #0498AA)" },
+                          { col: "image", req: false, note: "Product bottle/can image URL" },
+                          { col: "backgroundImage", req: false, note: "Product page hero cover image URL" },
+                          { col: "packSizes", req: false, note: "Pipe-separated sizes e.g. 500g | 1kg | 2kg | 5kg" },
+                          { col: "overviewBullets", req: false, note: "Semicolon/pipe-separated badges e.g. Water Resistant; Fast Setting" },
+                          { col: "metadata", req: false, note: "Comma-separated search tags e.g. wood glue, waterproof" },
+                          { col: "techSpecs", req: false, note: "Pipe-separated pairs e.g. Appearance: Milk White | Viscosity: 2500 cPs" },
+                          { col: "techSpecsDescription", req: false, note: "Header text above technical specs table" },
+                          { col: "usps", req: false, note: "Pipe-separated Title: Description e.g. Waterproof: 48-hr immersion passed | Eco: Zero VOC" },
+                          { col: "applications", req: false, note: "Semicolon/pipe-separated applications e.g. Plywood Assembly; Furniture Joinery" },
+                          { col: "appsTitle", req: false, note: "Custom header for Applications section" },
+                          { col: "appsDescription", req: false, note: "Custom description for Applications section" },
+                          { col: "techResourceTitle", req: false, note: "Datasheet section header e.g. Technical Data Sheet" },
+                          { col: "techResourceDescription", req: false, note: "Datasheet section description" },
+                          { col: "documentUrl", req: false, note: "Technical Data Sheet (TDS) PDF URL" },
+                          { col: "videoUrl", req: false, note: "Product video link (YouTube or MP4)" },
+                          { col: "videoThumbnail", req: false, note: "Video cover image URL" },
+                          { col: "videoTitle", req: false, note: "Video section header" },
+                          { col: "videoDescription", req: false, note: "Video section description" },
+                          { col: "faqs", req: false, note: "Pipe-separated FAQs e.g. Q: Setting time? A: 1 hour | Q: Waterproof? A: Yes" },
+                          { col: "faqsTitle", req: false, note: "FAQs section header" },
+                          { col: "faqsDescription", req: false, note: "FAQs section description" },
+                          { col: "relatedProducts", req: false, note: "Pipe-separated names of related products" },
+                          { col: "relatedTitle", req: false, note: "Related products section header" },
+                          { col: "meta_title", req: false, note: "SEO Meta Title (50-60 characters)" },
+                          { col: "meta_description", req: false, note: "SEO Meta Description (120-160 characters)" },
+                          { col: "canonical_url", req: false, note: "Canonical URL link" },
+                          { col: "seo_image", req: false, note: "Social sharing thumbnail image URL" },
                         ] : [
                           { col: "name", req: true, note: "Category name" },
                           { col: "description", req: false, note: "Plain text description" },
