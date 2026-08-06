@@ -666,6 +666,7 @@ export default function PagesPage() {
   const [pages, setPages] = useState<Page[]>([]);
   const [templates, setTemplates] = useState<PageTemplate[]>([]);
   const [search, setSearch] = useState("");
+  const [relatedProductSearch, setRelatedProductSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -5048,42 +5049,79 @@ export default function PagesPage() {
                             </div>
                           )}
 
+                          {/* Search Filter Input Bar */}
+                          <div className="relative my-2">
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
+                            <input
+                              type="text"
+                              value={relatedProductSearch}
+                              onChange={(e) => setRelatedProductSearch(e.target.value)}
+                              placeholder="Search related products by name..."
+                              className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-border bg-surface/50 text-xs outline-none focus:border-primary text-foreground font-medium transition"
+                            />
+                            {relatedProductSearch && (
+                              <button
+                                type="button"
+                                onClick={() => setRelatedProductSearch("")}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground cursor-pointer"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                          </div>
+
                           {/* Product Checkboxes Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                            {availableProducts.map((prod) => {
-                              const isChecked = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug) || selectedIds.includes(prod.name);
+                            {availableProducts
+                              .filter((prod) =>
+                                !relatedProductSearch ||
+                                prod.name.toLowerCase().includes(relatedProductSearch.toLowerCase()) ||
+                                (prod.description && prod.description.toLowerCase().includes(relatedProductSearch.toLowerCase()))
+                              )
+                              .map((prod) => {
+                                const isChecked = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug) || selectedIds.includes(prod.name);
 
-                              return (
-                                <label
-                                  key={prod.id}
-                                  className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
-                                    ? "border-red-400 bg-red-50/40 dark:bg-red-950/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
-                                    : "border-border bg-background hover:border-primary/50 text-foreground/80 font-medium"
-                                    }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={(e) => {
-                                      let updated: string[];
-                                      if (e.target.checked) {
-                                        updated = [...selectedIds, prod.id];
-                                      } else {
-                                        updated = selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug && id !== prod.name);
-                                      }
-                                      updateSelectedProducts(updated);
-                                    }}
-                                    className="w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary"
-                                  />
-                                  {prod.image && (
-                                    <div className="w-6 h-6 relative shrink-0">
-                                      <Image src={prod.image} alt="" fill className="object-contain" unoptimized />
-                                    </div>
-                                  )}
-                                  <span className="text-xs font-bold truncate">{prod.name}</span>
-                                </label>
-                              );
-                            })}
+                                return (
+                                  <label
+                                    key={prod.id}
+                                    className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
+                                      ? "border-red-400 bg-red-50/40 dark:bg-red-950/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                      : "border-border bg-background hover:border-primary/50 text-foreground/80 font-medium"
+                                      }`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        let updated: string[];
+                                        if (e.target.checked) {
+                                          updated = [...selectedIds, prod.id];
+                                        } else {
+                                          updated = selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug && id !== prod.name);
+                                        }
+                                        updateSelectedProducts(updated);
+                                      }}
+                                      className="w-4 h-4 rounded text-primary focus:ring-primary cursor-pointer accent-primary"
+                                    />
+                                    {prod.image && (
+                                      <div className="w-6 h-6 relative shrink-0">
+                                        <Image src={prod.image} alt="" fill className="object-contain" unoptimized />
+                                      </div>
+                                    )}
+                                    <span className="text-xs font-bold truncate">{prod.name}</span>
+                                  </label>
+                                );
+                              })}
+                            {availableProducts.length > 0 &&
+                              availableProducts.filter((prod) =>
+                                !relatedProductSearch ||
+                                prod.name.toLowerCase().includes(relatedProductSearch.toLowerCase()) ||
+                                (prod.description && prod.description.toLowerCase().includes(relatedProductSearch.toLowerCase()))
+                              ).length === 0 && (
+                              <span className="col-span-full py-3 text-center text-xs text-foreground/50 italic">
+                                No products found matching &quot;{relatedProductSearch}&quot;
+                              </span>
+                            )}
                           </div>
                         </div>
                       );

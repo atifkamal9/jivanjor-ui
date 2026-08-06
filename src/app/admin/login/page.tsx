@@ -5,12 +5,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE } from "@/lib/api";
 import { signIn } from "@/lib/auth";
-import { Lock, Mail, AlertTriangle, ArrowRight } from "lucide-react";
+import { Lock, Mail, AlertTriangle, ArrowRight, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -39,12 +40,6 @@ export default function LoginPage() {
       );
       setLoading(false);
     }
-  };
-
-  const fillCredentials = () => {
-    setEmail("admin@jivanjor.com");
-    setPassword("Admin123!");
-    setError("");
   };
 
   return (
@@ -104,13 +99,26 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-foreground/40 dark:text-zinc-500" />
                   </div>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="block w-full rounded-xl border border-surface bg-surface/50 py-3 pl-10 pr-3 text-sm placeholder-foreground/30 outline-none transition-all focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:placeholder-zinc-600 dark:focus:border-primary dark:focus:bg-zinc-900"
+                    className="block w-full rounded-xl border border-surface bg-surface/50 py-3 pl-10 pr-10 text-sm placeholder-foreground/30 outline-none transition-all focus:border-primary focus:bg-background focus:ring-2 focus:ring-primary/20 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-100 dark:placeholder-zinc-600 dark:focus:border-primary dark:focus:bg-zinc-900"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-foreground/40 hover:text-foreground dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+                    tabIndex={-1}
+
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
@@ -130,28 +138,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Pre-fill Credentials Widget */}
-          <div className="mt-8 pt-6 border-t border-surface dark:border-zinc-800">
-            <div className="rounded-2xl bg-surface p-4 dark:bg-zinc-950 transition-colors duration-300">
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold text-foreground/80 dark:text-zinc-400">
-                  Reviewer Credentials Quick Access
-                </span>
-                <p className="text-xs text-foreground/60 dark:text-zinc-5050 leading-normal">
-                  Click below to automatically pre-fill the approved credentials
-                  for immediate CMS access.
-                </p>
-                <button
-                  type="button"
-                  onClick={fillCredentials}
-                  className="mt-2 text-xs font-bold text-primary hover:opacity-80 dark:text-primary dark:hover:opacity-80 text-left underline underline-offset-4 cursor-pointer"
-                >
-                  Auto-fill Admin Credentials
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

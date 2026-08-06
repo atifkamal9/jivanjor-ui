@@ -41,6 +41,7 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterMaterial, setFilterMaterial] = useState("");
+  const [relatedSearch, setRelatedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -1376,44 +1377,84 @@ export default function ProductsPage() {
                           </div>
                         )}
 
+                        {/* Search Filter Input Bar */}
+                        <div className="relative my-2">
+                          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-zinc-500" />
+                          <input
+                            type="text"
+                            value={relatedSearch}
+                            onChange={(e) => setRelatedSearch(e.target.value)}
+                            placeholder="Search related products by name..."
+                            className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 font-medium transition"
+                          />
+                          {relatedSearch && (
+                            <button
+                              type="button"
+                              onClick={() => setRelatedSearch("")}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-zinc-300 cursor-pointer"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+                        </div>
+
                         {/* Product Checkboxes Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-1">
-                          {products.filter((p) => p.id !== editingId).map((p) => {
-                            const isChecked = formData.relatedProducts.includes(p.id);
+                          {products
+                            .filter((p) => p.id !== editingId)
+                            .filter((p) =>
+                              !relatedSearch ||
+                              p.name.toLowerCase().includes(relatedSearch.toLowerCase()) ||
+                              (p.description && p.description.toLowerCase().includes(relatedSearch.toLowerCase()))
+                            )
+                            .map((p) => {
+                              const isChecked = formData.relatedProducts.includes(p.id);
 
-                            return (
-                              <label
-                                key={p.id}
-                                className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
-                                  ? "border-red-400 bg-red-50/40 dark:bg-red-955/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
-                                  : "border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-red-300 text-gray-700 dark:text-zinc-300 font-medium"
-                                  }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() =>
-                                    setFormData((prev) => {
-                                      const list = isChecked
-                                        ? prev.relatedProducts.filter((id) => id !== p.id)
-                                        : [...prev.relatedProducts, p.id];
-                                      return { ...prev, relatedProducts: list };
-                                    })
-                                  }
-                                  className="w-4 h-4 rounded text-red-600 focus:ring-red-500 cursor-pointer accent-red-600"
-                                />
-                                {p.image && (
-                                  <div className="w-6 h-6 relative shrink-0">
-                                    <img src={p.image} alt="" className="w-full h-full object-contain" />
-                                  </div>
-                                )}
-                                <span className="text-xs font-bold truncate">{p.name}</span>
-                              </label>
-                            );
-                          })}
+                              return (
+                                <label
+                                  key={p.id}
+                                  className={`px-4 py-3 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${isChecked
+                                    ? "border-red-400 bg-red-50/40 dark:bg-red-955/30 text-red-700 dark:text-red-400 shadow-2xs font-extrabold"
+                                    : "border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-red-300 text-gray-700 dark:text-zinc-300 font-medium"
+                                    }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() =>
+                                      setFormData((prev) => {
+                                        const list = isChecked
+                                          ? prev.relatedProducts.filter((id) => id !== p.id)
+                                          : [...prev.relatedProducts, p.id];
+                                        return { ...prev, relatedProducts: list };
+                                      })
+                                    }
+                                    className="w-4 h-4 rounded text-red-600 focus:ring-red-500 cursor-pointer accent-red-600"
+                                  />
+                                  {p.image && (
+                                    <div className="w-6 h-6 relative shrink-0">
+                                      <img src={p.image} alt="" className="w-full h-full object-contain" />
+                                    </div>
+                                  )}
+                                  <span className="text-xs font-bold truncate">{p.name}</span>
+                                </label>
+                              );
+                            })}
                           {products.filter((p) => p.id !== editingId).length === 0 && (
                             <span className="text-xs text-gray-400 italic">No other products configured in catalogue.</span>
                           )}
+                          {products.filter((p) => p.id !== editingId).length > 0 &&
+                            products
+                              .filter((p) => p.id !== editingId)
+                              .filter((p) =>
+                                !relatedSearch ||
+                                p.name.toLowerCase().includes(relatedSearch.toLowerCase()) ||
+                                (p.description && p.description.toLowerCase().includes(relatedSearch.toLowerCase()))
+                              ).length === 0 && (
+                              <span className="col-span-full py-3 text-center text-xs text-gray-400 dark:text-zinc-500 italic">
+                                No products found matching &quot;{relatedSearch}&quot;
+                              </span>
+                            )}
                         </div>
                       </div>
                     </div>
