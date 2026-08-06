@@ -7,6 +7,7 @@ import { Home, ChevronRight } from "lucide-react";
 interface HeroProps {
   data?: {
     title?: string;
+    subtitle?: string;
     desc?: string;
     actionButtons?: {
       primary?: {
@@ -21,7 +22,7 @@ interface HeroProps {
 
 export default function Hero({ data, subpageTitle }: HeroProps) {
   const title = data?.title || "A Trusted Name in Woodworking Adhesives";
-  const desc = data?.desc || "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.";
+  const desc = data?.subtitle || data?.desc || "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.";
   const ctaText = data?.actionButtons?.primary?.text || "Enquire Now";
   const ctaLink = data?.actionButtons?.primary?.actionPath || "#about-query-section";
 

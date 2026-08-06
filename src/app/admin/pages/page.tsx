@@ -191,6 +191,7 @@ const defaultHomeSections = {
 const defaultAboutSections = {
   hero: {
     title: "A Trusted Name in Woodworking Adhesives",
+    subtitle: "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.",
     desc: "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.",
     actionButtons: {
       primary: { text: "Enquire Now", actionPath: "#about-query-section" }
@@ -2031,6 +2032,21 @@ export default function PagesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background"
                         />
                       </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Hero Banner Subtitle Text
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={formData.sections.hero.subtitle || formData.sections.hero.desc || ""}
+                          onChange={(e) => {
+                            updateSectionField("hero", "subtitle", e.target.value);
+                            updateSectionField("hero", "desc", e.target.value);
+                          }}
+                          placeholder="Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary focus:bg-background resize-none"
+                        />
+                      </div>
                     </div>
 
                     {/* Hero Action Buttons */}
@@ -2051,28 +2067,30 @@ export default function PagesPage() {
                             type="text"
                             value={formData.sections.hero.actionButtons?.primary?.actionPath || ""}
                             onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...formData.sections.hero.actionButtons?.primary, actionPath: e.target.value })}
-                            placeholder="Action Path (e.g. #product-section)"
+                            placeholder="Action Path (e.g. #about-query-section)"
                             className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                           />
                         </div>
                         {/* Secondary Button */}
-                        <div className="space-y-3">
-                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
-                          <input
-                            type="text"
-                            value={formData.sections.hero.actionButtons?.secondary?.text || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, text: e.target.value })}
-                            placeholder="Button Text"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                          <input
-                            type="text"
-                            value={formData.sections.hero.actionButtons?.secondary?.actionPath || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, actionPath: e.target.value })}
-                            placeholder="Action Path (e.g. /about)"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                        </div>
+                        {layoutType !== "about" && (
+                          <div className="space-y-3">
+                            <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
+                            <input
+                              type="text"
+                              value={formData.sections.hero.actionButtons?.secondary?.text || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, text: e.target.value })}
+                              placeholder="Button Text"
+                              className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                            />
+                            <input
+                              type="text"
+                              value={formData.sections.hero.actionButtons?.secondary?.actionPath || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...formData.sections.hero.actionButtons?.secondary, actionPath: e.target.value })}
+                              placeholder="Action Path (e.g. /about)"
+                              className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -5118,10 +5136,10 @@ export default function PagesPage() {
                                 prod.name.toLowerCase().includes(relatedProductSearch.toLowerCase()) ||
                                 (prod.description && prod.description.toLowerCase().includes(relatedProductSearch.toLowerCase()))
                               ).length === 0 && (
-                              <span className="col-span-full py-3 text-center text-xs text-foreground/50 italic">
-                                No products found matching &quot;{relatedProductSearch}&quot;
-                              </span>
-                            )}
+                                <span className="col-span-full py-3 text-center text-xs text-foreground/50 italic">
+                                  No products found matching &quot;{relatedProductSearch}&quot;
+                                </span>
+                              )}
                           </div>
                         </div>
                       );

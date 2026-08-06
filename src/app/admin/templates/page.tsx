@@ -185,6 +185,7 @@ const defaultHomeSections = {
 const defaultAboutSections = {
   hero: {
     title: "A Trusted Name in Woodworking Adhesives",
+    subtitle: "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.",
     desc: "Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork.",
     actionButtons: {
       primary: { text: "Enquire Now", actionPath: "#about-query-section" }
@@ -1328,6 +1329,21 @@ export default function TemplatesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Hero Banner Subtitle Text
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={homeSections.hero.subtitle || homeSections.hero.desc || ""}
+                          onChange={(e) => {
+                            updateSectionField("hero", "subtitle", e.target.value);
+                            updateSectionField("hero", "desc", e.target.value);
+                          }}
+                          placeholder="Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork."
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                        />
+                      </div>
                     </div>
 
                     {/* Hero Action Buttons */}
@@ -1348,28 +1364,30 @@ export default function TemplatesPage() {
                             type="text"
                             value={homeSections.hero.actionButtons?.primary?.actionPath || ""}
                             onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, actionPath: e.target.value })}
-                            placeholder="Action Path (e.g. #product-section)"
+                            placeholder="Action Path (e.g. #about-query-section)"
                             className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                           />
                         </div>
                         {/* Secondary Button */}
-                        <div className="space-y-3">
-                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
-                          <input
-                            type="text"
-                            value={homeSections.hero.actionButtons?.secondary?.text || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, text: e.target.value })}
-                            placeholder="Button Text"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                          <input
-                            type="text"
-                            value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
-                            placeholder="Action Path (e.g. /about)"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                        </div>
+                        {currentLayoutType !== "about" && (
+                          <div className="space-y-3">
+                            <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
+                            <input
+                              type="text"
+                              value={homeSections.hero.actionButtons?.secondary?.text || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, text: e.target.value })}
+                              placeholder="Button Text"
+                              className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                            />
+                            <input
+                              type="text"
+                              value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
+                              placeholder="Action Path (e.g. /about)"
+                              className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -4380,13 +4398,13 @@ export default function TemplatesPage() {
                             <div className="space-y-1">
                               <span className="block text-[10px] font-bold text-foreground/45 uppercase tracking-wider">Category Icon</span>
                               <CategoryIconPicker
-                               value={cat.icon || ""}
-                               onChange={(url) => {
-                                 const cats = [...(homeSections.list?.categories || [])];
-                                 cats[idx] = { ...cats[idx], icon: url };
-                                 updateSectionField("list", "categories", cats);
-                               }}
-                             />
+                                value={cat.icon || ""}
+                                onChange={(url) => {
+                                  const cats = [...(homeSections.list?.categories || [])];
+                                  cats[idx] = { ...cats[idx], icon: url };
+                                  updateSectionField("list", "categories", cats);
+                                }}
+                              />
                             </div>
                           </div>
                         ))}
@@ -4435,7 +4453,7 @@ export default function TemplatesPage() {
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                           <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Author #{idx + 1}</span>
-                          
+
                           <div>
                             <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
                               Author/Publisher Name
