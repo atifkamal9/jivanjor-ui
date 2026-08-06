@@ -73,6 +73,25 @@ export interface Material {
   description: string;
 }
 
+export interface ContactDetailItem {
+  label: string;
+  value: string;
+  icon: string;
+}
+
+export interface ContactSection {
+  title: string;
+  details: ContactDetailItem[];
+}
+
+export interface ContactPageSettings {
+  heroImage?: string;
+  heroTitle?: string;
+  mainHeading?: string;
+  watermarkImage?: string;
+  sections?: ContactSection[];
+}
+
 export interface SiteSettings {
   id?: string;
   desktopLogo?: string;
@@ -92,6 +111,7 @@ export interface SiteSettings {
     ctaText?: string;
     ctaLink?: string;
   };
+  contactPage?: ContactPageSettings;
   updatedAt?: string;
 }
 
@@ -1055,6 +1075,29 @@ export const api = {
           subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
           ctaText: "Submit Your Query",
           ctaLink: "/contact",
+        },
+        contactPage: {
+          heroImage: "/images/image 24.png",
+          heroTitle: "Contact Us",
+          mainHeading: "We are always happy to assist you.",
+          watermarkImage: "/images/watermark-contact.svg",
+          sections: [
+            {
+              title: "Customer Support",
+              details: [
+                { label: "Phone", value: "1800-XXX-XXX", icon: "/images/Phone-call.svg" },
+                { label: "Email", value: "support@jivanjor.com", icon: "/images/Mail-one.svg" },
+                { label: "Hours", value: "Mon-Sat, 9:00 AM – 6:00 PM", icon: "/images/Alarm-clock.svg" },
+              ],
+            },
+            {
+              title: "Corporate Headquarters",
+              details: [
+                { label: "Address", value: "1234, Address Street", icon: "/images/Pin.svg" },
+                { label: "Hours", value: "Mon-Sat, 9:00 AM – 6:00 PM", icon: "/images/Alarm-clock.svg" },
+              ],
+            },
+          ],
         },
       };
     }
