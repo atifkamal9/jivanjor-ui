@@ -36,6 +36,23 @@ export default function AdminRootLayout({
           }
         `
       }} />
+      {/* Script to ensure light theme is default for admin panel unless dark mode is explicitly stored */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var theme = localStorage.getItem('jivanjor_admin_theme');
+                if (theme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            })();
+          `,
+        }}
+      />
       <AdminAuthGuard>
         {children}
       </AdminAuthGuard>

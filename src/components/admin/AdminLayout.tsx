@@ -63,9 +63,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setEmail(getUserEmail() || "admin@jivanjor.com");
     setRole(getUserRole());
 
-    // Check local storage for theme
+    // Check local storage for theme (default to light)
     const theme = localStorage.getItem("jivanjor_admin_theme");
-    if (theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    if (theme === "dark") {
       setDarkMode(true);
       document.documentElement.classList.add("dark");
     } else {
