@@ -842,7 +842,7 @@ export default function MainCategories() {
                   </div>
                   {/* Right Column: Styled Image Display */}
                   {isOpen && (
-                    <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
+                    <div className="flex items-center justify-center relative animate-fadeIn w-full lg:min-w-106 lg:w-106 h-53 rounded-[20px] overflow-hidden">
                       <Image
                         fill
                         priority

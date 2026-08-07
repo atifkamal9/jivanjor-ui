@@ -125,11 +125,10 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
 
                 {/* Animated expandable content block */}
                 <div
-                  className={`transition-all duration-300 ease-in-out ${
-                    isOpen
-                      ? "max-h-150 opacity-100 pb-6"
-                      : "max-h-0 opacity-0 pointer-events-none"
-                  }`}
+                  className={`transition-all duration-300 ease-in-out ${isOpen
+                    ? "max-h-150 opacity-100 pb-6"
+                    : "max-h-0 opacity-0 pointer-events-none"
+                    }`}
                 >
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
@@ -182,72 +181,68 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
       {/* ========================================== */}
       {/* 2. VIDEO ACTION SECTION (SUPREMO IN ACTION) */}
       {/* ========================================== */}
-      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto">
-        {/* On Mobile: text goes top. On Desktop: text goes right */}
-        {/* Text Details Column */}
-        <div className="order-1 md:order-2 flex-1 text-center xl:text-left space-y-4 min-w-xs max-w-85 md:max-w-3xl">
-          <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal px-12 sm:px-0">
-            {product?.videoTitle ? product.videoTitle.replace("{productName}", productName) : `See ${productName} in Action`}
-          </h2>
-          <p className="text-lg sm:text-2xl leading-normal">
-            {product?.videoDescription ? product.videoDescription.replace("{productName}", productName) : `Watch how trade professionals achieve flawless, high-coverage bonding with ${productName} in record time.`}
-          </p>
-          <Link
-            href="#"
-            className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
-          >
-            Partner With Us
-          </Link>
-        </div>
-
-        {/* Video Column (On Mobile: goes bottom. On Desktop: goes left) */}
-        <div className="order-2 md:order-1 w-full md:w-auto shrink-0 flex justify-center">
-          <div className="relative w-full max-w-2xl aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
-            {/* Background image mockup for video */}
-            <Image
-              src={product?.videoThumbnail || "/images/Rectangle 4.png"}
-              alt={`${productName} wood bonding video`}
-              width={800}
-              height={450}
-              className="object-cover w-full h-full"
-              sizes="(max-width: 768px) 100vw, 630px"
-            />
-            {/* Center play icon overlay */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-              {product?.videoUrl ? (
-                <a
-                  href={product.videoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                  aria-label="Play video"
-                >
-                  {/* Play Triangle SVG */}
-                  <svg
-                    className="w-5 h-5 ml-0.5 fill-current text-black"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </a>
-              ) : (
-                <button
-                  className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                  aria-label="Play video"
-                >
-                  {/* Play Triangle SVG */}
-                  <svg
-                    className="w-5 h-5 ml-0.5 fill-current text-black"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* On Mobile: text goes top. On Desktop: text goes right */}
+      {/* Text Details Column */}
     </section>
   );
 }
+
+{/* <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-10 lg:gap-16 max-w-7xl mx-auto">
+  <div className="order-1 md:order-2 flex-1 text-center xl:text-left space-y-4 min-w-xs max-w-85 md:max-w-3xl">
+    <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal px-12 sm:px-0">
+      {product?.videoTitle ? product.videoTitle.replace("{productName}", productName) : `See ${productName} in Action`}
+    </h2>
+    <p className="text-lg sm:text-2xl leading-normal">
+      {product?.videoDescription ? product.videoDescription.replace("{productName}", productName) : `Watch how trade professionals achieve flawless, high-coverage bonding with ${productName} in record time.`}
+    </p>
+    <Link
+      href="#"
+      className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
+    >
+      Partner With Us
+    </Link>
+  </div>
+
+  <div className="order-2 md:order-1 w-full md:w-auto shrink-0 flex justify-center">
+    <div className="relative w-full max-w-2xl aspect-video sm:aspect-16/10 md:aspect-video rounded-3xl overflow-hidden shadow-lg border border-neutral-100 hover:shadow-xl transition-all duration-300">
+      <Image
+        src={product?.videoThumbnail || "/images/Rectangle 4.png"}
+        alt={`${productName} wood bonding video`}
+        width={800}
+        height={450}
+        className="object-cover w-full h-full"
+        sizes="(max-width: 768px) 100vw, 630px"
+      />
+      <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+        {product?.videoUrl ? (
+          <a
+            href={product.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            aria-label="Play video"
+          >
+            <svg
+              className="w-5 h-5 ml-0.5 fill-current text-black"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </a>
+        ) : (
+          <button
+            className="w-14 h-14 bg-white/95 hover:bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            aria-label="Play video"
+          >
+            <svg
+              className="w-5 h-5 ml-0.5 fill-current text-black"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+</div> */}
