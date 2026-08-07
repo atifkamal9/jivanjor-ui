@@ -1,8 +1,6 @@
-import Image from "next/image";
 import { api } from "@/lib/api";
 import {
-  HeroCategory,
-  ProductCategories,
+  CategoryDetailClient,
   RightChoice,
 } from "@/components/categories";
 
@@ -43,18 +41,12 @@ export default async function Categories({ params }: PageProps) {
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <HeroCategory category={categoryData} parentCategory={parentCategoryData} />
-      <div className="relative w-full">
-        {/* Watermark */}
-        <Image
-          src="/images/Watermark 9.png"
-          alt="watermark"
-          width={580}
-          height={682}
-          className="hidden lg:block absolute top-[22%] -right-2 pointer-events-none"
-        />
-        <ProductCategories category={slug} data={researchSection} />
-      </div>
+      <CategoryDetailClient
+        initialCategory={categoryData}
+        initialParentCategory={parentCategoryData}
+        slug={slug}
+        data={researchSection}
+      />
       <RightChoice />
     </main>
   );

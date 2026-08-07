@@ -435,7 +435,7 @@ export default function MainCategories() {
                   title: p.name,
                   slug: p.slug,
                   description: p.description,
-                  shortDescription: p.short_description || p.shortDescription || p.description,
+                  shortDescription: p.short_description || p.shortDescription || "",
                   mobileDesc: p.description,
                   color: p.name.toLowerCase().includes("aquabond")
                     ? "bg-[#077937]"
@@ -803,75 +803,77 @@ export default function MainCategories() {
       {/* Main Content Area */}
       <div className="flex-1 min-w-0 mt-0 lg:mt-12 overflow-x-clip space-y-8 z-10">
         {/* Product Accordion Container */}
-        <div className="flex flex-col bg-surface rounded-[20px] p-4 lg:p-8 w-full">
-          {currentSubCategoryData.products.map((product, idx) => {
-            const isOpen = openAccordionIndex === idx;
-            return (
-              <div
-                key={`${product.title}-${idx}`}
-                onClick={() => !isOpen && toggleAccordion(idx)}
-                className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
-              >
-                {/* Accordion Content Panel */}
-                <div className="flex flex-col animate-fadeIn gap-1.5 relative">
-                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors">
-                    {product.title}
-                  </span>
+        {currentSubCategoryData.products.length > 0 &&
+          <div className="flex flex-col bg-surface rounded-[20px] p-4 lg:p-8 w-full">
+            {currentSubCategoryData.products.map((product, idx) => {
+              const isOpen = openAccordionIndex === idx;
+              return (
+                <div
+                  key={`${product.title}-${idx}`}
+                  onClick={() => !isOpen && toggleAccordion(idx)}
+                  className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
+                >
+                  {/* Accordion Content Panel */}
+                  <div className="flex flex-col animate-fadeIn gap-1.5 relative">
+                    <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors">
+                      {product.title}
+                    </span>
+                    {isOpen && (
+                      <>
+                        {/* Left Column: Description & Action */}
+                        <p className="text-base lg:text-lg text-black font-normal font-google-sans">
+                          {product.description}
+                        </p>
+                        <Link
+                          href={`/products?product=${product.slug || product.title.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
+                        >
+                          View More
+                        </Link>
+                      </>
+                    )}
+                    {/* Cross button for mobiles */}
+                    <div
+                      onClick={() => toggleAccordion(idx)}
+                      className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                    >
+                      <Plus size={24} strokeWidth={2} />
+                    </div>
+                  </div>
+                  {/* Right Column: Styled Image Display */}
                   {isOpen && (
-                    <>
-                      {/* Left Column: Description & Action */}
-                      <p className="text-base lg:text-lg text-black font-normal font-google-sans">
-                        {product.description}
-                      </p>
-                      <Link
-                        href={`/products?product=${product.slug || product.title.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="inline-flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
-                      >
-                        View More
-                      </Link>
-                    </>
+                    <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
+                      <Image
+                        fill
+                        priority
+                        alt="Product Backdrop"
+                        className="object-cover object-center"
+                        src={defaultCardBg || "/images/placeholder.png"}
+                        unoptimized
+                      />
+                      {/* <div className="absolute inset-0 bg-black/5" /> */}
+                      <div className="relative aspect-video w-36 md:w-40 h-36 md:h-40 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
+                        <Image
+                          fill
+                          src={product.image}
+                          alt={product.title}
+                          className="object-contain"
+                          unoptimized
+                        />
+                      </div>
+                    </div>
                   )}
-                  {/* Cross button for mobiles */}
                   <div
                     onClick={() => toggleAccordion(idx)}
-                    className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                    className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
                   >
                     <Plus size={24} strokeWidth={2} />
                   </div>
                 </div>
-                {/* Right Column: Styled Image Display */}
-                {isOpen && (
-                  <div className="flex items-center justify-center relative animate-fadeIn w-full lg:w-106 h-53 rounded-[20px] overflow-hidden">
-                    <Image
-                      fill
-                      priority
-                      alt="Product Backdrop"
-                      className="object-cover object-center"
-                      src={defaultCardBg || "/images/placeholder.png"}
-                      unoptimized
-                    />
-                    {/* <div className="absolute inset-0 bg-black/5" /> */}
-                    <div className="relative aspect-video w-36 md:w-40 h-36 md:h-40 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
-                      <Image
-                        fill
-                        src={product.image}
-                        alt={product.title}
-                        className="object-contain"
-                        unoptimized
-                      />
-                    </div>
-                  </div>
-                )}
-                <div
-                  onClick={() => toggleAccordion(idx)}
-                  className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
-                >
-                  <Plus size={24} strokeWidth={2} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        }
       </div>
     </section>
   );

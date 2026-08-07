@@ -583,16 +583,7 @@ export default function CategoriesPage() {
                             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                           />
                         </div>
-                        <div>
-                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Category Hero Description</label>
-                          <textarea
-                            rows={3}
-                            value={formData.categoryDescription}
-                            onChange={(e) => setFormData(prev => ({ ...prev, categoryDescription: e.target.value }))}
-                            placeholder="Detailed overview for the category page hero..."
-                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
-                          />
-                        </div>
+
                       </div>
                     </div>
 

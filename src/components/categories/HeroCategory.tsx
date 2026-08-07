@@ -18,14 +18,19 @@ export default function HeroCategory({
     "/images/category-hero.png";
 
   // Resolve breadcrumbs label
-  const breadcrumbText = isSubcategory
-    ? (category?.name || "Subcategory")
-    : "All Products";
+  const breadcrumbText =
+    category?.name ||
+    (isSubcategory ? "Subcategory" : "All Products");
 
   // Resolve header title
-  const title = isSubcategory
-    ? (parentCategory?.categoryTitle || parentCategory?.name || "Premium Adhesives")
-    : (category?.categoryTitle || category?.name || "Our Exclusive Product Range");
+  const title =
+    category?.categoryTitle ||
+    category?.name ||
+    parentCategory?.name ||
+    "Our Exclusive Product Range";
+
+  console.log("category---->", category);
+  console.log("parentCategory: ", parentCategory);
 
   return (
     <section className="relative">

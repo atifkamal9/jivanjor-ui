@@ -632,7 +632,7 @@ export default function ProductsPage() {
                           </td>
                           <td className="px-6 py-5 min-w-[260px] max-w-md">
                             <p className="text-xs text-gray-600 dark:text-zinc-300 font-medium line-clamp-2 leading-relaxed" title={p.short_description || p.description}>
-                              {p.short_description || p.shortDescription || p.description || "No description provided."}
+                              {p.short_description || p.shortDescription || "No description provided."}
                             </p>
                           </td>
                           {/* <td className="p-5">

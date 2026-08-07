@@ -22,6 +22,7 @@ import "swiper/css/navigation";
 interface Props {
   category?: string;
   data?: any;
+  onCategoryChange?: (categoryObj: any) => void;
 }
 
 interface ProductCard {
@@ -237,7 +238,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
   },
 ];
 
-export default function ProductCategories({ category, data }: Props) {
+export default function ProductCategories({ category, data, onCategoryChange }: Props) {
   const [categories, setCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -245,6 +246,25 @@ export default function ProductCategories({ category, data }: Props) {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleCategorySelect = (catName: string) => {
+    setActiveCategory(catName);
+    const catMatch = categories.find(
+      (c) => c.name === catName || (c.slug && c.slug === catName)
+    );
+    if (catMatch && onCategoryChange) {
+      onCategoryChange(catMatch);
+    } else if (onCategoryChange) {
+      const staticMatch = categoriesToUse.find((c) => c.name === catName);
+      if (staticMatch) {
+        onCategoryChange({
+          name: staticMatch.name,
+          categoryTitle: staticMatch.title,
+          description: staticMatch.description,
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -262,6 +282,9 @@ export default function ProductCategories({ category, data }: Props) {
           const match = cats.find((c) => c.slug === category);
           if (match) {
             setActiveCategory(match.name);
+            if (onCategoryChange) {
+              onCategoryChange(match);
+            }
           }
         }
       } catch (err) {
@@ -355,7 +378,7 @@ export default function ProductCategories({ category, data }: Props) {
             title: p.name,
             slug: p.slug,
             description: p.description,
-            shortDescription: p.short_description || p.description,
+            shortDescription: p.short_description || "",
             mobileDesc: p.description,
             color: p.themeColor ?? "#0498AA",
             badge: sub.name,
@@ -415,7 +438,7 @@ export default function ProductCategories({ category, data }: Props) {
             return (
               <button
                 key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
+                onClick={() => handleCategorySelect(cat.name)}
                 className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
                   }`}
               >
@@ -466,7 +489,7 @@ export default function ProductCategories({ category, data }: Props) {
             return (
               <button
                 key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
+                onClick={() => handleCategorySelect(cat.name)}
                 className={`${isActive ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white" : "bg-surface text-black"} cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate`}
               >
                 {cat.name}
@@ -498,108 +521,110 @@ export default function ProductCategories({ category, data }: Props) {
         </div>
 
         {/* Swiper Slider Wrapper with Absolute Navigation Arrows */}
-        <div className="relative px-12 overflow-visible">
-          <Swiper
-            modules={[Navigation]}
-            watchOverflow={false}
-            loop={false}
-            spaceBetween={20}
-            slidesPerView={1}
-            navigation={{
-              prevEl: ".cat-swiper-prev",
-              nextEl: ".cat-swiper-next",
-              disabledClass: "swiper-button-disabled",
-            }}
-            breakpoints={{
-              480: {
-                slidesPerView: 1,
-              },
-              640: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 2,
-              },
-            }}
-            className="overflow-visible"
-          >
-            {currentCategoryData.products.map((card, idx) => (
-              <SwiperSlide
-                key={`${card.title}-${idx}`}
-                className="overflow-visible! pt-2 md:pt-4"
-              >
-                {/* Responsive Design: Floating 3D card layout */}
-                <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">
-                  {/* Card Main Body */}
-                  <Link
-                    href={`/products?product=${card.slug || card.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64"
-                    style={{ backgroundColor: `${card.color}` }}
-                  >
-                    {/* Top Row: Floating image & Text info side-by-side */}
-                    <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
-                      {/* Floating image wrapper */}
-                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-54 object-contain z-100">
-                        <Image
-                          src={card.image}
-                          alt={card.title}
-                          fill
-                          className="object-contain z-10 group-hover:scale-95 transition-all duration-300"
-                          priority
-                        />
-                      </div>
-                      {/* Header content */}
-                      <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pl-12 xl:pt-0">
-                        <h3 className="text-2xl lg:text-3xl font-bold leading-normal">
-                          {card.title}
-                        </h3>
-                        {/* Custom White Divider */}
-                        <div className="w-full h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
-                        <p className="hidden xl:block text-sm leading-normal font-normal">
-                          {card.description}
-                        </p>
-                        <p className="xl:hidden text-center text-base leading-[100%] font-normal">
-                          {card.mobileDesc}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Bottom Row: Feature Bullet points */}
-                    <div className="hidden absolute bottom-6 xl:block space-y-1">
-                      {card.features.map((feature, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-3">
-                          {/* Premium SVG Custom Icons */}
-                          <div className="shrink-0 text-white opacity-95">
-                            {fIdx === 0 && (
-                              <Shield size={16} strokeWidth={2.5} />
-                            )}
-                            {fIdx === 1 && (
-                              <Gauge size={16} strokeWidth={2.5} />
-                            )}
-                            {fIdx === 2 && (
-                              <ThumbsUp size={16} strokeWidth={2.5} />
-                            )}
-                          </div>
-                          <span className="font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
-                            {feature}
-                          </span>
+        {currentCategoryData.products.length > 0 &&
+          <div className="relative px-12 overflow-visible">
+            <Swiper
+              modules={[Navigation]}
+              watchOverflow={false}
+              loop={false}
+              spaceBetween={20}
+              slidesPerView={1}
+              navigation={{
+                prevEl: ".cat-swiper-prev",
+                nextEl: ".cat-swiper-next",
+                disabledClass: "swiper-button-disabled",
+              }}
+              breakpoints={{
+                480: {
+                  slidesPerView: 1,
+                },
+                640: {
+                  slidesPerView: 2,
+                },
+                1024: {
+                  slidesPerView: 2,
+                },
+              }}
+              className="overflow-visible"
+            >
+              {currentCategoryData.products.map((card, idx) => (
+                <SwiperSlide
+                  key={`${card.title}-${idx}`}
+                  className="overflow-visible! pt-2 md:pt-4"
+                >
+                  {/* Responsive Design: Floating 3D card layout */}
+                  <div className="relative pt-21 xl:pt-12 mx-auto lg:mx-0">
+                    {/* Card Main Body */}
+                    <Link
+                      href={`/products?product=${card.slug || card.title.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64"
+                      style={{ backgroundColor: `${card.color}` }}
+                    >
+                      {/* Top Row: Floating image & Text info side-by-side */}
+                      <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
+                        {/* Floating image wrapper */}
+                        <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-54 object-contain z-100">
+                          <Image
+                            src={card.image}
+                            alt={card.title}
+                            fill
+                            className="object-contain z-10 group-hover:scale-95 transition-all duration-300"
+                            priority
+                          />
                         </div>
-                      ))}
-                    </div>
-                  </Link>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                        {/* Header content */}
+                        <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pl-12 xl:pt-0">
+                          <h3 className="text-2xl lg:text-3xl font-bold leading-normal">
+                            {card.title}
+                          </h3>
+                          {/* Custom White Divider */}
+                          <div className="w-full h-px bg-white mx-auto xl:mr-0 xl:ml-auto my-1 opacity-90" />
+                          <p className="hidden xl:block text-sm leading-normal font-normal">
+                            {card.description}
+                          </p>
+                          <p className="xl:hidden text-center text-base leading-[100%] font-normal">
+                            {card.mobileDesc}
+                          </p>
+                        </div>
+                      </div>
 
-          {/* Absolute Red Arrow Navigation Controls */}
-          <button className="cat-swiper-prev absolute left-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronLeft size={48} strokeWidth={2.5} />
-          </button>
-          <button className="cat-swiper-next absolute right-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
-            <ChevronRight size={48} strokeWidth={2.5} />
-          </button>
-        </div>
+                      {/* Bottom Row: Feature Bullet points */}
+                      <div className="hidden absolute bottom-6 xl:block space-y-1">
+                        {card.features.map((feature, fIdx) => (
+                          <div key={fIdx} className="flex items-center gap-3">
+                            {/* Premium SVG Custom Icons */}
+                            <div className="shrink-0 text-white opacity-95">
+                              {fIdx === 0 && (
+                                <Shield size={16} strokeWidth={2.5} />
+                              )}
+                              {fIdx === 1 && (
+                                <Gauge size={16} strokeWidth={2.5} />
+                              )}
+                              {fIdx === 2 && (
+                                <ThumbsUp size={16} strokeWidth={2.5} />
+                              )}
+                            </div>
+                            <span className="font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
+                              {feature}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </Link>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {/* Absolute Red Arrow Navigation Controls */}
+            <button className="cat-swiper-prev absolute left-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+              <ChevronLeft size={48} strokeWidth={2.5} />
+            </button>
+            <button className="cat-swiper-next absolute right-0 top-[60%] -translate-y-1/2 z-10 text-primary cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+              <ChevronRight size={48} strokeWidth={2.5} />
+            </button>
+          </div>
+        }
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">

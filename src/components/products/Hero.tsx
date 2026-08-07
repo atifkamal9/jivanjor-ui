@@ -10,7 +10,7 @@ interface HeroProps {
 export default function Hero({ product, category }: HeroProps) {
   const categoryName = category?.name || "Premium Grade";
   const productName = product?.name || "Watershield";
-  const productDescription = product?.shortDescription || product?.description || "Apke furniture ko paani se bachane wali shield.";
+  const productDescription = product?.shortDescription || "Apke furniture ko paani se bachane wali shield.";
 
   // Extract features from product metadata
   let featuresList = ["Best-in-Class Coverage", "D3 Grade for Water Resistance", "Anti-bubble Adhesive"];
