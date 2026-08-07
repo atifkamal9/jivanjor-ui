@@ -53,6 +53,7 @@ export interface Category {
   slug: string;
   parent_category: string; // id or empty string
   description: string;
+  tagline?: string;
   icon?: string; // Pre-stored platform icon key (e.g. Lucide icon name)
   categoryTitle?: string;
   categoryDescription?: string;
@@ -227,6 +228,7 @@ client.interceptors.request.use(
 // Mappers for backward compatibility with UI schemas
 function mapCategoryFromBackend(cat: any): Category {
   let description = cat.description || "";
+  let tagline = cat.tagline || "";
   let categoryTitle = "";
   let categoryDescription = "";
   let resourcesTitle = "";
@@ -243,6 +245,7 @@ function mapCategoryFromBackend(cat: any): Category {
     try {
       const parsed = JSON.parse(description);
       description = parsed.description || "";
+      tagline = cat.tagline || parsed.tagline || "";
       categoryTitle = parsed.categoryTitle || "";
       categoryDescription = parsed.categoryDescription || "";
       resourcesTitle = parsed.resourcesTitle || parsed.researchTitle || "";
@@ -265,6 +268,7 @@ function mapCategoryFromBackend(cat: any): Category {
     slug: cat.slug,
     parent_category: cat.parentId || "",
     description,
+    tagline: cat.tagline || tagline,
     categoryTitle,
     categoryDescription,
     resourcesTitle,
@@ -711,6 +715,7 @@ export const api = {
       name: category.name,
       parentId: category.parent_category || null,
       description: serializedDescription,
+      tagline: category.tagline || null,
       icon: category.icon || null,
     };
     if (category.id) {

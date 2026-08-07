@@ -39,6 +39,7 @@ export default function CategoriesPage() {
     slug: "",
     parent_category: "",
     description: "",
+    tagline: "",
     icon: "",
     categoryTitle: "",
     categoryDescription: "",
@@ -103,6 +104,7 @@ export default function CategoriesPage() {
       slug: "",
       parent_category: "",
       description: "",
+      tagline: "",
       icon: "",
       categoryTitle: "",
       categoryDescription: "",
@@ -132,6 +134,7 @@ export default function CategoriesPage() {
       slug: category.slug,
       parent_category: category.parent_category || "",
       description: category.description,
+      tagline: category.tagline || "",
       icon: category.icon || "",
       categoryTitle: category.categoryTitle || "",
       categoryDescription: category.categoryDescription || "",
@@ -540,6 +543,19 @@ export default function CategoriesPage() {
                             </option>
                           ))}
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Category Tagline
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.tagline}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, tagline: e.target.value }))}
+                        placeholder="e.g. Super Premium Adhesives by Jivanjor"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
                     </div>
 
                     <div>

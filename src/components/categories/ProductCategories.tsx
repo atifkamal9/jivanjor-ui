@@ -38,6 +38,7 @@ interface ProductCard {
 
 interface CategoryData {
   name: string;
+  tagline?: string;
   title: string;
   description: string;
   icon: string;
@@ -47,6 +48,7 @@ interface CategoryData {
 const STATIC_CATEGORIES_DATA: CategoryData[] = [
   {
     name: "Waterproof Grade",
+    tagline: "Super Premium Adhesives by Jivanjor",
     title: "Super Premium Adhesives by Jivanjor",
     description:
       "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
@@ -71,6 +73,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
   },
   {
     name: "Speciality Adhesive",
+    tagline: "Speciality Adhesives by Jivanjor",
     title: "Speciality Adhesives by Jivanjor",
     description:
       "Explore our range of speciality adhesives designed for upholstery, foam, PVC, acrylic, edge banding, and other professional woodwork applications.",
@@ -363,6 +366,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       });
       return {
         name: sub.name,
+        tagline: sub.tagline || "",
         title: sub.name || "Adhesives by Jivanjor",
         description: sub.description || `Explore our high quality ${sub.name} solutions.`,
         icon: subProducts[0]?.image || "/images/Watershield.png",
@@ -514,8 +518,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
         <div className="space-y-5 text-center md:text-start max-w-250">
-          <h1 className="font-amethysta text-[34px] sm:text-5xl  leading-normal">
-            {currentCategoryData.title}
+          <h1 className="font-amethysta text-[34px] sm:text-5xl leading-normal">
+            {currentCategoryData.tagline || currentCategoryData.title}
           </h1>
           <p className="text-lg sm:text-2xl leading-normal font-normal">
             {currentCategoryData.description}
