@@ -373,7 +373,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
         products: subProducts.map((p) => {
           let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
           if (p?.overviewBullets && p.overviewBullets.length > 0) {
-            featuresList = p?.overviewBullets?.map((b: any) => b.text);
+            featuresList = p?.overviewBullets
           } else if (p?.metadata) {
             const cleaned = p.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
             if (cleaned.length > 0) {
@@ -596,25 +596,30 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
 
                       {/* Bottom Row: Feature Bullet points */}
                       <div className="hidden absolute bottom-6 xl:block space-y-1">
-                        {card.features.map((feature, fIdx) => (
-                          <div key={fIdx} className="flex items-center gap-3">
-                            {/* Premium SVG Custom Icons */}
-                            <div className="shrink-0 text-white opacity-95">
-                              {fIdx === 0 && (
-                                <Shield size={16} strokeWidth={2.5} />
-                              )}
-                              {fIdx === 1 && (
-                                <Gauge size={16} strokeWidth={2.5} />
-                              )}
-                              {fIdx === 2 && (
-                                <ThumbsUp size={16} strokeWidth={2.5} />
-                              )}
+                        {card.features.map((feature: any, fIdx) => {
+                          const text = typeof feature === "string" ? feature : (feature?.text || "");
+                          const iconName = typeof feature === "string"
+                            ? `image ${18 + (fIdx % 3)}.svg`
+                            : (feature?.icon || `image ${18 + (fIdx % 3)}.svg`);
+
+                          return (
+                            <div key={fIdx} className="flex items-center gap-3">
+                              {/* Premium SVG Custom Icons */}
+                              <div className="flex items-center justify-center shrink-0 text-white">
+                                <Image
+                                  src={`/icons/${iconName}`}
+                                  className="aspect-square object-contain"
+                                  alt={text}
+                                  width={16}
+                                  height={16}
+                                />
+                              </div>
+                              <span className="capitalize font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
+                                {text}
+                              </span>
                             </div>
-                            <span className="capitalize font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     </Link>
                   </div>

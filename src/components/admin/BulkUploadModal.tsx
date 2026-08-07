@@ -61,9 +61,6 @@ export interface ParsedRow {
   videoThumbnail?: string;
   videoTitle?: string;
   videoDescription?: string;
-  faqs?: { question: string; answer: string }[];
-  faqsTitle?: string;
-  faqsDescription?: string;
   relatedProducts?: string[];
   relatedTitle?: string;
 
@@ -132,9 +129,6 @@ const PRODUCT_TEMPLATE_HEADERS = [
   "videoThumbnail",
   "videoTitle",
   "videoDescription",
-  "faqs",
-  "faqsTitle",
-  "faqsDescription",
   "relatedProducts",
   "relatedTitle",
   "meta_title",
@@ -191,9 +185,6 @@ const PRODUCT_TEMPLATE_EXAMPLE = [
   "https://example.com/video-thumb.jpg",
   "See Product in Action",
   "Watch trade professionals achieve flawless bonding in record time.",
-  "Q: How long does it take to set? A: Superfast setting time of 1 hour under typical site conditions. | Q: Is it waterproof? A: Yes, it meets D3 water resistance standards.",
-  "Frequently Asked Questions",
-  "Find answers to common questions about application, setting time, and coverage.",
   "Watershield | Champion Super",
   "Related Products",
   "Jivanjor Aquabond - D3 Waterproof Wood Adhesive",
@@ -273,60 +264,7 @@ function cleanVal(str: string): string {
   return trimmed;
 }
 
-// Dedicated Parser Helpers for Dynamic Components
-function parseFaqs(raw: string): { question: string; answer: string }[] {
-  const clean = cleanVal(raw);
-  if (!clean) return [];
 
-  const items = clean.includes("|") ? clean.split("|") : clean.split("\n");
-  const result: { question: string; answer: string }[] = [];
-
-  for (let item of items) {
-    item = item.trim();
-    if (!item || item === "-- to be updated --") continue;
-
-    // Pattern 1: Q: Question? A: Answer or Q: Question A: Answer
-    const qaMatch = item.match(/(?:Q\s*:\s*)?(.*?)\s*(?:A\s*:\s*)(.*)/i);
-    if (qaMatch && qaMatch[1] && qaMatch[2]) {
-      const q = qaMatch[1].replace(/^Q\s*:\s*/i, "").trim();
-      const a = qaMatch[2].trim();
-      if (q) {
-        result.push({ question: q, answer: a });
-        continue;
-      }
-    }
-
-    // Pattern 2: Question? Answer
-    const qIndex = item.indexOf("?");
-    if (qIndex !== -1 && qIndex < item.length - 1) {
-      const q = item.slice(0, qIndex + 1).replace(/^Q\s*:\s*/i, "").trim();
-      const a = item.slice(qIndex + 1).replace(/^[:\sA\s*:\s*]+/, "").trim();
-      if (q && a) {
-        result.push({ question: q, answer: a });
-        continue;
-      }
-    }
-
-    // Pattern 3: Question: Answer
-    const colonIdx = item.indexOf(":");
-    if (colonIdx !== -1) {
-      const q = item.slice(0, colonIdx).replace(/^Q\s*:\s*/i, "").trim();
-      const a = item.slice(colonIdx + 1).replace(/^A\s*:\s*/i, "").trim();
-      if (q && a) {
-        result.push({ question: q, answer: a });
-        continue;
-      }
-    }
-
-    // Fallback: Just Question
-    const cleanQ = item.replace(/^Q\s*:\s*/i, "").trim();
-    if (cleanQ) {
-      result.push({ question: cleanQ, answer: "" });
-    }
-  }
-
-  return result;
-}
 
 function parseUsps(raw: string): { title: string; description: string; icon: string }[] {
   const clean = cleanVal(raw);
@@ -505,9 +443,6 @@ function parseExcel(
             const videoThumbnail = cleanVal(getRowValue(row, ["videoThumbnail", "video_thumbnail"]));
             const videoTitle = cleanVal(getRowValue(row, ["videoTitle", "video_title"]));
             const videoDescription = cleanVal(getRowValue(row, ["videoDescription", "video_description"]));
-            const faqsRaw = getRowValue(row, ["faqs", "faq", "frequently_asked_questions"]);
-            const faqsTitle = cleanVal(getRowValue(row, ["faqsTitle", "faqs_title"]));
-            const faqsDescription = cleanVal(getRowValue(row, ["faqsDescription", "faqs_description"]));
             const relatedProductsRaw = getRowValue(row, ["relatedProducts", "related_products"]);
             const relatedTitle = cleanVal(getRowValue(row, ["relatedTitle", "related_title"]));
 
@@ -545,9 +480,6 @@ function parseExcel(
             result.videoThumbnail = videoThumbnail;
             result.videoTitle = videoTitle;
             result.videoDescription = videoDescription;
-            result.faqs = parseFaqs(faqsRaw);
-            result.faqsTitle = faqsTitle;
-            result.faqsDescription = faqsDescription;
             result.relatedProducts = relatedProductsRaw ? relatedProductsRaw.split(/[\n|;]/).map((s) => s.trim()).filter((s) => s && s !== "-- to be updated --") : [];
             result.relatedTitle = relatedTitle;
 
@@ -995,9 +927,6 @@ export default function BulkUploadModal({
                           { col: "videoThumbnail", req: false, note: "Video cover image URL" },
                           { col: "videoTitle", req: false, note: "Video section header" },
                           { col: "videoDescription", req: false, note: "Video section description" },
-                          { col: "faqs", req: false, note: "Pipe-separated FAQs e.g. Q: Setting time? A: 1 hour | Q: Waterproof? A: Yes" },
-                          { col: "faqsTitle", req: false, note: "FAQs section header" },
-                          { col: "faqsDescription", req: false, note: "FAQs section description" },
                           { col: "relatedProducts", req: false, note: "Pipe-separated names of related products" },
                           { col: "relatedTitle", req: false, note: "Related products section header" },
                           { col: "meta_title", req: false, note: "SEO Meta Title (50-60 characters)" },
