@@ -844,6 +844,7 @@ export default function CategoriesPage() {
             name: row.name || "",
             slug,
             description: row.description || "",
+            tagline: row.tagline || "",
             parent_category: parentId,
             icon: row.icon || "",
             categoryTitle: row.categoryTitle || "",

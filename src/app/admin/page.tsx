@@ -555,6 +555,7 @@ export default function DashboardPage() {
               name: row.name || "",
               slug,
               description: row.description || "",
+              tagline: row.tagline || "",
               parent_category: parentId,
               icon: row.icon || "",
             });

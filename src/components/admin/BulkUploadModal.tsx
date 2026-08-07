@@ -74,6 +74,7 @@ export interface ParsedRow {
   parent_category_name?: string;
   parent_category?: string;
   icon?: string;
+  tagline?: string;
   categoryTitle?: string;
   categoryDescription?: string;
   resourcesTitle?: string;
@@ -108,6 +109,7 @@ const PRODUCT_TEMPLATE_HEADERS = [
   "name",
   "category_name",
   "description",
+  "short_description",
   "slug",
   "categories",
   "themeColor",
@@ -141,6 +143,7 @@ const CATEGORY_TEMPLATE_HEADERS = [
   "name",
   "parent_category_name",
   "description",
+  "tagline",
   "slug",
   "icon",
   "categoryTitle",
@@ -164,6 +167,7 @@ const PRODUCT_TEMPLATE_EXAMPLE = [
   "Jivanjor Aquabond",
   "Water Resistant",
   "High-strength water-resistant D3 adhesive for premium woodworking and furniture joinery.",
+  "High-strength D3 water-resistant wood adhesive.",
   "jivanjor-aquabond",
   "Woodworking Adhesives | Furniture & Woodwork",
   "#0083CB",
@@ -197,6 +201,7 @@ const CATEGORY_TEMPLATE_EXAMPLE = [
   "Water Resistant Adhesives",
   "Wood Adhesives",
   "High-performance D3 water-resistant wood adhesives engineered for site rotation and durable bonding.",
+  "Next-Gen Moisture Shield Technology",
   "water-resistant-adhesives",
   "Droplets",
   "Water Resistant Wood Bonding Solutions",
@@ -491,6 +496,7 @@ function parseExcel(
             const name = getRowValue(row, ["name", "category_name", "category", "categoryname", "title"]);
             const slug = getRowValue(row, ["slug", "url_slug", "category_slug"]);
             const description = getRowValue(row, ["description", "desc", "details"]);
+            const tagline = getRowValue(row, ["tagline", "sub_title", "subtitle"]);
             const parentName = getRowValue(row, ["parent_category_name", "parent_category", "parent", "parent_name", "parentcategoryname", "parentcategory"]);
             const icon = getRowValue(row, ["icon", "icon_name", "iconname"]);
 
@@ -526,6 +532,7 @@ function parseExcel(
             result.name = name;
             result.slug = cleanVal(slug);
             result.description = description;
+            result.tagline = tagline;
             result.parent_category_name = parentName;
             result.parent_category = matchedParentDb?.id || "";
             result.icon = icon;
