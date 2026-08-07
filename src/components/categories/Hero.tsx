@@ -4,88 +4,24 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { api, Category } from "@/lib/api";
-
-const slugify = (text: string) =>
-  text
-    ? text
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-    : "";
+import { api } from "@/lib/api";
 
 export default function Hero() {
-  const searchParams = useSearchParams();
   const [heroCover, setHeroCover] = useState("/images/main-category-hero.png");
-  const [title, setTitle] = useState("Our Exclusive Product Range");
-  const [breadcrumb, setBreadcrumb] = useState("All Products");
-  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function loadData() {
+    async function fetchCover() {
       try {
-        const [settings, cats] = await Promise.all([
-          api.getSettings().catch(() => null),
-          api.getCategories().catch(() => []),
-        ]);
+        const settings = await api.getSettings();
         if (settings?.categoryHeroCover) {
           setHeroCover(settings.categoryHeroCover);
         }
-        setCategories(cats);
       } catch (err) {
         console.error("Failed to load category hero cover from settings:", err);
       }
     }
-    loadData();
+    fetchCover();
   }, []);
-
-  useEffect(() => {
-    const sub = searchParams.get("subCategory") || searchParams.get("sub");
-    const main = searchParams.get("category") || searchParams.get("mainCategory") || searchParams.get("cat");
-
-    if (sub && categories.length > 0) {
-      const match = categories.find(
-        (c) =>
-          c.slug.toLowerCase() === sub.toLowerCase() ||
-          c.name.toLowerCase() === sub.toLowerCase() ||
-          slugify(c.name) === slugify(sub)
-      );
-      if (match) {
-        setBreadcrumb(match.name);
-        setTitle(match.categoryTitle || match.name);
-        if (match.heroImage) setHeroCover(match.heroImage);
-        return;
-      } else {
-        setBreadcrumb(sub);
-        setTitle(sub);
-        return;
-      }
-    }
-
-    if (main && categories.length > 0) {
-      const match = categories.find(
-        (c) =>
-          c.slug.toLowerCase() === main.toLowerCase() ||
-          c.name.toLowerCase() === main.toLowerCase() ||
-          slugify(c.name) === slugify(main)
-      );
-      if (match) {
-        setBreadcrumb(match.name);
-        setTitle(match.categoryTitle || match.name);
-        if (match.heroImage) setHeroCover(match.heroImage);
-        return;
-      } else {
-        setBreadcrumb(main);
-        setTitle(main);
-        return;
-      }
-    }
-
-    setBreadcrumb("All Products");
-    setTitle("Our Exclusive Product Range");
-  }, [searchParams, categories]);
 
   return (
     <section className="relative">
@@ -98,12 +34,12 @@ export default function Hero() {
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
-        <span className="font-medium text-lg">{breadcrumb}</span>
+        <span className="font-medium text-lg">All Products</span>
       </div>
       <div className="block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
-            <div className="max-w-2xl text-black md:text-white pointer-events-auto">
+            <div className="max-w-md text-black md:text-white pointer-events-auto">
               <div className="hidden md:flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">
                   {/* Home Solid Icon */}
@@ -118,11 +54,11 @@ export default function Hero() {
                 {/* Chevron separator */}
                 <ChevronRight size={16} />
                 <span className="font-normal text-lg text-white/80">
-                  {breadcrumb}
+                  All Products
                 </span>
               </div>
               <h2 className="font-amethysta font-normal text-5xl mt-0 md:mt-6 text-center md:text-start">
-                {title}
+                Our Exclusive Product Range
               </h2>
             </div>
           </div>
@@ -130,7 +66,7 @@ export default function Hero() {
         <Image
           src={heroCover}
           fill
-          alt={title}
+          alt="Category Hero"
           sizes="100vw"
           className="object-cover object-center hidden md:block"
           unoptimized
