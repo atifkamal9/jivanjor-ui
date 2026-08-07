@@ -368,7 +368,9 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
         icon: subProducts[0]?.image || "/images/Watershield.png",
         products: subProducts.map((p) => {
           let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
-          if (p.metadata) {
+          if (p?.overviewBullets && p.overviewBullets.length > 0) {
+            featuresList = p?.overviewBullets?.map((b: any) => b.text);
+          } else if (p?.metadata) {
             const cleaned = p.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
             if (cleaned.length > 0) {
               featuresList = cleaned;
@@ -604,7 +606,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                                 <ThumbsUp size={16} strokeWidth={2.5} />
                               )}
                             </div>
-                            <span className="font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
+                            <span className="capitalize font-extralight text-sm sm:text-base opacity-95 tracking-wide leading-normal">
                               {feature}
                             </span>
                           </div>
