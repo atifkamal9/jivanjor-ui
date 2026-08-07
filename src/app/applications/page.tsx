@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { api } from "@/lib/api";
 import { ApplicationsLayout } from "@/components/applications";
 
@@ -20,11 +21,13 @@ export default async function ApplicationsPage() {
   const sections = template?.rawSections || template?.sections || null;
 
   return (
-    <ApplicationsLayout
-      data={sections}
-      pageSlug="applications"
-      pageTitle={matchedPage?.title || "Furniture & Woodwork Adhesive Solutions"}
-      pageDescription={matchedPage?.description}
-    />
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <ApplicationsLayout
+        data={sections}
+        pageSlug="applications"
+        pageTitle={matchedPage?.title || "Furniture & Woodwork Adhesive Solutions"}
+        pageDescription={matchedPage?.description}
+      />
+    </Suspense>
   );
 }
