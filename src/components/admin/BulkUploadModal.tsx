@@ -179,7 +179,7 @@ const PRODUCT_TEMPLATE_EXAMPLE = [
   "Appearance: Milk White | Viscosity: 25000 - 35000 cPs | Solids: 50-53% | Coverage: 60-70 Sqft/Kg",
   "Aquabond provides excellent water-resistance and superior flow for smooth application.",
   "Faster Site Rotation: Sets in 1 hour | Smooth Spreadability: Reduces wastage | Solvent-Free Safety: Water-based formulation",
-  "Laminate to Plywood Bonding; Wood to Wood Joinery; Finger Jointing",
+  "Laminate to Plywood Bonding: Suitable for bonding laminate and plywood where strong adhesion is required; Wood to Wood Joinery: Designed for finger jointing, structural dowelling, and solid frames",
   "Engineered for the Task at Hand",
   "Explore where Jivanjor Aquabond fits across woodworking applications.",
   "Technical Data Sheet",
@@ -306,17 +306,40 @@ function parseApplications(raw: string): { title: string; description: string; i
   const clean = cleanVal(raw);
   if (!clean) return [];
 
-  const items = clean.split(/[\n|;]/).map((s) => s.trim().replace(/,$/, "")).filter(Boolean);
+  const items = clean.split(/[\n;]|\s*\|\|\s*/).map((s) => s.trim().replace(/,$/, "")).filter(Boolean);
 
   return items
-    .map((appTitle, idx) => {
-      let title = appTitle;
+    .map((itemStr, idx) => {
+      let title = itemStr;
       let description = "";
-      const colonIdx = appTitle.indexOf(":");
+      let link = "";
+
+      // Extract link if specified in brackets e.g. [http://...] or [/use-cases]
+      const linkMatch = itemStr.match(/\[(https?:\/\/[^\]]+|\/[^\]]+)\]/);
+      if (linkMatch) {
+        link = linkMatch[1];
+        itemStr = itemStr.replace(linkMatch[0], "").trim();
+      }
+
+      const colonIdx = itemStr.indexOf(":");
+      const arrowIdx = itemStr.indexOf("->") !== -1 ? itemStr.indexOf("->") : itemStr.indexOf("=>");
+      const dashIdx = itemStr.search(/\s+[-–—]\s+/);
 
       if (colonIdx !== -1) {
-        title = appTitle.slice(0, colonIdx).trim();
-        description = appTitle.slice(colonIdx + 1).trim();
+        title = itemStr.slice(0, colonIdx).trim();
+        description = itemStr.slice(colonIdx + 1).trim();
+      } else if (arrowIdx !== -1) {
+        title = itemStr.slice(0, arrowIdx).trim();
+        description = itemStr.slice(arrowIdx + 2).trim();
+      } else if (dashIdx !== -1) {
+        title = itemStr.slice(0, dashIdx).trim();
+        description = itemStr.replace(/^[^-–—]+[-–—]\s*/, "").trim();
+      } else {
+        const parenMatch = itemStr.match(/^([^(]+)\(([^)]+)\)$/);
+        if (parenMatch) {
+          title = parenMatch[1].trim();
+          description = parenMatch[2].trim();
+        }
       }
 
       return {
@@ -324,6 +347,7 @@ function parseApplications(raw: string): { title: string; description: string; i
         description: description || `Engineered for ${title.toLowerCase()} applications.`,
         imageA: idx % 2 === 0 ? "/images/Rectangle 34.png" : "/images/Rectangle 35.png",
         imageB: idx % 2 === 0 ? "/images/Rectangle 34 (1).png" : "/images/Rectangle 30.png",
+        ...(link ? { link } : {}),
       };
     })
     .filter((a) => a.title && a.title !== "-- to be updated --");

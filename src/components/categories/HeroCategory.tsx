@@ -29,9 +29,6 @@ export default function HeroCategory({
     parentCategory?.name ||
     "Our Exclusive Product Range";
 
-  console.log("category---->", category);
-  console.log("parentCategory: ", parentCategory);
-
   return (
     <section className="relative">
       <div className="flex items-center gap-1.5 md:hidden px-6 pt-4 text-xs font-medium">
