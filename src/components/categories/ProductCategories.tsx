@@ -383,9 +383,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
           return {
             title: p.name,
             slug: p.slug,
-            description: p.description,
-            shortDescription: p.short_description || "",
-            mobileDesc: p.description,
+            description: p.shortDescription || p.description,
+            mobileDesc: p.shortDescription || p.description,
             color: p.themeColor ?? "#0498AA",
             badge: sub.name,
             image: p.image || "/images/Watershield.png",

@@ -9,6 +9,8 @@ interface AccordionItem {
   description: string;
   imageA: string;
   imageB: string;
+  link?: string;
+  url?: string;
 }
 
 const ACCORDION_ITEMS: AccordionItem[] = [
@@ -137,7 +139,7 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                       </p>
                       {/* Explore Link */}
                       <Link
-                        href="#"
+                        href={item.link || item.url || "#"}
                         className="inline-flex items-center gap-1.5 underline text-base sm:text-lg hover:text-primary transition-colors group/link cursor-pointer"
                       >
                         <span>Explore More</span>

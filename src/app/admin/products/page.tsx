@@ -71,7 +71,7 @@ export default function ProductsPage() {
     packSizes: [] as string[],
     documentUrl: "",
     usps: [] as { title: string; description: string; icon: string }[],
-    applications: [] as { title: string; description: string; imageA: string; imageB: string }[],
+    applications: [] as { title: string; description: string; imageA: string; imageB: string; link?: string; url?: string }[],
     videoUrl: "",
     videoThumbnail: "",
     faqs: [] as { question: string; answer: string }[],
@@ -1795,6 +1795,21 @@ export default function ProductsPage() {
                               />
                             </div>
 
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Explore Link / URL (Optional)</label>
+                              <input
+                                type="text"
+                                value={app.link || app.url || ""}
+                                onChange={(e) => setFormData(prev => {
+                                  const list = [...prev.applications];
+                                  list[idx].link = e.target.value;
+                                  return { ...prev, applications: list };
+                                })}
+                                placeholder="e.g. /use-cases or https://example.com"
+                                className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                              />
+                            </div>
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               <ImageUpload
                                 label="Detail Image URL A"
@@ -1825,7 +1840,7 @@ export default function ProductsPage() {
                           type="button"
                           onClick={() => setFormData(prev => ({
                             ...prev,
-                            applications: [...prev.applications, { title: "", description: "", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" }]
+                            applications: [...prev.applications, { title: "", description: "", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png", link: "" }]
                           }))}
                           className="w-full flex items-center justify-center gap-1 py-2.5 rounded-xl border border-dashed border-gray-300 dark:border-zinc-800 text-xs font-bold hover:bg-white dark:hover:bg-zinc-900/60 dark:text-zinc-400 text-gray-600 transition-colors cursor-pointer"
                         >
@@ -1891,7 +1906,7 @@ export default function ProductsPage() {
                     </div>
 
                     {/* FAQs */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-1 gap-4 mb-4">
                       <div>
                         <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">FAQs Section Title</label>
                         <input

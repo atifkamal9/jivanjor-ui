@@ -51,7 +51,7 @@ export interface ParsedRow {
   tech_specs?: { key: string; value: string }[];
   techSpecsDescription?: string;
   usps?: { title: string; description: string; icon: string }[];
-  applications?: { title: string; description: string; imageA: string; imageB: string }[];
+  applications?: { title: string; description: string; imageA: string; imageB: string; link?: string }[];
   appsTitle?: string;
   appsDescription?: string;
   techResourceTitle?: string;
@@ -297,7 +297,7 @@ function parseUsps(raw: string): { title: string; description: string; icon: str
     .filter((u) => u.title && u.title !== "-- to be updated --");
 }
 
-function parseApplications(raw: string): { title: string; description: string; imageA: string; imageB: string }[] {
+function parseApplications(raw: string): { title: string; description: string; imageA: string; imageB: string; link?: string }[] {
   const clean = cleanVal(raw);
   if (!clean) return [];
 

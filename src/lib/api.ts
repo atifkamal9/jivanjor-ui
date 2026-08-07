@@ -29,7 +29,7 @@ export interface Product {
   packSizes?: string[];
   documentUrl?: string;
   usps?: { title: string; description: string; icon: string }[];
-  applications?: { title: string; description: string; imageA: string; imageB: string }[];
+  applications?: { title: string; description: string; imageA: string; imageB: string; link?: string; url?: string }[];
   videoUrl?: string;
   videoThumbnail?: string;
   faqs?: { question: string; answer: string }[];
@@ -300,7 +300,7 @@ function mapProductFromBackend(prod: any): Product {
   let packSizes: string[] = [];
   let documentUrl = "";
   let usps: { title: string; description: string; icon: string }[] = [];
-  let applications: { title: string; description: string; imageA: string; imageB: string }[] = [];
+  let applications: { title: string; description: string; imageA: string; imageB: string; link?: string; url?: string }[] = [];
   let videoUrl = "";
   let videoThumbnail = "";
   let faqs: { question: string; answer: string }[] = [];
