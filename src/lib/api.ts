@@ -45,6 +45,8 @@ export interface Product {
   techResourceTitle?: string;
   techResourceDescription?: string;
   techResourceFileUrl?: string;
+  enquireText?: string;
+  enquireLink?: string;
 }
 
 export interface Category {
@@ -317,6 +319,8 @@ function mapProductFromBackend(prod: any): Product {
   let techResourceTitle = "";
   let techResourceDescription = "";
   let techResourceFileUrl = "";
+  let enquireText = "Enquire Now";
+  let enquireLink = "/contact";
 
   let backgroundImage = "";
 
@@ -324,9 +328,11 @@ function mapProductFromBackend(prod: any): Product {
     if (typeof prod.metadata === "string") {
       metadataStr = prod.metadata;
     } else if (typeof prod.metadata === "object") {
-      if ("themeColor" in prod.metadata || "backgroundImage" in prod.metadata) {
+      if ("themeColor" in prod.metadata || "backgroundImage" in prod.metadata || "enquireText" in prod.metadata) {
         themeColor = prod.metadata.themeColor || "#0498AA";
         backgroundImage = prod.metadata.backgroundImage || prod.metadata.bg_image || "";
+        enquireText = prod.metadata.enquireText || prod.metadata.enquire_text || "Enquire Now";
+        enquireLink = prod.metadata.enquireLink || prod.metadata.enquire_link || "/contact";
 
         let rawBullets = prod.metadata.overviewBullets || [];
         overviewBullets = rawBullets.map((b: any, idx: number) => {
@@ -476,6 +482,8 @@ function mapProductFromBackend(prod: any): Product {
     techResourceTitle,
     techResourceDescription,
     techResourceFileUrl,
+    enquireText,
+    enquireLink,
   };
 }
 
@@ -664,6 +672,8 @@ export const api = {
         techResourceTitle: product.techResourceTitle || "",
         techResourceDescription: product.techResourceDescription || "",
         techResourceFileUrl: product.techResourceFileUrl || "",
+        enquireText: product.enquireText || "Enquire Now",
+        enquireLink: product.enquireLink || "/contact",
       },
       image: product.image || null,
     };

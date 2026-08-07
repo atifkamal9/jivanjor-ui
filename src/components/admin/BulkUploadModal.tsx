@@ -63,6 +63,8 @@ export interface ParsedRow {
   videoDescription?: string;
   relatedProducts?: string[];
   relatedTitle?: string;
+  enquireText?: string;
+  enquireLink?: string;
 
   // SEO Metadata
   meta_title?: string;
@@ -133,6 +135,8 @@ const PRODUCT_TEMPLATE_HEADERS = [
   "videoDescription",
   "relatedProducts",
   "relatedTitle",
+  "enquireText",
+  "enquireLink",
   "meta_title",
   "meta_description",
   "canonical_url",
@@ -191,6 +195,8 @@ const PRODUCT_TEMPLATE_EXAMPLE = [
   "Watch trade professionals achieve flawless bonding in record time.",
   "Watershield | Champion Super",
   "Related Products",
+  "Enquire Now",
+  "/contact",
   "Jivanjor Aquabond - D3 Waterproof Wood Adhesive",
   "Buy Jivanjor Aquabond high-strength D3 waterproof wood adhesive for furniture and plywood assembly.",
   "https://jivanjor.com/products?product=jivanjor-aquabond",
@@ -474,6 +480,8 @@ function parseExcel(
             const videoDescription = cleanVal(getRowValue(row, ["videoDescription", "video_description"]));
             const relatedProductsRaw = getRowValue(row, ["relatedProducts", "related_products"]);
             const relatedTitle = cleanVal(getRowValue(row, ["relatedTitle", "related_title"]));
+            const enquireText = cleanVal(getRowValue(row, ["enquireText", "enquire_text", "ctaText", "cta_text", "button_text"]));
+            const enquireLink = cleanVal(getRowValue(row, ["enquireLink", "enquire_link", "ctaLink", "cta_link", "button_link"]));
 
             const metaTitle = cleanVal(getRowValue(row, ["meta_title", "metatitle", "seo_title"]));
             const metaDescription = cleanVal(getRowValue(row, ["meta_description", "metadescription", "seo_description"]));
@@ -511,6 +519,8 @@ function parseExcel(
             result.videoDescription = videoDescription;
             result.relatedProducts = relatedProductsRaw ? relatedProductsRaw.split(/[\n|;]/).map((s) => s.trim()).filter((s) => s && s !== "-- to be updated --") : [];
             result.relatedTitle = relatedTitle;
+            result.enquireText = enquireText;
+            result.enquireLink = enquireLink;
 
             result.meta_title = metaTitle;
             result.meta_description = metaDescription;

@@ -87,6 +87,8 @@ export default function ProductsPage() {
     techResourceTitle: "",
     techResourceDescription: "",
     techResourceFileUrl: "",
+    enquireText: "Enquire Now",
+    enquireLink: "/contact",
   });
 
   // SEO metadata states
@@ -227,6 +229,8 @@ export default function ProductsPage() {
       techResourceTitle: "Technical Data Sheet",
       techResourceDescription: "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
       techResourceFileUrl: "",
+      enquireText: "Enquire Now",
+      enquireLink: "/contact",
     });
 
     setSeoMetaTitle("");
@@ -307,6 +311,8 @@ export default function ProductsPage() {
       techResourceTitle: product.techResourceTitle || "",
       techResourceDescription: product.techResourceDescription || "",
       techResourceFileUrl: product.techResourceFileUrl || "",
+      enquireText: product.enquireText || "Enquire Now",
+      enquireLink: product.enquireLink || "/contact",
     });
 
     const matchedSeo = seos.find(
@@ -404,6 +410,8 @@ export default function ProductsPage() {
       techResourceTitle: product.techResourceTitle || "",
       techResourceDescription: product.techResourceDescription || "",
       techResourceFileUrl: product.techResourceFileUrl || "",
+      enquireText: product.enquireText || "Enquire Now",
+      enquireLink: product.enquireLink || "/contact",
     });
 
     const matchedSeo = seos.find(
@@ -987,6 +995,33 @@ export default function ProductsPage() {
                         folder="products"
                         aspect="video"
                       />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Enquire Button Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.enquireText}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, enquireText: e.target.value }))}
+                          placeholder="e.g. Enquire Now"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Enquire Button Link / URL
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.enquireLink}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, enquireLink: e.target.value }))}
+                          placeholder="e.g. /contact or https://example.com"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                        />
+                      </div>
                     </div>
 
                     <div>
@@ -2159,6 +2194,8 @@ export default function ProductsPage() {
             techResourceTitle: row.techResourceTitle || "Technical Data Sheet",
             techResourceDescription: row.techResourceDescription || "",
             techResourceFileUrl: row.documentUrl || "",
+            enquireText: row.enquireText || "Enquire Now",
+            enquireLink: row.enquireLink || "/contact",
           });
 
           // Save SEO metadata if SEO fields are present in the row

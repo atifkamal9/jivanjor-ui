@@ -105,10 +105,10 @@ export default function Hero({ product, category }: HeroProps) {
 
           {/* Enquire Now pill button */}
           <Link
-            href="#"
+            href={product?.enquireLink || product?.enquire_link || product?.ctaLink || product?.cta_link || "/contact"}
             className="min-w-32 bg-white text-foreground text-center font-medium px-8 py-2 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-sm z-10"
           >
-            Enquire Now
+            {product?.enquireText || product?.enquire_text || product?.ctaText || product?.cta_text || "Enquire Now"}
           </Link>
         </div>
 
