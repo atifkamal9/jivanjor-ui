@@ -288,7 +288,7 @@ export default function Navbar() {
 
     let items: Array<{ name: string; link: string; order?: number }> = [];
 
-    if (knowledgeMenu?.subItems && knowledgeMenu.subItems.length > 0) {
+    if (knowledgeMenu?.subItems) {
       items = knowledgeMenu.subItems.map((sub: any) => ({
         name: sub.title,
         link: sub.url || `/blog?category=${encodeURIComponent(sub.title)}`,
@@ -303,18 +303,6 @@ export default function Navbar() {
     } else {
       items = knowledgeItems.map((k, idx) => ({ ...k, order: idx + 1 }));
     }
-
-    // Merge any missing blog categories dynamically
-    const existingNames = new Set(items.map((i) => i.name.toLowerCase()));
-    blogCategories.forEach((cat: any, idx: number) => {
-      if (cat.name && !existingNames.has(cat.name.toLowerCase())) {
-        items.push({
-          name: cat.name,
-          link: `/blog?category=${encodeURIComponent(cat.name)}`,
-          order: items.length + idx + 1,
-        });
-      }
-    });
 
     return items.sort((a, b) => (a.order || 0) - (b.order || 0));
   })();

@@ -176,29 +176,16 @@ export default function AdminMenuPage() {
       const syncKnowledgeSubItems = (menuList: MenuItem[]): MenuItem[] => {
         return menuList.map((item) => {
           if (item.id === "nav-knowledge" || item.title.toLowerCase() === "knowledge center") {
-            const existingSubItems = item.subItems || [];
-            const existingTitles = new Set(existingSubItems.map((s) => s.title.toLowerCase()));
-
-            const updatedSubItems = [...existingSubItems];
-
-            allBlogCategories.forEach((catName) => {
-              if (!existingTitles.has(catName.toLowerCase())) {
-                updatedSubItems.push({
-                  id: `sub-know-dyn-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-                  title: catName,
-                  type: "page",
-                  url: `/blog?category=${encodeURIComponent(catName)}`,
-                  order: updatedSubItems.length + 1,
-                });
-              }
-            });
-
-            const reindexed = updatedSubItems.map((s, idx) => ({
-              ...s,
-              order: s.order || idx + 1,
-            }));
-
-            return { ...item, subItems: reindexed };
+            if (!item.subItems) {
+              const defaultSubs = allBlogCategories.map((catName, idx) => ({
+                id: `sub-know-dyn-${Date.now()}-${idx}`,
+                title: catName,
+                type: "page" as const,
+                url: `/blog?category=${encodeURIComponent(catName)}`,
+                order: idx + 1,
+              }));
+              return { ...item, subItems: defaultSubs };
+            }
           }
           return item;
         });
