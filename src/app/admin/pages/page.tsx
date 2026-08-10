@@ -30,7 +30,8 @@ import {
   Layers,
   GripVertical,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Lock,
 } from "lucide-react";
 
 const isVideo = (url: string) =>
@@ -695,6 +696,16 @@ export default function PagesPage() {
   const [existingSeoId, setExistingSeoId] = useState<string | null>(null);
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteBlogCategoryConfirm, setDeleteBlogCategoryConfirm] = useState<{
+    idx: number;
+    name: string;
+  } | null>(null);
+  const [isDeletingCategory, setIsDeletingCategory] = useState(false);
+  const [deleteBlogAuthorConfirm, setDeleteBlogAuthorConfirm] = useState<{
+    idx: number;
+    name: string;
+  } | null>(null);
+  const [isDeletingAuthor, setIsDeletingAuthor] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Subpages Drag & Drop Reordering state
@@ -5433,42 +5444,51 @@ export default function PagesPage() {
                         </button>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {(formData.sections.list?.categories || []).map((cat: any, idx: number) => (
-                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const cats = (formData.sections.list?.categories || []).filter((_: any, i: number) => i !== idx);
-                                updateSectionField("list", "categories", cats);
-                              }}
-                              className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Category #{idx + 1}</span>
-                            <input
-                              type="text"
-                              value={cat.name || ""}
-                              onChange={(e) => {
-                                const cats = [...(formData.sections.list?.categories || [])];
-                                cats[idx] = { ...cats[idx], name: e.target.value };
-                                updateSectionField("list", "categories", cats);
-                              }}
-                              placeholder="Category Name"
-                              className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold"
-                            />
-                            <div className="space-y-1">
-                              <CategoryIconPicker
-                                value={cat.icon || ""}
-                                onChange={(url) => {
+                        {(formData.sections.list?.categories || []).map((cat: any, idx: number) => {
+                          const isLatestBlogs = (cat.name || "").trim().toLowerCase() === "latest blogs";
+                          return (
+                            <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-3">
+                              {isLatestBlogs ? (
+                                <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-black border border-amber-500/20" title="'Latest Blogs' is a core system category and cannot be deleted">
+                                  <Lock className="h-3 w-3" /> Core Category
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setDeleteBlogCategoryConfirm({ idx, name: cat.name || `Category #${idx + 1}` })}
+                                  className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background transition"
+                                  title={`Delete category "${cat.name}"`}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              )}
+                              <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Category #{idx + 1}</span>
+                              <input
+                                type="text"
+                                value={cat.name || ""}
+                                readOnly={isLatestBlogs}
+                                onChange={(e) => {
+                                  if (isLatestBlogs) return;
                                   const cats = [...(formData.sections.list?.categories || [])];
-                                  cats[idx] = { ...cats[idx], icon: url };
+                                  cats[idx] = { ...cats[idx], name: e.target.value };
                                   updateSectionField("list", "categories", cats);
                                 }}
+                                placeholder="Category Name"
+                                className={`w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold ${isLatestBlogs ? "opacity-80 cursor-not-allowed" : ""}`}
                               />
+                              <div className="space-y-1">
+                                <CategoryIconPicker
+                                  value={cat.icon || ""}
+                                  onChange={(url) => {
+                                    const cats = [...(formData.sections.list?.categories || [])];
+                                    cats[idx] = { ...cats[idx], icon: url };
+                                    updateSectionField("list", "categories", cats);
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -5502,71 +5522,102 @@ export default function PagesPage() {
                           avatar: "/images/blog/image 47.svg",
                           bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
                         }
-                      ]).map((author: any, idx: number) => (
-                        <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-4">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const authors = (formData.sections.list?.authors || []).filter((_: any, i: number) => i !== idx);
-                              updateSectionField("list", "authors", authors);
-                            }}
-                            className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                          <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Author #{idx + 1}</span>
+                      ]).map((author: any, idx: number) => {
+                        const isDefaultAuthor = idx === 0 || (author.name || "").trim().toLowerCase() === "jivanjor editor";
+                        return (
+                          <div key={idx} className="p-4 border border-border bg-surface/30 rounded-2xl relative space-y-4">
+                            {isDefaultAuthor ? (
+                              <div className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-black border border-amber-500/20" title="Default Author - Cannot be deleted">
+                                <Lock className="h-3 w-3" /> Core Author
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => setDeleteBlogAuthorConfirm({ idx, name: author.name || `Author #${idx + 1}` })}
+                                className="absolute top-3 right-3 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg cursor-pointer border border-border bg-background transition"
+                                title={`Delete author "${author.name}"`}
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            )}
+                            <span className="text-[9px] font-black uppercase bg-primary/10 text-primary px-2 py-0.5 rounded-full w-fit">Author #{idx + 1}</span>
 
-                          <div>
-                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
-                              Author/Publisher Name
-                            </label>
-                            <input
-                              type="text"
-                              value={author.name || ""}
-                              onChange={(e) => {
-                                const authors = [...(formData.sections.list?.authors || [])];
-                                authors[idx] = { ...authors[idx], name: e.target.value };
-                                updateSectionField("list", "authors", authors);
-                              }}
-                              placeholder="e.g. Jivanjor Editor"
-                              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold"
-                            />
-                          </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1 flex items-center justify-between">
+                                <span>Author/Publisher Name</span>
+                                {isDefaultAuthor && (
+                                  <span className="text-[9px] text-amber-500 font-bold">Default Publisher</span>
+                                )}
+                              </label>
+                              <input
+                                type="text"
+                                value={author.name || ""}
+                                onChange={(e) => {
+                                  const currentAuthors = formData.sections.list?.authors || [
+                                    {
+                                      name: "Jivanjor Editor",
+                                      avatar: "/images/blog/image 47.svg",
+                                      bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
+                                    }
+                                  ];
+                                  const authors = [...currentAuthors];
+                                  authors[idx] = { ...authors[idx], name: e.target.value };
+                                  updateSectionField("list", "authors", authors);
+                                }}
+                                placeholder="e.g. Jivanjor Editor"
+                                className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-semibold"
+                              />
+                            </div>
 
-                          <div>
-                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
-                              Author Avatar Photo
-                            </label>
-                            <ImageUpload
-                              value={author.avatar || ""}
-                              onChange={(url) => {
-                                const authors = [...(formData.sections.list?.authors || [])];
-                                authors[idx] = { ...authors[idx], avatar: url };
-                                updateSectionField("list", "authors", authors);
-                              }}
-                              folder="authors"
-                              size="compact"
-                            />
-                          </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                                Author Avatar Photo
+                              </label>
+                              <ImageUpload
+                                value={author.avatar || ""}
+                                onChange={(url) => {
+                                  const currentAuthors = formData.sections.list?.authors || [
+                                    {
+                                      name: "Jivanjor Editor",
+                                      avatar: "/images/blog/image 47.svg",
+                                      bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
+                                    }
+                                  ];
+                                  const authors = [...currentAuthors];
+                                  authors[idx] = { ...authors[idx], avatar: url };
+                                  updateSectionField("list", "authors", authors);
+                                }}
+                                folder="authors"
+                                size="compact"
+                              />
+                            </div>
 
-                          <div>
-                            <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
-                              Author Bio / Description
-                            </label>
-                            <textarea
-                              rows={3}
-                              value={author.bio || ""}
-                              onChange={(e) => {
-                                const authors = [...(formData.sections.list?.authors || [])];
-                                authors[idx] = { ...authors[idx], bio: e.target.value };
-                                updateSectionField("list", "authors", authors);
-                              }}
-                              placeholder="Author bio description..."
-                              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-medium resize-none"
-                            />
+                            <div>
+                              <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">
+                                Author Bio / Description
+                              </label>
+                              <textarea
+                                rows={3}
+                                value={author.bio || ""}
+                                onChange={(e) => {
+                                  const currentAuthors = formData.sections.list?.authors || [
+                                    {
+                                      name: "Jivanjor Editor",
+                                      avatar: "/images/blog/image 47.svg",
+                                      bio: "Knowledge shaped by Jivanjor's team of product specialists, woodworking experts and professionals."
+                                    }
+                                  ];
+                                  const authors = [...currentAuthors];
+                                  authors[idx] = { ...authors[idx], bio: e.target.value };
+                                  updateSectionField("list", "authors", authors);
+                                }}
+                                placeholder="Author bio description..."
+                                className="w-full px-3 py-2 bg-background border border-border rounded-xl text-xs font-medium resize-none"
+                              />
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -6082,6 +6133,165 @@ export default function PagesPage() {
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer"
               >
                 Delete Everything
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ==================== BLOG CATEGORY DELETE CONFIRM DIALOG ==================== */}
+      {deleteBlogCategoryConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-background border border-border w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 space-y-4 animate-[modalShow_0.15s_ease-out]">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-red-500/10 text-red-600 rounded-2xl border border-red-500/20">
+                <AlertCircle className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-foreground">
+                  Confirm Category Deletion
+                </h3>
+                <p className="text-xs text-foreground/50 font-semibold uppercase tracking-wider">
+                  Category: "{deleteBlogCategoryConfirm.name}"
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-foreground/70 leading-relaxed font-medium">
+              Are you sure you want to delete category <strong className="text-foreground font-bold">"{deleteBlogCategoryConfirm.name}"</strong>?
+              <br /><br />
+              By default, all blog articles currently linked to this category will automatically be shifted to the <strong className="text-primary font-bold">"Latest Blogs"</strong> category.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+              <button
+                type="button"
+                disabled={isDeletingCategory}
+                onClick={() => setDeleteBlogCategoryConfirm(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer transition disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeletingCategory}
+                onClick={async () => {
+                  setIsDeletingCategory(true);
+                  try {
+                    const catNameToDelete = deleteBlogCategoryConfirm.name;
+
+                    // 1. Remove category from list
+                    const updatedCats = (formData.sections.list?.categories || []).filter((_: any, i: number) => i !== deleteBlogCategoryConfirm.idx);
+                    updateSectionField("list", "categories", updatedCats);
+
+                    // 2. Shift all matching blog articles to "Latest Blogs"
+                    const allPosts = await api.getBlogPosts().catch(() => []);
+                    const matchingPosts = allPosts.filter(
+                      (b) => b.category && b.category.trim().toLowerCase() === catNameToDelete.trim().toLowerCase()
+                    );
+
+                    for (const post of matchingPosts) {
+                      await api.saveBlogPost({
+                        ...post,
+                        category: "Latest Blogs",
+                      }).catch((err) => console.error("Failed to re-assign post category:", err));
+                    }
+                  } catch (err) {
+                    console.error("Failed during blog category deletion:", err);
+                  } finally {
+                    setIsDeletingCategory(false);
+                    setDeleteBlogCategoryConfirm(null);
+                  }
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition disabled:opacity-50"
+              >
+                {isDeletingCategory ? (
+                  <>
+                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                    <span>Shifting Articles...</span>
+                  </>
+                ) : (
+                  <span>Confirm &amp; Shift Articles</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ==================== BLOG AUTHOR DELETE CONFIRM DIALOG ==================== */}
+      {deleteBlogAuthorConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-background border border-border w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 space-y-4 animate-[modalShow_0.15s_ease-out]">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-red-500/10 text-red-600 rounded-2xl border border-red-500/20">
+                <AlertCircle className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-black text-foreground">
+                  Confirm Author Deletion
+                </h3>
+                <p className="text-xs text-foreground/50 font-semibold uppercase tracking-wider">
+                  Author: "{deleteBlogAuthorConfirm.name}"
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-foreground/70 leading-relaxed font-medium">
+              Are you sure you want to delete author <strong className="text-foreground font-bold">"{deleteBlogAuthorConfirm.name}"</strong>?
+              <br /><br />
+              By default, all blog articles currently linked to this author will automatically be shifted to the default author <strong className="text-primary font-bold">"{((formData.sections.list?.authors || [])[0]?.name) || "Jivanjor Editor"}"</strong>.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+              <button
+                type="button"
+                disabled={isDeletingAuthor}
+                onClick={() => setDeleteBlogAuthorConfirm(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer transition disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeletingAuthor}
+                onClick={async () => {
+                  setIsDeletingAuthor(true);
+                  try {
+                    const authorNameToDelete = deleteBlogAuthorConfirm.name;
+                    const defaultAuthorName = ((formData.sections.list?.authors || [])[0]?.name) || "Jivanjor Editor";
+
+                    // 1. Remove author from list
+                    const updatedAuthors = (formData.sections.list?.authors || []).filter((_: any, i: number) => i !== deleteBlogAuthorConfirm.idx);
+                    updateSectionField("list", "authors", updatedAuthors);
+
+                    // 2. Shift all matching blog articles to default author
+                    const allPosts = await api.getBlogPosts().catch(() => []);
+                    const matchingPosts = allPosts.filter(
+                      (b) => b.author && b.author.trim().toLowerCase() === authorNameToDelete.trim().toLowerCase()
+                    );
+
+                    for (const post of matchingPosts) {
+                      await api.saveBlogPost({
+                        ...post,
+                        author: defaultAuthorName,
+                      }).catch((err) => console.error("Failed to re-assign post author:", err));
+                    }
+                  } catch (err) {
+                    console.error("Failed during blog author deletion:", err);
+                  } finally {
+                    setIsDeletingAuthor(false);
+                    setDeleteBlogAuthorConfirm(null);
+                  }
+                }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition disabled:opacity-50"
+              >
+                {isDeletingAuthor ? (
+                  <>
+                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                    <span>Shifting Articles...</span>
+                  </>
+                ) : (
+                  <span>Confirm &amp; Shift Articles</span>
+                )}
               </button>
             </div>
           </div>

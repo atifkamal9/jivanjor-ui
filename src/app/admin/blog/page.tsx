@@ -22,6 +22,7 @@ import {
   FileSearch,
   Image as ImageIcon,
 } from "lucide-react";
+import Image from "next/image";
 
 type ComposerTab = "article" | "seo";
 
@@ -412,21 +413,41 @@ export default function BlogPage() {
                         ))}
                       </div>
                     )}
-                    <div className="flex items-center justify-end gap-2 mt-auto pt-3 border-t border-gray-100 dark:border-zinc-800">
-                      <button
-                        onClick={() => handleOpenEdit(blog)}
-                        className="p-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-950/20 text-blue-500 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-colors"
-                        title="Edit publication"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirmId(blog.id)}
-                        className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-red-500 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-colors"
-                        title="Delete publication"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                    <div className="flex items-center justify-between gap-2 mt-auto pt-3 border-t border-gray-100 dark:border-zinc-800">
+                      <div className="w-10 h-10 rounded-full bg-[#DBDBDB] overflow-hidden flex items-center justify-center shrink-0 border border-gray-200 shadow-sm relative">
+                        {blog.author_avatar || blog.authorAvatar ? (
+                          <Image
+                            src={blog.author_avatar || blog.authorAvatar || ""}
+                            alt={blog.author}
+                            fill
+                            className="object-cover rounded-full"
+                          />
+                        ) : (
+                          <Image
+                            src="/images/badge.svg"
+                            alt="Jivanjor Logo"
+                            height={40}
+                            width={40}
+                            className="object-cover h-10 w-10"
+                          />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleOpenEdit(blog)}
+                          className="p-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-950/20 text-blue-500 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-colors"
+                          title="Edit publication"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirmId(blog.id)}
+                          className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-red-500 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-colors"
+                          title="Delete publication"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
