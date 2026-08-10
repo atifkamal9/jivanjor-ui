@@ -72,7 +72,7 @@ function ProductPageContent() {
     <div className="font-google-sans min-h-screen bg-background text-foreground">
       <Hero product={product} category={category} />
       <ProductInfo product={product} allProducts={allProducts} />
-      <RightChoice />
+      <RightChoice data={product?.rightChoice} />
     </div>
   );
 }

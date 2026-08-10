@@ -52,6 +52,10 @@ export default function CategoriesPage() {
     researchCtaLink: "",
     researchImage1: "",
     researchImage2: "",
+    rightChoiceTitle: "",
+    rightChoiceSubtitle: "",
+    rightChoiceCtaText: "",
+    rightChoiceCtaLink: "",
   });
 
   // SEO metadata states
@@ -117,6 +121,10 @@ export default function CategoriesPage() {
       researchCtaLink: "",
       researchImage1: "",
       researchImage2: "",
+      rightChoiceTitle: "",
+      rightChoiceSubtitle: "",
+      rightChoiceCtaText: "",
+      rightChoiceCtaLink: "",
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -147,6 +155,10 @@ export default function CategoriesPage() {
       researchCtaLink: category.researchCtaLink || "",
       researchImage1: category.researchImage1 || "",
       researchImage2: category.researchImage2 || "",
+      rightChoiceTitle: category.rightChoiceTitle || category.rightChoice?.title || "",
+      rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
+      rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
+      rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
     });
 
     const matchedSeo = seos.find(
@@ -660,6 +672,52 @@ export default function CategoriesPage() {
                             value={formData.researchImage2}
                             onChange={(url) => setFormData(prev => ({ ...prev, researchImage2: url }))}
                             label="Upload Right Image"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                      <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Right Choice Banner Section ("Need Help Choosing the Right Adhesive?")</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Banner Title</label>
+                          <input
+                            type="text"
+                            value={formData.rightChoiceTitle}
+                            onChange={(e) => setFormData(prev => ({ ...prev, rightChoiceTitle: e.target.value }))}
+                            placeholder="Need Help Choosing the Right Adhesive?"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">Banner Subtitle / Description</label>
+                          <textarea
+                            rows={2}
+                            value={formData.rightChoiceSubtitle}
+                            onChange={(e) => setFormData(prev => ({ ...prev, rightChoiceSubtitle: e.target.value }))}
+                            placeholder="Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution."
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">CTA Button Text</label>
+                          <input
+                            type="text"
+                            value={formData.rightChoiceCtaText}
+                            onChange={(e) => setFormData(prev => ({ ...prev, rightChoiceCtaText: e.target.value }))}
+                            placeholder="Submit Your Query"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">CTA Button Link Target</label>
+                          <input
+                            type="text"
+                            value={formData.rightChoiceCtaLink}
+                            onChange={(e) => setFormData(prev => ({ ...prev, rightChoiceCtaLink: e.target.value }))}
+                            placeholder="/contact"
+                            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
                           />
                         </div>
                       </div>

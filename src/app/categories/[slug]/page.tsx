@@ -39,6 +39,13 @@ export default async function Categories({ params }: PageProps) {
     image2: categoryData.researchImage2 || sections.research?.images?.[1],
   } : (sections.research || sections);
 
+  const categoryRightChoice = categoryData?.rightChoiceTitle ? {
+    title: categoryData.rightChoiceTitle,
+    subtitle: categoryData.rightChoiceSubtitle,
+    ctaText: categoryData.rightChoiceCtaText,
+    ctaLink: categoryData.rightChoiceCtaLink,
+  } : (categoryData?.rightChoice || sections.rightChoice || sections.findAdhesive);
+
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
       <CategoryDetailClient
@@ -47,7 +54,7 @@ export default async function Categories({ params }: PageProps) {
         slug={slug}
         data={researchSection}
       />
-      <RightChoice />
+      <RightChoice data={categoryRightChoice} />
     </main>
   );
 }

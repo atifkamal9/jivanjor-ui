@@ -378,6 +378,12 @@ const defaultCategorySections = {
       { name: "Plywood to Laminate", suitability: "Excellent", comment: "Highly recommended with all Jivanjor grades." },
       { name: "MDF to Acrylic Sheet", suitability: "Good", comment: "Use Foambond or specialized edge formulations." }
     ]
+  },
+  rightChoice: {
+    title: "Need Help Choosing the Right Adhesive?",
+    subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+    ctaText: "Submit Your Query",
+    ctaLink: "/contact",
   }
 };
 
@@ -1028,7 +1034,8 @@ export default function PagesPage() {
             hero: { ...defaultCategorySections.hero, ...rawData.hero },
             categoriesShowcase: { ...defaultCategorySections.categoriesShowcase, ...rawData.categoriesShowcase },
             applicationsGrid: { ...defaultCategorySections.applicationsGrid, ...rawData.applicationsGrid },
-            substrates: { ...defaultCategorySections.substrates, ...rawData.substrates }
+            substrates: { ...defaultCategorySections.substrates, ...rawData.substrates },
+            rightChoice: { ...defaultCategorySections.rightChoice, ...rawData.rightChoice, ...rawData.findAdhesive },
           };
         } else if (type === "applications") {
           pageSections = {
@@ -1505,6 +1512,7 @@ export default function PagesPage() {
             { id: "categoriesShowcase", label: "Sub-Categories Showcase", icon: Grid },
             { id: "applicationsGrid", label: "Common Areas Grid", icon: FileText },
             { id: "substrates", label: "Substrates Matrix", icon: Shield },
+            { id: "rightChoice", label: "Right Choice Banner", icon: Search },
           ]
           : layoutType === "applications"
             ? [
@@ -4927,6 +4935,69 @@ export default function PagesPage() {
                             </div>
                           </div>
                         ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "rightChoice" && formData.sections?.rightChoice && formData.sections.layoutType === "categories" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-border pb-3">
+                      <Search className="h-5 w-5 text-primary" />
+                      <h3 className="text-base font-extrabold text-foreground font-google-sans">Right Choice Banner</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Banner Heading Title
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.sections.rightChoice.title || ""}
+                        onChange={(e) => updateSectionField("rightChoice", "title", e.target.value)}
+                        placeholder="Need Help Choosing the Right Adhesive?"
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                        Banner Subtitle / Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.sections.rightChoice.subtitle || ""}
+                        onChange={(e) => updateSectionField("rightChoice", "subtitle", e.target.value)}
+                        placeholder="Share your woodwork needs, product query or application concerns..."
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none font-medium"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Button CTA Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.rightChoice.ctaText || ""}
+                          onChange={(e) => updateSectionField("rightChoice", "ctaText", e.target.value)}
+                          placeholder="Submit Your Query"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                          Button Target Link URL
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.sections.rightChoice.ctaLink || ""}
+                          onChange={(e) => updateSectionField("rightChoice", "ctaLink", e.target.value)}
+                          placeholder="/contact"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary font-medium"
+                        />
                       </div>
                     </div>
                   </div>

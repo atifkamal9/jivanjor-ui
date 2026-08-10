@@ -89,6 +89,12 @@ export default function ProductsPage() {
     techResourceFileUrl: "",
     enquireText: "Enquire Now",
     enquireLink: "/contact",
+    rightChoice: {
+      title: "Need Help Choosing the Right Adhesive?",
+      subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+      ctaText: "Submit Your Query",
+      ctaLink: "/contact",
+    },
   });
 
   // SEO metadata states
@@ -231,6 +237,12 @@ export default function ProductsPage() {
       techResourceFileUrl: "",
       enquireText: "Enquire Now",
       enquireLink: "/contact",
+      rightChoice: {
+        title: "Need Help Choosing the Right Adhesive?",
+        subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+        ctaText: "Submit Your Query",
+        ctaLink: "/contact",
+      },
     });
 
     setSeoMetaTitle("");
@@ -313,6 +325,12 @@ export default function ProductsPage() {
       techResourceFileUrl: product.techResourceFileUrl || "",
       enquireText: product.enquireText || "Enquire Now",
       enquireLink: product.enquireLink || "/contact",
+      rightChoice: product.rightChoice || (product as any).right_choice || {
+        title: "Need Help Choosing the Right Adhesive?",
+        subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+        ctaText: "Submit Your Query",
+        ctaLink: "/contact",
+      },
     });
 
     const matchedSeo = seos.find(
@@ -412,6 +430,12 @@ export default function ProductsPage() {
       techResourceFileUrl: product.techResourceFileUrl || "",
       enquireText: product.enquireText || "Enquire Now",
       enquireLink: product.enquireLink || "/contact",
+      rightChoice: product.rightChoice || (product as any).right_choice || {
+        title: "Need Help Choosing the Right Adhesive?",
+        subtitle: "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.",
+        ctaText: "Submit Your Query",
+        ctaLink: "/contact",
+      },
     });
 
     const matchedSeo = seos.find(
@@ -502,6 +526,7 @@ export default function ProductsPage() {
     { id: "apps", label: "Applications & Video", icon: Play },
     { id: "faqs", label: "FAQs Editor", icon: HelpCircle },
     { id: "resources", label: "Technical Resources", icon: Files },
+    { id: "rightChoice", label: "Right Choice Banner", icon: HelpCircle },
     { id: "seo", label: "SEO Metadata", icon: Search },
   ];
 
@@ -1190,6 +1215,81 @@ export default function ProductsPage() {
                             </p>
                           </>
                         )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "rightChoice" && (
+                  <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
+                    <div className="flex items-center gap-2 border-b border-gray-100 dark:border-zinc-800 pb-3">
+                      <HelpCircle className="h-5 w-5 text-red-600" />
+                      <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Right Choice Banner</h3>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Banner Heading Title
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.rightChoice?.title || ""}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          rightChoice: { ...prev.rightChoice, title: e.target.value }
+                        }))}
+                        placeholder="Need Help Choosing the Right Adhesive?"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Banner Subtitle / Description
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.rightChoice?.subtitle || ""}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          rightChoice: { ...prev.rightChoice, subtitle: e.target.value }
+                        }))}
+                        placeholder="Share your woodwork needs, product query or application concerns..."
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Button CTA Text
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.rightChoice?.ctaText || ""}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            rightChoice: { ...prev.rightChoice, ctaText: e.target.value }
+                          }))}
+                          placeholder="Submit Your Query"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          Button Target Link URL
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.rightChoice?.ctaLink || ""}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            rightChoice: { ...prev.rightChoice, ctaLink: e.target.value }
+                          }))}
+                          placeholder="/contact"
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        />
                       </div>
                     </div>
                   </div>

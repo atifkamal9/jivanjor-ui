@@ -15,27 +15,10 @@ interface RightChoiceProps {
 }
 
 export default function RightChoice({ data }: RightChoiceProps = {}) {
-  const [settingsData, setSettingsData] = useState<{
-    title?: string;
-    subtitle?: string;
-    ctaText?: string;
-    ctaLink?: string;
-  } | null>(null);
-
-  useEffect(() => {
-    api.getSettings()
-      .then((res) => {
-        if (res?.rightChoiceBanner) {
-          setSettingsData(res.rightChoiceBanner);
-        }
-      })
-      .catch(() => null);
-  }, []);
-
-  const title = data?.title || settingsData?.title || "Need Help Choosing the Right Adhesive?";
-  const subtitle = data?.subtitle || settingsData?.subtitle || "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.";
-  const ctaText = data?.ctaText || settingsData?.ctaText || "Submit Your Query";
-  const ctaLink = data?.ctaLink || settingsData?.ctaLink || "/contact";
+  const title = data?.title || "Need Help Choosing the Right Adhesive?";
+  const subtitle = data?.subtitle || "Share your woodwork needs, product query or application concerns. Our team will help you find the right Jivanjor solution.";
+  const ctaText = data?.ctaText || "Submit Your Query";
+  const ctaLink = data?.ctaLink || "/contact";
 
   return (
     <section className="">

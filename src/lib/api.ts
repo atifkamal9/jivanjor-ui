@@ -47,6 +47,8 @@ export interface Product {
   techResourceFileUrl?: string;
   enquireText?: string;
   enquireLink?: string;
+  rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string; bgImage?: string; bgImageMobile?: string; items?: any[] };
+  right_choice?: any;
 }
 
 export interface Category {
@@ -68,6 +70,11 @@ export interface Category {
   researchCtaLink?: string;
   researchImage1?: string;
   researchImage2?: string;
+  rightChoiceTitle?: string;
+  rightChoiceSubtitle?: string;
+  rightChoiceCtaText?: string;
+  rightChoiceCtaLink?: string;
+  rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string };
 }
 
 export interface Material {
@@ -246,6 +253,10 @@ function mapCategoryFromBackend(cat: any): Category {
   let researchCtaLink = "";
   let researchImage1 = "";
   let researchImage2 = "";
+  let rightChoiceTitle = "";
+  let rightChoiceSubtitle = "";
+  let rightChoiceCtaText = "";
+  let rightChoiceCtaLink = "";
 
   if (description.startsWith("{") && description.endsWith("}")) {
     try {
@@ -263,6 +274,10 @@ function mapCategoryFromBackend(cat: any): Category {
       researchCtaLink = parsed.researchCtaLink || "";
       researchImage1 = parsed.researchImage1 || "";
       researchImage2 = parsed.researchImage2 || "";
+      rightChoiceTitle = parsed.rightChoiceTitle || parsed.rightChoice?.title || "";
+      rightChoiceSubtitle = parsed.rightChoiceSubtitle || parsed.rightChoice?.subtitle || "";
+      rightChoiceCtaText = parsed.rightChoiceCtaText || parsed.rightChoice?.ctaText || "";
+      rightChoiceCtaLink = parsed.rightChoiceCtaLink || parsed.rightChoice?.ctaLink || "";
     } catch (e) {
       // ignore
     }
@@ -286,6 +301,16 @@ function mapCategoryFromBackend(cat: any): Category {
     researchCtaLink,
     researchImage1,
     researchImage2,
+    rightChoiceTitle,
+    rightChoiceSubtitle,
+    rightChoiceCtaText,
+    rightChoiceCtaLink,
+    rightChoice: rightChoiceTitle ? {
+      title: rightChoiceTitle,
+      subtitle: rightChoiceSubtitle,
+      ctaText: rightChoiceCtaText,
+      ctaLink: rightChoiceCtaLink,
+    } : undefined,
     icon: cat.icon || "",
   };
 }
@@ -488,6 +513,7 @@ function mapProductFromBackend(prod: any): Product {
     techResourceFileUrl,
     enquireText,
     enquireLink,
+    rightChoice: prod.rightChoice || prod.right_choice || (prod.metadata && typeof prod.metadata === "object" ? prod.metadata.rightChoice || prod.metadata.right_choice : undefined),
   };
 }
 
@@ -676,7 +702,9 @@ export const api = {
         techResourceFileUrl: product.techResourceFileUrl || "",
         enquireText: product.enquireText || "Enquire Now",
         enquireLink: product.enquireLink || "/contact",
+        rightChoice: product.rightChoice || (product as any).right_choice || null,
       },
+      rightChoice: product.rightChoice || (product as any).right_choice || null,
       image: product.image || null,
     };
     if (product.id) {
@@ -721,6 +749,10 @@ export const api = {
       researchCtaLink: category.researchCtaLink || "",
       researchImage1: category.researchImage1 || "",
       researchImage2: category.researchImage2 || "",
+      rightChoiceTitle: category.rightChoiceTitle || category.rightChoice?.title || "",
+      rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
+      rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
+      rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
     });
 
     const payload = {
