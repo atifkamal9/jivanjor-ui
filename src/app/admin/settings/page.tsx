@@ -1,22 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, SiteSettings, ContactPageSettings, ContactSection, ContactDetailItem } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import {
-  ChevronRight,
   Sliders,
   CheckCircle2,
   Loader2,
   Sparkles,
   Image as ImageIcon,
   Share2,
-  Globe,
-  Video,
-  Link2,
-  AtSign,
   Plus,
   Trash2,
   Headphones,
@@ -24,6 +18,10 @@ import {
   Mail,
   Clock,
   MapPin,
+  PanelTop,
+  PanelBottom,
+  Laptop,
+  Smartphone,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -56,16 +54,16 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  const [desktopLogo, setDesktopLogo] = useState("");
-  const [mobileLogo, setMobileLogo] = useState("");
+  const [headerDesktopLogo, setHeaderDesktopLogo] = useState("");
+  const [headerMobileLogo, setHeaderMobileLogo] = useState("");
+  const [footerDesktopLogo, setFooterDesktopLogo] = useState("");
+  const [footerMobileLogo, setFooterMobileLogo] = useState("");
   const [categoryHeroCover, setCategoryHeroCover] = useState("");
   const [categoryCardBg, setCategoryCardBg] = useState("");
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
     instagram: "",
-    youtube: "",
-    linkedin: "",
-    twitter: "",
+    youtube: ""
   });
   const [rightChoiceBanner, setRightChoiceBanner] = useState({
     title: "",
@@ -105,16 +103,16 @@ export default function AdminSettingsPage() {
     setLoading(true);
     try {
       const res = await api.getSettings();
-      setDesktopLogo(res.desktopLogo || "");
-      setMobileLogo(res.mobileLogo || "");
+      setHeaderDesktopLogo(res.headerDesktopLogo || res.desktopLogo || "");
+      setHeaderMobileLogo(res.headerMobileLogo || res.mobileLogo || res.headerDesktopLogo || res.desktopLogo || "");
+      setFooterDesktopLogo(res.footerDesktopLogo || res.desktopLogo || res.headerDesktopLogo || "");
+      setFooterMobileLogo(res.footerMobileLogo || res.footerDesktopLogo || res.mobileLogo || res.desktopLogo || "");
       setCategoryHeroCover(res.categoryHeroCover || "");
       setCategoryCardBg(res.categoryCardBg || "");
       setSocialLinks({
         facebook: res.socialLinks?.facebook || "",
         instagram: res.socialLinks?.instagram || "",
         youtube: res.socialLinks?.youtube || "",
-        linkedin: res.socialLinks?.linkedin || "",
-        twitter: res.socialLinks?.twitter || "",
       });
       setRightChoiceBanner({
         title: res.rightChoiceBanner?.title || "",
@@ -149,16 +147,18 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       const updated = await api.updateSettings({
-        desktopLogo: desktopLogo.trim() || undefined,
-        mobileLogo: mobileLogo.trim() || undefined,
+        headerDesktopLogo: headerDesktopLogo.trim() || undefined,
+        headerMobileLogo: headerMobileLogo.trim() || undefined,
+        footerDesktopLogo: footerDesktopLogo.trim() || undefined,
+        footerMobileLogo: footerMobileLogo.trim() || undefined,
+        desktopLogo: headerDesktopLogo.trim() || undefined,
+        mobileLogo: headerMobileLogo.trim() || undefined,
         categoryHeroCover: categoryHeroCover.trim() || undefined,
         categoryCardBg: categoryCardBg.trim() || undefined,
         socialLinks: {
           facebook: socialLinks.facebook.trim(),
           instagram: socialLinks.instagram.trim(),
           youtube: socialLinks.youtube.trim(),
-          linkedin: socialLinks.linkedin.trim(),
-          twitter: socialLinks.twitter.trim(),
         },
         rightChoiceBanner: {
           title: rightChoiceBanner.title.trim(),
@@ -176,16 +176,16 @@ export default function AdminSettingsPage() {
       });
 
       if (updated) {
-        setDesktopLogo(updated.desktopLogo || "");
-        setMobileLogo(updated.mobileLogo || "");
+        setHeaderDesktopLogo(updated.headerDesktopLogo || updated.desktopLogo || "");
+        setHeaderMobileLogo(updated.headerMobileLogo || updated.mobileLogo || "");
+        setFooterDesktopLogo(updated.footerDesktopLogo || updated.desktopLogo || "");
+        setFooterMobileLogo(updated.footerMobileLogo || updated.mobileLogo || "");
         setCategoryHeroCover(updated.categoryHeroCover || "");
         setCategoryCardBg(updated.categoryCardBg || "");
         setSocialLinks({
           facebook: updated.socialLinks?.facebook || "",
           instagram: updated.socialLinks?.instagram || "",
           youtube: updated.socialLinks?.youtube || "",
-          linkedin: updated.socialLinks?.linkedin || "",
-          twitter: updated.socialLinks?.twitter || "",
         });
         setRightChoiceBanner({
           title: updated.rightChoiceBanner?.title || "",
@@ -266,8 +266,8 @@ export default function AdminSettingsPage() {
           </div>
         ) : (
           <form onSubmit={handleSaveSettings} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Card 1: Logo Settings */}
-            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6">
+            {/* Card 1: Logo Settings (Single Row / Full Width with Header & Footer side-by-side) */}
+            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
               <div className="flex items-center gap-3 pb-4 border-b border-border">
                 <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
                   <ImageIcon className="h-5 w-5" />
@@ -275,42 +275,110 @@ export default function AdminSettingsPage() {
                 <div>
                   <h2 className="text-sm font-extrabold text-foreground">Website Logos</h2>
                   <p className="text-[11px] text-foreground/50 mt-0.5">
-                    Customize logos rendered across desktop and mobile headers/footers.
+                    Customize desktop and mobile logos categorized by Header and Footer.
                   </p>
                 </div>
               </div>
 
-              {/* Desktop Logo */}
-              <div className="space-y-2">
-                <label className="block text-xs font-bold text-foreground/80">Desktop Logo</label>
-                <p className="text-[11px] text-foreground/50">
-                  Displayed on main website header and desktop footer. (Fallback: <code>/images/logo.png</code>)
-                </p>
-                <ImageUpload
-                  value={desktopLogo}
-                  onChange={(url) => setDesktopLogo(url)}
-                  size="compact"
-                  folder="branding"
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Category 1: Header Logos */}
+                <div className="space-y-4 p-5 rounded-2xl bg-surface/50 border border-border/70">
+                  <div className="flex items-center justify-between bg-primary/5 px-3.5 py-2 rounded-xl border border-primary/15">
+                    <div className="flex items-center gap-2 text-xs font-black text-primary uppercase tracking-wider">
+                      <PanelTop className="h-4 w-4" />
+                      <span>Header Logos</span>
+                    </div>
+                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">
+                      Header Category
+                    </span>
+                  </div>
 
-              <div className="border-t border-border/60 pt-4 space-y-2">
-                {/* Mobile Logo */}
-                <label className="block text-xs font-bold text-foreground/80">Mobile Logo</label>
-                <p className="text-[11px] text-foreground/50">
-                  Displayed inside mobile header drawer and small screens. (Fallback: Desktop Logo or <code>/images/logo.png</code>)
-                </p>
-                <ImageUpload
-                  value={mobileLogo}
-                  onChange={(url) => setMobileLogo(url)}
-                  size="compact"
-                  folder="branding"
-                />
+                  {/* Header Desktop Logo */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground/80">
+                      <Laptop className="h-3.5 w-3.5 text-foreground/60" />
+                      <span>Header Desktop Logo</span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50">
+                      Displayed on main website header for desktop and wide screens. (Fallback: <code>/images/logo.png</code>)
+                    </p>
+                    <ImageUpload
+                      value={headerDesktopLogo}
+                      onChange={(url) => setHeaderDesktopLogo(url)}
+                      size="compact"
+                      folder="branding"
+                    />
+                  </div>
+
+                  {/* Header Mobile Logo */}
+                  <div className="space-y-2 pt-3 border-t border-border/40">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground/80">
+                      <Smartphone className="h-3.5 w-3.5 text-foreground/60" />
+                      <span>Header Mobile Logo</span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50">
+                      Displayed inside mobile navigation drawer and small screens. (Fallback: Header Desktop Logo or <code>/images/logo.png</code>)
+                    </p>
+                    <ImageUpload
+                      value={headerMobileLogo}
+                      onChange={(url) => setHeaderMobileLogo(url)}
+                      size="compact"
+                      folder="branding"
+                    />
+                  </div>
+                </div>
+
+                {/* Category 2: Footer Logos */}
+                <div className="space-y-4 p-5 rounded-2xl bg-surface/50 border border-border/70">
+                  <div className="flex items-center justify-between bg-indigo-500/5 px-3.5 py-2 rounded-xl border border-indigo-500/15">
+                    <div className="flex items-center gap-2 text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                      <PanelBottom className="h-4 w-4" />
+                      <span>Footer Logos</span>
+                    </div>
+                    <span className="text-[10px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-full font-bold">
+                      Footer Category
+                    </span>
+                  </div>
+
+                  {/* Footer Desktop Logo */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground/80">
+                      <Laptop className="h-3.5 w-3.5 text-foreground/60" />
+                      <span>Footer Desktop Logo</span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50">
+                      Displayed on the website footer for desktop screens. (Fallback: Header Desktop Logo or <code>/images/logo.png</code>)
+                    </p>
+                    <ImageUpload
+                      value={footerDesktopLogo}
+                      onChange={(url) => setFooterDesktopLogo(url)}
+                      size="compact"
+                      folder="branding"
+                    />
+                  </div>
+
+                  {/* Footer Mobile Logo */}
+                  <div className="space-y-2 pt-3 border-t border-border/40">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-foreground/80">
+                      <Smartphone className="h-3.5 w-3.5 text-foreground/60" />
+                      <span>Footer Mobile Logo</span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50">
+                      Displayed on the website footer for mobile screens. (Fallback: Footer Desktop Logo or <code>/images/logo.png</code>)
+                    </p>
+                    <ImageUpload
+                      value={footerMobileLogo}
+                      onChange={(url) => setFooterMobileLogo(url)}
+                      size="compact"
+                      folder="branding"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Card 2: Social Media Settings */}
-            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6">
+            {/* Card 2: Social Media Settings (Full Row Below Logos) */}
+            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
               <div className="flex items-center gap-3 pb-4 border-b border-border">
                 <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-500">
                   <Share2 className="h-5 w-5" />
@@ -323,7 +391,7 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Facebook */}
                 <div>
                   <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
@@ -383,36 +451,6 @@ export default function AdminSettingsPage() {
                     value={socialLinks.youtube}
                     onChange={(e) => setSocialLinks({ ...socialLinks, youtube: e.target.value })}
                     placeholder="https://youtube.com/@your-channel"
-                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
-                  />
-                </div>
-
-                {/* LinkedIn */}
-                <div>
-                  <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
-                    <Globe className="h-4 w-4 text-sky-600" />
-                    <span>LinkedIn Company URL</span>
-                  </label>
-                  <input
-                    type="url"
-                    value={socialLinks.linkedin}
-                    onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
-                    placeholder="https://linkedin.com/company/your-company"
-                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
-                  />
-                </div>
-
-                {/* Twitter / X */}
-                <div>
-                  <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
-                    <AtSign className="h-4 w-4 text-sky-400" />
-                    <span>Twitter / X Profile URL</span>
-                  </label>
-                  <input
-                    type="url"
-                    value={socialLinks.twitter}
-                    onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
-                    placeholder="https://x.com/your-handle"
                     className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
@@ -769,11 +807,10 @@ export default function AdminSettingsPage() {
                                       updatedSecs[secIdx].details[itemIdx].icon = preset.path;
                                       setContactPage({ ...contactPage, sections: updatedSecs });
                                     }}
-                                    className={`px-1.5 py-0.5 rounded border text-[10px] font-medium transition-colors cursor-pointer ${
-                                      item.icon === preset.path
-                                        ? "bg-primary text-white border-primary"
-                                        : "bg-surface text-foreground/70 border-border hover:bg-border/50"
-                                    }`}
+                                    className={`px-1.5 py-0.5 rounded border text-[10px] font-medium transition-colors cursor-pointer ${item.icon === preset.path
+                                      ? "bg-primary text-white border-primary"
+                                      : "bg-surface text-foreground/70 border-border hover:bg-border/50"
+                                      }`}
                                   >
                                     {preset.name}
                                   </button>

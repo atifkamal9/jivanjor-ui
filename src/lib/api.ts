@@ -99,6 +99,10 @@ export interface SiteSettings {
   id?: string;
   desktopLogo?: string;
   mobileLogo?: string;
+  headerDesktopLogo?: string;
+  headerMobileLogo?: string;
+  footerDesktopLogo?: string;
+  footerMobileLogo?: string;
   categoryHeroCover?: string;
   categoryCardBg?: string;
   socialLinks?: {
@@ -1076,6 +1080,10 @@ export const api = {
       return {
         desktopLogo: "/images/logo.png",
         mobileLogo: "/images/logo.png",
+        headerDesktopLogo: "/images/logo.png",
+        headerMobileLogo: "/images/logo.png",
+        footerDesktopLogo: "/images/logo.png",
+        footerMobileLogo: "/images/logo.png",
         categoryHeroCover: "/images/main-category-hero.png",
         categoryCardBg: "/images/placeholder.png",
         socialLinks: {

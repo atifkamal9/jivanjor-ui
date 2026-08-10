@@ -110,11 +110,11 @@ export default function Footer() {
             {/* Left section */}
             <div className="shrink-0">
               <Image
-                src={siteSettings?.desktopLogo || "/images/logo.png"}
+                src={siteSettings?.footerDesktopLogo || siteSettings?.headerDesktopLogo || siteSettings?.desktopLogo || "/images/logo.png"}
                 alt="Jivanjor"
                 width={260}
                 height={120}
-                className="w-55 md:w-65 object-contain"
+                className="w-50 md:w-65 object-contain"
               />
               {/* Social Icons */}
               <div className="flex items-center justify-center gap-3 mt-8">
@@ -214,11 +214,11 @@ export default function Footer() {
         </div>
         <div className="self-center">
           <Image
-            src={siteSettings?.mobileLogo || siteSettings?.desktopLogo || "/images/logo.png"}
+            src={siteSettings?.footerMobileLogo || siteSettings?.footerDesktopLogo || siteSettings?.mobileLogo || siteSettings?.desktopLogo || "/images/logo.png"}
             alt="Jivanjor"
-            width={260}
+            width={200}
             height={120}
-            className="w-55 md:w-65 object-contain"
+            className="w-50 md:w-65 object-contain"
           />
         </div>
         <div className="p-2 w-full space-y-2">

@@ -123,10 +123,9 @@ export default function MobileNav({
   useEffect(() => {
     document.body.style.overflow = "hidden";
     api.getSettings().then((s) => {
-      if (s?.mobileLogo || s?.desktopLogo) {
-        setMobileLogoSrc(s.mobileLogo || s.desktopLogo || "/images/logo.png");
-      }
-    }).catch(() => {});
+      const logo = s?.headerMobileLogo || s?.headerDesktopLogo || s?.mobileLogo || s?.desktopLogo || "/images/logo.png";
+      setMobileLogoSrc(logo);
+    }).catch(() => { });
 
     return () => {
       document.body.style.overflow = "unset";

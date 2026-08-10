@@ -465,12 +465,20 @@ export default function Navbar() {
       <nav className="flex items-center justify-between max-w-360 mx-auto w-full px-6 font-google-sans relative">
         <Link href="/" className="shrink-0">
           <Image
-            className="aspect-2/1 w-28 h-14 md:w-30 md:h-auto object-contain"
-            src={siteSettings?.desktopLogo || "/images/logo.png"}
+            className="aspect-2/1 w-30 h-auto object-contain hidden lg:block"
+            src={siteSettings?.headerDesktopLogo || siteSettings?.desktopLogo || "/images/logo.png"}
             alt="Jivanjor Logo"
             loading="eager"
             width={120}
             height={72}
+          />
+          <Image
+            className="aspect-square w-28 h-14 lg:hidden object-contain"
+            src={siteSettings?.headerMobileLogo || siteSettings?.mobileLogo || "/images/logo.png"}
+            alt="Jivanjor Logo"
+            loading="eager"
+            width={112}
+            height={56}
           />
         </Link>
 

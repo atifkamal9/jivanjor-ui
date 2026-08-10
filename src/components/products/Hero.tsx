@@ -29,13 +29,9 @@ export default function Hero({ product, category }: HeroProps) {
       <div className="md:hidden flex items-center gap-1.5 px-6 py-2.5 border-b border-neutral-100 text-sm font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
-          <Image
-            src="/icons/home.svg"
-            alt="home"
-            width={18}
-            height={18}
-            className="invert"
-          />
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
         </Link>
         {/* Chevron separator */}
         <ChevronRight size={16} />
