@@ -49,12 +49,12 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
       </div>
       <div className="hidden xl:block relative p-12.5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
-        <div className="absolute bottom-0 right-0 pointer-events-none">
+        <div className="absolute bottom-0 right-0 max-w-[1140px] min-w-[500px] h-full pointer-events-none">
           <Image
             src="/images/watermark-choice.svg"
             alt="watermark"
             width={900}
-            height={450}
+            height={480}
             className="w-full h-full object-cover"
           />
         </div>
