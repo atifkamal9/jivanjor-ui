@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, BlogPost, SeoMetadata } from "@/lib/api";
+import { api, BlogPost } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
 import { BLOG_POST_CATEGORIES, FALLBACK_BLOG_CATEGORIES } from "@/lib/blog-categories";
@@ -11,25 +11,11 @@ import {
   Search,
   Edit2,
   Trash2,
-  X,
   Sparkles,
   BookOpen,
   User,
   Calendar,
   Tag as TagIcon,
-  Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  Code,
-  List,
-  ListOrdered,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Link as LinkIcon,
-  Palette,
-  Eraser,
   ArrowLeft,
   Eye,
   Globe,
@@ -120,16 +106,27 @@ export default function BlogPage() {
         templateAuthors = listSection.authors;
       }
 
-      const postCats = data.map((b: any) => b.category).filter(Boolean);
+      const activeCats = templateCats.length > 0 ? templateCats : FALLBACK_BLOG_CATEGORIES;
+      setDynamicCategories(activeCats);
 
-      const blogCats = Array.from(
-        new Set([
-          ...FALLBACK_BLOG_CATEGORIES,
-          ...templateCats,
-          ...postCats,
-        ])
-      ).filter(Boolean);
-      setDynamicCategories(blogCats);
+      // Re-attach any blogs linked to categories deleted from dynamic page template
+      const latestCategory = activeCats[0] || "Latest Blogs";
+      let updatedPosts = false;
+      const sanitizedBlogs = data.map((b: any) => {
+        if (b.category && !activeCats.includes(b.category)) {
+          updatedPosts = true;
+          const updated = { ...b, category: latestCategory };
+          api.saveBlogPost(updated).catch((err) =>
+            console.error("Failed to re-attach post category:", err)
+          );
+          return updated;
+        }
+        return b;
+      });
+
+      if (updatedPosts) {
+        setBlogs(sanitizedBlogs);
+      }
 
       const mergedAuthors = templateAuthors.length > 0 ? templateAuthors : [FALLBACK_AUTHOR];
       setAuthorsList(mergedAuthors);
@@ -159,7 +156,7 @@ export default function BlogPage() {
       title: "",
       slug: "",
       content: "<p>Write your article content here...</p>",
-      category: BLOG_POST_CATEGORIES[0] || "Application Tips",
+      category: dynamicCategories[0] || "Latest Blogs",
       tagsInput: "woodworking, carpentry, adhesives",
       author: authorsList[0]?.name || FALLBACK_AUTHOR.name,
       author_description: authorsList[0]?.bio || FALLBACK_AUTHOR.bio,
@@ -180,7 +177,7 @@ export default function BlogPage() {
       title: blog.title,
       slug: blog.slug,
       content: blog.content,
-      category: blog.category || BLOG_POST_CATEGORIES[0],
+      category: dynamicCategories.includes(blog.category) ? blog.category : (dynamicCategories[0] || "Latest Blogs"),
       tagsInput: (blog.tags || []).join(", "),
       author: blog.author,
       author_description: blog.author_description || blog.authorDescription || "",

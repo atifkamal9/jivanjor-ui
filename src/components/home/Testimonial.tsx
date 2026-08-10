@@ -131,8 +131,7 @@ const defaultTestimonials: TestimonialItem[] = [
     name: "Mr. Mosim Ali",
     role: "Contractor Carpenter",
     quote: "Jivanjor products are highly reliable and strong.",
-    image:
-      "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=500&q=80",
+    image: "/images/2.jpeg",
   },
 ];
 

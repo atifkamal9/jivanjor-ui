@@ -543,9 +543,7 @@ function mapBlogPostFromBackend(post: any): BlogPost {
     publish_date,
     updated_at,
     updatedAt: updated_at,
-    image:
-      post.image ||
-      "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=400&auto=format&fit=crop",
+    image: post.image || "/images/Rectangle 4.png",
     tldr: post.tldr || "",
   };
 }
