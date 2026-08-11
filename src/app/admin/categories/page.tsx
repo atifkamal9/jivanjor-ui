@@ -18,6 +18,8 @@ import {
   Layers,
   FileText,
   Upload,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -25,6 +27,28 @@ export default function CategoriesPage() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // Root category collapse state
+  const [collapsedCategoryIds, setCollapsedCategoryIds] = useState<Record<string, boolean>>({});
+
+  const toggleCategoryCollapse = (id: string) => {
+    setCollapsedCategoryIds((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const handleExpandAll = () => {
+    setCollapsedCategoryIds({});
+  };
+
+  const handleCollapseAll = () => {
+    const newCollapsed: Record<string, boolean> = {};
+    categories.filter((c) => !c.parent_category).forEach((c) => {
+      newCollapsed[c.id] = true;
+    });
+    setCollapsedCategoryIds(newCollapsed);
+  };
 
   // Bulk Upload
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
@@ -288,8 +312,8 @@ export default function CategoriesPage() {
           </div>
 
           {/* Filters Panel */}
-          <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 p-4 rounded-2xl shadow-sm transition-colors duration-300">
-            <div className="relative max-w-md">
+          <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 p-4 rounded-2xl shadow-sm transition-colors duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative max-w-md w-full">
               <Search className="absolute left-3 top-3.5 h-4.5 w-4.5 text-gray-400 dark:text-zinc-500" />
               <input
                 type="text"
@@ -298,6 +322,28 @@ export default function CategoriesPage() {
                 onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
               />
+            </div>
+
+            {/* Expand / Collapse Actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleExpandAll}
+                className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 border border-gray-200 dark:border-zinc-700 text-xs font-bold text-gray-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                title="Expand all root category branches"
+              >
+                <ChevronDown className="h-3.5 w-3.5 text-red-600 dark:text-red-400" />
+                <span>Expand All</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleCollapseAll}
+                className="px-3 py-2 rounded-xl bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 border border-gray-200 dark:border-zinc-700 text-xs font-bold text-gray-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                title="Collapse all root category branches"
+              >
+                <ChevronRight className="h-3.5 w-3.5 text-gray-500" />
+                <span>Collapse All</span>
+              </button>
             </div>
           </div>
 
@@ -331,19 +377,50 @@ export default function CategoriesPage() {
                             sub.description.toLowerCase().includes(search.toLowerCase()))
                       );
 
+                      const isCollapsed = !search.trim() && Boolean(collapsedCategoryIds[mainCat.id]);
+
                       return (
                         <React.Fragment key={mainCat.id}>
                           {/* Main Category Row */}
                           <tr className="hover:bg-gray-50/20 dark:hover:bg-zinc-800/10 transition-colors bg-gray-50/5 dark:bg-zinc-900/5">
                             <td className="p-5 font-semibold">
                               <div className="flex items-center gap-3">
-                                <div className="h-9 w-9 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  disabled={subCats.length === 0}
+                                  onClick={() => toggleCategoryCollapse(mainCat.id)}
+                                  className={`p-1.5 rounded-lg border transition-all ${
+                                    subCats.length === 0
+                                      ? "opacity-30 cursor-not-allowed border-transparent text-gray-400"
+                                      : "cursor-pointer bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 shadow-xs"
+                                  }`}
+                                  title={
+                                    subCats.length === 0
+                                      ? "No subcategories"
+                                      : isCollapsed
+                                      ? "Click to expand subcategories"
+                                      : "Click to collapse subcategories"
+                                  }
+                                >
+                                  {isCollapsed ? (
+                                    <ChevronRight className="h-4 w-4" />
+                                  ) : (
+                                    <ChevronDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+                                  )}
+                                </button>
+
+                                <div className="h-9 w-9 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
                                   <FolderTree className="h-5 w-5" />
                                 </div>
                                 <div>
                                   <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                     <span>{mainCat.name}</span>
-                                    <span className="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Root</span>
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/40">Root</span>
+                                    {subCats.length > 0 && (
+                                      <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 bg-gray-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full border border-gray-200 dark:border-zinc-700">
+                                        {subCats.length} {subCats.length === 1 ? "sub-category" : "sub-categories"}
+                                      </span>
+                                    )}
                                   </p>
                                   <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{mainCat.slug}</p>
                                 </div>
@@ -374,8 +451,9 @@ export default function CategoriesPage() {
                           </tr>
 
                           {/* Child categories loop */}
-                          {subCats.map((sub) => (
-                            <tr key={sub.id} className="hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-colors bg-white dark:bg-zinc-900">
+                          {!isCollapsed &&
+                            subCats.map((sub) => (
+                              <tr key={sub.id} className="hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-colors bg-white dark:bg-zinc-900 animate-[fadeIn_0.15s_ease-out]">
                               <td className="p-5 pl-14">
                                 <div className="flex items-center gap-2">
                                   <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
