@@ -27,7 +27,7 @@ export default function LoginPage() {
       });
       const data = res.data?.data;
       if (data?.token) {
-        signIn(email, data.token, data?.user?.permissions || data?.permissions);
+        signIn(email, data.token, data?.user?.permissions || data?.permissions, data?.user?.name);
         router.push("/admin");
       } else {
         setError("Could not retrieve authentication token from backend.");

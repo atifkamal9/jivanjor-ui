@@ -22,6 +22,7 @@ import {
   Compass,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
 
 export default function DashboardPage() {
@@ -295,9 +296,15 @@ export default function DashboardPage() {
       <div className="space-y-8 animate-[fadeIn_0.3s_ease-out]">
         {/* Welcome Banner */}
         <div className="rounded-3xl bg-linear-to-r from-[#FF0009] to-[#772571] p-6 md:p-8 text-white shadow-xl shadow-red-950/20 relative overflow-hidden">
-          <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
-          <div className="absolute right-20 bottom-0 translate-x-10 translate-y-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
-
+          {/* Watermark Background */}
+          <div className="absolute bottom-0 right-0 pointer-events-none w-100 min-h-40">
+            <Image
+              fill
+              alt="watermark"
+              src="/images/watermark-blog.png"
+              className="object-cover rotate-180"
+            />
+          </div>
           <div className="relative z-10 max-w-2xl">
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">
               Welcome to Jivanjor Admin Panel

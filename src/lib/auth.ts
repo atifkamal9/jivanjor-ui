@@ -1,5 +1,6 @@
 const AUTH_KEY = "jivanjor-authenticated";
 const USER_EMAIL_KEY = "jivanjor-user-email";
+const USER_NAME_KEY = "jivanjor-user-name";
 const TOKEN_KEY = "jivanjor-auth-token";
 
 export function isBrowser() {
@@ -10,15 +11,18 @@ export function isAuthenticated() {
   return isBrowser() && localStorage.getItem(AUTH_KEY) === "true";
 }
 
-export function signIn(email: string, token: string, permissions?: string[]) {
+export function signIn(email: string, token: string, permissions?: string[], name?: string) {
   if (!isBrowser()) return false;
   localStorage.setItem(AUTH_KEY, "true");
   localStorage.setItem(USER_EMAIL_KEY, email);
   localStorage.setItem(TOKEN_KEY, token);
+  if (name) {
+    localStorage.setItem(USER_NAME_KEY, name);
+  }
   if (Array.isArray(permissions)) {
     localStorage.setItem("jivanjor-user-permissions", JSON.stringify(permissions));
   } else {
-    // Decode permissions from token if available
+    // Decode permissions and name from token if available
     try {
       const payload = token.split(".")[1];
       if (payload) {
@@ -33,6 +37,9 @@ export function signIn(email: string, token: string, permissions?: string[]) {
         if (Array.isArray(decoded.permissions)) {
           localStorage.setItem("jivanjor-user-permissions", JSON.stringify(decoded.permissions));
         }
+        if (decoded.name) {
+          localStorage.setItem(USER_NAME_KEY, decoded.name);
+        }
       }
     } catch (e) {}
   }
@@ -43,12 +50,40 @@ export function signOut() {
   if (!isBrowser()) return;
   localStorage.removeItem(AUTH_KEY);
   localStorage.removeItem(USER_EMAIL_KEY);
+  localStorage.removeItem(USER_NAME_KEY);
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem("jivanjor-user-permissions");
 }
 
 export function getUserEmail() {
   return isBrowser() ? (localStorage.getItem(USER_EMAIL_KEY) ?? "") : "";
+}
+
+export function getUserName(): string {
+  if (!isBrowser()) return "";
+  const stored = localStorage.getItem(USER_NAME_KEY);
+  if (stored) return stored;
+
+  const token = getAuthToken();
+  if (token) {
+    try {
+      const payload = token.split(".")[1];
+      if (payload) {
+        const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
+        const decoded = JSON.parse(jsonPayload);
+        if (decoded.name) {
+          return decoded.name;
+        }
+      }
+    } catch (e) {}
+  }
+  return "";
 }
 
 export function getAuthToken() {

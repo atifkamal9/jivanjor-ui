@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut, getUserEmail, getUserRole, hasPermission } from "@/lib/auth";
+import { signOut, getUserEmail, getUserRole, getUserName, hasPermission } from "@/lib/auth";
 import {
   LayoutDashboard,
   Package,
@@ -53,6 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [name, setName] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -63,6 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     setEmail(getUserEmail() || "admin@jivanjor.com");
     setRole(getUserRole());
+    setName(getUserName());
 
     // Check local storage for theme (default to light)
     const theme = localStorage.getItem("jivanjor_admin_theme");
@@ -583,37 +585,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
         {/* Footer Info */}
-        <div className={`p-4 border-t border-border bg-surface/55 transition-all duration-300 ${isCollapsed ? "flex flex-col items-center gap-3" : ""
-          }`}>
-          {isCollapsed ? (
-            <div className="h-9 w-9 rounded-lg bg-surface flex items-center justify-center font-bold text-foreground text-sm border border-border shrink-0" title={email}>
-              {email ? email.substring(0, 2).toUpperCase() : "AD"}
+        {(() => {
+          const displayName =
+            role === "ADMIN" || role === "SUPER_ADMIN"
+              ? "Administrator"
+              : name || (email ? email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1) : "User");
+          const initials = (name ? name.substring(0, 2) : email ? email.substring(0, 2) : "AD").toUpperCase();
+
+          return (
+            <div className={`p-4 border-t border-border bg-surface/55 transition-all duration-300 ${isCollapsed ? "flex flex-col items-center gap-3" : ""
+              }`}>
+              {isCollapsed ? (
+                <div className="h-9 w-9 rounded-lg bg-surface flex items-center justify-center font-bold text-foreground text-sm border border-border shrink-0" title={displayName}>
+                  {initials}
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 mb-3 animate-[fadeIn_0.2s_ease-out]">
+                  <div className="h-9 w-9 rounded-lg bg-surface flex items-center justify-center font-bold text-foreground text-sm border border-border shrink-0">
+                    {initials}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-foreground truncate">
+                      {displayName}
+                    </p>
+                    <p className="text-[10px] text-foreground/50 truncate">
+                      {email}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className={`flex items-center justify-center text-xs font-bold text-primary bg-background border border-border rounded-lg hover:bg-primary/5 transition-all cursor-pointer ${isCollapsed ? "p-2.5 w-10 h-10 shrink-0" : "gap-2 w-full px-3 py-2"
+                  }`}
+                title="Sign Out"
+              >
+                <LogOut className="h-3.5 w-3.5 shrink-0" />
+                {!isCollapsed && <span className="animate-[fadeIn_0.2s_ease-out]">Sign Out</span>}
+              </button>
             </div>
-          ) : (
-            <div className="flex items-center gap-3 mb-3 animate-[fadeIn_0.2s_ease-out]">
-              <div className="h-9 w-9 rounded-lg bg-surface flex items-center justify-center font-bold text-foreground text-sm border border-border shrink-0">
-                {email ? email.substring(0, 2).toUpperCase() : "AD"}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-foreground truncate">
-                  Administrator
-                </p>
-                <p className="text-[10px] text-foreground/50 truncate">
-                  {email}
-                </p>
-              </div>
-            </div>
-          )}
-          <button
-            onClick={handleLogout}
-            className={`flex items-center justify-center text-xs font-bold text-primary bg-background border border-border rounded-lg hover:bg-primary/5 transition-all cursor-pointer ${isCollapsed ? "p-2.5 w-10 h-10 shrink-0" : "gap-2 w-full px-3 py-2"
-              }`}
-            title="Sign Out"
-          >
-            <LogOut className="h-3.5 w-3.5 shrink-0" />
-            {!isCollapsed && <span className="animate-[fadeIn_0.2s_ease-out]">Sign Out</span>}
-          </button>
-        </div>
+          );
+        })()}
       </aside>
 
       {/* ==================== MOBILE MENU SIDEBAR ==================== */}
