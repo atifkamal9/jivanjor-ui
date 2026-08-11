@@ -36,7 +36,7 @@ export default function LoginPage() {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-          "Failed to authenticate with backend server. Make sure the database is running.",
+        "Failed to authenticate with backend server. Make sure the database is running.",
       );
       setLoading(false);
     }
@@ -47,7 +47,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center text-center">
           {/* Glowing Premium Brand Logo Container */}
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/30">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-r from-[#FF0009] to-[#772571] shadow-lg shadow-red-500/30">
             <span className="text-2xl font-black text-white">JJ</span>
           </div>
           <h2 className="mt-6 text-3xl font-black text-foreground dark:text-zinc-50 font-google-sans">
@@ -126,7 +126,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 px-4 text-sm font-bold text-white transition-all hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-primary/30 disabled:opacity-50 shadow-md shadow-primary/20 hover:shadow-lg cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#FF0009] to-[#772571] py-3.5 px-4 text-sm font-bold text-white transition-all hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-primary/30 disabled:opacity-50 shadow-md shadow-primary/20 hover:shadow-lg cursor-pointer"
             >
               {loading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>

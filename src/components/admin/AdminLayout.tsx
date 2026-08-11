@@ -479,7 +479,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="h-20 flex items-center justify-center shrink-0 border-b border-border animate-[fadeIn_0.2s_ease-out]">
             <button
               onClick={toggleCollapse}
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30 shrink-0 cursor-pointer hover:scale-105 transition-all relative group"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-r from-[#FF0009] to-[#772571] shadow-md shadow-red-500/20 shrink-0 cursor-pointer hover:scale-105 transition-all relative group"
               title="Expand Sidebar"
             >
               <span className="text-lg font-black text-white group-hover:opacity-0 transition-opacity duration-200">JJ</span>
@@ -489,14 +489,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ) : (
           <div className="h-20 flex items-center justify-between px-5 border-b border-border shrink-0">
             <div className="flex items-center gap-2.5 truncate">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/30 shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-r from-[#FF0009] to-[#772571] shadow-md shadow-red-500/20 shrink-0">
                 <span className="text-lg font-black text-white">JJ</span>
               </div>
               <div className="truncate">
                 <h1 className="text-sm font-extrabold text-foreground animate-[fadeIn_0.2s_ease-out]">
                   Jivanjor
                 </h1>
-                <p className="text-[9px] font-bold tracking-wider text-primary uppercase animate-[fadeIn_0.2s_ease-out]">
+                <p className="text-[9px] font-bold tracking-wider text-red-600 dark:text-red-400 uppercase animate-[fadeIn_0.2s_ease-out]">
                   CMS ADMIN PANEL
                 </p>
               </div>
@@ -524,20 +524,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href={overviewItem.href}
                 className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
                   } ${isActive
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-red-500/10 text-red-600 dark:text-red-400"
                     : "text-foreground/75 hover:bg-surface hover:text-foreground"
                   }`}
                 title={isCollapsed ? overviewItem.name : undefined}
               >
                 <Icon
-                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-primary" : "text-foreground/45"
+                  className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-red-600 dark:text-red-400" : "text-foreground/45"
                     }`}
                 />
                 {!isCollapsed && (
                   <span className="animate-[fadeIn_0.2s_ease-out] truncate">{overviewItem.name}</span>
                 )}
                 {!isCollapsed && isActive && (
-                  <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                  <span className="ml-auto h-2 w-2 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571]" />
                 )}
               </Link>
             );
@@ -558,20 +558,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   href={item.href}
                   className={`flex items-center rounded-xl text-sm font-semibold transition-all group duration-200 ${isCollapsed ? "justify-center p-2.5 w-10 h-10" : "gap-3 px-4 py-3"
                     } ${isActive
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-red-500/10 text-red-600 dark:text-red-400"
                       : "text-foreground/75 hover:bg-surface hover:text-foreground"
                     }`}
                   title={isCollapsed ? item.name : undefined}
                 >
                   <Icon
-                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-primary" : "text-foreground/45"
+                    className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 shrink-0 ${isActive ? "text-red-600 dark:text-red-400" : "text-foreground/45"
                       }`}
                   />
                   {!isCollapsed && (
                     <span className="animate-[fadeIn_0.2s_ease-out] truncate">{item.name}</span>
                   )}
                   {!isCollapsed && isActive && (
-                    <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                    <span className="ml-auto h-2 w-2 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571]" />
                   )}
                 </Link>
               );

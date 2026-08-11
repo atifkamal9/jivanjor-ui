@@ -294,7 +294,7 @@ export default function DashboardPage() {
     <AdminLayout>
       <div className="space-y-8 animate-[fadeIn_0.3s_ease-out]">
         {/* Welcome Banner */}
-        <div className="rounded-3xl bg-linear-to-r from-primary to-primary/90 p-6 md:p-8 text-white shadow-xl shadow-primary/10 relative overflow-hidden">
+        <div className="rounded-3xl bg-linear-to-r from-[#FF0009] to-[#772571] p-6 md:p-8 text-white shadow-xl shadow-red-950/20 relative overflow-hidden">
           <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
           <div className="absolute right-20 bottom-0 translate-x-10 translate-y-20 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
 
