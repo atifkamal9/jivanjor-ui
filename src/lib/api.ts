@@ -6,7 +6,10 @@ export interface User {
   name: string;
   email: string;
   role: string;
-  created_at: string;
+  permissions?: string[];
+  created_at?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Product {
@@ -1158,6 +1161,68 @@ export const api = {
   updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
     const res = await client.put("/settings", data);
     return res.data?.data?.settings;
+  },
+
+  // USER MANAGEMENT & PERMISSIONS
+  getUsers: async (): Promise<User[]> => {
+    const res = await client.get("/users");
+    const rawUsers = res.data?.data?.users || [];
+    return rawUsers.map((u: any) => ({
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      permissions: u.permissions || [],
+      created_at: u.createdAt || u.created_at,
+      createdAt: u.createdAt || u.created_at,
+      updatedAt: u.updatedAt,
+    }));
+  },
+
+  createUser: async (userData: {
+    name: string;
+    email: string;
+    password: string;
+    role?: string;
+    permissions?: string[];
+  }): Promise<User> => {
+    const res = await client.post("/users", userData);
+    const u = res.data?.data?.user;
+    return {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      permissions: u.permissions || [],
+      created_at: u.createdAt || u.created_at,
+      createdAt: u.createdAt || u.created_at,
+    };
+  },
+
+  updateUser: async (
+    id: string,
+    userData: {
+      name?: string;
+      email?: string;
+      password?: string;
+      role?: string;
+      permissions?: string[];
+    }
+  ): Promise<User> => {
+    const res = await client.put(`/users/${id}`, userData);
+    const u = res.data?.data?.user;
+    return {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      permissions: u.permissions || [],
+      updatedAt: u.updatedAt,
+    };
+  },
+
+  deleteUser: async (id: string): Promise<void> => {
+    await client.delete(`/users/${id}`);
   },
 };
 

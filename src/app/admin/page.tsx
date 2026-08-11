@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api } from "@/lib/api";
-import { getUserRole } from "@/lib/auth";
+import { getUserRole, hasPermission } from "@/lib/auth";
 import {
   Package,
   FolderTree,
@@ -52,6 +52,23 @@ export default function DashboardPage() {
     setRole(getUserRole());
     loadStats();
   }, []);
+
+  const canAccessCard = (href: string | null) => {
+    if (!href) return role === "SUPER_ADMIN";
+    if (href === "/admin/products") return hasPermission("manage_products");
+    if (href === "/admin/categories") return hasPermission("manage_categories");
+    if (href === "/admin/materials") return hasPermission("manage_materials");
+    if (href === "/admin/blog") return hasPermission("manage_blogs");
+    if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
+    if (href === "/admin/issues") return role === "SUPER_ADMIN";
+    if (href === "/admin/pages") return hasPermission("manage_pages");
+    if (href === "/admin/templates") return hasPermission("manage_templates");
+    if (href === "/admin/sitemap") return hasPermission("manage_sitemap") || hasPermission("manage_pages") || hasPermission("manage_settings");
+    if (href === "/admin/settings") return hasPermission("manage_settings");
+    if (href === "/admin/users") return hasPermission("manage_users");
+    if (href === "/admin/seo") return hasPermission("manage_settings");
+    return true;
+  };
 
   const loadStats = async () => {
     try {
@@ -296,7 +313,7 @@ export default function DashboardPage() {
         {/* Metric Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {metricCards
-            .filter((card) => (card.href !== "/admin/templates" && card.href !== "/admin/materials" && card.href !== "/admin/issues") || role === "SUPER_ADMIN")
+            .filter((card) => canAccessCard(card.href))
             .map((card, idx) => {
               const Icon = card.icon;
               return (
@@ -392,6 +409,7 @@ export default function DashboardPage() {
             {actionCards
               .filter((action) => {
                 if (action.superAdminOnly && role !== "SUPER_ADMIN") return false;
+                if (!canAccessCard(action.href)) return false;
                 if (actionTab !== "all" && action.group !== actionTab) return false;
                 if (actionSearch.trim()) {
                   const q = actionSearch.toLowerCase();
@@ -444,19 +462,59 @@ export default function DashboardPage() {
               })}
           </div>
 
-          {actionCards.filter((action) => {
-            if (action.superAdminOnly && role !== "SUPER_ADMIN") return false;
-            if (actionTab !== "all" && action.group !== actionTab) return false;
-            if (actionSearch.trim()) {
-              const q = actionSearch.toLowerCase();
-              return action.title.toLowerCase().includes(q) || action.desc.toLowerCase().includes(q);
+          {(() => {
+            const filteredCards = actionCards.filter((action) => {
+              if (action.superAdminOnly && role !== "SUPER_ADMIN") return false;
+              if (!canAccessCard(action.href)) return false;
+              if (actionTab !== "all" && action.group !== actionTab) return false;
+              if (actionSearch.trim()) {
+                const q = actionSearch.toLowerCase();
+                return action.title.toLowerCase().includes(q) || action.desc.toLowerCase().includes(q);
+              }
+              return true;
+            });
+
+            if (filteredCards.length > 0) return null;
+
+            const totalAccessibleCards = actionCards.filter((action) => {
+              if (action.superAdminOnly && role !== "SUPER_ADMIN") return false;
+              return canAccessCard(action.href);
+            }).length;
+
+            let emptyTitle = "No matching admin actions";
+            let emptyMessage = "Try adjusting your search term or switching filter tabs to locate the action you need.";
+
+            if (totalAccessibleCards === 0) {
+              emptyTitle = "No Module Permissions Assigned";
+              emptyMessage = "Your account currently has restricted access. Contact a Super Administrator to grant module permissions for Catalog, Content, or System tools.";
+            } else if (actionSearch.trim()) {
+              emptyTitle = `No actions matching "${actionSearch.trim()}"`;
+              emptyMessage = `We couldn't find any management tools matching "${actionSearch.trim()}". Try checking for spelling errors or clearing your search filter.`;
+            } else if (actionTab !== "all") {
+              emptyTitle = `No actions available in ${actionTab.charAt(0).toUpperCase() + actionTab.slice(1)}`;
+              emptyMessage = `There are no management tools matching your assigned permissions in the ${actionTab} category. Switch to the 'All' tab to view all available actions.`;
             }
-            return true;
-          }).length === 0 && (
-              <div className="p-8 text-center bg-surface/30 rounded-2xl border border-dashed border-border text-xs font-bold text-foreground/50">
-                No admin actions match your search &quot;{actionSearch}&quot;.
+
+            return (
+              <div className="p-8 text-center bg-surface/30 rounded-2xl border border-dashed border-border flex flex-col items-center justify-center space-y-2 animate-[fadeIn_0.2s_ease-out]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary mb-1">
+                  <Search className="h-5 w-5" />
+                </div>
+                <h4 className="text-sm font-extrabold text-foreground">{emptyTitle}</h4>
+                <p className="text-xs text-foreground/60 max-w-md mx-auto font-medium leading-relaxed">
+                  {emptyMessage}
+                </p>
+                {actionSearch.trim() && (
+                  <button
+                    onClick={() => setActionSearch("")}
+                    className="mt-2 text-xs font-bold text-primary hover:underline cursor-pointer"
+                  >
+                    Clear Search Query
+                  </button>
+                )}
               </div>
-            )}
+            );
+          })()}
         </div>
       </div>
 

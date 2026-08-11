@@ -197,7 +197,6 @@ export default function ProductsPage() {
         { text: "Water Resistant", icon: "image 18.svg" },
         { text: "Super Fast Setting - 1 Hour", icon: "image 19.svg" },
         { text: "Anti-Bubble Technology", icon: "image 20.svg" },
-        { text: "Superior Coverage", icon: "Texture.svg" }
       ],
       techSpecs: [
         { key: "Appearance", value: "Milk White" },
@@ -1360,15 +1359,13 @@ export default function ProductsPage() {
                               })}
                               className="px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 cursor-pointer"
                             >
-                              <option value="image 18.svg">Teal Water Drop (image 18)</option>
-                              <option value="image 19.svg">Teal Timer Clock (image 19)</option>
-                              <option value="image 20.svg">Teal Bubbles (image 20)</option>
-                              <option value="Star.svg">Star (Premium)</option>
+                              <option value="image 18.svg">Water Drop (image 18)</option>
+                              <option value="image 19.svg">Timer Clock (image 19)</option>
+                              <option value="image 20.svg">Bubbles (image 20)</option>
                               <option value="Cycle-arrow.svg">Cycle Arrow (Speed)</option>
                               <option value="Circles-seven.svg">Circles Seven (Finish)</option>
                               <option value="Texture.svg">Texture (Spread)</option>
                               <option value="Asterisk.svg">Asterisk (Safety)</option>
-                              <option value="badge.svg">Shield Badge</option>
                             </select>
                             <div className="flex items-center justify-center p-2 w-10 h-10 rounded-xl shrink-0"
                               style={{ backgroundColor: `${formData.themeColor}` }}>
@@ -1793,12 +1790,9 @@ export default function ProductsPage() {
                                     <option value="Texture.svg">Texture (Spreadability)</option>
                                     <option value="Asterisk.svg">Asterisk (Safety/Non-toxic)</option>
                                     <option value="Circles-seven.svg">Circles Seven (Clean Finish)</option>
-                                    <option value="Star.svg">Star (Premium)</option>
-                                    <option value="Shield.svg">Shield (Water Resistance)</option>
-                                    <option value="badge.svg">Shield Badge</option>
-                                    <option value="image 18.svg">Teal Water Drop (image 18)</option>
-                                    <option value="image 19.svg">Teal Timer Clock (image 19)</option>
-                                    <option value="image 20.svg">Teal Bubbles (image 20)</option>
+                                    <option value="image 18.svg">Water Drop (image 18)</option>
+                                    <option value="image 19.svg">Timer Clock (image 19)</option>
+                                    <option value="image 20.svg">Bubbles (image 20)</option>
                                   </select>
                                   <div
                                     className="flex items-center justify-center p-2 w-9 h-9 rounded-lg shrink-0 border border-black/5"

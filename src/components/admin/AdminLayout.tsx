@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut, getUserEmail, getUserRole } from "@/lib/auth";
+import { signOut, getUserEmail, getUserRole, hasPermission } from "@/lib/auth";
 import {
   LayoutDashboard,
   Package,
@@ -45,6 +45,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Dynamic Page", href: "/admin/pages", icon: FileText },
   { name: "Page Template", href: "/admin/templates", icon: Layers },
   { name: "Sitemap", href: "/admin/sitemap", icon: Compass },
+  { name: "User Management", href: "/admin/users", icon: UserCheck },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -124,14 +125,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
 
+  const canAccessItem = (href: string) => {
+    if (href === "/admin") return true;
+    if (href === "/admin/products") return hasPermission("manage_products");
+    if (href === "/admin/categories") return hasPermission("manage_categories");
+    if (href === "/admin/materials") return hasPermission("manage_materials");
+    if (href === "/admin/blog") return hasPermission("manage_blogs");
+    if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
+    if (href === "/admin/issues") return role === "SUPER_ADMIN";
+    if (href === "/admin/pages") return hasPermission("manage_pages");
+    if (href === "/admin/templates") return hasPermission("manage_templates");
+    if (href === "/admin/sitemap") return hasPermission("manage_sitemap") || hasPermission("manage_pages") || hasPermission("manage_settings");
+    if (href === "/admin/users") return hasPermission("manage_users");
+    if (href === "/admin/settings") return hasPermission("manage_settings");
+    if (href === "/admin/menu") return hasPermission("manage_settings");
+    if (href === "/admin/security") return hasPermission("manage_settings") || role === "SUPER_ADMIN";
+    return true;
+  };
+
   // Helper render function for Products collapsible menu (Desktop)
   const renderDesktopProductsAccordion = () => {
+    const showProducts = canAccessItem("/admin/products");
+    const showCategories = canAccessItem("/admin/categories");
+
+    if (!showProducts && !showCategories) return null;
+
     const isChildActive = pathname === "/admin/products" || pathname === "/admin/categories";
 
     if (isCollapsed) {
       return (
         <Link
-          href="/admin/products"
+          href={showProducts ? "/admin/products" : "/admin/categories"}
           className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${isChildActive
             ? "bg-primary/10 text-primary"
             : "text-foreground/75 hover:bg-surface hover:text-foreground"
@@ -172,27 +196,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Connecting line */}
             <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
 
-            <Link
-              href="/admin/products"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/products"
-                ? "text-primary font-black"
-                : "text-foreground/60 hover:bg-surface hover:text-foreground"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
-              <span>Products</span>
-            </Link>
+            {showProducts && (
+              <Link
+                href="/admin/products"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/products"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+                <span>Products</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/categories"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/categories"
-                ? "text-primary font-black"
-                : "text-foreground/60 hover:bg-surface hover:text-foreground"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
-              <span>Product Categories</span>
-            </Link>
+            {showCategories && (
+              <Link
+                href="/admin/categories"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/categories"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+                <span>Product Categories</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -201,6 +229,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Helper render function for Products collapsible menu (Mobile)
   const renderMobileProductsAccordion = () => {
+    const showProducts = canAccessItem("/admin/products");
+    const showCategories = canAccessItem("/admin/categories");
+
+    if (!showProducts && !showCategories) return null;
+
     const isChildActive = pathname === "/admin/products" || pathname === "/admin/categories";
 
     return (
@@ -225,29 +258,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative pl-7 py-1 space-y-1 mt-1">
             <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
 
-            <Link
-              href="/admin/products"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/products"
-                ? "text-primary bg-primary/5 font-black"
-                : "text-foreground/60 hover:bg-surface"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary" : "bg-foreground/20"}`} />
-              <span>Products</span>
-            </Link>
+            {showProducts && (
+              <Link
+                href="/admin/products"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/products"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/products" ? "bg-primary" : "bg-foreground/20"}`} />
+                <span>Products</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/categories"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/categories"
-                ? "text-primary bg-primary/5 font-black"
-                : "text-foreground/60 hover:bg-surface"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary" : "bg-foreground/20"}`} />
-              <span>Product Categories</span>
-            </Link>
+            {showCategories && (
+              <Link
+                href="/admin/categories"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/categories"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/categories" ? "bg-primary" : "bg-foreground/20"}`} />
+                <span>Product Categories</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -256,12 +293,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Helper render function for Settings collapsible menu (Desktop)
   const renderDesktopSettingsAccordion = () => {
+    const showSettings = canAccessItem("/admin/settings");
+    const showMenu = canAccessItem("/admin/menu");
+    const showSecurity = canAccessItem("/admin/security");
+
+    if (!showSettings && !showMenu && !showSecurity) return null;
+
     const isChildActive = pathname === "/admin/settings" || pathname === "/admin/menu" || pathname === "/admin/security";
 
     if (isCollapsed) {
       return (
         <Link
-          href="/admin/settings"
+          href={showSettings ? "/admin/settings" : showMenu ? "/admin/menu" : "/admin/security"}
           className={`flex items-center justify-center p-2.5 w-10 h-10 rounded-xl text-sm font-semibold transition-all group duration-200 ${isChildActive
             ? "bg-primary/10 text-primary"
             : "text-foreground/75 hover:bg-surface hover:text-foreground"
@@ -302,38 +345,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Connecting line */}
             <div className="absolute left-[26px] top-0 bottom-3 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
 
-            <Link
-              href="/admin/settings"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/settings"
-                ? "text-primary font-black"
-                : "text-foreground/60 hover:bg-surface hover:text-foreground"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
-              <span>General & Branding</span>
-            </Link>
+            {showSettings && (
+              <Link
+                href="/admin/settings"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/settings"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+                <span>General & Branding</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/menu"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/menu"
-                ? "text-primary font-black"
-                : "text-foreground/60 hover:bg-surface hover:text-foreground"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
-              <span>Menus</span>
-            </Link>
+            {showMenu && (
+              <Link
+                href="/admin/menu"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/menu"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+                <span>Menus</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/security"
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/security"
-                ? "text-primary font-black"
-                : "text-foreground/60 hover:bg-surface hover:text-foreground"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
-              <span>Security</span>
-            </Link>
+            {showSecurity && (
+              <Link
+                href="/admin/security"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold transition-all relative ${pathname === "/admin/security"
+                  ? "text-primary font-black"
+                  : "text-foreground/60 hover:bg-surface hover:text-foreground"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary scale-125" : "bg-foreground/20"}`} />
+                <span>Security</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -342,6 +391,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Helper render function for Settings collapsible menu (Mobile)
   const renderMobileSettingsAccordion = () => {
+    const showSettings = canAccessItem("/admin/settings");
+    const showMenu = canAccessItem("/admin/menu");
+    const showSecurity = canAccessItem("/admin/security");
+
+    if (!showSettings && !showMenu && !showSecurity) return null;
+
     const isChildActive = pathname === "/admin/settings" || pathname === "/admin/menu" || pathname === "/admin/security";
 
     return (
@@ -366,41 +421,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="relative pl-7 py-1 space-y-1 mt-1">
             <div className="absolute left-[20px] top-0 bottom-2.5 w-[1.5px] bg-gray-200 dark:bg-zinc-800" />
 
-            <Link
-              href="/admin/settings"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/settings"
-                ? "text-primary bg-primary/5 font-black"
-                : "text-foreground/60 hover:bg-surface"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary" : "bg-foreground/20"}`} />
-              <span>General & Branding</span>
-            </Link>
+            {showSettings && (
+              <Link
+                href="/admin/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/settings"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/settings" ? "bg-primary" : "bg-foreground/20"}`} />
+                <span>General & Branding</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/menu"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/menu"
-                ? "text-primary bg-primary/5 font-black"
-                : "text-foreground/60 hover:bg-surface"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary" : "bg-foreground/20"}`} />
-              <span>Menus</span>
-            </Link>
+            {showMenu && (
+              <Link
+                href="/admin/menu"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/menu"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/menu" ? "bg-primary" : "bg-foreground/20"}`} />
+                <span>Menus</span>
+              </Link>
+            )}
 
-            <Link
-              href="/admin/security"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/security"
-                ? "text-primary bg-primary/5 font-black"
-                : "text-foreground/60 hover:bg-surface"
-                }`}
-            >
-              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary" : "bg-foreground/20"}`} />
-              <span>Security</span>
-            </Link>
+            {showSecurity && (
+              <Link
+                href="/admin/security"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold transition-all relative ${pathname === "/admin/security"
+                  ? "text-primary bg-primary/5 font-black"
+                  : "text-foreground/60 hover:bg-surface"
+                  }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${pathname === "/admin/security" ? "bg-primary" : "bg-foreground/20"}`} />
+                <span>Security</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -487,7 +548,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Remaining Sidebar Items */}
           {SIDEBAR_ITEMS.slice(1)
-            .filter((item) => (item.href !== "/admin/templates" && item.href !== "/admin/materials" && item.href !== "/admin/issues") || role === "SUPER_ADMIN")
+            .filter((item) => canAccessItem(item.href))
             .map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -604,7 +665,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
               {/* Remaining Mobile Links */}
               {SIDEBAR_ITEMS.slice(1)
-                .filter((item) => (item.href !== "/admin/templates" && item.href !== "/admin/materials" && item.href !== "/admin/issues") || role === "SUPER_ADMIN")
+                .filter((item) => canAccessItem(item.href))
                 .map((item) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon;
@@ -698,17 +759,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
               </button>
-            </div>
-
-            {/* Header User Badge */}
-            <div className="h-9 w-px bg-border mx-1" />
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center font-bold text-white shadow-md shadow-primary/10 text-sm">
-                A
-              </div>
-              <span className="hidden md:block text-sm font-bold text-foreground">
-                Admin User
-              </span>
             </div>
           </div>
         </header>

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { getUserRole, hasPermission } from "@/lib/auth";
+import AccessDenied from "@/components/admin/AccessDenied";
 import { api, Page, PageTemplate, Product, Category, UseCase } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
@@ -1565,6 +1567,14 @@ export default function PagesPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPages = filteredPages.slice(indexOfFirstItem, indexOfLastItem);
+
+  if (!loading && !hasPermission("manage_pages")) {
+    return (
+      <AdminLayout>
+        <AccessDenied moduleName="Dynamic Pages" />
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>

@@ -1045,11 +1045,10 @@ export default function AdminMenuPage() {
         {/* Toast Notification */}
         {toastMessage && (
           <div
-            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl border text-sm font-bold animate-[slideIn_0.2s_ease-out] ${
-              toastMessage.type === "success"
+            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl border text-sm font-bold animate-[slideIn_0.2s_ease-out] ${toastMessage.type === "success"
                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-background backdrop-blur-md"
                 : "bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 bg-background backdrop-blur-md"
-            }`}
+              }`}
           >
             <Sparkles className="h-5 w-5 shrink-0" />
             <span>{toastMessage.text}</span>
@@ -1087,19 +1086,18 @@ export default function AdminMenuPage() {
                 publishing ||
                 (activeTab === "header" ? !hasHeaderUnsavedChanges() : !hasFooterUnsavedChanges())
               }
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black text-white shadow-lg transition-all cursor-pointer ${
-                (activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black text-white shadow-lg transition-all cursor-pointer ${(activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
                   ? "bg-primary hover:opacity-90 shadow-primary/25 hover:scale-102"
                   : "bg-gray-400 dark:bg-zinc-700 opacity-60 cursor-not-allowed shadow-none"
-              }`}
+                }`}
             >
               <CheckCircle2 className={`h-4 w-4 ${publishing ? "animate-spin" : ""}`} />
               <span>
                 {publishing
                   ? "Publishing..."
                   : (activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
-                  ? `Publish ${activeTab === "header" ? "Header" : "Footer"} Menu`
-                  : "Published"}
+                    ? `Publish ${activeTab === "header" ? "Header" : "Footer"} Menu`
+                    : "Published"}
               </span>
             </button>
 
@@ -1117,11 +1115,10 @@ export default function AdminMenuPage() {
         <div className="flex items-center gap-2 p-1.5 bg-background border border-border rounded-2xl w-fit">
           <button
             onClick={() => setActiveTab("header")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-              activeTab === "header"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === "header"
                 ? "bg-primary text-white shadow-md shadow-primary/25"
                 : "text-foreground/70 hover:bg-surface hover:text-foreground"
-            }`}
+              }`}
           >
             <LayoutTemplate className="h-4 w-4" />
             <span>Header Navigation</span>
@@ -1132,11 +1129,10 @@ export default function AdminMenuPage() {
 
           <button
             onClick={() => setActiveTab("footer")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-              activeTab === "footer"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === "footer"
                 ? "bg-primary text-white shadow-md shadow-primary/25"
                 : "text-foreground/70 hover:bg-surface hover:text-foreground"
-            }`}
+              }`}
           >
             <Footprints className="h-4 w-4" />
             <span>Footer Navigation</span>
@@ -1214,11 +1210,10 @@ export default function AdminMenuPage() {
                       onDragStart={(e) => handleMainDragStart(e, mainIdx)}
                       onDragOver={(e) => handleMainDragOver(e, mainIdx)}
                       onDragEnd={handleMainDragEnd}
-                      className={`bg-background border rounded-2xl transition-all duration-200 overflow-hidden ${
-                        draggedMainIndex === mainIdx
+                      className={`bg-background border rounded-2xl transition-all duration-200 overflow-hidden ${draggedMainIndex === mainIdx
                           ? "border-primary shadow-lg ring-2 ring-primary/20 opacity-70"
                           : "border-border hover:border-border/80 shadow-xs"
-                      }`}
+                        }`}
                     >
                       {/* Main Item Header Bar */}
                       <div className="flex items-center justify-between p-4 bg-background border-b border-border/60">
@@ -1335,11 +1330,10 @@ export default function AdminMenuPage() {
                                       return (
                                         <div
                                           key={cat.id}
-                                          className={`rounded-xl bg-background border transition-all ${
-                                            draggedProductCatIndex === catIdx
+                                          className={`rounded-xl bg-background border transition-all ${draggedProductCatIndex === catIdx
                                               ? "border-primary shadow-md ring-2 ring-primary/20 opacity-70"
                                               : "border-border"
-                                          }`}
+                                            }`}
                                         >
                                           {/* Main category row */}
                                           <div
@@ -1402,11 +1396,10 @@ export default function AdminMenuPage() {
                                                   onDragStart={(e) => handleProductSubCatDragStart(e, cat.id, subIdx)}
                                                   onDragOver={(e) => handleProductSubCatDragOver(e, cat.id, subIdx)}
                                                   onDragEnd={handleProductSubCatDragEnd}
-                                                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg bg-background border transition-all ${
-                                                    draggedProductSubCatInfo?.mainCatId === cat.id && draggedProductSubCatInfo?.subIdx === subIdx
+                                                  className={`flex items-center justify-between px-2.5 py-2 rounded-lg bg-background border transition-all ${draggedProductSubCatInfo?.mainCatId === cat.id && draggedProductSubCatInfo?.subIdx === subIdx
                                                       ? "border-primary shadow ring-1 ring-primary/20 opacity-70"
                                                       : "border-border hover:border-primary/30"
-                                                  }`}
+                                                    }`}
                                                 >
                                                   <div className="flex items-center gap-2 min-w-0">
                                                     <div className="cursor-grab active:cursor-grabbing p-0.5 text-foreground/30 shrink-0">
@@ -1557,11 +1550,10 @@ export default function AdminMenuPage() {
                       onDragStart={(e) => handleFooterSecDragStart(e, secIdx)}
                       onDragOver={(e) => handleFooterSecDragOver(e, secIdx)}
                       onDragEnd={handleFooterSecDragEnd}
-                      className={`bg-background border rounded-2xl transition-all duration-200 overflow-hidden ${
-                        draggedFooterSecIndex === secIdx
+                      className={`bg-background border rounded-2xl transition-all duration-200 overflow-hidden ${draggedFooterSecIndex === secIdx
                           ? "border-primary shadow-lg ring-2 ring-primary/20 opacity-70"
                           : "border-border hover:border-border/80 shadow-xs"
-                      }`}
+                        }`}
                     >
                       {/* Footer Section Header Bar */}
                       <div className="flex items-center justify-between p-4 bg-background border-b border-border/60">

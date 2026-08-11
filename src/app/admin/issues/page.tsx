@@ -97,9 +97,9 @@ export default function IssuesPage() {
 
   // Filter Issues
   const filteredIssues = issues.filter((i) => {
-    const matchesSearch = i.issue_title.toLowerCase().includes(search.toLowerCase()) || 
-                          i.problem.toLowerCase().includes(search.toLowerCase()) ||
-                          i.solution.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = i.issue_title.toLowerCase().includes(search.toLowerCase()) ||
+      i.problem.toLowerCase().includes(search.toLowerCase()) ||
+      i.solution.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
   });
 
