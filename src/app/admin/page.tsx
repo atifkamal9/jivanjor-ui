@@ -60,7 +60,6 @@ export default function DashboardPage() {
     if (!href) return role === "SUPER_ADMIN";
     if (href === "/admin/products") return hasPermission("manage_products");
     if (href === "/admin/categories") return hasPermission("manage_categories");
-    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/materials") return hasPermission("manage_materials");
     if (href === "/admin/blog") return hasPermission("manage_blogs");
     if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
@@ -70,6 +69,7 @@ export default function DashboardPage() {
     if (href === "/admin/sitemap") return hasPermission("manage_sitemap") || hasPermission("manage_pages") || hasPermission("manage_settings");
     if (href === "/admin/settings") return hasPermission("manage_settings");
     if (href === "/admin/users") return hasPermission("manage_users");
+    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/seo") return hasPermission("manage_settings");
     return true;
   };

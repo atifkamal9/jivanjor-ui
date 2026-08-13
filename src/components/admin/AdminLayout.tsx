@@ -40,7 +40,6 @@ interface SidebarItem {
 
 const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
-  { name: "Form Submissions", href: "/admin/form-submissions", icon: Inbox },
   { name: "Material", href: "/admin/materials", icon: Hammer },
   { name: "Blog", href: "/admin/blog", icon: BookOpen },
   { name: "Use Case", href: "/admin/use-cases", icon: Lightbulb },
@@ -49,6 +48,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Page Template", href: "/admin/templates", icon: Layers },
   { name: "Sitemap", href: "/admin/sitemap", icon: Compass },
   { name: "User Management", href: "/admin/users", icon: UserCheck },
+  { name: "Form Submissions", href: "/admin/form-submissions", icon: Inbox },
 ];
 
 
@@ -135,7 +135,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (href === "/admin") return true;
     if (href === "/admin/products") return hasPermission("manage_products");
     if (href === "/admin/categories") return hasPermission("manage_categories");
-    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/materials") return hasPermission("manage_materials");
     if (href === "/admin/blog") return hasPermission("manage_blogs");
     if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
@@ -144,6 +143,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (href === "/admin/templates") return hasPermission("manage_templates");
     if (href === "/admin/sitemap") return hasPermission("manage_sitemap") || hasPermission("manage_pages") || hasPermission("manage_settings");
     if (href === "/admin/users") return hasPermission("manage_users");
+    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/settings") return hasPermission("manage_settings");
     if (href === "/admin/menu") return hasPermission("manage_settings");
     if (href === "/admin/security") return hasPermission("manage_settings") || role === "SUPER_ADMIN";
