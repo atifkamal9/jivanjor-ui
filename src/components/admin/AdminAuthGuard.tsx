@@ -46,6 +46,9 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
         } else if (pathname.startsWith("/admin/products")) {
           allowed = hasPermission("manage_products");
           moduleName = "Products Catalogue";
+        } else if (pathname.startsWith("/admin/form-submissions")) {
+          allowed = hasPermission("manage_forms");
+          moduleName = "Form Submissions";
         } else if (pathname.startsWith("/admin/categories")) {
           allowed = hasPermission("manage_categories");
           moduleName = "Product Categories";

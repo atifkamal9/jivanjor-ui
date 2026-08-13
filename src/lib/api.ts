@@ -1224,7 +1224,151 @@ export const api = {
   deleteUser: async (id: string): Promise<void> => {
     await client.delete(`/users/${id}`);
   },
+
+  // FORM SUBMISSIONS & ZOHO CRM MANAGEMENT
+  submitContactForm: async (data: {
+    fullName: string;
+    firmName?: string;
+    mobileNumber: string;
+    email?: string;
+    city?: string;
+    pinCode?: string;
+    queryType?: string;
+    message?: string;
+    consent: boolean;
+    sourceUrl?: string;
+  }): Promise<any> => {
+    const res = await client.post("/forms/contact", data);
+    return res.data;
+  },
+  submitDealerForm: async (data: {
+    fullName: string;
+    firmName?: string;
+    mobileNumber: string;
+    email?: string;
+    city?: string;
+    pinCode?: string;
+    interestedIn?: string;
+    lineOfBusiness?: string;
+    message?: string;
+    consent: boolean;
+    sourceUrl?: string;
+  }): Promise<any> => {
+    const res = await client.post("/forms/dealer", data);
+    return res.data;
+  },
+  submitContractorForm: async (data: {
+    fullName: string;
+    mobileNumber: string;
+    email?: string;
+    city?: string;
+    pinCode?: string;
+    queryType?: string;
+    message?: string;
+    consent: boolean;
+    sourceUrl?: string;
+  }): Promise<any> => {
+    const res = await client.post("/forms/contractor", data);
+    return res.data;
+  },
+  getFormSubmissions: async (params?: { page?: number; limit?: number; formType?: string; status?: string; search?: string; startDate?: string; endDate?: string }): Promise<{ status: string; data: FormSubmissionRecord[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
+    const query = new URLSearchParams();
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.limit) query.set("limit", String(params.limit));
+    if (params?.formType && params.formType !== "ALL") query.set("formType", params.formType);
+    if (params?.status && params.status !== "ALL") query.set("status", params.status);
+    if (params?.search) query.set("search", params.search);
+    if (params?.startDate) query.set("startDate", params.startDate);
+    if (params?.endDate) query.set("endDate", params.endDate);
+    const res = await client.get(`/admin/form-submissions?${query.toString()}`);
+    return res.data;
+  },
+  getFormSubmissionById: async (id: string): Promise<FormSubmissionRecord> => {
+    const res = await client.get(`/admin/form-submissions/${id}`);
+    return res.data?.data;
+  },
+  retryFormSubmission: async (id: string, reason?: string): Promise<any> => {
+    const res = await client.post(`/admin/form-submissions/${id}/retry`, { reason });
+    return res.data;
+  },
+  batchRetryFormSubmissions: async (submissionIds: string[], reason?: string): Promise<any> => {
+    const res = await client.post(`/admin/form-submissions/batch-retry`, { submissionIds, reason });
+    return res.data;
+  },
+  getFormSubmissionsHealth: async (): Promise<FormSubmissionsHealth> => {
+    const res = await client.get(`/admin/form-submissions/health`);
+    return res.data?.data;
+  },
 };
+
+export interface FormSubmissionRecord {
+  id: string;
+  crmExternalKey: string;
+  formType: "CONTACT" | "DEALER" | "CONTRACTOR";
+  fullName: string;
+  firmName?: string | null;
+  mobileRaw: string;
+  mobileNormalized: string;
+  email?: string | null;
+  city?: string | null;
+  pinCode?: string | null;
+  queryType?: string | null;
+  interestedIn?: string | null;
+  lineOfBusiness?: string | null;
+  message?: string | null;
+  consentGiven: boolean;
+  consentTextVersion?: string | null;
+  sourceUrl?: string | null;
+  referrerUrl?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  gclid?: string | null;
+  fbclid?: string | null;
+  submittedAt: string;
+  zohoSyncStatus: "PENDING" | "PROCESSING" | "RETRY_SCHEDULED" | "SYNCED" | "FAILED" | "MANUAL_REVIEW";
+  zohoContactId?: string | null;
+  zohoEnquiryId?: string | null;
+  zohoContactAction?: string | null;
+  zohoEnquiryAction?: string | null;
+  zohoSyncAttempts: number;
+  zohoLastHttpStatus?: number | null;
+  zohoLastErrorCode?: string | null;
+  zohoLastErrorMessage?: string | null;
+  zohoLastResponse?: any;
+  zohoLastAttemptAt?: string | null;
+  zohoSyncedAt?: string | null;
+  nextRetryAt?: string | null;
+  attempts?: FormSyncAttemptRecord[];
+  adminAuditLogs?: any[];
+}
+
+export interface FormSyncAttemptRecord {
+  id: string;
+  submissionId: string;
+  attemptNumber: number;
+  source: string;
+  actor?: string | null;
+  status: string;
+  httpStatus?: number | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+  responsePayload?: any;
+  startedAt: string;
+  completedAt?: string | null;
+}
+
+export interface FormSubmissionsHealth {
+  queueDepth: number;
+  counts: Record<string, number>;
+  totalSubmissions: number;
+  syncSuccessRate: number;
+  oldestPendingAgeSeconds: number;
+  lastSuccessAt?: string | null;
+}
+
 
 
 

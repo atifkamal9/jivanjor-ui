@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ShieldCheck } from "lucide-react";
+import { ChevronDown, ShieldCheck, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ export default function ContactForm() {
   });
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const [isSticky, setIsSticky] = useState(false);
   const [desktopQueryOpen, setDesktopQueryOpen] = useState(false);
@@ -25,7 +28,7 @@ export default function ContactForm() {
   const formRef = useRef<HTMLDivElement>(null);
   const initialTop = useRef<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !formData.fullName ||
@@ -36,21 +39,45 @@ export default function ContactForm() {
       alert("Please fill all required fields and accept the consent.");
       return;
     }
-    // Simulate submission
-    setFormSubmitted(true);
-    setFormData({
-      fullName: "",
-      firmName: "",
-      mobileNumber: "",
-      city: "",
-      pinCode: "",
-      queryType: "",
-      message: "",
-      consent: false,
-    });
-    setDesktopQueryOpen(false);
-    setMobileQueryOpen(false);
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      await api.submitContactForm({
+        fullName: formData.fullName,
+        firmName: formData.firmName,
+        mobileNumber: formData.mobileNumber,
+        city: formData.city,
+        pinCode: formData.pinCode,
+        queryType: formData.queryType,
+        message: formData.message,
+        consent: formData.consent,
+        sourceUrl: typeof window !== "undefined" ? window.location.href : "",
+      });
+
+      setFormSubmitted(true);
+      setFormData({
+        fullName: "",
+        firmName: "",
+        mobileNumber: "",
+        city: "",
+        pinCode: "",
+        queryType: "",
+        message: "",
+        consent: false,
+      });
+      setDesktopQueryOpen(false);
+      setMobileQueryOpen(false);
+    } catch (err: any) {
+      console.error("Form submission error:", err);
+      const msg = err?.response?.data?.message || err?.message || "Failed to submit query. Please try again.";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -200,11 +227,10 @@ export default function ContactForm() {
                   className="flex items-center justify-between pb-1 cursor-pointer select-none"
                 >
                   <span
-                    className={`text-base pl-1.5 ${
-                      formData.queryType
-                        ? "text-foreground"
-                        : "text-foreground/60"
-                    }`}
+                    className={`text-base pl-1.5 ${formData.queryType
+                      ? "text-foreground"
+                      : "text-foreground/60"
+                      }`}
                   >
                     {formData.queryType
                       ? formData.queryType === "Product Range"
@@ -217,9 +243,8 @@ export default function ContactForm() {
                       : "Select"}
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      desktopQueryOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 transition-transform duration-200 ${desktopQueryOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </div>
 
@@ -284,13 +309,25 @@ export default function ContactForm() {
                 </label>
               </div>
 
+              {errorMessage && (
+                <p className="text-sm font-medium text-red-600 pt-1">{errorMessage}</p>
+              )}
+
               {/* Submit Button */}
               <div className="mt-1.5 text-center md:text-start">
                 <button
                   type="submit"
-                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md min-w-60 w-40"
+                  disabled={isSubmitting}
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md min-w-60 w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </>
@@ -307,11 +344,10 @@ export default function ContactForm() {
         >
           {/* Card Header */}
           <div
-            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${
-              isOpen
-                ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
-                : "active-gradient-border rounded-[20px]"
-            }`}
+            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${isOpen
+              ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
+              : "active-gradient-border rounded-[20px]"
+              }`}
           >
             <h3 className="text-[24px] md:text-[30px] font-medium">
               Reach out to Us
@@ -320,11 +356,10 @@ export default function ContactForm() {
           </div>
           {/* Form Container with Smooth Height Transition */}
           <div
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              isOpen
-                ? "max-h-200 opacity-100"
-                : "max-h-0 opacity-0 pointer-events-none"
-            }`}
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen
+              ? "max-h-200 opacity-100"
+              : "max-h-0 opacity-0 pointer-events-none"
+              }`}
           >
             <form
               onSubmit={handleSubmit}
@@ -434,11 +469,10 @@ export default function ContactForm() {
                       className="flex items-center justify-between pb-1 cursor-pointer select-none"
                     >
                       <span
-                        className={`text-base pl-1.5 ${
-                          formData.queryType
-                            ? "text-foreground"
-                            : "text-foreground/60"
-                        }`}
+                        className={`text-base pl-1.5 ${formData.queryType
+                          ? "text-foreground"
+                          : "text-foreground/60"
+                          }`}
                       >
                         {formData.queryType
                           ? formData.queryType === "Product Range"
@@ -451,9 +485,8 @@ export default function ContactForm() {
                           : "Select"}
                       </span>
                       <ChevronDown
-                        className={`w-5 h-5 transition-transform duration-200 ${
-                          mobileQueryOpen ? "rotate-180" : ""
-                        }`}
+                        className={`w-5 h-5 transition-transform duration-200 ${mobileQueryOpen ? "rotate-180" : ""
+                          }`}
                       />
                     </div>
 
@@ -524,13 +557,25 @@ export default function ContactForm() {
                     </label>
                   </div>
 
+                  {errorMessage && (
+                    <p className="text-sm font-medium text-red-600 pt-1">{errorMessage}</p>
+                  )}
+
                   {/* Submit Button */}
                   <div className="mt-0.5 text-center md:text-start">
                     <button
                       type="submit"
-                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                      disabled={isSubmitting}
+                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      Submit
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Submitting...</span>
+                        </>
+                      ) : (
+                        "Submit"
+                      )}
                     </button>
                   </div>
                 </>

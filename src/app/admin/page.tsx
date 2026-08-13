@@ -20,7 +20,9 @@ import {
   FileSpreadsheet,
   X,
   Compass,
+  Inbox,
 } from "lucide-react";
+
 import Link from "next/link";
 import Image from "next/image";
 import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
@@ -58,6 +60,7 @@ export default function DashboardPage() {
     if (!href) return role === "SUPER_ADMIN";
     if (href === "/admin/products") return hasPermission("manage_products");
     if (href === "/admin/categories") return hasPermission("manage_categories");
+    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/materials") return hasPermission("manage_materials");
     if (href === "/admin/blog") return hasPermission("manage_blogs");
     if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
@@ -280,6 +283,16 @@ export default function DashboardPage() {
       superAdminOnly: true,
     },
     {
+      id: "form-submissions",
+      title: "Form Submissions & Zoho",
+      desc: "View form leads, Zoho sync status, retry outbox, & audit trail",
+      href: "/admin/form-submissions",
+      icon: Inbox,
+      group: "system",
+      gradient: "from-blue-600 to-cyan-600",
+      badge: "CRM Sync",
+    },
+    {
       id: "sitemap-manager",
       title: "View Sitemap",
       desc: "Inspect live XML sitemap structure & indexed URLs",
@@ -290,6 +303,7 @@ export default function DashboardPage() {
       badge: "System",
     },
   ];
+
 
   return (
     <AdminLayout>

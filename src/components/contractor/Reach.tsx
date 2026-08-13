@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ShieldCheck } from "lucide-react";
+import { ChevronDown, ShieldCheck, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 interface ReachLeftProps {
   data?: {
@@ -192,7 +193,10 @@ export function ReachForm({
   const formRef = useRef<HTMLDivElement>(null);
   const initialTop = useRef<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !formData.fullName ||
@@ -203,20 +207,43 @@ export function ReachForm({
       alert("Please fill all required fields and accept the consent.");
       return;
     }
-    // Simulate submission
-    setFormSubmitted(true);
-    setFormData({
-      fullName: "",
-      mobileNumber: "",
-      city: "",
-      pinCode: "",
-      queryType: "",
-      message: "",
-      consent: false,
-    });
-    setDesktopQueryOpen(false);
-    setMobileQueryOpen(false);
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      await api.submitContractorForm({
+        fullName: formData.fullName,
+        mobileNumber: formData.mobileNumber,
+        city: formData.city,
+        pinCode: formData.pinCode,
+        queryType: formData.queryType,
+        message: formData.message,
+        consent: formData.consent,
+        sourceUrl: typeof window !== "undefined" ? window.location.href : "",
+      });
+
+      setFormSubmitted(true);
+      setFormData({
+        fullName: "",
+        mobileNumber: "",
+        city: "",
+        pinCode: "",
+        queryType: "",
+        message: "",
+        consent: false,
+      });
+      setDesktopQueryOpen(false);
+      setMobileQueryOpen(false);
+    } catch (err: any) {
+      console.error("Contractor form submission error:", err);
+      const msg = err?.response?.data?.message || err?.message || "Failed to submit query. Please try again.";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -437,13 +464,25 @@ export function ReachForm({
                 </label>
               </div>
 
+              {errorMessage && (
+                <p className="text-sm font-medium text-red-600 pt-1">{errorMessage}</p>
+              )}
+
               {/* Submit Button */}
               <div className="mt-0.5 text-center md:text-start">
                 <button
                   type="submit"
-                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                  disabled={isSubmitting}
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </>
@@ -663,13 +702,25 @@ export function ReachForm({
                     </label>
                   </div>
 
+                  {errorMessage && (
+                    <p className="text-sm font-medium text-red-600 pt-1">{errorMessage}</p>
+                  )}
+
                   {/* Submit Button */}
                   <div className="mt-0.5 text-center md:text-start">
                     <button
                       type="submit"
-                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40"
+                      disabled={isSubmitting}
+                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2.5 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      Submit
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          <span>Submitting...</span>
+                        </>
+                      ) : (
+                        "Submit"
+                      )}
                     </button>
                   </div>
                 </>

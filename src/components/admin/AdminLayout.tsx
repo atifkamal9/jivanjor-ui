@@ -28,7 +28,9 @@ import {
   Compass,
   Settings,
   ShieldCheck,
+  Inbox,
 } from "lucide-react";
+
 
 interface SidebarItem {
   name: string;
@@ -38,6 +40,7 @@ interface SidebarItem {
 
 const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
+  { name: "Form Submissions", href: "/admin/form-submissions", icon: Inbox },
   { name: "Material", href: "/admin/materials", icon: Hammer },
   { name: "Blog", href: "/admin/blog", icon: BookOpen },
   { name: "Use Case", href: "/admin/use-cases", icon: Lightbulb },
@@ -47,6 +50,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Sitemap", href: "/admin/sitemap", icon: Compass },
   { name: "User Management", href: "/admin/users", icon: UserCheck },
 ];
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -131,6 +135,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (href === "/admin") return true;
     if (href === "/admin/products") return hasPermission("manage_products");
     if (href === "/admin/categories") return hasPermission("manage_categories");
+    if (href === "/admin/form-submissions") return hasPermission("manage_forms");
     if (href === "/admin/materials") return hasPermission("manage_materials");
     if (href === "/admin/blog") return hasPermission("manage_blogs");
     if (href === "/admin/use-cases") return hasPermission("manage_use_cases") || hasPermission("manage_blogs");
