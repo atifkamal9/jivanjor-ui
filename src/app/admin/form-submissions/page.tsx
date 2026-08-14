@@ -929,11 +929,11 @@ export default function FormSubmissionsAdminPage() {
                               )}
 
                               {attempt.responsePayload && (
-                                <details className="text-[10px] text-foreground/60 cursor-pointer">
-                                  <summary className="font-bold hover:text-foreground">
+                                <details className="text-[10px] text-foreground/60 cursor-pointer" open={attempt.status === "FAILED" || attempt.status === "MANUAL_REVIEW"}>
+                                  <summary className="font-bold hover:text-foreground text-xs text-foreground/80 py-1">
                                     View Response Payload Details
                                   </summary>
-                                  <pre className="mt-1 p-2 bg-background border border-border rounded-lg overflow-x-auto font-mono text-[10px]">
+                                  <pre className="mt-1 p-2 bg-background/80 border border-border/80 rounded-lg overflow-x-auto font-mono text-[10px] text-foreground/90 leading-relaxed">
                                     {JSON.stringify(attempt.responsePayload, null, 2)}
                                   </pre>
                                 </details>
