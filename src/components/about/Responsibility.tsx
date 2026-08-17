@@ -98,7 +98,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
 
   return (
     <section
-      id="responsibility-section"
+      id="quality-sustainability"
       className="scroll-mt-36 mt-6 md:mt-12 bg-white text-[#222]"
     >
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">

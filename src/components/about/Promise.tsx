@@ -45,7 +45,7 @@ export default function Promise({ data }: PromiseProps) {
 
   return (
     <section
-      id="promise-section"
+      id="about-jivanjor"
       className="scroll-mt-36 mt-6 md:mt-8 text-[#222]"
     >
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">

@@ -5,7 +5,6 @@ import Image from "next/image";
 interface TabItem {
   id: string;
   label: string;
-  targetId: string;
   icon?: React.ReactNode;
 }
 
@@ -19,7 +18,6 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     {
       id: "about-jivanjor",
       label: "About Jivanjor",
-      targetId: "promise-section",
       icon: (
         <Image
           src="/images/badge.svg"
@@ -33,7 +31,6 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     {
       id: "research-innovation",
       label: "Research & Innovation",
-      targetId: "innovation-section",
       icon: (
         <Image
           src="/images/research.svg"
@@ -47,7 +44,6 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     {
       id: "quality-sustainability",
       label: "Quality & Sustainability",
-      targetId: "responsibility-section",
       icon: (
         <Image
           src="/images/Asterisk.svg"
@@ -61,7 +57,6 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     {
       id: "our-presence",
       label: "Market Presence",
-      targetId: "presence-section",
       icon: (
         <Image
           src="/images/Multilayer-sphere.svg"
@@ -75,7 +70,6 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     {
       id: "tvcs",
       label: "TVCs",
-      targetId: "tvcs-section",
       icon: (
         <Image
           src="/images/Application-one.svg"
@@ -88,9 +82,9 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     },
   ];
 
-  const handleTabClick = (targetId: string, id: string) => {
+  const handleTabClick = (id: string) => {
     setActiveTab(id);
-    const element = document.getElementById(targetId);
+    const element = document.getElementById(id);
     if (element) {
       const navbarOffset = 130; // height of sticky elements
       const elementPosition =
@@ -122,7 +116,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => handleTabClick(tab.targetId, tab.id)}
+                    onClick={() => handleTabClick(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-base transition-all cursor-pointer select-none shrink-0 ${isActive
                       ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.25)]"
                       : "hover:bg-surface transition-colors"
@@ -147,7 +141,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
           return (
             <button
               key={tab.id}
-              onClick={() => handleTabClick(tab.targetId, tab.id)}
+              onClick={() => handleTabClick(tab.id)}
               className={`flex flex-col items-center self-stretch gap-1 px-2.5 py-1.25 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${isActive
                   ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
                   : "hover:text-black"

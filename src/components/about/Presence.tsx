@@ -75,7 +75,7 @@ export default function Presence({ data }: PresenceProps) {
 
   return (
     <section
-      id="presence-section"
+      id="our-presence"
       className="scroll-mt-36 my-6 md:my-12 bg-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">

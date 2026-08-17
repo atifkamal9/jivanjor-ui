@@ -74,7 +74,7 @@ export default function TVCs({ data }: TVCsProps) {
 
   return (
     <section
-      id="tvcs-section"
+      id="tvcs"
       className="scroll-mt-36 mt-4 py-10 md:py-12 bg-surface overflow-visible relative text-[#222]"
     >
       {/* Decorative Background Elements */}

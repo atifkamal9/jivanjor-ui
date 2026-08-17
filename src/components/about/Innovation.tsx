@@ -42,7 +42,7 @@ export default function Innovation({ data }: InnovationProps) {
 
   return (
     <section
-      id="innovation-section"
+      id="research-innovation"
       className="scroll-mt-36 relative w-full overflow-hidden min-h-153.75 flex items-center pt-6 md:pt-10"
     >
       {/* Background Image with Overlay */}
