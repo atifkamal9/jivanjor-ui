@@ -95,7 +95,7 @@ export default function FormSubmissionsAdminPage() {
       setLoading(true);
       const res = await api.getFormSubmissions({
         page,
-        limit: 15,
+        limit: 10,
         search,
         status: statusFilter,
         formType: formTypeFilter,

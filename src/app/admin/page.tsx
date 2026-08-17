@@ -49,6 +49,7 @@ export default function DashboardPage() {
     seo: 0,
     pages: 0,
     templates: 0,
+    formSubmissions: 0,
   });
 
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function DashboardPage() {
         seo,
         pages,
         templates,
+        formSubmissionsRes,
       ] = await Promise.all([
         api.getProducts(),
         api.getCategories(),
@@ -96,6 +98,7 @@ export default function DashboardPage() {
         api.getSeoMetadata(),
         api.getPages(),
         api.getTemplates(),
+        api.getFormSubmissions({ limit: 1 }).catch(() => ({ pagination: { total: 0 } })),
       ]);
 
       setCategories(categoriesList);
@@ -111,6 +114,7 @@ export default function DashboardPage() {
         seo: seo.length,
         pages: pages.length,
         templates: templates.length,
+        formSubmissions: formSubmissionsRes.pagination?.total || 0,
       });
     } catch (err) {
       console.error("Failed to load dashboard metrics", err);
@@ -192,6 +196,14 @@ export default function DashboardPage() {
       icon: Compass,
       color: "from-amber-500 to-orange-600",
       shadow: "shadow-amber-500/10",
+    },
+    {
+      name: "Form Submissions",
+      value: stats.formSubmissions,
+      href: "/admin/form-submissions",
+      icon: Inbox,
+      color: "from-blue-600 to-cyan-600",
+      shadow: "shadow-blue-600/10",
     },
   ];
 
