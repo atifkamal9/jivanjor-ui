@@ -284,9 +284,6 @@ export default function FormSubmissionsAdminPage() {
           <div>
             <h1 className="text-2xl font-extrabold text-foreground tracking-tight flex items-center gap-2.5">
               <span>Form Submissions & Zoho CRM Sync</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-primary/10 text-primary border border-primary/20">
-                Real-Time Outbox
-              </span>
             </h1>
             <p className="text-xs text-foreground/60 mt-1">
               Authoritative form records, automatic Zoho CRM Contact & Website Enquiry upserts, retry outbox worker, and audit trail.
@@ -508,13 +505,13 @@ export default function FormSubmissionsAdminPage() {
                       className="rounded border-border text-primary focus:ring-primary"
                     />
                   </th>
-                  <th className="px-2 py-3">Entry ID & Date</th>
+                  <th className="px-2 py-3 max-w-30 2xl:max-w-none">Entry ID & Date</th>
                   <th className="px-2 py-3">Form Type</th>
                   <th className="px-2 py-3">Submitter Info</th>
                   <th className="px-2 py-3">Location</th>
                   <th className="px-2 py-3">CRM Sync Status</th>
                   <th className="px-2 py-3">Zoho Record IDs</th>
-                  <th className="px-2 py-3 text-center">Attempts</th>
+                  <th className="px-2 py-3 text-center hidden 2xl:block">Attempts</th>
                   <th className="px-2 py-3 text-right">Actions</th>
                 </tr>
               </thead>
@@ -548,12 +545,14 @@ export default function FormSubmissionsAdminPage() {
                       </td>
 
                       {/* Entry ID & Date */}
-                      <td className="px-2 py-3">
-                        <div className="font-mono font-bold text-foreground flex items-center gap-1.5">
-                          <span>{sub.crmExternalKey}</span>
+                      <td className="px-2 py-3 max-w-30 2xl:max-w-none">
+                        <div className="font-mono font-bold text-foreground flex items-center gap-1">
+                          <span className="truncate max-w-20 2xl:max-w-none inline-block" title={sub.crmExternalKey}>
+                            {sub.crmExternalKey}
+                          </span>
                           <button
                             onClick={() => copyToClipboard(sub.crmExternalKey, `key-${sub.id}`)}
-                            className="p-1 hover:bg-surface rounded text-foreground/40 hover:text-foreground"
+                            className="hover:bg-surface rounded text-foreground/40 hover:text-foreground shrink-0 cursor-pointer"
                             title="Copy Entry ID"
                           >
                             {copiedKey === `key-${sub.id}` ? (
@@ -563,7 +562,7 @@ export default function FormSubmissionsAdminPage() {
                             )}
                           </button>
                         </div>
-                        <p className="text-[10px] text-foreground/50 mt-0.5">
+                        <p className="text-[10px] text-foreground/50 mt-0.5 truncate">
                           {new Date(sub.submittedAt).toLocaleString("en-IN", {
                             timeZone: "Asia/Kolkata",
                             dateStyle: "medium",
@@ -573,10 +572,10 @@ export default function FormSubmissionsAdminPage() {
                       </td>
 
                       {/* Form Type */}
-                      <td className="px-2 py-3">{renderFormTypeBadge(sub.formType)}</td>
+                      <td className="px-2 py-3 min-w-35">{renderFormTypeBadge(sub.formType)}</td>
 
                       {/* Submitter Info */}
-                      <td className="px-2 py-3">
+                      <td className="px-2 py-3 min-w-28 max-w-35">
                         <p className="font-bold text-foreground">{sub.fullName}</p>
                         <p className="text-[10px] text-foreground/60 font-mono">{sub.mobileRaw}</p>
                         {sub.firmName && (
@@ -585,7 +584,7 @@ export default function FormSubmissionsAdminPage() {
                       </td>
 
                       {/* Location */}
-                      <td className="px-2 py-3">
+                      <td className="px-2 py-3 max-w-35">
                         <p className="font-medium text-foreground">{sub.city || "—"}</p>
                         <p className="text-[10px] text-foreground/50">{sub.pinCode || "—"}</p>
                       </td>
@@ -595,7 +594,7 @@ export default function FormSubmissionsAdminPage() {
                         {renderStatusBadge(sub.zohoSyncStatus)}
                         {sub.zohoLastErrorMessage && (
                           <p
-                            className="text-[10px] text-rose-500 font-medium truncate max-w-44 mt-1"
+                            className="text-[10px] text-rose-500 font-medium truncate max-w-35 mt-1"
                             title={sub.zohoLastErrorMessage}
                           >
                             {sub.zohoLastErrorCode}: {sub.zohoLastErrorMessage}
@@ -625,7 +624,7 @@ export default function FormSubmissionsAdminPage() {
                       </td>
 
                       {/* Attempt Count */}
-                      <td className="px-2 py-3 text-center font-bold text-foreground">
+                      <td className="px-2 py-3 text-center font-bold text-foreground hidden 2xl:block">
                         {sub.zohoSyncAttempts}
                       </td>
 
