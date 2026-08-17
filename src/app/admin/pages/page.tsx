@@ -2477,21 +2477,23 @@ export default function PagesPage() {
                       />
                     </div>
 
-                    {/* Categories Setup (Max 7 categories, Max 25 products per category) */}
+                    {/* Categories Setup (Max 8 categories: 1 Mandatory "ALL" + Max 7 Custom Categories) */}
                     <div className="space-y-6 border-t border-border pt-6 mt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-base font-extrabold text-foreground">Categories Setup (Max 7 Categories)</h3>
+                          <h3 className="text-base font-extrabold text-foreground">
+                            Categories Setup (Max 8 Categories: 1 Mandatory "ALL" + Max 7 Custom Categories)
+                          </h3>
                           <p className="text-xs text-foreground/50 font-medium mt-0.5">
-                            Configure up to 7 categories for the section tabs. For each category section, select up to 25 products.
+                            Configure up to 8 category tabs (1 mandatory "ALL" tab + up to 7 custom categories). For each category section, select up to 25 products.
                           </p>
                         </div>
                         <button
                           type="button"
-                          disabled={(formData.sections.productRange.categories || []).length >= 7}
+                          disabled={(formData.sections.productRange.categories || []).length >= 8}
                           onClick={() => {
                             const currentCats = [...(formData.sections.productRange.categories || [])];
-                            if (currentCats.length >= 7) return;
+                            if (currentCats.length >= 8) return;
                             currentCats.push({
                               id: `cat-${Date.now()}`,
                               name: `Category ${currentCats.length + 1}`,
@@ -2502,7 +2504,7 @@ export default function PagesPage() {
                           className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer shadow-xs shrink-0"
                         >
                           <Plus className="h-4 w-4" />
-                          <span>Add Category ({(formData.sections.productRange.categories || []).length}/7)</span>
+                          <span>Add Category ({(formData.sections.productRange.categories || []).length}/8)</span>
                         </button>
                       </div>
 

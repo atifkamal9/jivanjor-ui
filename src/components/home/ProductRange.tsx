@@ -27,8 +27,9 @@ export default function ProductRange({ data }: ProductRangeProps) {
   const title =
     data?.title || "A Complete Adhesive Range for Modern Woodworking";
 
-  // Subcategories list (Max 7 categories from CMS)
+  // Subcategories list (Max 8 categories: 1 mandatory ALL + max 7 custom)
   const defaultCategories: ProductRangeCategory[] = [
+    { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
     { id: "cat-1", name: "Super Premium", selectedProductIds: [] },
     { id: "cat-2", name: "Speciality", selectedProductIds: [] },
     { id: "cat-3", name: "Regular", selectedProductIds: [] },
@@ -36,10 +37,21 @@ export default function ProductRange({ data }: ProductRangeProps) {
     { id: "cat-5", name: "ECO", selectedProductIds: [] },
   ];
 
-  const displayCategories: ProductRangeCategory[] =
+  const rawCategories: ProductRangeCategory[] =
     data?.categories && data.categories.length > 0
-      ? data.categories.slice(0, 7)
+      ? data.categories.slice(0, 8)
       : defaultCategories;
+
+  const hasAll = rawCategories.some(
+    (c) => (c.categoryId || "").toUpperCase() === "ALL" || c.name.trim().toUpperCase() === "ALL"
+  );
+
+  const displayCategories: ProductRangeCategory[] = hasAll
+    ? rawCategories
+    : [
+        { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
+        ...rawCategories.slice(0, 7),
+      ];
 
   const [activeCategoryName, setActiveCategoryName] = useState<string>(
     displayCategories[0]?.name || "ALL"
@@ -91,7 +103,25 @@ export default function ProductRange({ data }: ProductRangeProps) {
         .slice(0, 25) as Product[];
     }
 
-    // 2. If no explicit IDs selected, filter products matching category ID or name
+    // 2. If no explicit IDs selected for ALL tab specifically, collect selectedProductIds across all other custom categories
+    if (carouselItems.length === 0 && (currentCategoryObj?.categoryId?.toUpperCase() === "ALL" || currentCategoryObj?.name?.toUpperCase() === "ALL")) {
+      const allCategorySelectedIds = Array.from(
+        new Set(
+          displayCategories
+            .filter((c) => (c.categoryId || "").toUpperCase() !== "ALL" && c.name.toUpperCase() !== "ALL")
+            .flatMap((c) => c.selectedProductIds || [])
+        )
+      ).filter(Boolean);
+
+      if (allCategorySelectedIds.length > 0) {
+        carouselItems = allCategorySelectedIds
+          .map((idOrSlug) => dbProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug))
+          .filter(Boolean)
+          .slice(0, 25) as Product[];
+      }
+    }
+
+    // 3. If still empty, filter products matching category ID or name
     if (carouselItems.length === 0 && currentCategoryObj) {
       const targetId = (currentCategoryObj.categoryId || "").toLowerCase();
       const targetName = (currentCategoryObj.name || "").toLowerCase();
@@ -115,7 +145,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
       }
     }
 
-    // 3. Fallback to first 25 dbProducts
+    // 4. Fallback to first 25 dbProducts
     if (carouselItems.length === 0) {
       carouselItems = dbProducts.slice(0, 25);
     }
