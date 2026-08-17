@@ -80,6 +80,7 @@ export default function CategoriesPage() {
     rightChoiceSubtitle: "",
     rightChoiceCtaText: "",
     rightChoiceCtaLink: "",
+    hideInMenu: false,
   });
 
   // SEO metadata states
@@ -149,6 +150,7 @@ export default function CategoriesPage() {
       rightChoiceSubtitle: "",
       rightChoiceCtaText: "",
       rightChoiceCtaLink: "",
+      hideInMenu: false,
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -183,6 +185,7 @@ export default function CategoriesPage() {
       rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
+      hideInMenu: category.hideInMenu || false,
     });
 
     const matchedSeo = seos.find(
@@ -389,17 +392,16 @@ export default function CategoriesPage() {
                                   type="button"
                                   disabled={subCats.length === 0}
                                   onClick={() => toggleCategoryCollapse(mainCat.id)}
-                                  className={`p-1.5 rounded-lg border transition-all ${
-                                    subCats.length === 0
-                                      ? "opacity-30 cursor-not-allowed border-transparent text-gray-400"
-                                      : "cursor-pointer bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 shadow-xs"
-                                  }`}
+                                  className={`p-1.5 rounded-lg border transition-all ${subCats.length === 0
+                                    ? "opacity-30 cursor-not-allowed border-transparent text-gray-400"
+                                    : "cursor-pointer bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 shadow-xs"
+                                    }`}
                                   title={
                                     subCats.length === 0
                                       ? "No subcategories"
                                       : isCollapsed
-                                      ? "Click to expand subcategories"
-                                      : "Click to collapse subcategories"
+                                        ? "Click to expand subcategories"
+                                        : "Click to collapse subcategories"
                                   }
                                 >
                                   {isCollapsed ? (
@@ -454,38 +456,38 @@ export default function CategoriesPage() {
                           {!isCollapsed &&
                             subCats.map((sub) => (
                               <tr key={sub.id} className="hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-colors bg-white dark:bg-zinc-900 animate-[fadeIn_0.15s_ease-out]">
-                              <td className="p-5 pl-14">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
-                                  <div>
-                                    <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50">{sub.name}</p>
-                                    <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
+                                <td className="p-5 pl-14">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
+                                    <div>
+                                      <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50">{sub.name}</p>
+                                      <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
-                                {sub.description || "No description provided."}
-                              </td>
-                              <td className="p-5 text-right">
-                                <div className="flex items-center justify-end gap-2">
-                                  <button
-                                    onClick={() => handleOpenEdit(sub)}
-                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
-                                    title="Edit sub-category"
-                                  >
-                                    <Edit2 className="h-4 w-4" />
-                                  </button>
-                                  <button
-                                    onClick={() => setDeleteConfirmId(sub.id)}
-                                    className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
-                                    title="Delete sub-category"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
+                                </td>
+                                <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
+                                  {sub.description || "No description provided."}
+                                </td>
+                                <td className="p-5 text-right">
+                                  <div className="flex items-center justify-end gap-2">
+                                    <button
+                                      onClick={() => handleOpenEdit(sub)}
+                                      className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
+                                      title="Edit sub-category"
+                                    >
+                                      <Edit2 className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => setDeleteConfirmId(sub.id)}
+                                      className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
+                                      title="Delete sub-category"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
                         </React.Fragment>
                       );
                     })

@@ -2957,9 +2957,28 @@ export default function PagesPage() {
 
                 {activeTab === "findAdhesive" && formData.sections?.findAdhesive && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Search className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Right Choice Categories</h3>
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <Search className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Find The Right Adhesive Section</h3>
+                      </div>
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface/50 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={formData.sections.findAdhesive.enabled !== false && formData.sections.findAdhesive.hideSection !== true}
+                          onChange={(e) => {
+                            const isVisible = e.target.checked;
+                            updateSectionField("findAdhesive", "enabled", isVisible);
+                            updateSectionField("findAdhesive", "hideSection", !isVisible);
+                          }}
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-foreground">
+                          {formData.sections.findAdhesive.enabled !== false && formData.sections.findAdhesive.hideSection !== true
+                            ? "Section Visible (Shown on Homepage)"
+                            : "Section Hidden (Hidden on Homepage)"}
+                        </span>
+                      </label>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -3518,9 +3537,28 @@ export default function PagesPage() {
 
                 {activeTab === "testimonials" && formData.sections?.testimonials && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Bookmark className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Testimonials Section</h3>
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <Bookmark className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Trusted by People Who Know the Work (Testimonials)</h3>
+                      </div>
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface/50 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={formData.sections.testimonials.enabled !== false && formData.sections.testimonials.hideSection !== true}
+                          onChange={(e) => {
+                            const isVisible = e.target.checked;
+                            updateSectionField("testimonials", "enabled", isVisible);
+                            updateSectionField("testimonials", "hideSection", !isVisible);
+                          }}
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-foreground">
+                          {formData.sections.testimonials.enabled !== false && formData.sections.testimonials.hideSection !== true
+                            ? "Section Visible (Shown on Homepage)"
+                            : "Section Hidden (Hidden on Homepage)"}
+                        </span>
+                      </label>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -3731,9 +3769,28 @@ export default function PagesPage() {
 
                 {activeTab === "knowledgeBase" && formData.sections?.knowledgeBase && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Award className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Knowledge Articles Section</h3>
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <Award className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Knowledge Base & Guides Section</h3>
+                      </div>
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface/50 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={formData.sections.knowledgeBase.enabled !== false && formData.sections.knowledgeBase.hideSection !== true}
+                          onChange={(e) => {
+                            const isVisible = e.target.checked;
+                            updateSectionField("knowledgeBase", "enabled", isVisible);
+                            updateSectionField("knowledgeBase", "hideSection", !isVisible);
+                          }}
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-foreground">
+                          {formData.sections.knowledgeBase.enabled !== false && formData.sections.knowledgeBase.hideSection !== true
+                            ? "Section Visible (Shown on Homepage)"
+                            : "Section Hidden (Hidden on Homepage)"}
+                        </span>
+                      </label>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

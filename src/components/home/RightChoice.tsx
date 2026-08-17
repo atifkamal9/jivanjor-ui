@@ -5,6 +5,8 @@ import Link from "next/link";
 
 interface RightChoiceProps {
   data?: {
+    enabled?: boolean;
+    hideSection?: boolean;
     title?: string;
     bgImage?: string;
     bgImageMobile?: string;
@@ -30,6 +32,10 @@ function mapAdhesiveIcon(index: number) {
 }
 
 export default function RightChoice({ data }: RightChoiceProps) {
+  if (!data || data.enabled === false || data.hideSection === true) {
+    return null;
+  }
+
   const title = data?.title || "Find The Right Adhesive";
   const bgImage = data?.bgImage || "/images/Rectangle 5.png";
   const bgImageMobile = data?.bgImageMobile || "/images/Rectangle 5 (1).png";

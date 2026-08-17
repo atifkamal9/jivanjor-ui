@@ -354,11 +354,12 @@ export default function Navbar() {
   const [activeCategory, setActiveCategory] = useState("Woodworking Adhesives");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Build dynamic product categories, respecting admin-stored order from nav-products.subItems
+  // Build dynamic product categories, respecting admin-stored order and hiding hidden categories
   const dynamicProductCategories = (() => {
     if (dbCategories.length === 0) return productCategories;
 
-    const mainCats = dbCategories.filter((cat) => !cat.parent_category);
+    // Filter out hidden main categories
+    const mainCats = dbCategories.filter((cat) => !cat.parent_category && cat.hideInMenu !== true);
 
     // Check if there's a stored order in the published menu's nav-products item
     const productsMenuItem = publishedMenu.find(
@@ -377,7 +378,8 @@ export default function Navbar() {
     }
 
     return orderedMainCats.map((cat) => {
-      let subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+      // Filter out hidden sub categories
+      let subCats = dbCategories.filter((sub) => sub.parent_category === cat.id && sub.hideInMenu !== true);
 
       // Apply stored sub-category order from description JSON if available
       const storedEntry = storedOrder.find((s) => s.id === cat.id);

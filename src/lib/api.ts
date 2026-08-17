@@ -78,6 +78,7 @@ export interface Category {
   rightChoiceCtaText?: string;
   rightChoiceCtaLink?: string;
   rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string };
+  hideInMenu?: boolean;
 }
 
 export interface Material {
@@ -260,6 +261,7 @@ function mapCategoryFromBackend(cat: any): Category {
   let rightChoiceSubtitle = "";
   let rightChoiceCtaText = "";
   let rightChoiceCtaLink = "";
+  let hideInMenu = Boolean(cat.hideInMenu || cat.hiddenInMenu || false);
 
   if (description.startsWith("{") && description.endsWith("}")) {
     try {
@@ -281,6 +283,9 @@ function mapCategoryFromBackend(cat: any): Category {
       rightChoiceSubtitle = parsed.rightChoiceSubtitle || parsed.rightChoice?.subtitle || "";
       rightChoiceCtaText = parsed.rightChoiceCtaText || parsed.rightChoice?.ctaText || "";
       rightChoiceCtaLink = parsed.rightChoiceCtaLink || parsed.rightChoice?.ctaLink || "";
+      if (parsed.hideInMenu !== undefined || parsed.hiddenInMenu !== undefined) {
+        hideInMenu = Boolean(parsed.hideInMenu || parsed.hiddenInMenu);
+      }
     } catch (e) {
       // ignore
     }
@@ -315,6 +320,7 @@ function mapCategoryFromBackend(cat: any): Category {
       ctaLink: rightChoiceCtaLink,
     } : undefined,
     icon: cat.icon || "",
+    hideInMenu,
   };
 }
 
@@ -756,6 +762,7 @@ export const api = {
       rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
+      hideInMenu: category.hideInMenu ?? false,
     });
 
     const payload = {

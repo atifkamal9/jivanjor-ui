@@ -3,6 +3,8 @@ import { Heading } from "@/components/ui";
 
 interface KnowledgeHubProps {
   data?: {
+    enabled?: boolean;
+    hideSection?: boolean;
     title?: string;
     subtitle?: string;
     blogTitle?: string;
@@ -34,6 +36,10 @@ function mapKnowledgeImage(index: number) {
 }
 
 export default function KnowledgeHub({ data }: KnowledgeHubProps) {
+  if (!data || data.enabled === false || data.hideSection === true) {
+    return null;
+  }
+
   const title = data?.title || "Knowledge Base & Guides";
   const items = data?.items || [];
   const blogTitle = data?.blogTitle || "Latest Blogs";

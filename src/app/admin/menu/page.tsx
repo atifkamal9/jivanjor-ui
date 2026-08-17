@@ -36,6 +36,8 @@ import {
   LayoutTemplate,
   Footprints,
   Image as ImageIcon,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 
@@ -1348,15 +1350,65 @@ export default function AdminMenuPage() {
                                                 <GripVertical className="h-4 w-4" />
                                               </div>
                                               <div className="min-w-0">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-2 flex-wrap">
                                                   <span className="text-xs font-bold text-foreground truncate">{cat.name}</span>
                                                   <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
                                                     {orderedSubCats.length} sub-cats
                                                   </span>
+                                                  {cat.hideInMenu && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                                      <EyeOff className="h-2.5 w-2.5" /> Hidden
+                                                    </span>
+                                                  )}
                                                 </div>
                                               </div>
                                             </div>
                                             <div className="flex items-center gap-1 shrink-0 ml-2">
+                                              <button
+                                                type="button"
+                                                onClick={async () => {
+                                                  const updatedHide = !cat.hideInMenu;
+                                                  const childSubCats = allCategories.filter(
+                                                    (c) => c.parent_category === cat.id || c.parent_category === cat.slug
+                                                  );
+
+                                                  setAllCategories((prev) =>
+                                                    prev.map((c) => {
+                                                      if (c.id === cat.id) return { ...c, hideInMenu: updatedHide };
+                                                      if (c.parent_category === cat.id || c.parent_category === cat.slug) {
+                                                        return { ...c, hideInMenu: updatedHide };
+                                                      }
+                                                      return c;
+                                                    })
+                                                  );
+
+                                                  try {
+                                                    await api.saveCategory({ ...cat, hideInMenu: updatedHide });
+                                                    if (childSubCats.length > 0) {
+                                                      await Promise.all(
+                                                        childSubCats.map((sub) => api.saveCategory({ ...sub, hideInMenu: updatedHide }))
+                                                      );
+                                                    }
+                                                    showToast(
+                                                      updatedHide
+                                                        ? `"${cat.name}" and all sub-categories hidden from Products Mega Menu`
+                                                        : `"${cat.name}" and all sub-categories visible in Products Mega Menu`,
+                                                      "success"
+                                                    );
+                                                  } catch (err) {
+                                                    console.error("Failed to toggle category menu visibility:", err);
+                                                    showToast("Failed to update category visibility", "error");
+                                                  }
+                                                }}
+                                                className={`p-1 rounded-md border transition-all cursor-pointer ${
+                                                  cat.hideInMenu
+                                                    ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                                    : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                                                }`}
+                                                title={cat.hideInMenu ? "Hidden in Products Mega Menu - Click to Show all" : "Visible in Products Mega Menu - Click to Hide all"}
+                                              >
+                                                {cat.hideInMenu ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                              </button>
                                               <button
                                                 onClick={() => moveProductCat(catIdx, "up")}
                                                 disabled={catIdx === 0}
@@ -1406,8 +1458,70 @@ export default function AdminMenuPage() {
                                                       <GripVertical className="h-3.5 w-3.5" />
                                                     </div>
                                                     <span className="text-[11px] font-semibold text-foreground truncate">{sub.name}</span>
+                                                    {sub.hideInMenu && (
+                                                      <span className="px-1 py-0.5 rounded text-[8px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-0.5 shrink-0">
+                                                        <EyeOff className="h-2 w-2" /> Hidden
+                                                      </span>
+                                                    )}
                                                   </div>
                                                   <div className="flex items-center gap-1 shrink-0 ml-2">
+                                                    <button
+                                                      type="button"
+                                                      onClick={async () => {
+                                                        const updatedHide = !sub.hideInMenu;
+                                                        const parentCat = allCategories.find(
+                                                          (c) => !c.parent_category && (c.id === sub.parent_category || c.slug === sub.parent_category || c.id === cat.id)
+                                                        );
+
+                                                        const sisterSubCats = allCategories.filter(
+                                                          (c) => c.parent_category === (parentCat?.id || cat.id) || c.parent_category === (parentCat?.slug || cat.slug)
+                                                        );
+
+                                                        let shouldParentHide = parentCat?.hideInMenu;
+                                                        if (updatedHide === false && parentCat?.hideInMenu) {
+                                                          shouldParentHide = false;
+                                                        } else if (updatedHide === true && parentCat && !parentCat.hideInMenu) {
+                                                          const otherSistersHidden = sisterSubCats
+                                                            .filter((c) => c.id !== sub.id)
+                                                            .every((c) => c.hideInMenu === true);
+                                                          if (otherSistersHidden) {
+                                                            shouldParentHide = true;
+                                                          }
+                                                        }
+
+                                                        setAllCategories((prev) =>
+                                                          prev.map((c) => {
+                                                            if (c.id === sub.id) return { ...c, hideInMenu: updatedHide };
+                                                            if (parentCat && c.id === parentCat.id) return { ...c, hideInMenu: shouldParentHide };
+                                                            return c;
+                                                          })
+                                                        );
+
+                                                        try {
+                                                          await api.saveCategory({ ...sub, hideInMenu: updatedHide });
+                                                          if (parentCat && shouldParentHide !== parentCat.hideInMenu) {
+                                                            await api.saveCategory({ ...parentCat, hideInMenu: shouldParentHide });
+                                                          }
+                                                          showToast(
+                                                            updatedHide
+                                                              ? `"${sub.name}" hidden from Products Mega Menu`
+                                                              : `"${sub.name}" visible in Products Mega Menu`,
+                                                            "success"
+                                                          );
+                                                        } catch (err) {
+                                                          console.error("Failed to toggle sub-category menu visibility:", err);
+                                                          showToast("Failed to update sub-category visibility", "error");
+                                                        }
+                                                      }}
+                                                      className={`p-0.5 rounded border transition-all cursor-pointer ${
+                                                        sub.hideInMenu
+                                                          ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                                          : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                                                      }`}
+                                                      title={sub.hideInMenu ? "Hidden in Products Mega Menu - Click to Show" : "Visible in Products Mega Menu - Click to Hide"}
+                                                    >
+                                                      {sub.hideInMenu ? <EyeOff className="h-2.5 w-2.5" /> : <Eye className="h-2.5 w-2.5" />}
+                                                    </button>
                                                     <button
                                                       onClick={() => moveProductSubCat(cat.id, subIdx, "up")}
                                                       disabled={subIdx === 0}

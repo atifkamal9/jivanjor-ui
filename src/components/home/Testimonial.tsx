@@ -30,6 +30,8 @@ interface TestimonialItem {
 
 interface TestimonialProps {
   data?: {
+    enabled?: boolean;
+    hideSection?: boolean;
     title?: string;
     subtitle?: string;
     ctaText?: string;
@@ -136,6 +138,10 @@ const defaultTestimonials: TestimonialItem[] = [
 ];
 
 export default function Testimonial({ data }: TestimonialProps) {
+  if (!data || data.enabled === false || data.hideSection === true) {
+    return null;
+  }
+
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const title = data?.title || "Trusted by People Who Know the Work";
   const subtitle =
