@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ProductCarousel from "./ProductCarousel";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
 import { Heading } from "@/components/ui";
-import { api, Product } from "@/lib/api";
+import { api, Product, Category } from "@/lib/api";
 
 export interface ProductRangeCategory {
   id?: string;
@@ -27,7 +27,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
   const title =
     data?.title || "A Complete Adhesive Range for Modern Woodworking";
 
-  // Categories list (Max 5 categories)
+  // Subcategories list (Max 7 categories from CMS)
   const defaultCategories: ProductRangeCategory[] = [
     { id: "cat-1", name: "Super Premium", selectedProductIds: [] },
     { id: "cat-2", name: "Speciality", selectedProductIds: [] },
@@ -36,66 +36,88 @@ export default function ProductRange({ data }: ProductRangeProps) {
     { id: "cat-5", name: "ECO", selectedProductIds: [] },
   ];
 
-  const categories: ProductRangeCategory[] =
+  const displayCategories: ProductRangeCategory[] =
     data?.categories && data.categories.length > 0
-      ? data.categories.slice(0, 5)
+      ? data.categories.slice(0, 7)
       : defaultCategories;
 
   const [activeCategoryName, setActiveCategoryName] = useState<string>(
-    categories[0]?.name || "Super Premium"
+    displayCategories[0]?.name || "ALL"
   );
 
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function loadData() {
       try {
-        const prods = await api.getProducts();
+        const [prods, cats] = await Promise.all([
+          api.getProducts().catch(() => []),
+          api.getCategories().catch(() => []),
+        ]);
         setDbProducts(prods);
+        setDbCategories(cats);
       } catch (err) {
-        console.error("Failed to load products for homepage ProductRange:", err);
+        console.error("Failed to load data for homepage ProductRange:", err);
       }
     }
-    fetchProducts();
+    loadData();
   }, []);
 
-  // Update activeCategoryName if categories change
+  // Update activeCategoryName if categories change and active category is invalid
   useEffect(() => {
-    if (categories.length > 0 && !categories.some((c) => c.name === activeCategoryName)) {
-      setActiveCategoryName(categories[0].name);
+    if (
+      displayCategories.length > 0 &&
+      !displayCategories.some((c) => c.name === activeCategoryName)
+    ) {
+      setActiveCategoryName(displayCategories[0]?.name || "ALL");
     }
   }, [data?.categories]);
 
-  // Find active category configuration
-  const currentCategoryObj =
-    categories.find((c) => c.name === activeCategoryName) || categories[0];
-  const activeSelectedProductIds = currentCategoryObj?.selectedProductIds || [];
-
   let carouselItems: Product[] = [];
   if (dbProducts.length > 0) {
+    const currentCategoryObj =
+      displayCategories.find((c) => c.name === activeCategoryName) || displayCategories[0];
+    const activeSelectedProductIds = currentCategoryObj?.selectedProductIds || [];
+
+    // 1. If explicit selectedProductIds are configured in CMS for this tab, render them in order
     if (activeSelectedProductIds.length > 0) {
       carouselItems = activeSelectedProductIds
         .map((idOrSlug) => dbProducts.find((p) => p.id === idOrSlug || p.slug === idOrSlug))
         .filter(Boolean)
-        .slice(0, 10) as Product[];
+        .slice(0, 25) as Product[];
     }
-    // Fallback if no specific products selected for this category
-    if (carouselItems.length === 0) {
-      carouselItems = dbProducts.filter((p: any) => {
-        const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
-        const targetId = currentCategoryObj?.categoryId?.toLowerCase();
-        const targetName = activeCategoryName.toLowerCase();
-        return catIds.some((id: string) => {
-          const lower = id.toLowerCase();
-          return (targetId && lower === targetId) || lower === targetName || (p.category && p.category.toLowerCase() === targetName);
-        });
-      }).slice(0, 10);
+
+    // 2. If no explicit IDs selected, filter products matching category ID or name
+    if (carouselItems.length === 0 && currentCategoryObj) {
+      const targetId = (currentCategoryObj.categoryId || "").toLowerCase();
+      const targetName = (currentCategoryObj.name || "").toLowerCase();
+
+      if (targetId === "all" || targetName === "all") {
+        carouselItems = dbProducts.slice(0, 25);
+      } else {
+        carouselItems = dbProducts
+          .filter((p: any) => {
+            const catIds = Array.from(
+              new Set([p.category_id, ...(p.category_ids || p.categoryIds || []), p.category])
+            )
+              .filter(Boolean)
+              .map((id: string) => (id || "").toLowerCase());
+
+            return catIds.some(
+              (id: string) => (targetId && id === targetId) || id === targetName
+            );
+          })
+          .slice(0, 25);
+      }
     }
+
+    // 3. Fallback to first 25 dbProducts
     if (carouselItems.length === 0) {
-      carouselItems = dbProducts.slice(0, 10);
+      carouselItems = dbProducts.slice(0, 25);
     }
   }
 
@@ -148,7 +170,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
 
   useEffect(() => {
     if (scrollContainerRef.current) {
-      const activeIndex = categories.findIndex((c) => c.name === activeCategoryName);
+      const activeIndex = displayCategories.findIndex((c) => c.name === activeCategoryName);
       const activeElement = scrollContainerRef.current.children[
         activeIndex
       ] as HTMLElement;
@@ -177,18 +199,18 @@ export default function ProductRange({ data }: ProductRangeProps) {
       </div>
       <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
-        <div className="max-w-full md:max-w-5xl mx-auto my-6">
-          <Heading className="max-w-full md:max-w-3xl">{title}</Heading>
+        <div className="max-w-full mx-auto my-6">
+          <Heading className="max-w-full md:max-w-3xl mx-auto">{title}</Heading>
           {/* Categories tabs Desktop */}
           <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mt-4 mb-6">
-            {categories.map((cat) => (
+            {displayCategories.map((cat) => (
               <button
                 key={cat.id || cat.name}
                 onClick={() => setActiveCategoryName(cat.name)}
                 className={`${cat.name === activeCategoryName
                   ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
                   : "bg-surface text-foreground hover:scale-105"
-                  } cursor-pointer font-medium px-4 py-2 rounded-3xl text-sm transition-all duration-200`}
+                  } cursor-pointer font-medium px-4 py-2 rounded-3xl text-sm transition-all duration-200 min-w-20`}
               >
                 {cat.name}
               </button>
@@ -219,7 +241,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
               className="flex-1 flex overflow-x-auto scroll-smooth scrollbar-none snap-x snap-mandatory gap-2"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
-              {categories.map((cat) => {
+              {displayCategories.map((cat) => {
                 const isActive = activeCategoryName === cat.name;
                 return (
                   <button
@@ -228,7 +250,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
                     className={`${isActive
                       ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
                       : "bg-surface text-foreground"
-                      } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start transition-all`}
+                      } cursor-pointer font-medium px-3 py-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start transition-all`}
                   >
                     {cat.name}
                   </button>

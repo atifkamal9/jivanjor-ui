@@ -2477,21 +2477,21 @@ export default function PagesPage() {
                       />
                     </div>
 
-                    {/* Categories Setup (Max 5 categories, Max 10 products per category) */}
+                    {/* Categories Setup (Max 7 categories, Max 25 products per category) */}
                     <div className="space-y-6 border-t border-border pt-6 mt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-base font-extrabold text-foreground">Categories Setup (Max 5 Categories)</h3>
+                          <h3 className="text-base font-extrabold text-foreground">Categories Setup (Max 7 Categories)</h3>
                           <p className="text-xs text-foreground/50 font-medium mt-0.5">
-                            Configure up to 5 categories for the section tabs. For each category section, select up to 10 products.
+                            Configure up to 7 categories for the section tabs. For each category section, select up to 25 products.
                           </p>
                         </div>
                         <button
                           type="button"
-                          disabled={(formData.sections.productRange.categories || []).length >= 5}
+                          disabled={(formData.sections.productRange.categories || []).length >= 7}
                           onClick={() => {
                             const currentCats = [...(formData.sections.productRange.categories || [])];
-                            if (currentCats.length >= 5) return;
+                            if (currentCats.length >= 7) return;
                             currentCats.push({
                               id: `cat-${Date.now()}`,
                               name: `Category ${currentCats.length + 1}`,
@@ -2502,7 +2502,7 @@ export default function PagesPage() {
                           className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer shadow-xs shrink-0"
                         >
                           <Plus className="h-4 w-4" />
-                          <span>Add Category ({(formData.sections.productRange.categories || []).length}/5)</span>
+                          <span>Add Category ({(formData.sections.productRange.categories || []).length}/7)</span>
                         </button>
                       </div>
 
@@ -2510,6 +2510,66 @@ export default function PagesPage() {
                       <div className="space-y-4">
                         {((formData.sections.productRange.categories || []) as any[]).map((cat: any, cIdx: number) => {
                           const selectedIds: string[] = cat.selectedProductIds || [];
+
+                          // Find matched system category from availableCategories
+                          const selectedCatObj = availableCategories.find(
+                            (c) => c.id === cat.categoryId || c.slug === cat.categoryId
+                          );
+
+                          // Filter available products to show products belonging to selected category/main category (with sub-categories) or ALL
+                          const catProducts = availableProducts.filter((prod: any) => {
+                            const isSelected = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug);
+                            if (isSelected) return true;
+
+                            if (cat.categoryId === "ALL") return true;
+
+                            if (cat.categoryId || selectedCatObj) {
+                              const targetId = (cat.categoryId || "").toLowerCase();
+                              const catObjId = (selectedCatObj?.id || "").toLowerCase();
+                              const catObjSlug = (selectedCatObj?.slug || "").toLowerCase();
+                              const catObjName = (selectedCatObj?.name || "").toLowerCase();
+                              const catName = (cat.name || "").toLowerCase();
+
+                              // If selected category is a Main Category, include all child sub-categories
+                              const childSubCats = selectedCatObj ? availableCategories.filter(
+                                (c) => c.parent_category === selectedCatObj.id || c.parent_category === selectedCatObj.slug
+                              ) : [];
+
+                              const relevantTokens = new Set<string>([
+                                targetId,
+                                catObjId,
+                                catObjSlug,
+                                catObjName,
+                                catName,
+                                ...childSubCats.flatMap((sub) => [
+                                  (sub.id || "").toLowerCase(),
+                                  (sub.slug || "").toLowerCase(),
+                                  (sub.name || "").toLowerCase(),
+                                ]),
+                              ].filter(Boolean));
+
+                              const pCatId = (prod.category_id || "").toLowerCase();
+                              const pCatIds = Array.from(new Set([
+                                pCatId,
+                                ...((prod.category_ids || prod.categoryIds || []).map((id: string) => (id || "").toLowerCase()))
+                              ])).filter(Boolean);
+                              const pCatName = (prod.category || (prod as any).categoryName || "").toLowerCase();
+
+                              const matchesId = pCatIds.some((id) => relevantTokens.has(id));
+                              const matchesName = pCatName && relevantTokens.has(pCatName);
+
+                              return matchesId || matchesName;
+                            }
+
+                            if (cat.name) {
+                              const targetName = cat.name.toLowerCase();
+                              const pCatId = (prod.category_id || "").toLowerCase();
+                              const pCatName = (prod.category || "").toLowerCase();
+                              if (pCatId === targetName || pCatName === targetName) return true;
+                            }
+
+                            return false;
+                          });
 
                           return (
                             <div key={cat.id || cIdx} className="p-5 border border-border bg-surface/30 rounded-2xl space-y-4">
@@ -2581,7 +2641,7 @@ export default function PagesPage() {
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <div>
                                   <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider mb-1.5">
-                                    Select System Sub-Category / Category
+                                    Select System Category / Sub-Category
                                   </label>
                                   <select
                                     value={cat.categoryId || ""}
@@ -2594,18 +2654,66 @@ export default function PagesPage() {
                                       currentCats[cIdx] = {
                                         ...currentCats[cIdx],
                                         categoryId: selectedId,
-                                        name: matchedCat ? matchedCat.name : (currentCats[cIdx].name || `Category ${cIdx + 1}`),
+                                        name: selectedId === "ALL"
+                                          ? "All Products"
+                                          : matchedCat
+                                            ? matchedCat.name
+                                            : (currentCats[cIdx].name || `Category ${cIdx + 1}`),
                                       };
                                       updateSectionField("productRange", "categories", currentCats);
                                     }}
                                     className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary cursor-pointer font-medium"
                                   >
-                                    <option value="">-- Choose Sub-Category --</option>
-                                    {availableCategories.map((c) => (
-                                      <option key={c.id} value={c.id}>
-                                        {c.parent_category ? `${c.parent_category} → ${c.name}` : c.name}
-                                      </option>
-                                    ))}
+                                    <option value="">-- Choose Category / Sub-Category --</option>
+                                    <option value="ALL">🌟 ALL Categories (Show All Products)</option>
+
+                                    {availableCategories
+                                      .filter((catItem) => !catItem.parent_category)
+                                      .map((mainCat) => {
+                                        const subCats = availableCategories.filter(
+                                          (sub) => sub.parent_category === mainCat.id || sub.parent_category === mainCat.slug
+                                        );
+
+                                        return (
+                                          <optgroup key={mainCat.id} label={mainCat.name}>
+                                            <option value={mainCat.id}>
+                                              📁 ALL {mainCat.name} (Main Category & All Sub-Categories)
+                                            </option>
+                                            {subCats.map((sub) => (
+                                              <option key={sub.id} value={sub.id}>
+                                                {sub.name}
+                                              </option>
+                                            ))}
+                                          </optgroup>
+                                        );
+                                      })}
+
+                                    {availableCategories.some((c) => {
+                                      if (!c.parent_category) return false;
+                                      return !availableCategories.some(
+                                        (p) => !p.parent_category && (p.id === c.parent_category || p.slug === c.parent_category)
+                                      );
+                                    }) && (
+                                        <optgroup label="Other Categories">
+                                          {availableCategories
+                                            .filter((c) => {
+                                              if (!c.parent_category) return false;
+                                              return !availableCategories.some(
+                                                (p) => !p.parent_category && (p.id === c.parent_category || p.slug === c.parent_category)
+                                              );
+                                            })
+                                            .map((c) => {
+                                              const parentName = availableCategories.find(
+                                                (p) => p.id === c.parent_category || p.slug === c.parent_category
+                                              )?.name;
+                                              return (
+                                                <option key={c.id} value={c.id}>
+                                                  {parentName ? `${parentName} → ${c.name}` : c.name}
+                                                </option>
+                                              );
+                                            })}
+                                        </optgroup>
+                                      )}
                                   </select>
                                 </div>
 
@@ -2627,14 +2735,14 @@ export default function PagesPage() {
                                 </div>
                               </div>
 
-                              {/* Selected Products checklist for this category (Max 10) */}
+                              {/* Selected Products checklist for this category (Max 25) */}
                               <div className="space-y-3 pt-2">
                                 <div className="flex items-center justify-between">
                                   <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
                                     Selected Products for "{cat.name || `Category ${cIdx + 1}`}"
                                   </span>
-                                  <span className={`text-[11px] font-bold ${selectedIds.length >= 10 ? "text-amber-500 font-extrabold" : "text-foreground/50"}`}>
-                                    {selectedIds.length} / 10 Products Max
+                                  <span className={`text-[11px] font-bold ${selectedIds.length >= 25 ? "text-amber-500 font-extrabold" : "text-foreground/50"}`}>
+                                    {selectedIds.length} / 25 Products Max
                                   </span>
                                 </div>
 
@@ -2719,13 +2827,71 @@ export default function PagesPage() {
                                   </div>
                                 )}
 
-                                {availableProducts.length === 0 ? (
-                                  <div className="p-3 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
-                                    No products found in Products Module.
+                                {/* Select All Products Option */}
+                                {catProducts.length > 0 && (() => {
+                                  const isAllSelected = catProducts.every(
+                                    (prod: any) => selectedIds.includes(prod.id) || selectedIds.includes(prod.slug)
+                                  );
+
+                                  const handleToggleAll = () => {
+                                    const currentCats = [...(formData.sections.productRange.categories || [])];
+                                    if (isAllSelected) {
+                                      const catProdSet = new Set(
+                                        catProducts.flatMap((p: any) => [p.id, p.slug]).filter(Boolean)
+                                      );
+                                      const updated = selectedIds.filter((id: string) => !catProdSet.has(id));
+                                      currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: updated };
+                                    } else {
+                                      const existingSet = new Set(selectedIds);
+                                      const newSelected = [...selectedIds];
+                                      for (const prod of catProducts) {
+                                        const pId = prod.id || prod.slug;
+                                        if (pId && !existingSet.has(pId) && !existingSet.has(prod.id) && !existingSet.has(prod.slug)) {
+                                          if (newSelected.length >= 25) break;
+                                          newSelected.push(prod.id);
+                                          existingSet.add(prod.id);
+                                          if (prod.slug) existingSet.add(prod.slug);
+                                        }
+                                      }
+                                      currentCats[cIdx] = { ...currentCats[cIdx], selectedProductIds: newSelected };
+                                    }
+                                    updateSectionField("productRange", "categories", currentCats);
+                                  };
+
+                                  return (
+                                    <div className="flex items-center justify-between px-1 py-2">
+                                      <label className="flex items-center gap-2 text-xs font-bold text-foreground cursor-pointer select-none">
+                                        <input
+                                          type="checkbox"
+                                          checked={isAllSelected}
+                                          onChange={handleToggleAll}
+                                          className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer shrink-0"
+                                        />
+                                        <span>Select All Products ({catProducts.length} Available)</span>
+                                      </label>
+
+                                      <button
+                                        type="button"
+                                        onClick={handleToggleAll}
+                                        className="text-xs font-bold text-primary hover:underline cursor-pointer transition"
+                                      >
+                                        {isAllSelected
+                                          ? "Deselect All"
+                                          : `Select All (${Math.min(catProducts.length, 25 - selectedIds.length + catProducts.filter(p => selectedIds.includes(p.id) || selectedIds.includes(p.slug)).length)})`}
+                                      </button>
+                                    </div>
+                                  );
+                                })()}
+
+                                {catProducts.length === 0 ? (
+                                  <div className="p-4 border border-dashed border-border rounded-xl text-center text-xs text-foreground/60">
+                                    {cat.categoryId || cat.name
+                                      ? `No products found belonging to category "${cat.name || 'Selected Category'}". Please select or create products for this category in the Products module.`
+                                      : "Please select a system category/sub-category above to list its products."}
                                   </div>
                                 ) : (
                                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-60 overflow-y-auto p-1">
-                                    {availableProducts.map((prod) => {
+                                    {catProducts.map((prod) => {
                                       const isSelected = selectedIds.includes(prod.id) || selectedIds.includes(prod.slug);
 
                                       const toggleProd = () => {
@@ -2733,8 +2899,8 @@ export default function PagesPage() {
                                         if (isSelected) {
                                           updated = selectedIds.filter((id: string) => id !== prod.id && id !== prod.slug);
                                         } else {
-                                          if (selectedIds.length >= 10) {
-                                            alert(`Maximum 10 products allowed for "${cat.name}". Please deselect a product before adding more.`);
+                                          if (selectedIds.length >= 25) {
+                                            alert(`Maximum 25 products allowed for "${cat.name}". Please deselect a product before adding more.`);
                                             return;
                                           }
                                           updated = [...selectedIds, prod.id];

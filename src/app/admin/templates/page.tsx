@@ -1865,12 +1865,54 @@ export default function TemplatesPage() {
                                     }}
                                     className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary cursor-pointer font-medium"
                                   >
-                                    <option value="">-- Choose Sub-Category --</option>
-                                    {availableCategories.map((c) => (
-                                      <option key={c.id} value={c.id}>
-                                        {c.parent_category ? `${c.parent_category} → ${c.name}` : c.name}
-                                      </option>
-                                    ))}
+                                    <option value="">-- Choose Category / Sub-Category --</option>
+                                    {availableCategories
+                                      .filter((catItem) => !catItem.parent_category)
+                                      .map((mainCat) => {
+                                        const subCats = availableCategories.filter(
+                                          (sub) => sub.parent_category === mainCat.id || sub.parent_category === mainCat.slug
+                                        );
+
+                                        return (
+                                          <optgroup key={mainCat.id} label={mainCat.name}>
+                                            <option value={mainCat.id}>
+                                              {mainCat.name} (Main Category)
+                                            </option>
+                                            {subCats.map((sub) => (
+                                              <option key={sub.id} value={sub.id}>
+                                                &nbsp;&nbsp;↳ {sub.name}
+                                              </option>
+                                            ))}
+                                          </optgroup>
+                                        );
+                                      })}
+
+                                    {availableCategories.some((c) => {
+                                      if (!c.parent_category) return false;
+                                      return !availableCategories.some(
+                                        (p) => !p.parent_category && (p.id === c.parent_category || p.slug === c.parent_category)
+                                      );
+                                    }) && (
+                                      <optgroup label="Other Categories">
+                                        {availableCategories
+                                          .filter((c) => {
+                                            if (!c.parent_category) return false;
+                                            return !availableCategories.some(
+                                              (p) => !p.parent_category && (p.id === c.parent_category || p.slug === c.parent_category)
+                                            );
+                                          })
+                                          .map((c) => {
+                                            const parentName = availableCategories.find(
+                                              (p) => p.id === c.parent_category || p.slug === c.parent_category
+                                            )?.name;
+                                            return (
+                                              <option key={c.id} value={c.id}>
+                                                {parentName ? `${parentName} → ${c.name}` : c.name}
+                                              </option>
+                                            );
+                                          })}
+                                      </optgroup>
+                                    )}
                                   </select>
                                 </div>
 
