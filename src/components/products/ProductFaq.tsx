@@ -41,7 +41,13 @@ export default function ProductFaq({ product }: ProductFaqProps) {
     setOpenIndex(openIndex === index ? -1 : index);
   };
 
-  const faqsList = product?.faqs && product.faqs.length > 0 ? product.faqs : FAQ_ITEMS;
+  const faqsList = product?.faqs && Array.isArray(product.faqs)
+    ? product.faqs.filter((f: any) => f && f.question && f.question.trim() !== "")
+    : [];
+
+  if (faqsList.length === 0) {
+    return null;
+  }
 
   return (
     <section

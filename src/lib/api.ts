@@ -470,13 +470,6 @@ function mapProductFromBackend(prod: any): Product {
     videoThumbnail = "/images/Rectangle 4.png";
   }
 
-  if (faqs.length === 0) {
-    faqs = [
-      { question: "How long does it take to set?", answer: "It has a superfast setting time of just 1 hour under typical site conditions." },
-      { question: "What is the coverage area?", answer: "Provides coverage of approximately 60-70 sq.ft per kg." }
-    ];
-  }
-
   let shortDescription = "";
   if (prod.metadata && typeof prod.metadata === "object") {
     shortDescription = prod.metadata.shortDescription || prod.metadata.short_description || "";

@@ -218,10 +218,7 @@ export default function ProductsPage() {
       ],
       videoUrl: "",
       videoThumbnail: "/images/Rectangle 4.png",
-      faqs: [
-        { question: "How long does it take to set?", answer: "It has a superfast setting time of just 1 hour under typical site conditions." },
-        { question: "What is the coverage area?", answer: "Provides coverage of approximately 60-70 sq.ft per kg." }
-      ],
+      faqs: [],
       relatedProducts: [],
       techSpecsDescription: "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
       appsTitle: "Engineered for the Task at Hand",

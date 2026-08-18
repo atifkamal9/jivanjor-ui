@@ -19,7 +19,9 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const documentUrl = product?.techResourceFileUrl ?? "/docs/technical.pdf";
 
-  const tabs: { name: TabName; label: string; icon: React.ReactNode }[] = [
+  const hasFaqs = product?.faqs && Array.isArray(product.faqs) && product.faqs.some((f: any) => f && f.question && f.question.trim() !== "");
+
+  const allTabs: { name: TabName; label: string; icon: React.ReactNode }[] = [
     {
       name: "Overview",
       label: "Overview",
@@ -87,6 +89,8 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
     },
   ];
 
+  const tabs = hasFaqs ? allTabs : allTabs.filter((t) => t.name !== "FAQs");
+
   const handleTabClick = (tabName: TabName) => {
     setActiveTab(tabName);
     const elementId = tabName.toLowerCase().replace(" ", "-");
@@ -114,7 +118,7 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
         "Tech Specs",
         "USPs",
         "Applications",
-        "FAQs",
+        ...(hasFaqs ? ["FAQs" as TabName] : []),
       ];
       // Offset buffer: 95px on mobile, 185px on desktop
       const isMobile =
