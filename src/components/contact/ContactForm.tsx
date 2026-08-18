@@ -120,7 +120,7 @@ export default function ContactForm() {
       <div className="hidden relative lg:block w-full max-w-2xl bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
         {/* Card Header */}
         <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-          <h3 className="text-[24px] md:text-[30px] font-medium pl-3">
+          <h3 className="text-[20px] md:text-[24px] font-medium pl-3">
             Reach out to Us
           </h3>
           <ShieldCheck className="w-8 h-8" strokeWidth={1} />

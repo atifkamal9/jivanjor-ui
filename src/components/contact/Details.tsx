@@ -75,9 +75,9 @@ export default function Details({
   };
 
   return (
-    <section className="flex flex-col items-center lg:items-start text-center lg:text-start max-w-4xl px-5 space-y-5 text-[#222]">
+    <section className="flex flex-col items-center lg:items-start text-center lg:text-start max-w-xl px-5 space-y-5 text-[#222]">
       {/* Title */}
-      <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-[48px]">
+      <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-[38px]">
         {mainHeading || "We are always happy to assist you."}
       </h2>
       <main className="flex flex-col my-6 gap-8 w-full">

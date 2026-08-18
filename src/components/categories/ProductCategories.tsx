@@ -644,10 +644,10 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[34px] md:text-5xl leading-normal">
+          <h1 className="font-amethysta text-[28px] md:text-4xl leading-normal">
             {data?.title || "Superior Quality Backed by Research"}
           </h1>
-          <p className="text-lg md:text-2xl leading-normal max-w-3xl">
+          <p className="text-base md:text-xl leading-normal max-w-3xl">
             {data?.desc || data?.description || "Learn how our focus on product development, quality standards and market reach supports India’s woodworking needs."}
           </p>
           <Link
