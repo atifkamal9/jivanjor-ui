@@ -785,11 +785,14 @@ export default function Navbar() {
             productCategories={
               dbCategories.length > 0
                 ? dbCategories
-                  .filter((cat) => !cat.parent_category)
+                  .filter((cat) => !cat.parent_category && cat.hideInMenu !== true)
                   .map((cat) => {
-                    const subCats = dbCategories.filter((sub) => sub.parent_category === cat.id);
+                    const subCats = dbCategories.filter(
+                      (sub) => sub.parent_category === cat.id && sub.hideInMenu !== true
+                    );
                     return {
                       name: cat.name,
+                      hideInMenu: cat.hideInMenu,
                       products: subCats.map((sub) => sub.name),
                     };
                   })

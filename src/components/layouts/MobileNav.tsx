@@ -188,7 +188,9 @@ export default function MobileNav({
                     {isOpen && (
                       <div className="bg-surface border-t p-5 space-y-1.5 transition-all duration-300">
                         {isProductMenu ? (
-                          productCategories.map((cat) => {
+                          productCategories
+                            .filter((cat) => cat.hideInMenu !== true)
+                            .map((cat) => {
                             const isCatOpen = openCategory === cat.name;
                             return (
                               <div key={cat.name} className="space-y-1">
