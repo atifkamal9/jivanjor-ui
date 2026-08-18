@@ -194,7 +194,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
         {/* Sustainability Inner Card */}
         <div className="w-full bg-surface rounded-[20px] p-0 md:p-10 lg:p-12">
           <div className="flex flex-col items-center text-center px-8 pt-10 md:pt-2">
-            <h3 className="font-amethysta text-[34px] md:text-5xl font-normal mb-4 max-w-full md:max-w-xl">
+            <h3 className="font-amethysta text-[28px] md:text-4xl font-normal mb-4 max-w-full md:max-w-xl">
               {sustainabilityTitle}
             </h3>
             <p className="text-lg md:text-2xl max-w-78 md:max-w-5xl">

@@ -69,7 +69,7 @@ export default function Professionals({ data }: ProfessionalsProps = {}) {
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Header Title and Subtitle */}
         <div className="flex flex-col space-y-4 max-w-3xl text-center md:text-left">
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl">
+          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl">
             {title}
           </h2>
           <p className="text-lg lg:text-2xl">

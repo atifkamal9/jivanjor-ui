@@ -91,7 +91,7 @@ export default function Presence({ data }: PresenceProps) {
         </div>
 
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[34px] sm:text-4xl md:text-5xl text-center text-[#222] font-normal mb-5">
+        <h2 className="font-amethysta text-[28px] sm:text-3xl md:text-4xl text-center text-[#222] font-normal mb-5">
           {title}
         </h2>
 

@@ -58,7 +58,7 @@ export function ReachLeft({ data }: ReachLeftProps) {
         {desc}
       </p>
       {/* Feature Cards Box */}
-      <h2 className="font-amethysta text-[34px] md:text-[48px] text-center md:text-start px-10 md:px-0">
+      <h2 className="font-amethysta text-[28px] md:text-[38px] text-center md:text-start px-10 md:px-0">
         {title}
       </h2>
       <div className="w-full bg-linear-to-r from-[#772571] to-[#E7071C] text-white rounded-[20px] p-10 md:p-12 shadow-lg">

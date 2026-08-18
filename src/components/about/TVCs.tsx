@@ -88,7 +88,7 @@ export default function TVCs({ data }: TVCsProps) {
 
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center relative z-10">
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl text-center font-normal mb-6 max-w-87.5 md:max-w-5xl">
+        <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-4xl text-center font-normal mb-6 max-w-87.5 md:max-w-5xl">
           {title}
         </h2>
 

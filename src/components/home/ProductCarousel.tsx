@@ -99,7 +99,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
     items && items.length > 0
       ? items.map((item: any, idx: number) => ({
         title: item.title || item.name || "",
-        description: item.description || "",
+        description: item.shortDescription || item.description || "",
         color: item.color || item.themeColor || colors[idx % colors.length],
         badge: item.tag || item.badge || "",
         image: mapProductImage(
