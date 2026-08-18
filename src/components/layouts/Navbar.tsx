@@ -544,140 +544,153 @@ export default function Navbar() {
           </Link>
         </div>
 
-
         {/* Backdrop Overlay with Blur */}
         <div
           className={`fixed top-22 inset-x-0 bottom-0 bg-black/30 backdrop-blur-md transition-all duration-300 z-100 ${activeMenu !== null
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            ? "opacity-100 pointer-events-auto visible"
+            : "opacity-0 pointer-events-none invisible hidden"
             }`}
           onMouseEnter={handleMenuLeave}
         />
 
         {/* Desktop Mega Dropdown Menu */}
-        <div
-          className={`absolute top-full right-0 mx-auto mt-2 mr-20 max-w-4xl w-full min-h-75 bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col font-google-sans transition-all duration-300 ease-out origin-top ${activeMenu !== null
-            ? "opacity-100 translate-y-8 scale-100 pointer-events-auto"
-            : "opacity-0 -translate-y-4 scale-95 pointer-events-none"
-            }`}
-          onMouseEnter={() => handleMenuEnter(activeMenu)}
-          onMouseLeave={handleMenuLeave}
-        >
-          {(() => {
-            const activeItem = publishedMenu.find(
-              (m) => m.id === activeMenu || m.title.toLowerCase() === activeMenu?.toLowerCase()
-            );
+        {activeMenu !== null && (
+          <div
+            className="absolute top-full right-0 mx-auto mt-2 mr-20 max-w-4xl w-full min-h-75 bg-white rounded-[20px] z-50 overflow-hidden hidden lg:flex flex-col font-google-sans transition-all duration-300 ease-out origin-top opacity-100 translate-y-8 scale-100 pointer-events-auto"
+            onMouseEnter={() => handleMenuEnter(activeMenu)}
+            onMouseLeave={handleMenuLeave}
+          >
+            {(() => {
+              const activeItem = publishedMenu.find(
+                (m) => m.id === activeMenu || m.title.toLowerCase() === activeMenu?.toLowerCase()
+              );
 
-            const isProductMenu =
-              activeItem?.isStatic ||
-              activeItem?.id === "nav-products" ||
-              activeItem?.title.toLowerCase() === "products" ||
-              activeMenu === "products";
+              const isProductMenu =
+                activeItem?.isStatic ||
+                activeItem?.id === "nav-products" ||
+                activeItem?.title.toLowerCase() === "products" ||
+                activeMenu === "products";
 
-            if (isProductMenu) {
+              if (isProductMenu) {
+                return (
+                  <div className="flex">
+                    {/* Left Column: Top-level Category List */}
+                    <div className="flex flex-col min-w-75 p-6 pb-12 bg-surface">
+                      {dynamicProductCategories.map((cat) => (
+                        <button
+                          key={cat.name}
+                          onMouseEnter={() => setActiveCategory(cat.name)}
+                          onClick={() => setActiveCategory(cat.name)}
+                          className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${activeCategory === cat.name ? "font-bold" : "font-normal hover:font-bold"
+                            }`}
+                        >
+                          <span className="leading-[200%]!">{cat.name}</span>
+                          {activeCategory === cat.name && (
+                            <ChevronRight size={16} strokeWidth={2} className="text-primary" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Middle Column: Sub-products list */}
+                    <div className="flex flex-col flex-1 p-8 pb-12">
+                      {activeCategoryData.products.map((prod: any) => (
+                        <Link
+                          href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
+                          key={prod.name}
+                          className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
+                          onClick={() => setActiveMenu(null)}
+                        >
+                          {prod.name}
+                        </Link>
+                      ))}
+                    </div>
+
+                    {/* Right Column: Category Image + View All Button */}
+                    <div className="flex flex-col py-6 min-w-65 pr-8">
+                      <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                        <Image
+                          src={activeCategoryData.categoryImage}
+                          alt={activeCategoryData.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <Link
+                        href="/categories"
+                        onClick={() => setActiveMenu(null)}
+                        className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
+                      >
+                        View All Products
+                      </Link>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (!activeItem) return null;
+
+              const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
+              const rawSubItems = isKnowledgeNav
+                ? dynamicKnowledgeItems.map((item, idx) => ({
+                  id: `sub-know-${idx}`,
+                  title: item.name,
+                  type: "page",
+                  url: item.link,
+                  order: item.order ?? (idx + 1),
+                  description: undefined,
+                  target: undefined,
+                  hideInMenu: false,
+                })).sort((a, b) => (a.order || 0) - (b.order || 0))
+                : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+              const subItems = rawSubItems.filter((sub: any) => sub.hideInMenu !== true);
+
+              const fallbackImage =
+                activeItem.id === "nav-about"
+                  ? aboutImage
+                  : activeItem.id === "nav-applications"
+                    ? appImage
+                    : activeItem.id === "nav-knowledge"
+                      ? knowledgeImage
+                      : "/images/hero.png";
+
+              const displayImage =
+                hoveredSubItemObj?.image ||
+                activeItem.image ||
+                fallbackImage ||
+                "/images/hero.png";
+
               return (
                 <div className="flex">
-                  {/* Left Column: Top-level Category List */}
-                  <div className="flex flex-col min-w-75 p-6 pb-12 bg-surface">
-                    {dynamicProductCategories.map((cat) => (
-                      <button
-                        key={cat.name}
-                        onMouseEnter={() => setActiveCategory(cat.name)}
-                        onClick={() => setActiveCategory(cat.name)}
-                        className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${activeCategory === cat.name ? "font-bold" : "font-normal hover:font-bold"
-                          }`}
-                      >
-                        <span className="leading-[200%]!">{cat.name}</span>
-                        {activeCategory === cat.name && (
-                          <ChevronRight size={16} strokeWidth={2} className="text-primary" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Middle Column: Sub-products list */}
-                  <div className="flex flex-col flex-1 p-8 pb-12">
-                    {activeCategoryData.products.map((prod: any) => (
-                      <Link
-                        href={`/categories/${prod.slug || prod.name.replace(/\s/g, "-").toLowerCase()}`}
-                        key={prod.name}
-                        className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        {prod.name}
-                      </Link>
-                    ))}
-                  </div>
-
-                  {/* Right Column: Category Image + View All Button */}
-                  <div className="flex flex-col py-6 min-w-65 pr-8">
-                    <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
-                      <Image
-                        src={activeCategoryData.categoryImage}
-                        alt={activeCategoryData.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <Link
-                      href="/categories"
-                      onClick={() => setActiveMenu(null)}
-                      className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
-                    >
-                      View All Products
-                    </Link>
-                  </div>
-                </div>
-              );
-            }
-
-            if (!activeItem) return null;
-
-            const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
-            const rawSubItems = isKnowledgeNav
-              ? dynamicKnowledgeItems.map((item, idx) => ({
-                id: `sub-know-${idx}`,
-                title: item.name,
-                type: "page",
-                url: item.link,
-                order: item.order ?? (idx + 1),
-                description: undefined,
-                target: undefined,
-                hideInMenu: false,
-              })).sort((a, b) => (a.order || 0) - (b.order || 0))
-              : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
-
-            const subItems = rawSubItems.filter((sub: any) => sub.hideInMenu !== true);
-
-            const fallbackImage =
-              activeItem.id === "nav-about"
-                ? aboutImage
-                : activeItem.id === "nav-applications"
-                  ? appImage
-                  : activeItem.id === "nav-knowledge"
-                    ? knowledgeImage
-                    : "/images/hero.png";
-
-            const displayImage =
-              hoveredSubItemObj?.image ||
-              activeItem.image ||
-              fallbackImage ||
-              "/images/hero.png";
-
-            return (
-              <div className="flex">
-                {/* Left Column: Sub-item Links */}
-                <div className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12">
-                  {subItems.length > 0 ? (
-                    subItems.map((sub) => {
-                      const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, activeItem);
-                      if (sub.type === "external_link") {
+                  {/* Left Column: Sub-item Links */}
+                  <div className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12">
+                    {subItems.length > 0 ? (
+                      subItems.map((sub) => {
+                        const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, activeItem);
+                        if (sub.type === "external_link") {
+                          return (
+                            <Link
+                              key={sub.id || sub.title}
+                              href={normalizedUrl}
+                              target={sub.target || "_blank"}
+                              rel="noopener noreferrer"
+                              onClick={() => setActiveMenu(null)}
+                              onMouseEnter={() => {
+                                if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
+                                setHoveredGenericSubItem(sub.description || sub.title);
+                                setHoveredSubItemObj({ ...sub, url: normalizedUrl });
+                              }}
+                              className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
+                            >
+                              {sub.title}
+                            </Link>
+                          );
+                        }
                         return (
                           <Link
                             key={sub.id || sub.title}
                             href={normalizedUrl}
-                            target={sub.target || "_blank"}
-                            rel="noopener noreferrer"
                             onClick={() => setActiveMenu(null)}
                             onMouseEnter={() => {
                               if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
@@ -689,61 +702,45 @@ export default function Navbar() {
                             {sub.title}
                           </Link>
                         );
-                      }
-                      return (
-                        <Link
-                          key={sub.id || sub.title}
-                          href={normalizedUrl}
-                          onClick={() => setActiveMenu(null)}
-                          onMouseEnter={() => {
-                            if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
-                            setHoveredGenericSubItem(sub.description || sub.title);
-                            setHoveredSubItemObj({ ...sub, url: normalizedUrl });
-                          }}
-                          className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
-                        >
-                          {sub.title}
-                        </Link>
-                      );
-                    })
-                  ) : (
-                    <div className="text-xs text-foreground/50 italic py-4">No sub-items configured</div>
-                  )}
-                </div>
+                      })
+                    ) : (
+                      <div className="text-xs text-foreground/50 italic py-4">No sub-items configured</div>
+                    )}
+                  </div>
 
-                {/* Middle Column: Copy */}
-                <div className="flex flex-col flex-1 p-8">
-                  <p className="text-lg text-foreground">
-                    {hoveredGenericSubItem ||
-                      (activeItem.id === "nav-about"
-                        ? aboutDescription
-                        : activeItem.id === "nav-applications"
-                          ? appDescription
-                          : activeItem.id === "nav-knowledge"
-                            ? knowledgeDescription
-                            : `${activeItem.title} - Explore Jivanjor adhesive products and solutions.`)}
-                  </p>
-                </div>
+                  {/* Middle Column: Copy */}
+                  <div className="flex flex-col flex-1 p-8">
+                    <p className="text-lg text-foreground">
+                      {hoveredGenericSubItem ||
+                        (activeItem.id === "nav-about"
+                          ? aboutDescription
+                          : activeItem.id === "nav-applications"
+                            ? appDescription
+                            : activeItem.id === "nav-knowledge"
+                              ? knowledgeDescription
+                              : `${activeItem.title} - Explore Jivanjor adhesive products and solutions.`)}
+                    </p>
+                  </div>
 
-                {/* Right Column: Image */}
-                <div className="flex flex-col py-6 min-w-65 pr-8">
-                  <div className="relative w-full min-h-42 rounded-2xl overflow-hidden bg-surface/50">
-                    <Image
-                      src={displayImage}
-                      alt={activeItem.title}
-                      fill
-                      className="object-cover transition-all duration-300"
-                    />
+                  {/* Right Column: Image */}
+                  <div className="flex flex-col py-6 min-w-65 pr-8">
+                    <div className="relative w-full min-h-42 rounded-2xl overflow-hidden bg-surface/50">
+                      <Image
+                        src={displayImage}
+                        alt={activeItem.title}
+                        fill
+                        className="object-cover transition-all duration-300"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })()}
+              );
+            })()}
 
-
-          {/* Bottom brand gradient strip */}
-          <div className="absolute bottom-0 w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
-        </div>
+            {/* Bottom brand gradient strip */}
+            <div className="absolute bottom-0 w-full h-8 bg-linear-to-br from-[#FF0009] to-[#772571]" />
+          </div>
+        )}
 
 
         {/* Mobile Controls */}
