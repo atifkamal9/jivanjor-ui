@@ -1247,6 +1247,11 @@ export default function AdminMenuPage() {
                                   Static Catalog
                                 </span>
                               )}
+                              {mainItem.hideInMenu && (
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                  <EyeOff className="h-3 w-3" /> Hidden
+                                </span>
+                              )}
                             </div>
                             <p className="text-[11px] text-foreground/50 truncate mt-0.5">
                               {mainItem.type === "menu" ? "No URL (Trigger only)" : mainItem.url || "No link"}
@@ -1255,6 +1260,38 @@ export default function AdminMenuPage() {
                         </div>
 
                         <div className="flex items-center gap-1.5 shrink-0 ml-3">
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const newItems = [...headerItems];
+                              const updatedHide = !newItems[mainIdx].hideInMenu;
+                              const updatedSubs = (newItems[mainIdx].subItems || []).map((sub) => ({
+                                ...sub,
+                                hideInMenu: updatedHide,
+                              }));
+                              newItems[mainIdx] = {
+                                ...newItems[mainIdx],
+                                hideInMenu: updatedHide,
+                                subItems: updatedSubs,
+                              };
+                              setHeaderItems(newItems);
+                              await saveHeaderDraft(newItems);
+                              showToast(
+                                updatedHide
+                                  ? `"${mainItem.title}" and all sub-menu items hidden from header menu`
+                                  : `"${mainItem.title}" and all sub-menu items set to visible in header menu`,
+                                "success"
+                              );
+                            }}
+                            className={`p-2 rounded-lg border transition-all cursor-pointer ${mainItem.hideInMenu
+                                ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                              }`}
+                            title={mainItem.hideInMenu ? "Hidden in Header Menu - Click to Show all" : "Visible in Header Menu - Click to Hide all"}
+                          >
+                            {mainItem.hideInMenu ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+
                           <button
                             onClick={() => moveHeaderMainItem(mainIdx, "up")}
                             disabled={mainIdx === 0}
@@ -1570,12 +1607,61 @@ export default function AdminMenuPage() {
                                       <GripVertical className="h-4 w-4" />
                                     </div>
                                     <div className="min-w-0">
-                                      <span className="text-xs font-bold text-foreground block truncate">{sub.title}</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold text-foreground block truncate">{sub.title}</span>
+                                        {sub.hideInMenu && (
+                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1 shrink-0">
+                                            <EyeOff className="h-2.5 w-2.5" /> Hidden
+                                          </span>
+                                        )}
+                                      </div>
                                       <span className="text-[10px] text-foreground/50 block truncate">{sub.url}</span>
                                     </div>
                                   </div>
 
                                   <div className="flex items-center gap-1 shrink-0 ml-2">
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        const newItems = [...headerItems];
+                                        const currentSubs = [...(newItems[mainIdx].subItems || [])];
+                                        const updatedSubHide = !currentSubs[subIdx].hideInMenu;
+                                        currentSubs[subIdx] = {
+                                          ...currentSubs[subIdx],
+                                          hideInMenu: updatedSubHide,
+                                        };
+                                        newItems[mainIdx].subItems = currentSubs;
+
+                                        // Update parent menu state if needed
+                                        let updatedParentHide = newItems[mainIdx].hideInMenu;
+                                        if (updatedSubHide === false && newItems[mainIdx].hideInMenu) {
+                                          updatedParentHide = false;
+                                        } else if (updatedSubHide === true && !newItems[mainIdx].hideInMenu) {
+                                          const allSubHidden = currentSubs.every((s) => s.hideInMenu === true);
+                                          if (allSubHidden) {
+                                            updatedParentHide = true;
+                                          }
+                                        }
+                                        newItems[mainIdx].hideInMenu = updatedParentHide;
+
+                                        setHeaderItems(newItems);
+                                        await saveHeaderDraft(newItems);
+                                        showToast(
+                                          updatedSubHide
+                                            ? `"${sub.title}" hidden from sub-menu`
+                                            : `"${sub.title}" set to visible in sub-menu`,
+                                          "success"
+                                        );
+                                      }}
+                                      className={`p-1 rounded-md border transition-all cursor-pointer ${sub.hideInMenu
+                                          ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                          : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                                        }`}
+                                      title={sub.hideInMenu ? "Hidden in Sub-menu - Click to Show" : "Visible in Sub-menu - Click to Hide"}
+                                    >
+                                      {sub.hideInMenu ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                    </button>
+
                                     <button
                                       onClick={() => moveHeaderSubItem(mainIdx, subIdx, "up")}
                                       disabled={subIdx === 0}
@@ -1681,16 +1767,53 @@ export default function AdminMenuPage() {
                           </div>
 
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <h3 className="text-sm font-extrabold text-foreground truncate">{sec.title}</h3>
                               <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-surface text-foreground/70 border border-border">
                                 {subLinks.length} Links
                               </span>
+                              {sec.hideInMenu && (
+                                <span className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                  <EyeOff className="h-3 w-3" /> Hidden
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-1.5 shrink-0 ml-3">
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const newSections = [...footerSections];
+                              const updatedHide = !newSections[secIdx].hideInMenu;
+                              const updatedSubs = (newSections[secIdx].subItems || []).map((sub) => ({
+                                ...sub,
+                                hideInMenu: updatedHide,
+                              }));
+                              newSections[secIdx] = {
+                                ...newSections[secIdx],
+                                hideInMenu: updatedHide,
+                                subItems: updatedSubs,
+                              };
+                              setFooterSections(newSections);
+                              await saveFooterDraft(newSections);
+                              showToast(
+                                updatedHide
+                                  ? `"${sec.title}" column and all child links hidden from footer`
+                                  : `"${sec.title}" column and all child links set to visible in footer`,
+                                "success"
+                              );
+                            }}
+                            className={`p-2 rounded-lg border transition-all cursor-pointer ${sec.hideInMenu
+                                ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                              }`}
+                            title={sec.hideInMenu ? "Hidden in Footer - Click to Show all" : "Visible in Footer - Click to Hide all"}
+                          >
+                            {sec.hideInMenu ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+
                           <button
                             onClick={() => moveFooterSection(secIdx, "up")}
                             disabled={secIdx === 0}
@@ -1760,11 +1883,16 @@ export default function AdminMenuPage() {
                                       <GripVertical className="h-4 w-4" />
                                     </div>
                                     <div className="min-w-0">
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-2 flex-wrap">
                                         <span className="text-xs font-bold text-foreground truncate">{link.title}</span>
                                         {link.target === "_blank" && (
                                           <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
                                             New Tab
+                                          </span>
+                                        )}
+                                        {link.hideInMenu && (
+                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1 shrink-0">
+                                            <EyeOff className="h-2.5 w-2.5" /> Hidden
                                           </span>
                                         )}
                                       </div>
@@ -1773,6 +1901,48 @@ export default function AdminMenuPage() {
                                   </div>
 
                                   <div className="flex items-center gap-1 shrink-0 ml-2">
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        const newSections = [...footerSections];
+                                        const currentSubItems = [...(newSections[secIdx].subItems || [])];
+                                        const updatedLinkHide = !currentSubItems[linkIdx].hideInMenu;
+                                        currentSubItems[linkIdx] = {
+                                          ...currentSubItems[linkIdx],
+                                          hideInMenu: updatedLinkHide,
+                                        };
+                                        newSections[secIdx].subItems = currentSubItems;
+
+                                        // Update parent section state if needed
+                                        let updatedParentHide = newSections[secIdx].hideInMenu;
+                                        if (updatedLinkHide === false && newSections[secIdx].hideInMenu) {
+                                          updatedParentHide = false;
+                                        } else if (updatedLinkHide === true && !newSections[secIdx].hideInMenu) {
+                                          const allLinksHidden = currentSubItems.every((l) => l.hideInMenu === true);
+                                          if (allLinksHidden) {
+                                            updatedParentHide = true;
+                                          }
+                                        }
+                                        newSections[secIdx].hideInMenu = updatedParentHide;
+
+                                        setFooterSections(newSections);
+                                        await saveFooterDraft(newSections);
+                                        showToast(
+                                          updatedLinkHide
+                                            ? `"${link.title}" hidden from footer column`
+                                            : `"${link.title}" set to visible in footer column`,
+                                          "success"
+                                        );
+                                      }}
+                                      className={`p-1 rounded-md border transition-all cursor-pointer ${link.hideInMenu
+                                          ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+                                          : "bg-surface text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
+                                        }`}
+                                      title={link.hideInMenu ? "Hidden in Footer - Click to Show" : "Visible in Footer - Click to Hide"}
+                                    >
+                                      {link.hideInMenu ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                                    </button>
+
                                     <button
                                       onClick={() => moveFooterSubLink(secIdx, linkIdx, "up")}
                                       disabled={linkIdx === 0}

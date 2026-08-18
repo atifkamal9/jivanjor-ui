@@ -9,6 +9,7 @@ export interface SubMenuItem {
   description?: string;
   image?: string | null;
   order: number;
+  hideInMenu?: boolean;
 }
 
 export interface MenuItem {
@@ -22,6 +23,7 @@ export interface MenuItem {
   isMegaMenu?: boolean;
   order: number;
   subItems?: SubMenuItem[];
+  hideInMenu?: boolean;
 }
 
 
@@ -39,6 +41,7 @@ export interface FooterLinkItem {
   url: string;
   target?: '_self' | '_blank';
   order: number;
+  hideInMenu?: boolean;
 }
 
 export interface FooterSectionItem {
@@ -46,6 +49,7 @@ export interface FooterSectionItem {
   title: string;
   order: number;
   subItems: FooterLinkItem[];
+  hideInMenu?: boolean;
 }
 
 export const DEFAULT_HEADER_MENU: MenuItem[] = [

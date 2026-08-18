@@ -81,15 +81,19 @@ export default function Footer() {
   };
 
   const dynamicFooterSections = publishedFooter.length > 0
-    ? publishedFooter.map((sec) => ({
-      id: sec.id,
-      title: sec.title,
-      links: (sec.subItems || []).map((sub) => ({
-        text: sub.title,
-        href: sub.url,
-        target: sub.target || "_self",
-      })),
-    }))
+    ? publishedFooter
+      .filter((sec) => sec.hideInMenu !== true)
+      .map((sec) => ({
+        id: sec.id,
+        title: sec.title,
+        links: (sec.subItems || [])
+          .filter((sub) => sub.hideInMenu !== true)
+          .map((sub) => ({
+            text: sub.title,
+            href: sub.url,
+            target: sub.target || "_self",
+          })),
+      }))
     : fallbackFooterSections;
 
   return (

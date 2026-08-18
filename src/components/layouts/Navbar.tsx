@@ -475,62 +475,64 @@ export default function Navbar() {
 
         {/* Desktop Nav Links */}
         <div className="hidden lg:flex items-center justify-center text-lg font-medium gap-6">
-          {publishedMenu.map((item) => {
-            const isMega = item.type === "menu";
-            const menuKey = item.id;
-            const isActive = activeMenu === menuKey || activeMenu === item.title.toLowerCase();
-            const isProducts =
-              item.isStatic ||
-              item.id === "nav-products" ||
-              item.title.toLowerCase() === "products";
+          {publishedMenu
+            .filter((item) => item.hideInMenu !== true)
+            .map((item) => {
+              const isMega = item.type === "menu";
+              const menuKey = item.id;
+              const isActive = activeMenu === menuKey || activeMenu === item.title.toLowerCase();
+              const isProducts =
+                item.isStatic ||
+                item.id === "nav-products" ||
+                item.title.toLowerCase() === "products";
 
-            const activeColor = isProducts ? "text-[#FF0009]" : "text-primary";
-            const hoverColor = isProducts ? "hover:text-[#FF0009]" : "hover:text-primary";
-            const colorClass = isActive ? activeColor : hoverColor;
+              const activeColor = isProducts ? "text-[#FF0009]" : "text-primary";
+              const hoverColor = isProducts ? "hover:text-[#FF0009]" : "hover:text-primary";
+              const colorClass = isActive ? activeColor : hoverColor;
 
-            if (isMega) {
-              return (
-                <div
-                  key={item.id}
-                  className="relative py-4"
-                  onMouseEnter={() => handleMenuEnter(menuKey)}
-                  onMouseLeave={handleMenuLeave}
-                >
-                  {/* Notice Rule #4: Main menu title with megamenu option does not directly link to any URL */}
-                  <span
-                    onClick={() => setActiveMenu(isActive ? null : menuKey)}
-                    className={`cursor-pointer transition-colors ${colorClass}`}
+              if (isMega) {
+                return (
+                  <div
+                    key={item.id}
+                    className="relative py-4"
+                    onMouseEnter={() => handleMenuEnter(menuKey)}
+                    onMouseLeave={handleMenuLeave}
+                  >
+                    {/* Notice Rule #4: Main menu title with megamenu option does not directly link to any URL */}
+                    <span
+                      onClick={() => setActiveMenu(isActive ? null : menuKey)}
+                      className={`cursor-pointer transition-colors ${colorClass}`}
+                    >
+                      {item.title}
+                    </span>
+                  </div>
+                );
+              }
+
+              if (item.type === "external_link") {
+                return (
+                  <a
+                    key={item.id}
+                    href={item.url || "#"}
+                    target={item.target || "_blank"}
+                    rel="noopener noreferrer"
+                    className={`cursor-pointer transition-colors py-4 ${hoverColor}`}
                   >
                     {item.title}
-                  </span>
-                </div>
-              );
-            }
+                  </a>
+                );
+              }
 
-            if (item.type === "external_link") {
               return (
-                <a
+                <Link
                   key={item.id}
                   href={item.url || "#"}
-                  target={item.target || "_blank"}
-                  rel="noopener noreferrer"
                   className={`cursor-pointer transition-colors py-4 ${hoverColor}`}
                 >
                   {item.title}
-                </a>
+                </Link>
               );
-            }
-
-            return (
-              <Link
-                key={item.id}
-                href={item.url || "#"}
-                className={`cursor-pointer transition-colors py-4 ${hoverColor}`}
-              >
-                {item.title}
-              </Link>
-            );
-          })}
+            })}
 
           <Link href="#" className="hover:scale-110 transition-colors py-4">
             <Image
@@ -632,7 +634,7 @@ export default function Navbar() {
             if (!activeItem) return null;
 
             const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
-            const subItems = isKnowledgeNav
+            const rawSubItems = isKnowledgeNav
               ? dynamicKnowledgeItems.map((item, idx) => ({
                 id: `sub-know-${idx}`,
                 title: item.name,
@@ -641,8 +643,11 @@ export default function Navbar() {
                 order: item.order ?? (idx + 1),
                 description: undefined,
                 target: undefined,
+                hideInMenu: false,
               })).sort((a, b) => (a.order || 0) - (b.order || 0))
               : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+            const subItems = rawSubItems.filter((sub: any) => sub.hideInMenu !== true);
 
             const fallbackImage =
               activeItem.id === "nav-about"

@@ -158,75 +158,79 @@ export default function MobileNav({
       {/* Main Nav Content */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {publishedMenu && publishedMenu.length > 0 ? (
-          publishedMenu.map((item) => {
-            const isMega = item.type === "menu";
-            const sectionKey = item.id;
-            const isOpen = openSection === sectionKey || openSection === item.title;
-            const isProductMenu =
-              item.isStatic ||
-              item.id === "nav-products" ||
-              item.title.toLowerCase() === "products";
+          publishedMenu
+            .filter((item) => item.hideInMenu !== true)
+            .map((item) => {
+              const isMega = item.type === "menu";
+              const sectionKey = item.id;
+              const isOpen = openSection === sectionKey || openSection === item.title;
+              const isProductMenu =
+                item.isStatic ||
+                item.id === "nav-products" ||
+                item.title.toLowerCase() === "products";
 
-            if (isMega) {
-              return (
-                <div key={item.id} className="border-b">
-                  <button
-                    onClick={() => toggleSection(sectionKey)}
-                    className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
-                  >
-                    <span>{item.title}</span>
-                    <ChevronDown
-                      strokeWidth={2.5}
-                      size={20}
-                      className={`transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""
-                        }`}
-                    />
-                  </button>
+              if (isMega) {
+                return (
+                  <div key={item.id} className="border-b">
+                    <button
+                      onClick={() => toggleSection(sectionKey)}
+                      className="flex items-center justify-between w-full py-2 text-xl font-bold cursor-pointer"
+                    >
+                      <span>{item.title}</span>
+                      <ChevronDown
+                        strokeWidth={2.5}
+                        size={20}
+                        className={`transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""
+                          }`}
+                      />
+                    </button>
 
-                  {isOpen && (
-                    <div className="bg-surface border-t p-5 space-y-1.5 transition-all duration-300">
-                      {isProductMenu ? (
-                        productCategories.map((cat) => {
-                          const isCatOpen = openCategory === cat.name;
-                          return (
-                            <div key={cat.name} className="space-y-1">
-                              <button
-                                onClick={() => toggleCategory(cat.name)}
-                                className="flex items-center justify-between w-full text-base font-medium cursor-pointer text-left focus:outline-none"
-                              >
-                                <span>{cat.name}</span>
-                                {isCatOpen ? (
-                                  <Minus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
-                                ) : (
-                                  <Plus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
+                    {isOpen && (
+                      <div className="bg-surface border-t p-5 space-y-1.5 transition-all duration-300">
+                        {isProductMenu ? (
+                          productCategories.map((cat) => {
+                            const isCatOpen = openCategory === cat.name;
+                            return (
+                              <div key={cat.name} className="space-y-1">
+                                <button
+                                  onClick={() => toggleCategory(cat.name)}
+                                  className="flex items-center justify-between w-full text-base font-medium cursor-pointer text-left focus:outline-none"
+                                >
+                                  <span>{cat.name}</span>
+                                  {isCatOpen ? (
+                                    <Minus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
+                                  ) : (
+                                    <Plus size={18} strokeWidth={2.5} className="text-[#FF0009]" />
+                                  )}
+                                </button>
+
+                                {isCatOpen && (
+                                  <div className="space-y-1">
+                                    {cat.products.map((prod: string) => {
+                                      const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
+                                      const isActive = pathname === productLink;
+                                      return (
+                                        <Link
+                                          key={prod}
+                                          href={productLink}
+                                          onClick={onClose}
+                                          className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
+                                            }`}
+                                        >
+                                          <CornerDownRight size={16} strokeWidth={2.5} className="text-[#FF0009]" />
+                                          <span>{prod}</span>
+                                        </Link>
+                                      );
+                                    })}
+                                  </div>
                                 )}
-                              </button>
-
-                              {isCatOpen && (
-                                <div className="space-y-1">
-                                  {cat.products.map((prod: string) => {
-                                    const productLink = `/categories/${prod.replace(/\s/g, "-").toLowerCase()}`;
-                                    const isActive = pathname === productLink;
-                                    return (
-                                      <Link
-                                        key={prod}
-                                        href={productLink}
-                                        onClick={onClose}
-                                        className={`flex items-center gap-1 text-base leading-[150%]! cursor-pointer ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
-                                          }`}
-                                      >
-                                        <CornerDownRight size={16} strokeWidth={2.5} className="text-[#FF0009]" />
-                                        <span>{prod}</span>
-                                      </Link>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })
-                      ) : item.subItems && item.subItems.length > 0 ? (
-                        item.subItems.map((sub) => {
+                              </div>
+                            );
+                          })
+                        ) : item.subItems && item.subItems.length > 0 ? (
+                          item.subItems
+                            .filter((sub) => sub.hideInMenu !== true)
+                            .map((sub) => {
                           const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, item);
                           if (sub.type === "external_link") {
                             return (
