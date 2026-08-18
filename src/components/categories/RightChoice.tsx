@@ -43,7 +43,7 @@ export default function RightChoice({ data }: RightChoiceProps = {}) {
           />
         </div>
         <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-6 py-24 px-5 lg:px-8 lg:py-14">
-          <h2 className="font-amethysta text-[34px] md:text-[44px]">
+          <h2 className="font-amethysta text-[28px] md:text-[35px]">
             {title}
           </h2>
           <div className="flex flex-col items-center md:items-start justify-between lg:flex-row gap-8">

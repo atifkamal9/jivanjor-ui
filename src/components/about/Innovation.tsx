@@ -72,7 +72,7 @@ export default function Innovation({ data }: InnovationProps) {
         </div>
         <div className="px-5 lg:px-20">
           {/* Title */}
-          <h2 className="font-amethysta text-center md:text-start text-[34px] sm:text-4xl lg:text-[48px] mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-2xl font-normal my-6 sm:my-7 text-foreground md:text-white">
+          <h2 className="font-amethysta text-center md:text-start text-[28px] sm:text-3xl lg:text-[38px] mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-lg font-normal my-6 sm:my-7 text-foreground md:text-white">
             {title}
           </h2>
 
@@ -84,7 +84,7 @@ export default function Innovation({ data }: InnovationProps) {
                 className="flex flex-1 flex-col justify-between transition-all duration-300 bg-surface min-h-64 w-61 rounded-[20px] px-5 py-7 hover:bg-white"
               >
                 <div>
-                  <h2 className="font-amethysta text-[26px] mb-3 pb-3 border-b max-w-43">
+                  <h2 className="font-amethysta text-[21px] mb-3 pb-3 border-b max-w-43">
                     {card.title}
                   </h2>
                   <p className="text-lg max-w-48">{card.desc}</p>

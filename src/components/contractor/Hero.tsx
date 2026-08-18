@@ -45,7 +45,7 @@ export default function Hero({ hideText = false, data }: HeroProps) {
           </div>
 
           {/* Title */}
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-[50px] font-normal max-w-203 text-start">
+          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-[40px] font-normal max-w-180 text-start">
             {title}
           </h2>
         </div>
@@ -73,7 +73,7 @@ export default function Hero({ hideText = false, data }: HeroProps) {
         </div>
 
         {/* Title */}
-        <h2 className="font-amethysta text-[34px] font-normal max-w-sm text-center">
+        <h2 className="font-amethysta text-[28px] font-normal max-w-sm text-center">
           {title}
         </h2>
       </div>

@@ -58,7 +58,7 @@ export function ReachLeft({ data }: ReachLeftProps) {
 
   return (
     <div className="flex flex-col space-y-6 text-[#222]">
-      <h3 className="font-amethysta text-[34px] md:text-4xl text-center md:text-start leading-tight">
+      <h3 className="font-amethysta text-[28px] md:text-3xl text-center md:text-start leading-tight">
         {title}
       </h3>
       {/* Top section: Text, Download button and Promo Image */}

@@ -54,7 +54,7 @@ export default function Presence({ data }: PresenceProps = {}) {
     <section className="w-full">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Title */}
-        <h2 className="font-amethysta text-[36px] sm:text-4xl lg:text-[48px] font-normal text-[#222] leading-tight">
+        <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-[38px] font-normal text-[#222] leading-tight">
           {title}
         </h2>
 
@@ -65,9 +65,8 @@ export default function Presence({ data }: PresenceProps = {}) {
             return (
               <div
                 key={idx}
-                className={`flex flex-col items-center md:items-start justify-between text-center md:text-start p-2 transition-shadow duration-300 text-[#222] ${
-                  isLast ? "col-span-2 md:col-span-1" : ""
-                }`}
+                className={`flex flex-col items-center md:items-start justify-between text-center md:text-start p-2 transition-shadow duration-300 text-[#222] ${isLast ? "col-span-2 md:col-span-1" : ""
+                  }`}
               >
                 {/* Stat Icon */}
                 <div className="aspect-square h-16 flex items-center justify-center mb-2">

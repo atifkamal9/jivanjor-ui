@@ -60,7 +60,7 @@ export default function Promise({ data }: PromiseProps) {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[34px] lg:text-[48px] text-center font-normal mb-4">
+        <h2 className="font-amethysta text-[28px] lg:text-[38px] text-center font-normal mb-4">
           {title}
         </h2>
 
@@ -86,7 +86,7 @@ export default function Promise({ data }: PromiseProps) {
                     alt="icon"
                   />
                 </div>
-                <h3 className="font-amethysta text-[22px] md:text-[32px] mb-2.5 md:mb-5">
+                <h3 className="font-amethysta text-[18px] md:text-[25px] mb-2.5 md:mb-5">
                   {card.title}
                 </h3>
                 <p className="text-base md:text-lg max-w-60 md:max-w-full">

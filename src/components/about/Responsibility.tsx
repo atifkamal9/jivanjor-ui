@@ -113,7 +113,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[34px] md:text-[48px] text-center font-normal mb-4 max-w-xs md:max-w-2xl w-full mx-auto">
+        <h2 className="font-amethysta text-[28px] md:text-[38px] text-center font-normal mb-4 max-w-xs md:max-w-lg w-full mx-auto">
           {title}
         </h2>
 
@@ -226,7 +226,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
                       width={24}
                     />
                     <div className="flex flex-col items-center justify-center self-stretch leading-normal md:items-start text-center md:text-start px-10 md:px-0 gap-1">
-                      <h3 className="font-amethysta text-[22px] md:text-[28px] font-medium">
+                      <h3 className="font-amethysta text-[18px] md:text-[22px] font-medium">
                         {practice.title}
                       </h3>
                       <p className="text-base sm:text-lg">{practice.desc}</p>
