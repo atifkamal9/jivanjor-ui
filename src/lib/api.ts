@@ -461,8 +461,8 @@ function mapProductFromBackend(prod: any): Product {
 
   if (applications.length === 0) {
     applications = [
-      { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" },
-      { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png" }
+      { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png", link: "" },
+      { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png", link: "" }
     ];
   }
 

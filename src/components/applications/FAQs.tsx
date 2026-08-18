@@ -48,7 +48,7 @@ export default function FQAs({ title, subtitle, items }: FAQsProps) {
   return (
     <section
       id="faqs"
-      className="bg-surface max-w-324 mx-5 xl:mx-auto mb-12 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
+      className="bg-surface max-w-324 mx-5 xl:mx-auto my-12 p-5 xl:p-10 space-y-16 xl:space-y-20 rounded-3xl"
     >
       {/* ========================================== */}
       {/* 1. FAQS ACCORDION SECTION */}
@@ -106,11 +106,10 @@ export default function FQAs({ title, subtitle, items }: FAQsProps) {
 
                   {/* Expandable answer panel */}
                   <div
-                    className={`transition-all duration-300 ease-in-out ${
-                      isOpen
-                        ? "max-h-75 opacity-100 pb-5"
-                        : "max-h-0 opacity-0 pointer-events-none"
-                    }`}
+                    className={`transition-all duration-300 ease-in-out ${isOpen
+                      ? "max-h-75 opacity-100 pb-5"
+                      : "max-h-0 opacity-0 pointer-events-none"
+                      }`}
                   >
                     <p className="text-sm md:text-lg leading-normal font-normal max-w-4xl lg:px-6">
                       {item.answer}

@@ -17,7 +17,7 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
   const [activeTab, setActiveTab] = useState<TabName>("Overview");
   const [isManualScroll, setIsManualScroll] = useState(false);
   const tabsContainerRef = useRef<HTMLDivElement>(null);
-  const documentUrl = product?.techResourceFileUrl ?? "/docs/technical.pdf";
+  const documentUrl = (product?.techResourceFileUrl || product?.documentUrl || "").trim();
 
   const hasFaqs = product?.faqs && Array.isArray(product.faqs) && product.faqs.some((f: any) => f && f.question && f.question.trim() !== "");
 
@@ -327,14 +327,16 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                   </div>
 
                   {/* PDF technical data sheet download action */}
-                  <Link
-                    href={documentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-full sm:w-auto text-center bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer"
-                  >
-                    Download Technical Data Sheet
-                  </Link>
+                  {documentUrl && documentUrl !== "#" && (
+                    <Link
+                      href={documentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block w-full sm:w-auto text-center bg-linear-to-br from-[#FF0009] to-[#772571] hover:opacity-90 text-white font-bold text-sm px-8 py-3.5 rounded-full shadow-md transition-all active:scale-[0.98] cursor-pointer"
+                    >
+                      Download Technical Data Sheet
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

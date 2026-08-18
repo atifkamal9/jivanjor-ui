@@ -213,8 +213,8 @@ export default function ProductsPage() {
         { title: "Clean Finish After Drying", description: "Dries into a clear transparent film, helping maintain a neat finish around edges and joints.", icon: "Circles-seven.svg" }
       ],
       applications: [
-        { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png" },
-        { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png" }
+        { title: "Laminate to Plywood Bonding", description: "Suitable for bonding laminate and plywood where strong adhesion, smooth spreadability and anti-bubble performance are important.", imageA: "/images/Rectangle 34.png", imageB: "/images/Rectangle 34 (1).png", link: "" },
+        { title: "Wood to Wood Joinery", description: "Designed for finger jointing, structural dowelling, and solid wood frames. Ensures high tensile strength and durable bonding.", imageA: "/images/Rectangle 35.png", imageB: "/images/Rectangle 30.png", link: "" }
       ],
       videoUrl: "",
       videoThumbnail: "/images/Rectangle 4.png",
@@ -1326,7 +1326,7 @@ export default function ProductsPage() {
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                         Overview Highlights (Bullet Features)
                       </label>
-                      <div className="space-y-3 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                      <div className="space-y-3 p-4 border border-gray-100 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
                         {formData.overviewBullets.map((bullet, idx) => (
                           <div key={idx} className="flex gap-2 items-center">
                             <input
@@ -1742,7 +1742,7 @@ export default function ProductsPage() {
                         </label>
                         <span className="text-[10px] text-gray-400 font-bold">{formData.usps.length} / 4 configured</span>
                       </div>
-                      <div className="space-y-4 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                      <div className="space-y-4 p-4 border border-gray-100 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
                         {formData.usps.map((usp, idx) => (
                           <div key={idx} className="p-3 bg-white dark:bg-zinc-950 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-2">
                             <button
@@ -1875,7 +1875,7 @@ export default function ProductsPage() {
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                         Product Woodwork & Joinery Applications
                       </label>
-                      <div className="space-y-4 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                      <div className="space-y-4 p-4 border border-gray-100 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
                         {formData.applications.map((app, idx) => (
                           <div key={idx} className="p-4 bg-white dark:bg-zinc-950 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-3">
                             <button
@@ -2059,7 +2059,7 @@ export default function ProductsPage() {
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                         Product FAQs
                       </label>
-                      <div className="space-y-3 p-4 border border-gray-150 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
+                      <div className="space-y-3 p-4 border border-gray-100 dark:border-zinc-800 rounded-2xl bg-gray-50/30 dark:bg-zinc-900/40">
                         {formData.faqs.map((faq, idx) => (
                           <div key={idx} className="p-3 bg-white dark:bg-zinc-95 border border-gray-100 dark:border-zinc-850 rounded-xl relative space-y-2">
                             <button

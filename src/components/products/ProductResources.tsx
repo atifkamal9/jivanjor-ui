@@ -16,7 +16,7 @@ export default function ProductResources({ product }: ProductResourcesProps) {
 
   const resourceTitle = product?.techResourceTitle || `${productName} - Technical Data Sheet`;
   const resourceDescription = product?.techResourceDescription || "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.";
-  const resourceUrl = product?.techResourceFileUrl || product?.documentUrl || "/docs/technical.pdf";
+  const resourceUrl = (product?.techResourceFileUrl || product?.documentUrl || "").trim();
   const themeColor = product?.themeColor || "#0498AA";
 
   const fileMeta = useFileMetadata(resourceUrl);
@@ -24,6 +24,10 @@ export default function ProductResources({ product }: ProductResourcesProps) {
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!resourceUrl || resourceUrl === "#") {
+    return null;
+  }
 
   return (
     <section id="resources" className="w-full py-16 lg:py-24 border-t border-neutral-100 scroll-mt-20">

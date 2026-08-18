@@ -672,7 +672,7 @@ export default function CategoriesPage() {
                       <h3 className="text-base font-extrabold text-gray-900 dark:text-zinc-50">Dynamic Page Content</h3>
                     </div>
 
-                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-100 dark:border-zinc-800 space-y-4">
                       <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Category Hero Header Settings (Main Category / Subcategory Page)</span>
                       <div className="grid grid-cols-1 gap-4">
                         <ImageUpload
@@ -695,7 +695,7 @@ export default function CategoriesPage() {
                       </div>
                     </div>
 
-                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-100 dark:border-zinc-800 space-y-4">
                       <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Research & Development Section (Superior Quality Backed by Research)</span>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
@@ -757,7 +757,7 @@ export default function CategoriesPage() {
                       </div>
                     </div>
 
-                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-150 dark:border-zinc-800 space-y-4">
+                    <div className="p-4 bg-gray-50/20 dark:bg-zinc-955/20 rounded-2xl border border-gray-100 dark:border-zinc-800 space-y-4">
                       <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Right Choice Banner Section ("Need Help Choosing the Right Adhesive?")</span>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">

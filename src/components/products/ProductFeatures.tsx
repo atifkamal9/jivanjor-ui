@@ -137,16 +137,22 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                         {item.description}
                       </p>
                       {/* Explore Link */}
-                      <Link
-                        href={item.link || item.url || "#"}
-                        className="inline-flex items-center gap-1.5 underline text-base sm:text-lg hover:text-primary transition-colors group/link cursor-pointer"
-                      >
-                        <span>Explore More</span>
-                        {/* Red circular arrow */}
-                        <span className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571] flex items-center justify-center group-hover/link:bg-[#FF0009] transition-colors">
-                          <ArrowRight className="text-white w-5 h-5 lg:w-7 lg:h-7" />
-                        </span>
-                      </Link>
+                      {(() => {
+                        const exploreLinkUrl = (item.link || item.url || "").trim();
+                        if (!exploreLinkUrl || exploreLinkUrl === "#") return null;
+                        return (
+                          <Link
+                            href={exploreLinkUrl}
+                            className="inline-flex items-center gap-1.5 underline text-base sm:text-lg hover:text-primary transition-colors group/link cursor-pointer"
+                          >
+                            <span>Explore More</span>
+                            {/* Red circular arrow */}
+                            <span className="w-5 h-5 lg:w-7 lg:h-7 rounded-full bg-linear-to-r from-[#FF0009] to-[#772571] flex items-center justify-center group-hover/link:bg-[#FF0009] transition-colors">
+                              <ArrowRight className="text-white w-4 h-4 lg:w-5 lg:h-5" />
+                            </span>
+                          </Link>
+                        );
+                      })()}
                     </div>
 
                     {/* Right: Two side-by-side images */}
