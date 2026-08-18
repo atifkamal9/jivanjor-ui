@@ -69,10 +69,10 @@ export default function ProductFaq({ product }: ProductFaqProps) {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
+          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
             {product?.faqsTitle || "FAQs"}
           </h2>
-          <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-normal">
+          <p className="text-base md:text-xl max-w-2xl mx-auto leading-normal">
             {product?.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details."}
           </p>
         </div>
@@ -90,9 +90,9 @@ export default function ProductFaq({ product }: ProductFaqProps) {
                   {/* Accordion header button */}
                   <button
                     onClick={() => toggleAccordion(idx)}
-                    className="w-full text-left py-6 flex justify-between items-center cursor-pointer group select-none gap-4 lg:px-4"
+                    className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none gap-4 lg:px-4"
                   >
-                    <span className="font-amethysta text-lg sm:text-2xl lg:text-[32px] group-hover:text-primary transition-colors duration-200 leading-normal lg:px-2">
+                    <span className="font-amethysta text-base sm:text-xl lg:text-2xl group-hover:text-primary transition-colors duration-200 leading-normal lg:px-2">
                       {item.question}
                     </span>
 

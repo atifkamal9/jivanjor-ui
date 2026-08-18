@@ -67,10 +67,10 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
 
         {/* Content */}
         <div className="flex flex-col items-center relative max-w-2xs md:max-w-5xl text-white gap-4 mt-4 md:mt-6 z-10">
-          <h1 className="font-amethysta text-[40px] md:text-5xl leading-[95%]!">
+          <h1 className="font-amethysta text-[32px] md:text-4xl leading-[95%]!">
             {title}
           </h1>
-          <p className="text-lg md:text-2xl max-w-3xl">
+          <p className="text-base md:text-xl max-w-xl">
             {desc}
           </p>
           <div>

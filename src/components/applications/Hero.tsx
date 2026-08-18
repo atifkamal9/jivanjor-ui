@@ -28,7 +28,7 @@ export default function Hero({ title, breadcrumb, image }: HeroProps) {
       <div className="block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
           <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
-            <div className="max-w-90 mx-auto md:mx-0 md:max-w-2xl text-black md:text-white pointer-events-auto">
+            <div className="max-w-90 mx-auto md:mx-0 md:max-w-lg text-black md:text-white pointer-events-auto">
               <div className="hidden md:flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">
                   {/* Home Solid Icon */}
@@ -46,7 +46,7 @@ export default function Hero({ title, breadcrumb, image }: HeroProps) {
                   {displayBreadcrumb}
                 </span>
               </div>
-              <h2 className="font-amethysta font-normal text-[34px] sm:text-4xl lg:text-5xl mt-10 md:mt-12 text-center md:text-start">
+              <h2 className="font-amethysta font-normal text-[28px] sm:text-3xl lg:text-4xl mt-10 md:mt-12 text-center md:text-start">
                 {displayTitle}
               </h2>
             </div>

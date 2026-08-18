@@ -64,11 +64,11 @@ export default function Hero({ product, category }: HeroProps) {
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <h1 className="font-amethysta text-[40px] sm:text-5xl lg:text-6xl font-normal leading-normal">
+            <h1 className="font-amethysta text-[32px] sm:text-4xl lg:text-5xl font-normal leading-normal">
               {productName}
             </h1>
             {/* Product Tagline */}
-            <p className="font-amethysta text-xl lg:text-3xl leading-[120%]! max-w-3xs sm:max-w-md">
+            <p className="font-amethysta text-lg lg:text-2xl leading-[120%]! max-w-3xs sm:max-w-md">
               {productDescription}
             </p>
           </div>

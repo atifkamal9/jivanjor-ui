@@ -85,10 +85,10 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-[34px] sm:text-4xl lg:text-5xl font-normal leading-normal max-w-75 lg:max-w-full mx-auto">
+          <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-4xl font-normal leading-normal max-w-75 lg:max-w-full mx-auto">
             {product?.appsTitle || "Engineered for the Task at Hand"}
           </h2>
-          <p className="text-lg md:text-2xl leading-normal max-w-85 lg:max-w-full mx-auto">
+          <p className="text-base md:text-xl leading-normal max-w-85 lg:max-w-full mx-auto">
             {product?.appsDescription ? product.appsDescription.replace("{productName}", productName) : `Explore where ${productName} fits across furniture, laminates, plywood, boards and professional woodwork applications.`}
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                   onClick={() => toggleAccordion(idx)}
                   className="w-full text-left py-5 flex justify-between items-center cursor-pointer group gap-20 select-none"
                 >
-                  <span className="font-amethysta text-2xl lg:text-4xl group-hover:text-primary leading-normal transition-colors duration-200">
+                  <span className="font-amethysta text-xl lg:text-3xl group-hover:text-primary leading-normal transition-colors duration-200">
                     {item.title}
                   </span>
 

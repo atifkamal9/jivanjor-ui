@@ -516,11 +516,11 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       {/* Main Content Area */}
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
-        <div className="space-y-5 text-center md:text-start max-w-250">
-          <h1 className="font-amethysta text-[34px] sm:text-5xl leading-normal">
+        <div className="space-y-4 text-center md:text-start max-w-250">
+          <h1 className="font-amethysta text-[28px] sm:text-4xl leading-normal">
             {currentCategoryData.tagline || currentCategoryData.title}
           </h1>
-          <p className="text-lg sm:text-2xl leading-normal font-normal">
+          <p className="text-base sm:text-xl leading-normal font-normal">
             {currentCategoryData.description}
           </p>
         </div>
@@ -532,7 +532,10 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
               modules={[Navigation]}
               watchOverflow={false}
               loop={false}
-              spaceBetween={20}
+              observer={true}
+              observeParents={true}
+              centerInsufficientSlides={true}
+              spaceBetween={16}
               slidesPerView={1}
               navigation={{
                 prevEl: ".cat-swiper-prev",
@@ -545,6 +548,9 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                 },
                 640: {
                   slidesPerView: 2,
+                },
+                860: {
+                  slidesPerView: 3,
                 },
                 1024: {
                   slidesPerView: 2,
@@ -578,8 +584,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                           />
                         </div>
                         {/* Header content */}
-                        <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pl-12 xl:pt-0">
-                          <h3 className="text-2xl lg:text-3xl font-bold leading-normal">
+                        <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-0 xl:pl-20 2xl:pl-12">
+                          <h3 className="text-xl xl:text-2xl font-bold leading-normal">
                             {card.title}
                           </h3>
                           {/* Custom White Divider */}

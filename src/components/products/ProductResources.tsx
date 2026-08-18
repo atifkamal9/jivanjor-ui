@@ -41,10 +41,10 @@ export default function ProductResources({ product }: ProductResourcesProps) {
             alt="badge"
           />
         </div>
-        <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
+        <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
           Technical Resources
         </h2>
-        <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-normal text-neutral-600 dark:text-neutral-400">
+        <p className="text-base md:text-xl max-w-2xl mx-auto leading-normal text-neutral-600 dark:text-neutral-400">
           Download Technical Data Sheets (TDS), safety manuals, and documentation.
         </p>
       </div>
@@ -59,7 +59,7 @@ export default function ProductResources({ product }: ProductResourcesProps) {
           >
             {/* Left Content Panel */}
             <div className="flex flex-col animate-fadeIn gap-1.5 relative flex-1 pr-8 lg:pr-0">
-              <span className="font-medium text-xl lg:text-3xl text-black dark:text-white font-google-sans group-hover:text-red-600 transition-colors max-w-60 lg:max-w-lg">
+              <span className="font-medium text-lg lg:text-2xl text-black dark:text-white font-google-sans group-hover:text-red-600 transition-colors max-w-60 lg:max-w-lg">
                 {resourceTitle}
               </span>
               {isOpen && (

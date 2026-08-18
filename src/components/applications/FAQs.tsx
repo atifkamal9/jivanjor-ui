@@ -65,10 +65,10 @@ export default function FQAs({ title, subtitle, items }: FAQsProps) {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-3xl sm:text-4xl lg:text-5xl font-normal leading-normal">
+          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
             {displayTitle}
           </h2>
-          <p className="text-lg md:text-2xl max-w-2xl mx-auto leading-normal">
+          <p className="text-base md:text-xl max-w-2xl mx-auto leading-normal">
             {displaySubtitle}
           </p>
         </div>
