@@ -64,7 +64,7 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={techLink}
           className="relative bg-[#232323] h-80 rounded-2xl block hover:bg-[#2e2e2e] transition-colors group p-6"
         >
-          <p className="absolute inset-6 flex items-end text-3xl text-white font-amethysta">
+          <p className="absolute inset-6 flex items-end text-2xl text-white font-amethysta">
             {techTitle} <MoveUpRight size={40} className="ml-2 shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </p>
         </a>
@@ -96,7 +96,7 @@ export default function Gallery({ items, images }: GalleryProps) {
             href={marketLink}
             className="relative bg-[#232323] h-40 rounded-2xl block hover:bg-[#2e2e2e] transition-colors group p-6"
           >
-            <p className="absolute inset-4 flex items-end text-2xl xl:text-3xl text-white font-amethysta">
+            <p className="absolute inset-4 flex items-end text-xl xl:text-2xl text-white font-amethysta">
               {marketTitle} <MoveUpRight size={36} className="ml-2 shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
             </p>
           </a>
@@ -149,7 +149,7 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={techLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-xl sm:text-2xl md:text-4xl text-white font-amethysta">
+          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
             {techTitle}
           </p>
           <MoveUpRight
@@ -171,7 +171,7 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={marketLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-xl sm:text-2xl md:text-4xl text-white font-amethysta">
+          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
             {marketTitle}
           </p>
           <MoveUpRight

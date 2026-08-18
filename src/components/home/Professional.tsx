@@ -59,7 +59,7 @@ export default function Professional({ data }: ProfessionalProps) {
             <div className="w-10 h-10 relative flex items-center justify-center">
               <Image src={f.icon} alt={f.title} width={40} height={40} className="object-contain" unoptimized />
             </div>
-            <h3 className="font-amethysta text-xl lg:text-3xl leading-normal">
+            <h3 className="font-amethysta text-lg lg:text-2xl leading-normal">
               {f.title}
             </h3>
           </div>
