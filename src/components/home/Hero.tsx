@@ -195,7 +195,7 @@ export default function Hero({ data }: HeroProps) {
   const activeCta2Link = currentSlide?.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
 
   return (
-    <section className="relative w-full h-146.75 xl:h-164.5 overflow-hidden bg-black text-white">
+    <section className="relative w-full h-117.5 xl:h-131.5 overflow-hidden bg-black text-white">
       <Swiper
         onSwiper={setSwiperInstance}
         onSlideChange={(swiper) => {
@@ -231,7 +231,7 @@ export default function Hero({ data }: HeroProps) {
                   <video
                     ref={videoRef}
                     src={slide.videoUrl || "/videos/hero-background.mp4"}
-                    className="w-full h-full object-center object-fill"
+                    className="w-full h-full object-center object-cover"
                     autoPlay
                     playsInline
                     muted={isMuted}
@@ -259,9 +259,10 @@ export default function Hero({ data }: HeroProps) {
                   {/* Mobile Version Background */}
                   <div className="absolute inset-0 xl:hidden z-0">
                     <Image
+                      fill
+                      unoptimized
                       src={slide.bgImagePhone}
                       alt="Jivanjor hero mobile background"
-                      fill
                       className="object-cover"
                       priority={idx === 0}
                     />
@@ -277,9 +278,10 @@ export default function Hero({ data }: HeroProps) {
                   {/* Desktop Version Background */}
                   <div className="absolute inset-0 hidden xl:block z-0">
                     <Image
+                      fill
+                      unoptimized
                       src={slide.bgImage}
                       alt="Jivanjor hero desktop background"
-                      fill
                       className="object-cover"
                       priority={idx === 0}
                     />
@@ -301,14 +303,14 @@ export default function Hero({ data }: HeroProps) {
       {/* Content Wrapper - Static overlay over background slides */}
       <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
         <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-26.5 xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-82.25 sm:max-w-120 md:max-w-140">
+          <div className="absolute bottom-20 xl:bottom-14.5 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-82.25 sm:max-w-100">
             {/* Title */}
-            <h1 className="text-[32px] xl:text-[56px] font-amethysta tracking-[0%] text-white leading-[0.95]">
+            <h1 className="text-[24px] sm:text-[32px] lg:text-[42px] font-amethysta tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
             </h1>
 
             {/* Action Buttons */}
-            <div className="flex items-center mt-4.25 xl:mt-1 gap-4.25 xl:gap-3.75">
+            <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
               {activeCta1Text && (
                 <a
                   href={activeCta1Link}
@@ -332,7 +334,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Custom Pagination (inside section, but outside Swiper so it's statically placed) */}
       {slides.length > 1 && (
-        <div className="absolute inset-x-0 bottom-8 flex items-center justify-center gap-2.5 z-30">
+        <div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-2.5 z-30">
           {slides.map((_, idx) => (
             <button
               key={idx}
@@ -353,7 +355,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Play Video / Audio Controls */}
       {showPlayButton && (
-        <div className="absolute bottom-6.25 right-6.25 xl:bottom-18.25 xl:right-17.25 flex items-center gap-3 z-30">
+        <div className="absolute bottom-5 right-6.25 xl:bottom-14.5 xl:right-17.25 flex items-center gap-3 z-30">
           {isPlayingVideo && (
             <button
               onClick={() => setIsMuted(!isMuted)}
