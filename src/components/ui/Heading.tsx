@@ -1,21 +1,24 @@
 import React from "react";
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
+  as?: React.ElementType;
 }
 
 export default function Heading({
   children,
   className = "",
+  as: Component = "h1",
   ...props
 }: HeadingProps) {
   return (
-    <h1
-      className={`font-amethysta font-normal leading-normal text-[28px] xl:text-[42px] ${className}`}
+    <Component
+      className={`font-amethysta font-normal leading-normal text-[24px] sm:text-[32px] 2xl:text-[42px] ${className}`}
       {...props}
     >
       {children}
-    </h1>
+    </Component>
   );
 }
+

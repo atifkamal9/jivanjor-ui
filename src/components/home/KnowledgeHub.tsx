@@ -1,5 +1,6 @@
+import Link from "next/link";
 import Image from "next/image";
-import { Heading } from "@/components/ui";
+import { Heading, Title, Paragraph } from "@/components/ui";
 
 interface KnowledgeHubProps {
   data?: {
@@ -85,7 +86,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
   return (
     <section className="relative py-8 md:py-12 overflow-hidden">
       <div className="mx-auto max-w-328 justify-center leading-normal px-6 w-full">
-        <Heading className="text-center">{title}</Heading>
+        <Heading className="font-amethysta font-normal leading-normal text-center">{title}</Heading>
         <div className="flex flex-col gap-6 py-6">
           {cards.map((c, idx) => (
             <div
@@ -94,15 +95,15 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
             >
               <div className="flex flex-col md:flex-row">
                 <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-3">
-                  <h3 className="font-medium text-2xl md:text-[46px] max-w-68 sm:max-w-96 px-7.5 sm:px-0">
+                  <Title className="font-google-sans font-medium max-w-50 2xl:max-w-64 px-7.5 sm:px-0">
                     {c.title}
-                  </h3>
-                  <a
+                  </Title>
+                  <Link
                     href={c.link}
-                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm md:text-base rounded-full px-4 py-1 text-primary hover:bg-primary/5 transition-colors"
+                    className="active-gradient-border-surface inline-flex items-center justify-center cursor-pointer font-medium text-center text-sm rounded-full px-4 py-1 text-primary hover:bg-primary/5 transition-colors"
                   >
                     Learn More
-                  </a>
+                  </Link>
                 </div>
                 <div className="hidden md:block relative flex-1 min-w-100 xl:min-w-179 min-h-90">
                   <Image
@@ -127,9 +128,9 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
           <div className="bg-surface relative overflow-hidden rounded-[20px] w-full">
             <div className="flex flex-col md:flex-row w-full">
               <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 px-8 md:px-16 py-8 md:py-10 space-y-4">
-                <h3 className="font-medium text-2xl md:text-[46px]">
+                <Title className="font-google-sans font-medium max-w-56">
                   {blogTitle}
-                </h3>
+                </Title>
                 <div className="absolute bottom-0 left-0 pointer-events-none w-60 h-40 md:w-120 md:h-70">
                   <Image
                     fill
@@ -140,15 +141,15 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
                 </div>
               </div>
               <div className="relative flex flex-col items-center text-center md:items-start md:text-start flex-1 w-full md:w-1/2 min-h-fit md:min-h-80 px-6 py-6 md:py-12 md:px-0 md:pr-10 space-y-4">
-                <p className="text-sm md:text-2xl max-w-124 font-google-sans text-foreground/80">
+                <Paragraph className="max-w-124 font-google-sans text-foreground/80">
                   {blogText}
-                </p>
-                <a
+                </Paragraph>
+                <Link
                   href={blogCtaLink}
                   className="inline-flex items-center justify-center font-medium min-w-35 px-5 py-2 rounded-[20px] text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center cursor-pointer"
                 >
                   {blogCtaText}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

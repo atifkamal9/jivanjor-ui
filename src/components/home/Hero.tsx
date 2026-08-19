@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
+import { Heading } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -303,11 +304,11 @@ export default function Hero({ data }: HeroProps) {
       {/* Content Wrapper - Static overlay over background slides */}
       <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
         <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-20 lg:bottom-14.5 2xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-60 sm:max-w-94 xl:max-w-100">
+          <div className="absolute bottom-20 lg:bottom-14.5 2xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-60 md:max-w-80 2xl:max-w-100">
             {/* Title */}
-            <h1 className="text-[24px] sm:text-[32px] lg:text-[42px] font-amethysta tracking-[0%] text-white leading-[0.95]">
+            <Heading className="tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
-            </h1>
+            </Heading>
 
             {/* Action Buttons */}
             <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Heading } from "@/components/ui";
+import { Heading, Title } from "@/components/ui";
 
 interface ProfessionalProps {
   data?: {
@@ -49,7 +49,7 @@ export default function Professional({ data }: ProfessionalProps) {
 
   return (
     <section className="mx-auto max-w-360 text-center px-5 mt-8 md:mt-12">
-      <Heading className="mb-0 md:mb-7.5">{title}</Heading>
+      <Heading className="font-normal leading-normal mb-0 md:mb-7.5">{title}</Heading>
       <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-center bg-transparent lg:bg-surface gap-12 p-8 lg:pt-12 pb-16! lg:px-20 rounded-2xl">
         {features.map((f, idx) => (
           <div
@@ -59,9 +59,9 @@ export default function Professional({ data }: ProfessionalProps) {
             <div className="w-10 h-10 relative flex items-center justify-center">
               <Image src={f.icon} alt={f.title} width={40} height={40} className="object-contain" unoptimized />
             </div>
-            <h3 className="font-amethysta text-lg lg:text-2xl leading-normal">
+            <Title className="!text-lg 2xl:!text-2xl leading-normal">
               {f.title}
-            </h3>
+            </Title>
           </div>
         ))}
       </div>

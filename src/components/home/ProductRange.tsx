@@ -49,9 +49,9 @@ export default function ProductRange({ data }: ProductRangeProps) {
   const displayCategories: ProductRangeCategory[] = hasAll
     ? rawCategories
     : [
-        { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
-        ...rawCategories.slice(0, 7),
-      ];
+      { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
+      ...rawCategories.slice(0, 7),
+    ];
 
   const [activeCategoryName, setActiveCategoryName] = useState<string>(
     displayCategories[0]?.name || "ALL"
@@ -234,7 +234,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
       <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full mx-auto my-6">
-          <Heading className="max-w-full md:max-w-3xl mx-auto">{title}</Heading>
+          <Heading className="font-normal leading-normal max-w-full md:max-w-md 2xl:max-w-xl mx-auto">{title}</Heading>
           {/* Categories tabs Desktop */}
           <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mt-4 mb-6">
             {displayCategories.map((cat) => (

@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { Heading } from "@/components/ui";
-import { PlusCircle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { Heading, Subtitle } from "@/components/ui";
+import { PlusCircle } from "lucide-react";
 
 interface RightChoiceProps {
   data?: {
@@ -102,8 +102,8 @@ export default function RightChoice({ data }: RightChoiceProps) {
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
       </div>
       <div className="flex flex-col items-stretch justify-center xl:justify-between lg:flex-row self-stretch relative mx-auto max-w-360 px-1.5 sm:px-5 py-25">
-        <div className="max-w-xl text-center lg:text-start pl-0 lg:pl-6 xl:pl-0 py-12 lg:p-0 mx-auto">
-          <Heading className="text-white">{title}</Heading>
+        <div className="max-w-xs 2xl:max-w-sm text-center lg:text-start pl-0 lg:pl-6 xl:pl-0 py-12 lg:p-0 mx-auto">
+          <Heading className="font-normal leading-normal text-white">{title}</Heading>
         </div>
         <div className="flex flex-wrap gap-4 justify-items-center justify-center max-w-full xl:max-w-153">
           {types.map((type, idx) => (
@@ -124,9 +124,9 @@ export default function RightChoice({ data }: RightChoiceProps) {
                   width={48}
                   unoptimized
                 />
-                <p className="font-medium text-base lg:text-lg group-hover:text-white transition-colors duration-300">
+                <Subtitle className="font-medium !text-base lg:!text-lg group-hover:text-white transition-colors duration-300">
                   {type.title}
-                </p>
+                </Subtitle>
               </div>
               <div className="relative z-10 w-full h-8 flex items-center justify-center">
                 <PlusCircle

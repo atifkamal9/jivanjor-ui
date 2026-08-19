@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { Heading } from "@/components/ui";
+import { Heading, Subtitle, Paragraph, BodyText } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -160,7 +160,7 @@ export default function Testimonial({ data }: TestimonialProps) {
   return (
     <section className="relative overflow-hidden mt-8 md:mt-12 leading-normal">
       <div className="flex flex-col items-center justify-center text-center relative mx-auto max-w-360 w-full space-y-6">
-        <div className="flex flex-col items-center justify-center text-center relative max-w-xs sm:max-w-180">
+        <div className="flex flex-col items-center justify-center text-center relative">
           <Image
             className="mb-4"
             src="/images/badge.png"
@@ -168,10 +168,10 @@ export default function Testimonial({ data }: TestimonialProps) {
             height={40}
             alt="badge"
           />
-          <Heading>{title}</Heading>
-          <p className="text-lg md:text-2xl text-[#222] my-4 px-6 md:px-0">
+          <Heading className="font-normal leading-normal max-w-md 2xl:max-w-lg">{title}</Heading>
+          <Subtitle className="text-[#222] my-4 px-6 md:px-0 max-w-xl">
             {subtitle}
-          </p>
+          </Subtitle>
           <a
             href={ctaLink}
             className="hidden md:inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
@@ -243,27 +243,27 @@ export default function Testimonial({ data }: TestimonialProps) {
                     )}
 
                     <div className="absolute bottom-6 left-7.5 right-7.5 text-left z-10">
-                      <p className="text-white font-bold text-[18px] leading-tight mb-1 font-google-sans">
+                      <Paragraph className="text-white font-bold text-[18px] leading-tight mb-1 font-google-sans">
                         {item.name}
-                      </p>
-                      <p className="text-white/80 font-normal text-[14px] leading-none font-google-sans">
+                      </Paragraph>
+                      <BodyText className="text-white/80 font-normal text-[14px] leading-none font-google-sans">
                         {item.role}
-                      </p>
+                      </BodyText>
                     </div>
                   </div>
                 ) : (
                   // Text Card
                   <div className="w-full max-w-78 h-85 mx-auto bg-[#f5f5f5] rounded-[21px] flex flex-col justify-end p-7.5 text-left">
-                    <p className="text-[#222] font-normal text-[24px] leading-[1.2] font-google-sans mb-6">
+                    <Paragraph className="text-[#222] font-normal text-[24px] leading-[1.2] font-google-sans mb-6">
                       {item.quote}
-                    </p>
+                    </Paragraph>
                     <div className="text-left">
-                      <p className="text-[#222] font-bold text-[16px] leading-tight mb-1 font-google-sans">
+                      <Paragraph className="text-[#222] font-bold text-[16px] leading-tight mb-1 font-google-sans">
                         {item.name}
-                      </p>
-                      <p className="text-[#222]/80 font-normal text-[14px] leading-none font-google-sans">
+                      </Paragraph>
+                      <BodyText className="text-[#222]/80 font-normal text-[14px] leading-none font-google-sans">
                         {item.role}
-                      </p>
+                      </BodyText>
                     </div>
                   </div>
                 )}

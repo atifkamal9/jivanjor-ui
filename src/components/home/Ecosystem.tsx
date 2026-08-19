@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Gallery from "./Gallery";
-import { Heading } from "@/components/ui";
+import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
 
 interface EcosystemProps {
   data?: {
@@ -33,11 +33,11 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
   return (
     <section className="relative bg-surface mt-8 sm:mt-12 leading-normal">
       <div className="mx-auto max-w-360 justify-center px-5 pt-4">
-        <div className="mx-auto space-y-4 md:space-y-6 text-center w-full px-4 py-6">
-          <Heading className="max-w-2xl mx-auto text-center`">{title}</Heading>
-          <p className="text-lg md:text-2xl font-google-sans min-w-xs max-w-3xl mx-auto text-center">
+        <div className="mx-auto space-y-4 text-center w-full px-4 py-6">
+          <Heading className="font-amethysta font-normal leading-normal max-w-lg 2xl:max-w-xl mx-auto text-center">{title}</Heading>
+          <Subtitle className="font-google-sans min-w-xs max-w-xl 2xl:max-w-2xl mx-auto text-center">
             {subtitle}
-          </p>
+          </Subtitle>
           <a
             href={ctaLink}
             className="md:hidden inline-flex items-center justify-center font-medium min-w-35 px-6 py-2 rounded-3xl text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity text-center"
@@ -58,10 +58,10 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="mx-auto max-w-360 justify-center px-6 space-y-6">
-          <h2 className="font-amethysta text-3xl md:text-[34px]">{ctaTitle}</h2>
+        <div className="mx-auto max-w-360 justify-center px-6 space-y-4">
+          <Heading className="font-amethysta">{ctaTitle}</Heading>
           <div className="flex flex-col items-start justify-between lg:flex-row gap-4">
-            <p className="text-xl max-w-xl font-google-sans">{ctaSubtitle}</p>
+            <Subtitle className="max-w-xl font-google-sans">{ctaSubtitle}</Subtitle>
             <a
               href={ctaLink}
               className="inline-flex items-center justify-center font-medium text-base rounded-full min-w-50 px-6 py-2 border border-spacing-1.5 border-white text-center hover:bg-white/10 transition-colors"

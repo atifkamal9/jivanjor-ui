@@ -1,5 +1,7 @@
+import Link from "next/link";
 import Image from "next/image";
 import { MoveUpRight } from "lucide-react";
+import { Title } from "@/components/ui";
 
 interface GalleryItem {
   title?: string;
@@ -64,9 +66,9 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={techLink}
           className="relative bg-[#232323] h-80 rounded-2xl block hover:bg-[#2e2e2e] transition-colors group p-6"
         >
-          <p className="absolute inset-6 flex items-end text-2xl text-white font-amethysta">
+          <Title className="absolute inset-6 flex items-end text-white font-google-sans">
             {techTitle} <MoveUpRight size={40} className="ml-2 shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </p>
+          </Title>
         </a>
         <div className="rounded-2xl h-80 relative overflow-hidden">
           <Image
@@ -92,14 +94,14 @@ export default function Gallery({ items, images }: GalleryProps) {
           />
         </div>
         <div className="space-y-4">
-          <a
+          <Link
             href={marketLink}
             className="relative bg-[#232323] h-40 rounded-2xl block hover:bg-[#2e2e2e] transition-colors group p-6"
           >
-            <p className="absolute inset-4 flex items-end text-xl xl:text-2xl text-white font-amethysta">
+            <Title className="absolute inset-4 flex items-end text-white font-google-sans">
               {marketTitle} <MoveUpRight size={36} className="ml-2 shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </p>
-          </a>
+            </Title>
+          </Link>
           <div className="h-36 rounded-2xl relative overflow-hidden">
             <Image
               src={img4Desk}
@@ -149,9 +151,9 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={techLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
+          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-white font-amethysta">
             {techTitle}
-          </p>
+          </Title>
           <MoveUpRight
             size={36}
             className="absolute top-2.5 right-2.5 sm:top-6 sm:right-6 text-white"
@@ -171,9 +173,9 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={marketLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <p className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
+          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
             {marketTitle}
-          </p>
+          </Title>
           <MoveUpRight
             size={36}
             className="absolute top-2.5 right-2.5 sm:top-6 sm:right-6 text-white"
