@@ -52,6 +52,7 @@ export interface Product {
   enquireLink?: string;
   rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string; bgImage?: string; bgImageMobile?: string; items?: any[] };
   right_choice?: any;
+  isVisible?: boolean;
 }
 
 export interface Category {
@@ -79,6 +80,7 @@ export interface Category {
   rightChoiceCtaLink?: string;
   rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string };
   hideInMenu?: boolean;
+  isVisible?: boolean;
 }
 
 export interface Material {
@@ -291,6 +293,10 @@ function mapCategoryFromBackend(cat: any): Category {
     }
   }
 
+  const isVisible = cat.isVisible !== undefined
+    ? Boolean(cat.isVisible)
+    : (hideInMenu !== undefined ? !hideInMenu : true);
+
   return {
     id: cat.id,
     name: cat.name,
@@ -320,7 +326,8 @@ function mapCategoryFromBackend(cat: any): Category {
       ctaLink: rightChoiceCtaLink,
     } : undefined,
     icon: cat.icon || "",
-    hideInMenu,
+    hideInMenu: !isVisible,
+    isVisible,
   };
 }
 
@@ -516,6 +523,7 @@ function mapProductFromBackend(prod: any): Product {
     enquireText,
     enquireLink,
     rightChoice: prod.rightChoice || prod.right_choice || (prod.metadata && typeof prod.metadata === "object" ? prod.metadata.rightChoice || prod.metadata.right_choice : undefined),
+    isVisible: prod.isVisible !== undefined ? Boolean(prod.isVisible) : (prod.metadata && typeof prod.metadata === "object" && prod.metadata.isVisible !== undefined ? Boolean(prod.metadata.isVisible) : true),
   };
 }
 
@@ -705,9 +713,11 @@ export const api = {
         enquireText: product.enquireText || "Enquire Now",
         enquireLink: product.enquireLink || "/contact",
         rightChoice: product.rightChoice || (product as any).right_choice || null,
+        isVisible: product.isVisible !== undefined ? product.isVisible : true,
       },
       rightChoice: product.rightChoice || (product as any).right_choice || null,
       image: product.image || null,
+      isVisible: product.isVisible !== undefined ? product.isVisible : true,
     };
     if (product.id) {
       const res = await client.put(`/products/${product.id}`, payload);
@@ -755,8 +765,11 @@ export const api = {
       rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
-      hideInMenu: category.hideInMenu ?? false,
+      hideInMenu: category.isVisible !== undefined ? !category.isVisible : (category.hideInMenu ?? false),
+      isVisible: category.isVisible !== undefined ? category.isVisible : !(category.hideInMenu ?? false),
     });
+
+    const isVisibleVal = category.isVisible !== undefined ? category.isVisible : !(category.hideInMenu ?? false);
 
     const payload = {
       name: category.name,
@@ -764,6 +777,8 @@ export const api = {
       description: serializedDescription,
       tagline: category.tagline || null,
       icon: category.icon || null,
+      isVisible: isVisibleVal,
+      hideInMenu: !isVisibleVal,
     };
     if (category.id) {
       const res = await client.put(`/categories/${category.id}`, payload);

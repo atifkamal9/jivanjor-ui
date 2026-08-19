@@ -133,7 +133,7 @@ export default function Hero({ product, category }: HeroProps) {
           />
 
           {/* Dynamic Product Image placed on the counter table */}
-          {product?.image && (
+          {/* {product?.image && (
             <div className="absolute bottom-[1%] left-1/2 -translate-y-[40%] sm:-translate-y-[35%] md:-translate-y-[35%] lg:-translate-y-1/2 -translate-x-1/2 w-44 sm:w-56 lg:w-72 h-44 sm:h-56 lg:h-72 z-20 drop-shadow-[0_15px_30px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:scale-105">
               <Image
                 src={product.image}
@@ -143,7 +143,7 @@ export default function Hero({ product, category }: HeroProps) {
                 priority
               />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </section>

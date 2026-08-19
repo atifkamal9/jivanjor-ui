@@ -19,9 +19,12 @@ export default async function Categories({ params }: PageProps) {
       api.getCategories(),
       api.getActiveTemplateForPage("categories").catch(() => null)
     ]);
-    categoryData = cats.find((c) => c.slug === slug);
+    categoryData = cats.find((c) => c.slug === slug && c.isVisible !== false && !c.hideInMenu);
     if (categoryData && categoryData.parent_category) {
-      parentCategoryData = cats.find((c) => c.id === categoryData.parent_category);
+      parentCategoryData = cats.find((c) => c.id === categoryData.parent_category && c.isVisible !== false && !c.hideInMenu);
+      if (!parentCategoryData) {
+        categoryData = undefined;
+      }
     }
     templateData = template;
   } catch (err) {

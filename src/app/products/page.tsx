@@ -25,12 +25,16 @@ function ProductPageContent() {
           api.getCategories(),
         ]);
 
-        setAllProducts(prods);
+        const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+        const visibleCatIds = new Set(visibleCats.map((c) => c.id));
+        const visibleProds = prods.filter((p) => p.isVisible !== false && visibleCatIds.has(p.category_id));
+
+        setAllProducts(visibleProds);
 
         let selected: Product | null = null;
         if (productSlug) {
           selected =
-            prods.find(
+            visibleProds.find(
               (p) =>
                 p.slug === productSlug ||
                 p.name.toLowerCase().replace(/\s+/g, "-") === productSlug
@@ -38,14 +42,14 @@ function ProductPageContent() {
         }
 
         // Fallback to first product if none selected
-        if (!selected && prods.length > 0) {
-          selected = prods[0];
+        if (!selected && visibleProds.length > 0) {
+          selected = visibleProds[0];
         }
 
         setProduct(selected);
 
         if (selected) {
-          const catMatch = cats.find((c) => c.id === selected.category_id);
+          const catMatch = visibleCats.find((c) => c.id === selected.category_id);
           setCategory(catMatch || null);
         }
       } catch (err) {

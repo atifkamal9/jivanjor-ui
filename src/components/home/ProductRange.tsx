@@ -70,8 +70,12 @@ export default function ProductRange({ data }: ProductRangeProps) {
           api.getProducts().catch(() => []),
           api.getCategories().catch(() => []),
         ]);
-        setDbProducts(prods);
-        setDbCategories(cats);
+        const visibleCats = cats.filter((c: Category) => c.isVisible !== false && !c.hideInMenu);
+        const visibleCatIds = new Set(visibleCats.map((c: Category) => c.id));
+        const visibleProds = prods.filter((p: Product) => p.isVisible !== false && visibleCatIds.has(p.category_id));
+
+        setDbProducts(visibleProds);
+        setDbCategories(visibleCats);
       } catch (err) {
         console.error("Failed to load data for homepage ProductRange:", err);
       }

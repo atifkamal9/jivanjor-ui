@@ -27,6 +27,8 @@ import {
   CopyPlus,
   GripVertical,
   Upload,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 export default function ProductsPage() {
@@ -95,6 +97,7 @@ export default function ProductsPage() {
       ctaText: "Submit Your Query",
       ctaLink: "/contact",
     },
+    isVisible: true,
   });
 
   // SEO metadata states
@@ -239,6 +242,7 @@ export default function ProductsPage() {
         ctaText: "Submit Your Query",
         ctaLink: "/contact",
       },
+      isVisible: true,
     });
 
     setSeoMetaTitle("");
@@ -327,6 +331,7 @@ export default function ProductsPage() {
         ctaText: "Submit Your Query",
         ctaLink: "/contact",
       },
+      isVisible: product.isVisible !== undefined ? product.isVisible : true,
     });
 
     const matchedSeo = seos.find(
@@ -432,6 +437,7 @@ export default function ProductsPage() {
         ctaText: "Submit Your Query",
         ctaLink: "/contact",
       },
+      isVisible: product.isVisible !== undefined ? product.isVisible : true,
     });
 
     const matchedSeo = seos.find(
@@ -488,6 +494,19 @@ export default function ProductsPage() {
       await loadData();
     } catch (err) {
       console.error("Failed to delete product", err);
+    }
+  };
+
+  const handleToggleVisibility = async (product: Product) => {
+    try {
+      const updatedIsVisible = !(product.isVisible !== false);
+      await api.saveProduct({
+        ...product,
+        isVisible: updatedIsVisible,
+      });
+      await loadData();
+    } catch (err) {
+      console.error("Failed to toggle product visibility", err);
     }
   };
 
@@ -624,7 +643,18 @@ export default function ProductsPage() {
                                 )}
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="font-black text-sm text-gray-900 dark:text-zinc-50 truncate">{p.name}</p>
+                                <p className="font-black text-sm text-gray-900 dark:text-zinc-50 truncate flex items-center gap-2">
+                                  <span>{p.name}</span>
+                                  {p.isVisible !== false ? (
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-1">
+                                      Visible
+                                    </span>
+                                  ) : (
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-900/40 flex items-center gap-1">
+                                      Hidden
+                                    </span>
+                                  )}
+                                </p>
                                 <p className="text-[11px] text-gray-400 dark:text-zinc-500 font-semibold tracking-wider">{p.slug}</p>
                               </div>
                             </div>
@@ -680,6 +710,21 @@ export default function ProductsPage() {
                           </td> */}
                           <td className="px-6 py-5 text-right font-medium">
                             <div className="flex items-center justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleVisibility(p)}
+                                className={`p-2 rounded-lg border transition-all cursor-pointer ${p.isVisible !== false
+                                  ? "bg-gray-50 text-emerald-600 hover:bg-emerald-50 dark:bg-zinc-800 dark:text-emerald-400 border-gray-100 dark:border-zinc-800"
+                                  : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
+                                  }`}
+                                title={p.isVisible !== false ? "Visible on website UI - Click to hide" : "Hidden from website UI - Click to show"}
+                              >
+                                {p.isVisible !== false ? (
+                                  <Eye className="h-4 w-4" />
+                                ) : (
+                                  <EyeOff className="h-4 w-4" />
+                                )}
+                              </button>
                               <button
                                 onClick={() => handleOpenEdit(p)}
                                 className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
@@ -1074,6 +1119,25 @@ export default function ProductsPage() {
                         placeholder="Write detailed product features, application methods, surface preparation & tech info..."
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Visibility Status
+                      </label>
+                      <div className="flex items-center gap-3 p-4 rounded-xl border border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950">
+                        <input
+                          type="checkbox"
+                          id="productIsVisible"
+                          checked={formData.isVisible !== false}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, isVisible: e.target.checked }))}
+                          className="h-4 w-4 rounded text-red-600 focus:ring-red-500 cursor-pointer"
+                        />
+                        <label htmlFor="productIsVisible" className="text-sm font-extrabold text-gray-900 dark:text-zinc-100 cursor-pointer select-none">
+                          Visible on Website UI
+                        </label>
+                      </div>
+                      <p className="text-[11px] text-gray-400 mt-1">If unchecked, this product will be hidden from the public website UI and product listings.</p>
                     </div>
                   </div>
                 )}

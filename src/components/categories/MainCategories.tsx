@@ -400,14 +400,15 @@ export default function MainCategories() {
 
   const mainCategoriesData: MainCategoryData[] = categories.length > 0
     ? categories
-      .filter((cat) => !cat.parent_category)
+      .filter((cat) => !cat.parent_category && cat.isVisible !== false && !cat.hideInMenu)
       .map((cat) => {
-        const subCats = categories.filter((sub) => sub.parent_category === cat.id);
+        const subCats = categories.filter((sub) => sub.parent_category === cat.id && sub.isVisible !== false && !sub.hideInMenu);
         return {
           name: cat.name,
           slug: cat.slug,
           subCategories: subCats.map((sub) => {
             const subProducts = products.filter((p) => {
+              if (p.isVisible === false) return false;
               const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
               return catIds.some(
                 (id) =>

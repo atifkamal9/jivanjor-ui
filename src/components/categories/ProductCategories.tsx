@@ -348,13 +348,15 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
   // Find subcategory matching the slug, find parent and its siblings
   const currentSubcategory = categories.find((c) => c.slug === category);
   const parentId = currentSubcategory?.parent_category || null;
-  const siblingSubcategories = parentId
+  const siblingSubcategories = (parentId
     ? categories.filter((c) => c.parent_category === parentId)
-    : categories.filter((c) => c.parent_category); // fallback to all subcategories if no parent found
+    : categories.filter((c) => c.parent_category)
+  ).filter((c) => c.isVisible !== false && !c.hideInMenu);
 
   const categoriesData = categories.length > 0 && currentSubcategory
     ? siblingSubcategories.map((sub) => {
       const subProducts = products.filter((p) => {
+        if (p.isVisible === false) return false;
         const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
         return catIds.some(
           (id) =>

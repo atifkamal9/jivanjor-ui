@@ -728,7 +728,7 @@ export default function AdminMenuPage() {
   // Returns the ordered list of main categories for the Products mega menu.
   // Priority: stored order in nav-products.subItems → API order.
   const getProductsMenuMainCats = (): Category[] => {
-    const mainCats = allCategories.filter((c) => !c.parent_category);
+    const mainCats = allCategories.filter((c) => !c.parent_category && c.isVisible !== false && !c.hideInMenu);
     const productsItem = headerItems.find(
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );
@@ -831,7 +831,7 @@ export default function AdminMenuPage() {
   // Returns the ordered list of sub-categories for a given main category.
   // Priority: stored sub-order in description JSON → API order.
   const getOrderedSubCats = (mainCatId: string): Category[] => {
-    const rawSubCats = allCategories.filter((c) => c.parent_category === mainCatId);
+    const rawSubCats = allCategories.filter((c) => c.parent_category === mainCatId && c.isVisible !== false && !c.hideInMenu);
     const productsItem = headerItems.find(
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );

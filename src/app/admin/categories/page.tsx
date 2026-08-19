@@ -20,6 +20,8 @@ import {
   Upload,
   ChevronDown,
   ChevronRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -81,6 +83,7 @@ export default function CategoriesPage() {
     rightChoiceCtaText: "",
     rightChoiceCtaLink: "",
     hideInMenu: false,
+    isVisible: true,
   });
 
   // SEO metadata states
@@ -151,6 +154,7 @@ export default function CategoriesPage() {
       rightChoiceCtaText: "",
       rightChoiceCtaLink: "",
       hideInMenu: false,
+      isVisible: true,
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -186,6 +190,7 @@ export default function CategoriesPage() {
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
       hideInMenu: category.hideInMenu || false,
+      isVisible: category.isVisible !== undefined ? category.isVisible : !category.hideInMenu,
     });
 
     const matchedSeo = seos.find(
@@ -242,6 +247,33 @@ export default function CategoriesPage() {
       await loadData();
     } catch (err) {
       console.error("Failed to delete category", err);
+    }
+  };
+
+  const handleToggleVisibility = async (category: Category) => {
+    try {
+      const updatedIsVisible = !(category.isVisible !== false && !category.hideInMenu);
+      await api.saveCategory({
+        ...category,
+        isVisible: updatedIsVisible,
+        hideInMenu: !updatedIsVisible,
+      });
+      // If parent category is being hidden, also hide its sub-categories
+      if (!updatedIsVisible && !category.parent_category) {
+        const childSubCats = categories.filter((c) => c.parent_category === category.id);
+        await Promise.all(
+          childSubCats.map((sub) =>
+            api.saveCategory({
+              ...sub,
+              isVisible: false,
+              hideInMenu: true,
+            })
+          )
+        );
+      }
+      await loadData();
+    } catch (err) {
+      console.error("Failed to toggle category visibility", err);
     }
   };
 
@@ -418,6 +450,15 @@ export default function CategoriesPage() {
                                   <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                     <span>{mainCat.name}</span>
                                     <span className="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/40">Root</span>
+                                    {mainCat.isVisible !== false && !mainCat.hideInMenu ? (
+                                      <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-1">
+                                        Visible
+                                      </span>
+                                    ) : (
+                                      <span className="text-[9px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-900/40 flex items-center gap-1">
+                                        Hidden
+                                      </span>
+                                    )}
                                     {subCats.length > 0 && (
                                       <span className="text-[10px] font-bold text-gray-500 dark:text-zinc-400 bg-gray-100 dark:bg-zinc-800 px-2 py-0.5 rounded-full border border-gray-200 dark:border-zinc-700">
                                         {subCats.length} {subCats.length === 1 ? "sub-category" : "sub-categories"}
@@ -433,6 +474,21 @@ export default function CategoriesPage() {
                             </td>
                             <td className="p-5 text-right">
                               <div className="flex items-center justify-end gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleVisibility(mainCat)}
+                                  className={`p-2 rounded-lg border transition-all cursor-pointer ${mainCat.isVisible !== false && !mainCat.hideInMenu
+                                    ? "bg-gray-50 text-emerald-600 hover:bg-emerald-50 dark:bg-zinc-800 dark:text-emerald-400 border-gray-100 dark:border-zinc-800"
+                                    : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
+                                    }`}
+                                  title={mainCat.isVisible !== false && !mainCat.hideInMenu ? "Visible on site - Click to hide" : "Hidden from site - Click to show"}
+                                >
+                                  {mainCat.isVisible !== false && !mainCat.hideInMenu ? (
+                                    <Eye className="h-4 w-4" />
+                                  ) : (
+                                    <EyeOff className="h-4 w-4" />
+                                  )}
+                                </button>
                                 <button
                                   onClick={() => handleOpenEdit(mainCat)}
                                   className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-950/20 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
@@ -460,7 +516,18 @@ export default function CategoriesPage() {
                                   <div className="flex items-center gap-2">
                                     <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
                                     <div>
-                                      <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50">{sub.name}</p>
+                                      <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
+                                        <span>{sub.name}</span>
+                                        {sub.isVisible !== false && !sub.hideInMenu ? (
+                                          <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-0.5">
+                                            Visible
+                                          </span>
+                                        ) : (
+                                          <span className="text-[8px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-1.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-900/40 flex items-center gap-0.5">
+                                            Hidden
+                                          </span>
+                                        )}
+                                      </p>
                                       <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
                                     </div>
                                   </div>
@@ -470,6 +537,21 @@ export default function CategoriesPage() {
                                 </td>
                                 <td className="p-5 text-right">
                                   <div className="flex items-center justify-end gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleVisibility(sub)}
+                                      className={`p-2 rounded-lg border transition-all cursor-pointer ${sub.isVisible !== false && !sub.hideInMenu
+                                        ? "bg-gray-50 text-emerald-600 hover:bg-emerald-50 dark:bg-zinc-800 dark:text-emerald-400 border-gray-100 dark:border-zinc-800"
+                                        : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
+                                        }`}
+                                      title={sub.isVisible !== false && !sub.hideInMenu ? "Visible on site - Click to hide" : "Hidden from site - Click to show"}
+                                    >
+                                      {sub.isVisible !== false && !sub.hideInMenu ? (
+                                        <Eye className="h-4 w-4" />
+                                      ) : (
+                                        <EyeOff className="h-4 w-4" />
+                                      )}
+                                    </button>
                                     <button
                                       onClick={() => handleOpenEdit(sub)}
                                       className="p-2 rounded-lg bg-gray-50 hover:bg-red-50 text-gray-600 hover:text-red-600 dark:bg-zinc-800 dark:hover:bg-red-955/10 dark:text-zinc-400 dark:hover:text-red-400 transition-all cursor-pointer border border-gray-100 dark:border-zinc-800"
@@ -661,6 +743,25 @@ export default function CategoriesPage() {
                         placeholder="Write dynamic description overview details..."
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Visibility Status
+                      </label>
+                      <div className="flex items-center gap-3 p-4 rounded-xl border border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950">
+                        <input
+                          type="checkbox"
+                          id="categoryIsVisible"
+                          checked={formData.isVisible !== false && !formData.hideInMenu}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, isVisible: e.target.checked, hideInMenu: !e.target.checked }))}
+                          className="h-4 w-4 rounded text-red-600 focus:ring-red-500 cursor-pointer"
+                        />
+                        <label htmlFor="categoryIsVisible" className="text-sm font-extrabold text-gray-900 dark:text-zinc-100 cursor-pointer select-none">
+                          Visible on Website & Menu Settings
+                        </label>
+                      </div>
+                      <p className="text-[11px] text-gray-400 mt-1">If unchecked, this category and its sub-categories will be hidden from the public website UI and menu settings admin panel.</p>
                     </div>
                   </div>
                 )}
