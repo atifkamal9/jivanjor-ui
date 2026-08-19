@@ -42,12 +42,12 @@ export default function Hero({ product, category }: HeroProps) {
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
-      <div className="w-full relative flex flex-col lg:flex-row lg:h-140 overflow-hidden">
+      <div className="w-full relative flex flex-col lg:flex-row lg:h-105 overflow-hidden">
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
         <div
-          className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-16 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-6 lg:gap-8"
+          className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-8 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-3 sm:gap-4 lg:gap-5"
           style={{
             paddingLeft: "max(24px, calc((100vw - 1440px) / 2 + 24px))",
             backgroundColor: product?.themeColor || "#0498AA",
@@ -57,18 +57,18 @@ export default function Hero({ product, category }: HeroProps) {
             <Image
               src="/images/watermark pro.png"
               alt="watermark"
-              width={500}
-              height={320}
+              width={400}
+              height={250}
               className="object-contain"
             />
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <h1 className="font-amethysta text-[32px] sm:text-4xl lg:text-5xl font-normal leading-normal">
+            <h1 className="font-amethysta text-[28px] sm:text-3xl lg:text-4xl font-normal leading-tight">
               {productName}
             </h1>
             {/* Product Tagline */}
-            <p className="font-amethysta text-lg lg:text-2xl leading-[120%]! max-w-3xs sm:max-w-md">
+            <p className="font-amethysta text-base lg:text-xl leading-[120%]! max-w-3xs sm:max-w-md">
               {productDescription}
             </p>
           </div>
@@ -81,17 +81,17 @@ export default function Hero({ product, category }: HeroProps) {
                 : (feature?.icon || `image ${18 + (fIdx % 3)}.svg`);
 
               return (
-                <div key={fIdx} className="flex items-center gap-3.5">
+                <div key={fIdx} className="flex items-center gap-3">
                   <div className="shrink-0 text-white flex items-center justify-center">
                     <Image
                       src={`/icons/${iconName}`}
                       className="aspect-square object-contain"
                       alt={text}
-                      width={20}
-                      height={20}
+                      width={18}
+                      height={18}
                     />
                   </div>
-                  <span className="text-lg lg:text-2xl font-normal leading-normal">
+                  <span className="text-base lg:text-xl font-normal leading-normal">
                     {text}
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export default function Hero({ product, category }: HeroProps) {
           {/* Enquire Now pill button */}
           <Link
             href={product?.enquireLink || product?.enquire_link || product?.ctaLink || product?.cta_link || "/contact"}
-            className="min-w-32 bg-white text-foreground text-center font-medium px-8 py-2 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-sm z-10"
+            className="min-w-32 bg-white text-foreground text-center font-medium px-7 py-1.5 rounded-full hover:bg-white/95 hover:shadow-md transition-all active:scale-[0.98] text-sm z-10"
           >
             {product?.enquireText || product?.enquire_text || product?.ctaText || product?.cta_text || "Enquire Now"}
           </Link>
@@ -111,7 +111,7 @@ export default function Hero({ product, category }: HeroProps) {
         {/* =========================================================================== */}
         {/* DESKTOP VIEW: RIGHT PANEL (KITCHEN) - MOBILE VIEW: TOP PANEL (KITCHEN) */}
         {/* =========================================================================== */}
-        <div className="order-1 lg:order-2 w-full lg:w-[60%] relative h-72 sm:h-100 lg:h-full overflow-hidden">
+        <div className="order-1 lg:order-2 w-full lg:w-[60%] relative h-54 sm:h-75 lg:h-full overflow-hidden">
           {/* Desktop Kitchen Backdrop Image */}
           <Image
             src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
