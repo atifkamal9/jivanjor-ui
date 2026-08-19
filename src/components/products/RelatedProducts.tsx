@@ -22,28 +22,28 @@ const RELATED_PRODUCTS: RelatedProduct[] = [
     description:
       "Provides a superior bond and strength, while being non-hazardous.",
     image: "/images/Champion Super.png",
-    color: "bg-[#0083CB]",
+    color: "#0083CB",
   },
   {
     title: "Aquabond",
     description:
       "Heatproof and waterproof adhesive made with Cross Linking Polymer",
     image: "/images/Aquabond.png",
-    color: "bg-[#077937]",
+    color: "#077937",
   },
   {
     title: "Foambond",
     description:
       "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
     image: "/images/Foambond.png",
-    color: "bg-[#F57F26]",
+    color: "#F57F26",
   },
   {
     title: "Watershield",
     description:
       "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
     image: "/images/Watershield.png",
-    color: "bg-[#0498AA]",
+    color: "#0498AA",
   },
 ];
 
@@ -159,7 +159,7 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
                     </h3>
                     <div className="w-full h-px bg-white my-3" />
                     <p className="text-center text-sm lg:text-base leading-normal max-w-60">
-                      {card.description}
+                      {card.shortDescription || card.description}
                     </p>
                   </div>
                 </Link>

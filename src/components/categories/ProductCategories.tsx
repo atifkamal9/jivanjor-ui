@@ -60,7 +60,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
           "Provides a superior bond and strength, while being non-hazardous.",
         mobileDesc:
           "Provides superior bond and strength, while being non-hazardous.",
-        color: "bg-[#0083CB]",
+        color: "#0083CB",
         badge: "Super Premium",
         image: "/images/Champion Super.png",
         features: [
@@ -85,7 +85,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         mobileDesc:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        color: "bg-[#F57F26]",
+        color: "#F57F26",
         badge: "Speciality",
         image: "/images/Foambond.png",
         features: [
@@ -109,7 +109,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
           "Provides a superior bond and strength, while being non-hazardous.",
         mobileDesc:
           "Provides superior bond and strength, while being non-hazardous.",
-        color: "bg-[#0083CB]",
+        color: "#0083CB",
         badge: "Premium Regular",
         image: "/images/Champion Super.png",
         features: [
@@ -132,7 +132,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
         description: "Provides excellent water-resistance.",
         mobileDesc:
           "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
+        color: "#0498AA",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
         features: [
@@ -145,7 +145,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
         title: "Aquabond",
         description: "Heatproof and waterproof adhesive.",
         mobileDesc: "Heatproof and waterproof adhesive.",
-        color: "bg-[#077937]",
+        color: "#077937",
         badge: "Waterproof Grade",
         image: "/images/Aquabond.png",
         features: [
@@ -159,7 +159,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
         description: "Provides excellent water-resistance.",
         mobileDesc:
           "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
+        color: "#0498AA",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
         features: [
@@ -183,7 +183,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
         mobileDesc:
           "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
-        color: "bg-[#F57F26]",
+        color: "#F57F26",
         badge: "Speciality",
         image: "/images/Foambond.png",
         features: [
@@ -206,7 +206,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
         description: "Provides excellent water-resistance.",
         mobileDesc:
           "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
-        color: "bg-[#0498AA]",
+        color: "#0498AA",
         badge: "Eco Friendly",
         image: "/images/Watershield.png",
         features: [
@@ -228,7 +228,7 @@ const STATIC_CATEGORIES_DATA: CategoryData[] = [
         title: "Aquabond",
         description: "Heatproof and waterproof adhesive.",
         mobileDesc: "Heatproof and waterproof adhesive.",
-        color: "bg-[#077937]",
+        color: "#077937",
         badge: "Waterproof Grade",
         image: "/images/Aquabond.png",
         features: [
