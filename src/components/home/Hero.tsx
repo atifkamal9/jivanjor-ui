@@ -195,7 +195,7 @@ export default function Hero({ data }: HeroProps) {
   const activeCta2Link = currentSlide?.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
 
   return (
-    <section className="relative w-full h-117.5 xl:h-131.5 overflow-hidden bg-black text-white">
+    <section className="relative w-full h-146 lg:h-130 2xl:h-164.5 overflow-hidden bg-black text-white">
       <Swiper
         onSwiper={setSwiperInstance}
         onSlideChange={(swiper) => {
@@ -303,7 +303,7 @@ export default function Hero({ data }: HeroProps) {
       {/* Content Wrapper - Static overlay over background slides */}
       <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
         <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-20 xl:bottom-14.5 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-82.25 sm:max-w-100">
+          <div className="absolute bottom-20 lg:bottom-14.5 2xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-60 sm:max-w-94 xl:max-w-100">
             {/* Title */}
             <h1 className="text-[24px] sm:text-[32px] lg:text-[42px] font-amethysta tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
@@ -355,7 +355,7 @@ export default function Hero({ data }: HeroProps) {
 
       {/* Play Video / Audio Controls */}
       {showPlayButton && (
-        <div className="absolute bottom-5 right-6.25 xl:bottom-14.5 xl:right-17.25 flex items-center gap-3 z-30">
+        <div className="absolute bottom-5 right-6.25 lg:bottom-14.5 2xl:bottom-18.25 flex items-center gap-3 z-30">
           {isPlayingVideo && (
             <button
               onClick={() => setIsMuted(!isMuted)}
