@@ -39,7 +39,7 @@ export default function Hero() {
       </div>
       <div className="block w-full h-30 md:h-67 relative">
         <div className="absolute inset-0 z-10 pointer-events-none">
-          <div className="max-w-360 mx-auto w-full h-full px-6 flex flex-col justify-center">
+          <div className="max-w-360 mx-auto w-full h-full px-6 lg:px-8 xd:px-10 2xl:px-8 flex flex-col justify-center">
             <div className="max-w-sm text-black md:text-white pointer-events-auto">
               <div className="hidden md:flex items-center gap-1.5 text-xs font-normal">
                 <Link href="/" className="hover:opacity-80 transition-opacity">

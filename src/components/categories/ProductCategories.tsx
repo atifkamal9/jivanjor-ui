@@ -436,7 +436,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
     categoriesToUse[0];
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-12 xd:my-18 px-5 lg:px-8 gap-12 z-100">
+    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-12 xd:my-18 px-5 lg:px-8 xd:px-10 2xl:px-8 gap-12 z-100">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
         <h2 className="text-2xl ">Categories</h2>

@@ -79,7 +79,7 @@ export default function Presence({ data }: PresenceProps) {
       id="our-presence"
       className="scroll-mt-36 my-6 md:my-12 bg-white"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xd:px-10 2xl:px-8 flex flex-col items-center">
         {/* Header Icon */}
         <div className="mb-4 flex justify-center">
           <Image

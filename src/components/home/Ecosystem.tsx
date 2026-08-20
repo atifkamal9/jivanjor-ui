@@ -33,7 +33,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
 
   return (
     <section className="relative bg-surface mt-8 sm:mt-12 leading-normal">
-      <div className="mx-auto max-w-360 justify-center px-5 lg:px-8 pt-4">
+      <div className="mx-auto max-w-360 justify-center px-5 lg:px-8 xd:px-10 2xl:px-8 pt-4">
         <div className="mx-auto space-y-4 text-center w-full px-4 py-6">
           <Heading className="font-amethysta font-normal leading-normal max-w-lg 2xl:max-w-xl mx-auto text-center">{title}</Heading>
           <Subtitle className="font-google-sans min-w-xs max-w-xl xd:max-w-2xl mx-auto text-center">

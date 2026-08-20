@@ -231,7 +231,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
           alt="watermark"
         />
       </div>
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 w-full">
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 xd:px-10 2xl:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full mx-auto my-6">
           <Heading className="font-normal leading-normal max-w-full md:max-w-md xl:max-w-xl mx-auto">{title}</Heading>

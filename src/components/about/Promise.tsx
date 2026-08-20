@@ -49,7 +49,7 @@ export default function Promise({ data }: PromiseProps) {
       id="about-jivanjor"
       className="scroll-mt-36 mt-6 md:mt-8 text-[#222]"
     >
-      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-8 flex flex-col items-center">
         {/* Header Logo Icon */}
         <div className="mb-4 flex justify-center">
           <Image

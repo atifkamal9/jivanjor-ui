@@ -95,7 +95,7 @@ export default function Presence({ data }: PresenceProps = {}) {
         <div className="pt-4 text-left">
           <Link
             href="/products"
-            className="inline-flex items-center justify-center font-google-sans font-medium text-base rounded-full px-8 py-3 bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity shadow-md cursor-pointer"
+            className="inline-flex items-center justify-center font-google-sans font-medium text-base rounded-full px-8 py-2 bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-90 transition-opacity shadow-md cursor-pointer"
           >
             Explore Products
           </Link>

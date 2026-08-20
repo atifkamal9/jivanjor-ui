@@ -85,7 +85,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
 
   return (
     <section className="relative py-8 md:py-12 overflow-hidden">
-      <div className="mx-auto max-w-328 justify-center leading-normal px-5 lg:px-8 w-full">
+      <div className="mx-auto max-w-328 justify-center leading-normal px-5 lg:px-8 xd:px-10 2xl:px-8 w-full">
         <Heading className="font-amethysta font-normal leading-normal text-center">{title}</Heading>
         <div className="flex flex-col gap-6 py-6">
           {cards.map((c, idx) => (
