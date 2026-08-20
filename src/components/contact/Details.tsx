@@ -94,7 +94,7 @@ export default function Details({
                   className="flex items-start w-full"
                 >
                   {/* Icon */}
-                  <div className="flex items-center w-6.5 h-6.5 pb-1 pr-2 shrink-0">
+                  <div className="flex items-center w-6.5 h-6.5 pb-2 pr-2 shrink-0">
                     {renderIcon(item.icon, item.label)}
                   </div>
                   {/* Label & Value Container */}
