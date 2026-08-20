@@ -503,7 +503,7 @@ export function ReachForm({
               : "active-gradient-border rounded-[20px]"
               }`}
           >
-            <Title className="font-google-sans! text-[24px] md:text-[30px] font-medium text-white">
+            <Title className={`font-google-sans! text-[24px] md:text-[30px] font-medium ${isSticky ? "text-black" : "text-white"}`}>
               Reach out to Us
             </Title>
             <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
