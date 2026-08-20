@@ -59,7 +59,7 @@ export default function Professional({ data }: ProfessionalProps) {
             <div className="w-10 h-10 relative flex items-center justify-center">
               <Image src={f.icon} alt={f.title} width={40} height={40} className="object-contain" unoptimized />
             </div>
-            <Title className="text-lg! lg:text-xl! xd:text-2xl! leading-normal">
+            <Title className="leading-normal">
               {f.title}
             </Title>
           </div>

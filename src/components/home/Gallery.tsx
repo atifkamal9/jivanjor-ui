@@ -151,7 +151,7 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={techLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-white font-amethysta">
+          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-white">
             {techTitle}
           </Title>
           <MoveUpRight
@@ -173,7 +173,7 @@ export default function Gallery({ items, images }: GalleryProps) {
           href={marketLink}
           className="relative bg-[#232323] rounded-2xl min-h-30 block p-4"
         >
-          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-lg sm:text-xl md:text-3xl text-white font-amethysta">
+          <Title className="absolute inset-2.5 sm:inset-6 flex items-end text-white">
             {marketTitle}
           </Title>
           <MoveUpRight
