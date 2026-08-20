@@ -108,7 +108,7 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                   onClick={() => toggleAccordion(idx)}
                   className="w-full text-left py-5 flex justify-between items-center cursor-pointer group gap-20 select-none"
                 >
-                  <Title as="span" className="group-hover:text-primary leading-normal transition-colors duration-200">
+                  <Title className="group-hover:text-primary leading-normal transition-colors duration-200 lg:text-[28px]! xd:text-[30px]!">
                     {item.title}
                   </Title>
 
