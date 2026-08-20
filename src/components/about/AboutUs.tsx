@@ -60,7 +60,7 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background font-google-sans text-foreground overflow-x-hidden xl:overflow-x-visible">
+    <div className="flex flex-col min-h-screen bg-background font-google-sans text-foreground overflow-x-hidden">
       <Hero data={data.hero} subpageTitle={subpageTitle} />
       {/* Navigation Tabs */}
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
