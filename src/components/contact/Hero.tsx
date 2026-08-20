@@ -23,7 +23,7 @@ export default function Hero({
           className="object-cover object-center pointer-events-none"
         />
         {/* Content wrapper */}
-        <div className="relative max-w-360 mx-auto w-full h-full p-6 lg:p-8 flex flex-col text-white z-10">
+        <div className="relative max-w-360 mx-auto w-full h-full p-6 lg:p-8 xd:px-10 2xl:px-8 flex flex-col text-white z-10">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1.5 text-xs md:text-sm font-medium mt-5">
             <Link

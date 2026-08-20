@@ -43,7 +43,7 @@ export default function Hero({ product, category }: HeroProps) {
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
-      <div className="w-full relative flex flex-col lg:flex-row h-104 xd:h-136 overflow-hidden">
+      <div className="w-full relative flex flex-col lg:flex-row h-128 lg:h-104 xd:h-136 overflow-hidden">
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}

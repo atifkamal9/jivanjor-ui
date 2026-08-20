@@ -95,7 +95,7 @@ export default function KnowledgeHub({ data }: KnowledgeHubProps) {
             >
               <div className="flex flex-col md:flex-row">
                 <div className="flex flex-col items-center text-center md:items-start md:text-start w-full md:w-1/2 p-6 md:px-16 md:py-10 space-y-3">
-                  <Title className="font-google-sans font-medium max-w-50 2xl:max-w-64 px-7.5 sm:px-0">
+                  <Title className="font-google-sans font-medium max-w-50 xd:max-w-64 px-7.5 sm:px-0">
                     {c.title}
                   </Title>
                   <Link

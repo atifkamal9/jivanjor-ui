@@ -305,9 +305,9 @@ export default function Hero({ data }: HeroProps) {
       {/* Content Wrapper - Static overlay over background slides */}
       <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
         <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-60 md:max-w-80 xl:max-w-110">
+          <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
             {/* Title */}
-            <Heading className="md:text-[40px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
+            <Heading className="text-[40px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
             </Heading>
 
