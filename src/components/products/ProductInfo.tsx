@@ -167,7 +167,7 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
   }, [activeTab]);
 
   return (
-    <section className="max-w-360 mx-auto p-5 lg:px-8 xd:px-10 2xl:px-8">
+    <section className="max-w-360 mx-auto p-5 lg:px-8 xd:px-10 3xl:px-8">
       {/* Desktop Tab bar header pill container - Sticky with Scroll Spy */}
       <div className="hidden lg:flex sticky top-18 z-40 py-2 px-6 md:mx-0 md:px-0 items-center justify-center w-full">
         <style

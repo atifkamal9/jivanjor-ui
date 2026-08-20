@@ -22,6 +22,7 @@
   --font-amethysta: Amethysta, serif;
   --leading-normal: 110%;
   --breakpoint-xd: 80.125rem;
+  --breakpoint-3xl: 100rem;
 }
 
 .dark {

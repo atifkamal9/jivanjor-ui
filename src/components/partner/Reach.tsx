@@ -760,7 +760,7 @@ export function ReachForm({
 
 export default function Reach() {
   return (
-    <section className="relative max-w-360 mx-auto w-full px-5 lg:px-8 xd:px-10 2xl:px-8 pt-5 lg:pt-14">
+    <section className="relative max-w-360 mx-auto w-full px-5 lg:px-8 xd:px-10 3xl:px-8 pt-5 lg:pt-14">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
         {/* Left Column */}
         <div className="lg:col-span-8">
