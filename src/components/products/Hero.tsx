@@ -66,7 +66,7 @@ export default function Hero({ product, category }: HeroProps) {
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <Heading className="text-white lg:text-[40px]!">
+            <Heading className="text-white lg:text-[40px]! xd:text-[42px]!">
               {productName}
             </Heading>
             {/* Product Tagline */}

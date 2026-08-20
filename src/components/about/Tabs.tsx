@@ -143,8 +143,8 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
               className={`flex flex-col items-center self-stretch gap-1 px-2.5 py-1.25 rounded-xl transition-all duration-200 select-none cursor-pointer flex-1 max-w-20 ${isActive
-                  ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
-                  : "hover:text-black"
+                ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white shadow-[0_4px_12px_rgba(163,22,82,0.15)]"
+                : "hover:text-black"
                 }`}
             >
               <div
