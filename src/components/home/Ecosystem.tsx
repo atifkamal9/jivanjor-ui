@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Gallery from "./Gallery";
 import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
+import Link from "next/link";
 
 interface EcosystemProps {
   data?: {
@@ -32,10 +33,10 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
 
   return (
     <section className="relative bg-surface mt-8 sm:mt-12 leading-normal">
-      <div className="mx-auto max-w-360 justify-center px-5 pt-4">
+      <div className="mx-auto max-w-360 justify-center px-5 lg:px-8 pt-4">
         <div className="mx-auto space-y-4 text-center w-full px-4 py-6">
           <Heading className="font-amethysta font-normal leading-normal max-w-lg 2xl:max-w-xl mx-auto text-center">{title}</Heading>
-          <Subtitle className="font-google-sans min-w-xs max-w-xl 2xl:max-w-2xl mx-auto text-center">
+          <Subtitle className="font-google-sans min-w-xs max-w-xl xd:max-w-2xl mx-auto text-center">
             {subtitle}
           </Subtitle>
           <a
@@ -47,9 +48,9 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
         </div>
         <Gallery items={data?.items} images={(data as any)?.images} />
       </div>
-      <div className="hidden xl:block relative p-12.5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
+      <div className="hidden xl:block relative px-8 py-12.5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
         {/* watermark */}
-        <div className="absolute bottom-0 right-0 max-w-[1140px] min-w-[500px] h-full pointer-events-none">
+        <div className="absolute bottom-0 right-0 max-w-285 min-w-125 h-full pointer-events-none">
           <Image
             src="/images/watermark-choice.svg"
             alt="watermark"
@@ -62,12 +63,12 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
           <Heading className="font-amethysta">{ctaTitle}</Heading>
           <div className="flex flex-col items-start justify-between lg:flex-row gap-4">
             <Subtitle className="max-w-xl font-google-sans">{ctaSubtitle}</Subtitle>
-            <a
+            <Link
               href={ctaLink}
               className="inline-flex items-center justify-center font-medium text-base rounded-full min-w-50 px-6 py-2 border border-spacing-1.5 border-white text-center hover:bg-white/10 transition-colors"
             >
               {ctaText}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

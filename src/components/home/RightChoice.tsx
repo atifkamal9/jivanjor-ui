@@ -124,7 +124,7 @@ export default function RightChoice({ data }: RightChoiceProps) {
                   width={48}
                   unoptimized
                 />
-                <Subtitle className="font-medium !text-base lg:!text-lg group-hover:text-white transition-colors duration-300">
+                <Subtitle className="font-medium text-base! lg:text-lg! group-hover:text-white transition-colors duration-300">
                   {type.title}
                 </Subtitle>
               </div>

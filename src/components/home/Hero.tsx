@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
@@ -304,29 +305,29 @@ export default function Hero({ data }: HeroProps) {
       {/* Content Wrapper - Static overlay over background slides */}
       <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
         <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-20 lg:bottom-14.5 2xl:bottom-18.25 left-7 xl:left-17.25 right-7 xl:right-17.25 flex flex-col items-start pointer-events-auto max-w-60 md:max-w-80 2xl:max-w-100">
+          <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-60 md:max-w-80 xl:max-w-110">
             {/* Title */}
-            <Heading className="tracking-[0%] text-white leading-[0.95]">
+            <Heading className="md:text-[40px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
             </Heading>
 
             {/* Action Buttons */}
             <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
               {activeCta1Text && (
-                <a
+                <Link
                   href={activeCta1Link}
                   className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
                 >
                   {activeCta1Text}
-                </a>
+                </Link>
               )}
               {activeCta2Text && (
-                <a
+                <Link
                   href={activeCta2Link}
                   className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
                 >
                   {activeCta2Text}
-                </a>
+                </Link>
               )}
             </div>
           </div>

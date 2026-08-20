@@ -27,7 +27,7 @@ export default function Hero({ product, category }: HeroProps) {
   return (
     <section id="overview">
       {/* 1. MOBILE BREADCRUMBS (Only visible on mobile/tablet, hidden on desktop) */}
-      <div className="md:hidden flex items-center gap-1.5 px-6 py-2.5 border-b border-neutral-100 text-sm font-medium">
+      <div className="md:hidden flex items-center gap-1.5 px-5 py-2.5 border-b border-neutral-100 text-sm font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -43,14 +43,14 @@ export default function Hero({ product, category }: HeroProps) {
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
-      <div className="w-full relative flex flex-col lg:flex-row lg:h-105 xd:h-120 2xl:h-140 overflow-hidden">
+      <div className="w-full relative flex flex-col lg:flex-row h-104 xd:h-136 overflow-hidden">
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
         <div
           className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-8 xl:py-10 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-5 xl:gap-6 2xl:gap-8"
           style={{
-            paddingLeft: "max(24px, calc((100vw - 1440px) / 2 + 24px))",
+            paddingLeft: "max(32px, calc((100vw - 1440px) / 2 + 32px))",
             backgroundColor: product?.themeColor || "#0498AA",
           }}
         >
@@ -66,7 +66,7 @@ export default function Hero({ product, category }: HeroProps) {
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <Heading as="h1" className="text-white">
+            <Heading className="text-white lg:text-[40px]!">
               {productName}
             </Heading>
             {/* Product Tagline */}

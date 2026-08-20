@@ -319,7 +319,7 @@ export default function ContactForm() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md min-w-60 w-40 flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium hover:opacity-95 transition-opacity cursor-pointer shadow-md min-w-40 w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <>
@@ -567,7 +567,7 @@ export default function ContactForm() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
+                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                     >
                       {isSubmitting ? (
                         <>

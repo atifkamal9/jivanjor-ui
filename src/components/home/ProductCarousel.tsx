@@ -143,7 +143,7 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
             slidesPerView: 4,
           },
         }}
-        className="w-full [overflow-x:clip]! [overflow-y:visible]!"
+        className="w-full overflow-x-clip! overflow-y-visible!"
       >
         {cards.map((card, idx) => (
           <SwiperSlide

@@ -21,7 +21,7 @@
   --font-google-sans: var(--font-google-sans);
   --font-amethysta: Amethysta, serif;
   --leading-normal: 110%;
-  --breakpoint-xd: 1282px;
+  --breakpoint-xd: 80.125rem;
 }
 
 .dark {
