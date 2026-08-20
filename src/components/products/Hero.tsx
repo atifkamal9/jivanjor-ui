@@ -43,17 +43,18 @@ export default function Hero({ product, category }: HeroProps) {
       </div>
 
       {/* 2. RESPONSIVE LAYOUT CONTAINER */}
-      <div className="w-full relative flex flex-col lg:flex-row lg:h-105 2xl:h-140 overflow-hidden">
+      <div className="w-full relative flex flex-col lg:flex-row lg:h-105 xd:h-120 2xl:h-140 overflow-hidden">
         {/* ========================================================================= */}
         {/* DESKTOP VIEW: LEFT PANEL (TEAL BOX) - MOBILE VIEW: BOTTOM PANEL (TEAL BOX) */}
         {/* ========================================================================= */}
         <div
-          className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-8 2xl:py-16 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-5 2xl:gap-8"
+          className="relative order-2 lg:order-1 w-full lg:w-2/5 text-white py-5 lg:py-8 xl:py-10 pr-6 sm:pr-12 lg:pr-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left gap-4 sm:gap-5 xl:gap-6 2xl:gap-8"
           style={{
             paddingLeft: "max(24px, calc((100vw - 1440px) / 2 + 24px))",
             backgroundColor: product?.themeColor || "#0498AA",
           }}
         >
+
           <div className="absolute bottom-0 right-0 pointer-events-none">
             <Image
               src="/images/watermark pro.png"

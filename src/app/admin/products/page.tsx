@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Product, Category, Material } from "@/lib/api";
+import { ALL_ICON_OPTIONS } from "@/lib/iconOptions";
 import { getUserRole } from "@/lib/auth";
 import ImageUpload from "@/components/admin/ImageUpload";
 import FileUpload from "@/components/admin/FileUpload";
@@ -1420,13 +1421,11 @@ export default function ProductsPage() {
                               })}
                               className="px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 cursor-pointer"
                             >
-                              <option value="image 18.svg">Water Drop (image 18)</option>
-                              <option value="image 19.svg">Timer Clock (image 19)</option>
-                              <option value="image 20.svg">Bubbles (image 20)</option>
-                              <option value="Cycle-arrow.svg">Cycle Arrow (Speed)</option>
-                              <option value="Circles-seven.svg">Circles Seven (Finish)</option>
-                              <option value="Texture.svg">Texture (Spread)</option>
-                              <option value="Asterisk.svg">Asterisk (Safety)</option>
+                              {ALL_ICON_OPTIONS.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                  {opt.label}
+                                </option>
+                              ))}
                             </select>
                             <div className="flex items-center justify-center p-2 w-10 h-10 rounded-xl shrink-0"
                               style={{ backgroundColor: `${formData.themeColor}` }}>
@@ -1839,22 +1838,20 @@ export default function ProductsPage() {
                                 <label className="block text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase mb-1">USP Icon Name</label>
                                 <div className="flex items-center gap-2">
                                   <select
-                                    value={usp.icon}
-                                    onChange={(e) => setFormData(prev => {
-                                      const list = [...prev.usps];
-                                      list[idx].icon = e.target.value;
-                                      return { ...prev, usps: list };
-                                    })}
-                                    className="flex-1 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 cursor-pointer"
-                                  >
-                                    <option value="Cycle-arrow.svg">Cycle Arrow (Rotate)</option>
-                                    <option value="Texture.svg">Texture (Spreadability)</option>
-                                    <option value="Asterisk.svg">Asterisk (Safety/Non-toxic)</option>
-                                    <option value="Circles-seven.svg">Circles Seven (Clean Finish)</option>
-                                    <option value="image 18.svg">Water Drop (image 18)</option>
-                                    <option value="image 19.svg">Timer Clock (image 19)</option>
-                                    <option value="image 20.svg">Bubbles (image 20)</option>
-                                  </select>
+                                     value={usp.icon}
+                                     onChange={(e) => setFormData(prev => {
+                                       const list = [...prev.usps];
+                                       list[idx].icon = e.target.value;
+                                       return { ...prev, usps: list };
+                                     })}
+                                     className="flex-1 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50/50 text-xs outline-none focus:border-red-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 cursor-pointer"
+                                   >
+                                     {ALL_ICON_OPTIONS.map((opt) => (
+                                       <option key={opt.value} value={opt.value}>
+                                         {opt.label}
+                                       </option>
+                                     ))}
+                                   </select>
                                   <div
                                     className="flex items-center justify-center p-2 w-9 h-9 rounded-lg shrink-0 border border-black/5"
                                     style={{ backgroundColor: `${formData.themeColor}` }}

@@ -6,6 +6,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { getUserRole, hasPermission } from "@/lib/auth";
 import AccessDenied from "@/components/admin/AccessDenied";
 import { api, Page, PageTemplate, Product, Category, UseCase } from "@/lib/api";
+import { ALL_ICON_OPTIONS_WITH_PATH } from "@/lib/iconOptions";
 import ImageUpload from "@/components/admin/ImageUpload";
 import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
 import MediaUpload from "@/components/admin/MediaUpload";
@@ -3050,14 +3051,7 @@ export default function PagesPage() {
                           }
                           const finalSix = fixedItems.slice(0, 6);
 
-                          const predefinedIcons = [
-                            { label: "Chair / Furniture", value: "/icons/chair.png" },
-                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
-                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
-                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
-                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
-                            { label: "House / Home Repairs", value: "/icons/house.png" }
-                          ];
+                          const predefinedIcons = ALL_ICON_OPTIONS_WITH_PATH;
 
                           return finalSix.map((item: any, idx: number) => {
                             const currentIcon = item.icon || defaults[idx % 6].icon;

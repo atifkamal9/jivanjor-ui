@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Page, PageTemplate, Product, Category } from "@/lib/api";
+import { ALL_PREDEFINED_ICONS } from "@/lib/iconOptions";
 import ImageUpload from "@/components/admin/ImageUpload";
 import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
 import MediaUpload from "@/components/admin/MediaUpload";
@@ -2169,22 +2170,7 @@ export default function TemplatesPage() {
                           }
                           const finalSix = fixedItems.slice(0, 6);
 
-                          const predefinedIcons = [
-                            { label: "Chair / Furniture", value: "/icons/chair.png" },
-                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
-                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
-                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
-                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
-                            { label: "House / Home Repairs", value: "/icons/house.png" },
-                            { label: "Product Range Icon", value: "/images/about/Ad-product.svg" },
-                            { label: "Support Spanner Icon", value: "/images/about/Spanner.svg" },
-                            { label: "Growth Dynamics Icon", value: "/images/about/Positive-dynamics.svg" },
-                            { label: "Variants Tag Icon", value: "/images/about/variants.svg" },
-                            { label: "Distribution Touchpoints", value: "/images/about/distribution.svg" },
-                            { label: "Professionals Group", value: "/images/about/professionals.svg" },
-                            { label: "Pan-India Presence", value: "/images/about/presence.svg" },
-                            { label: "Facilities Factory", value: "/images/about/facilities.svg" },
-                          ];
+                          const predefinedIcons = ALL_PREDEFINED_ICONS;
 
                           return finalSix.map((item: any, idx: number) => {
                             const currentIcon = item.icon || defaults[idx % 6].icon;
@@ -2937,19 +2923,7 @@ export default function TemplatesPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {homeSections.promise.items?.map((item: any, idx: number) => {
-                          const predefinedIcons = [
-                            { label: "Adhesive Product / Quality", value: "/images/about/Ad-product.svg" },
-                            { label: "Leaves / Sustainability", value: "/images/about/Leaves.svg" },
-                            { label: "Presence / Handshake", value: "/images/about/presence.svg" },
-                            { label: "Professionals / Carpenter", value: "/images/about/professionals.svg" },
-                            { label: "Dealers / Network", value: "/images/about/dealers.svg" },
-                            { label: "Chair / Furniture", value: "/icons/chair.png" },
-                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
-                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
-                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
-                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
-                            { label: "House / Home Repairs", value: "/icons/house.png" }
-                          ];
+                          const predefinedIcons = ALL_PREDEFINED_ICONS;
                           const currentIcon = item.icon || "/images/about/Ad-product.svg";
 
                           return (
@@ -3326,17 +3300,7 @@ export default function TemplatesPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {homeSections.presence.items?.map((item: any, idx: number) => {
-                          const predefinedIcons = [
-                            { label: "Presence / Handshake", value: "/images/about/presence.svg" },
-                            { label: "Professionals / Carpenter", value: "/images/about/professionals.svg" },
-                            { label: "Dealers / Network", value: "/images/about/dealers.svg" },
-                            { label: "Chair / Furniture", value: "/icons/chair.png" },
-                            { label: "Cabinet / Storage", value: "/icons/cabinet.png" },
-                            { label: "Wood Floor / Surface", value: "/icons/woodfloor.png" },
-                            { label: "Wooden Plank / Moisture", value: "/icons/wooden plank.png" },
-                            { label: "Checklist / Edge Finishing", value: "/icons/checklist.png" },
-                            { label: "House / Home Repairs", value: "/icons/house.png" }
-                          ];
+                          const predefinedIcons = ALL_PREDEFINED_ICONS;
                           const currentIcon = item.icon || "/images/about/presence.svg";
 
                           return (
