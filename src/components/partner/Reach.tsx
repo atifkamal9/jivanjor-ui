@@ -253,7 +253,7 @@ export function ReachForm({
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
               <div className="text-[#772571] text-5xl font-bold">✓</div>
-              <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+              <Title className="font-google-sans! font-semibold">Thank You!</Title>
               <Paragraph className="">
                 Your query has been submitted successfully. Our team will
                 contact you shortly.
@@ -269,8 +269,8 @@ export function ReachForm({
           ) : (
             <>
               {/* Full Name */}
-              <div className="flex flex-col border-b mt-1">
-                <label className="text-base">Full Name*</label>
+              <div className="flex flex-col border-b mt-1.5">
+                <label>Full Name*</label>
                 <input
                   type="text"
                   required
@@ -278,13 +278,13 @@ export function ReachForm({
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                 />
               </div>
 
               {/* Firm Name */}
-              <div className="flex flex-col border-b mt-1">
-                <label className="text-base">Firm Name*</label>
+              <div className="flex flex-col border-b mt-1.5">
+                <label>Firm Name*</label>
                 <input
                   type="text"
                   required
@@ -292,13 +292,13 @@ export function ReachForm({
                   onChange={(e) =>
                     setFormData({ ...formData, firmName: e.target.value })
                   }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                 />
               </div>
 
               {/* Mobile Number */}
-              <div className="flex flex-col border-b mt-1">
-                <label className="text-base">Mobile Number*</label>
+              <div className="flex flex-col border-b mt-1.5">
+                <label>Mobile Number*</label>
                 <input
                   type="tel"
                   required
@@ -306,25 +306,25 @@ export function ReachForm({
                   onChange={(e) =>
                     setFormData({ ...formData, mobileNumber: e.target.value })
                   }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                  className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                 />
               </div>
 
               {/* City & Pin Code */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col border-b mt-1">
-                  <label className="text-base">City</label>
+                <div className="flex flex-col border-b mt-1.5">
+                  <label>City</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) =>
                       setFormData({ ...formData, city: e.target.value })
                     }
-                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                   />
                 </div>
-                <div className="flex flex-col border-b mt-1">
-                  <label className="text-base">Pin Code*</label>
+                <div className="flex flex-col border-b mt-1.5">
+                  <label>Pin Code*</label>
                   <input
                     type="text"
                     required
@@ -332,7 +332,7 @@ export function ReachForm({
                     onChange={(e) =>
                       setFormData({ ...formData, pinCode: e.target.value })
                     }
-                    className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                    className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                   />
                 </div>
               </div>
@@ -341,7 +341,7 @@ export function ReachForm({
               <div
                 className={`flex flex-col mt-1 relative ${desktopInterestedOpen ? "" : "border-b"}`}
               >
-                <label className="text-base">Interested In</label>
+                <label>Interested In</label>
                 <div
                   onClick={() => {
                     setDesktopInterestedOpen(!desktopInterestedOpen);
@@ -350,7 +350,7 @@ export function ReachForm({
                   className="flex items-center justify-between pb-1 cursor-pointer select-none"
                 >
                   <span
-                    className={`text-base pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
+                    className={` pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
                   >
                     {formData.interestedIn || "Select"}
                   </span>
@@ -370,7 +370,7 @@ export function ReachForm({
                         });
                         setDesktopInterestedOpen(false);
                       }}
-                      className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                      className="cursor-pointer w-full text-left px-2 hover:font-semibold  text-black transition-colors"
                     >
                       Dealership
                     </button>
@@ -382,7 +382,7 @@ export function ReachForm({
               <div
                 className={`flex flex-col mt-1 relative ${desktopBusinessOpen ? "" : "border-b"}`}
               >
-                <label className="text-base">Line of Business</label>
+                <label>Line of Business</label>
                 <div
                   onClick={() => {
                     setDesktopBusinessOpen(!desktopBusinessOpen);
@@ -391,7 +391,7 @@ export function ReachForm({
                   className="flex items-center justify-between pb-1 cursor-pointer select-none"
                 >
                   <span
-                    className={`text-base pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
+                    className={` pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
                   >
                     {formData.lineOfBusiness || "Select"}
                   </span>
@@ -416,7 +416,7 @@ export function ReachForm({
                           setFormData({ ...formData, lineOfBusiness: opt });
                           setDesktopBusinessOpen(false);
                         }}
-                        className="cursor-pointer w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                        className="cursor-pointer w-full text-left px-2 hover:font-semibold  text-black transition-colors"
                       >
                         {opt}
                       </button>
@@ -426,15 +426,15 @@ export function ReachForm({
               </div>
 
               {/* Message */}
-              <div className="flex flex-col border-b mt-1">
-                <label className="text-base">Message</label>
+              <div className="flex flex-col border-b mt-1.5">
+                <label>Message</label>
                 <textarea
                   rows={2}
                   value={formData.message}
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }
-                  className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none resize-none"
+                  className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none resize-none"
                 />
               </div>
 
@@ -468,7 +468,7 @@ export function ReachForm({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <>
@@ -495,8 +495,8 @@ export function ReachForm({
           {/* Card Header */}
           <div
             className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${isOpen
-                ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
-                : "active-gradient-border rounded-[20px]"
+              ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
+              : "active-gradient-border rounded-[20px]"
               }`}
           >
             <Title className="font-google-sans! text-[24px] md:text-[30px] font-medium text-white">
@@ -507,8 +507,8 @@ export function ReachForm({
           {/* Form Container */}
           <div
             className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen
-                ? "max-h-200 opacity-100"
-                : "max-h-0 opacity-0 pointer-events-none"
+              ? "max-h-200 opacity-100"
+              : "max-h-0 opacity-0 pointer-events-none"
               }`}
           >
             <form
@@ -518,7 +518,7 @@ export function ReachForm({
               {formSubmitted ? (
                 <div className="text-center py-10 space-y-4">
                   <div className="text-[#772571] text-5xl font-bold">✓</div>
-                  <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+                  <Title className="font-google-sans! font-semibold">Thank You!</Title>
                   <Paragraph className="">
                     Your query has been submitted successfully. Our team will
                     contact you shortly.
@@ -534,8 +534,8 @@ export function ReachForm({
               ) : (
                 <>
                   {/* Full Name */}
-                  <div className="flex flex-col border-b mt-1">
-                    <label className="text-base">Full Name*</label>
+                  <div className="flex flex-col border-b mt-1.5">
+                    <label>Full Name*</label>
                     <input
                       type="text"
                       required
@@ -543,13 +543,13 @@ export function ReachForm({
                       onChange={(e) =>
                         setFormData({ ...formData, fullName: e.target.value })
                       }
-                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                      className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                     />
                   </div>
 
                   {/* Firm Name */}
-                  <div className="flex flex-col border-b mt-1">
-                    <label className="text-base">Firm Name*</label>
+                  <div className="flex flex-col border-b mt-1.5">
+                    <label>Firm Name*</label>
                     <input
                       type="text"
                       required
@@ -557,13 +557,13 @@ export function ReachForm({
                       onChange={(e) =>
                         setFormData({ ...formData, firmName: e.target.value })
                       }
-                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                      className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                     />
                   </div>
 
                   {/* Mobile Number */}
-                  <div className="flex flex-col border-b mt-1">
-                    <label className="text-base">Mobile Number*</label>
+                  <div className="flex flex-col border-b mt-1.5">
+                    <label>Mobile Number*</label>
                     <input
                       type="tel"
                       required
@@ -574,25 +574,25 @@ export function ReachForm({
                           mobileNumber: e.target.value,
                         })
                       }
-                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                      className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                     />
                   </div>
 
                   {/* City & Pin Code */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col border-b mt-1">
-                      <label className="text-base">City</label>
+                    <div className="flex flex-col border-b mt-1.5">
+                      <label>City</label>
                       <input
                         type="text"
                         value={formData.city}
                         onChange={(e) =>
                           setFormData({ ...formData, city: e.target.value })
                         }
-                        className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                        className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                       />
                     </div>
-                    <div className="flex flex-col border-b mt-1">
-                      <label className="text-base">Pin Code*</label>
+                    <div className="flex flex-col border-b mt-1.5">
+                      <label>Pin Code*</label>
                       <input
                         type="text"
                         required
@@ -600,7 +600,7 @@ export function ReachForm({
                         onChange={(e) =>
                           setFormData({ ...formData, pinCode: e.target.value })
                         }
-                        className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
+                        className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -609,7 +609,7 @@ export function ReachForm({
                   <div
                     className={`flex flex-col mt-1 relative ${mobileInterestedOpen ? "" : "border-b"}`}
                   >
-                    <label className="text-base">Interested In</label>
+                    <label>Interested In</label>
                     <div
                       onClick={() => {
                         setMobileInterestedOpen(!mobileInterestedOpen);
@@ -618,7 +618,7 @@ export function ReachForm({
                       className="flex items-center justify-between pb-1 cursor-pointer select-none"
                     >
                       <span
-                        className={`text-base pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
+                        className={` pl-1.5 ${formData.interestedIn ? "text-foreground" : "text-foreground/60"}`}
                       >
                         {formData.interestedIn || "Select"}
                       </span>
@@ -638,7 +638,7 @@ export function ReachForm({
                             });
                             setMobileInterestedOpen(false);
                           }}
-                          className="w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                          className="w-full text-left px-2 hover:font-semibold  text-black transition-colors"
                         >
                           Dealership
                         </button>
@@ -650,7 +650,7 @@ export function ReachForm({
                   <div
                     className={`flex flex-col mt-1 relative ${mobileBusinessOpen ? "" : "border-b"}`}
                   >
-                    <label className="text-base">Line of Business</label>
+                    <label>Line of Business</label>
                     <div
                       onClick={() => {
                         setMobileBusinessOpen(!mobileBusinessOpen);
@@ -659,7 +659,7 @@ export function ReachForm({
                       className="flex items-center justify-between pb-1 cursor-pointer select-none"
                     >
                       <span
-                        className={`text-base pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
+                        className={` pl-1.5 ${formData.lineOfBusiness ? "text-foreground" : "text-foreground/60"}`}
                       >
                         {formData.lineOfBusiness || "Select"}
                       </span>
@@ -684,7 +684,7 @@ export function ReachForm({
                               setFormData({ ...formData, lineOfBusiness: opt });
                               setMobileBusinessOpen(false);
                             }}
-                            className="w-full text-left px-2 hover:font-semibold text-base text-black transition-colors"
+                            className="w-full text-left px-2 hover:font-semibold  text-black transition-colors"
                           >
                             {opt}
                           </button>
@@ -694,15 +694,15 @@ export function ReachForm({
                   </div>
 
                   {/* Message */}
-                  <div className="flex flex-col border-b mt-1">
-                    <label className="text-base">Message</label>
+                  <div className="flex flex-col border-b mt-1.5">
+                    <label>Message</label>
                     <textarea
                       rows={2}
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none resize-none"
+                      className="w-full bg-transparent border-0 p-0 text-foreground  focus:ring-0 focus:outline-none resize-none"
                     />
                   </div>
 
@@ -736,7 +736,7 @@ export function ReachForm({
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium text-base md:text-lg hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
+                      className="bg-linear-to-r from-[#FF0009] to-[#772571] text-white py-2 rounded-full font-medium hover:opacity-95 transition-opacity cursor-pointer shadow-md w-40 flex items-center justify-center gap-2 disabled:opacity-60"
                     >
                       {isSubmitting ? (
                         <>

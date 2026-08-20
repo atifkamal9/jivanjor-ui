@@ -1,7 +1,7 @@
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { ContactSection } from "@/lib/api";
-import { Heading, Title, Paragraph } from "@/components/ui";
+import { Heading, Title, Paragraph, Subtitle } from "@/components/ui";
 
 const defaultSections: ContactSection[] = [
   {
@@ -78,15 +78,15 @@ export default function Details({
   return (
     <section className="flex flex-col items-center lg:items-start text-center lg:text-start max-w-xl px-5 space-y-5 text-[#222]">
       {/* Title */}
-      <Heading className="text-[28px] sm:text-3xl lg:text-[38px]">
+      <Heading className="max-w-md">
         {mainHeading || "We are always happy to assist you."}
       </Heading>
       <main className="flex flex-col my-6 gap-8 w-full">
         {displaySections.map((section, idx) => (
           <div key={idx} className="flex flex-col space-y-4">
-            <Title className="font-google-sans font-bold text-xl lg:text-2xl text-left">
+            <Subtitle className="font-bold text-left">
               {section.title}
-            </Title>
+            </Subtitle>
             <div className="flex flex-col gap-4">
               {section.details && section.details.map((item, itemIdx) => (
                 <div
@@ -99,10 +99,10 @@ export default function Details({
                   </div>
                   {/* Label & Value Container */}
                   <div className="flex flex-row flex-1 text-left">
-                    <span className="w-24 sm:w-32 lg:w-36 font-normal shrink-0">
+                    <Paragraph className="w-24 sm:w-32 lg:w-36 font-normal shrink-0">
                       {item.label}
-                    </span>
-                    <span className="flex-1 font-normal">{item.value}</span>
+                    </Paragraph>
+                    <Paragraph className="flex-1 font-normal">{item.value}</Paragraph>
                   </div>
                 </div>
               ))}

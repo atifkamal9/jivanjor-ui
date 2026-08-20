@@ -121,7 +121,7 @@ export default function ContactForm() {
       <div className="hidden relative lg:block w-full max-w-2xl bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
         {/* Card Header */}
         <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-          <Title className="font-google-sans! text-[20px] md:text-[24px] font-medium pl-3 text-white">
+          <Title className="font-google-sans! font-medium pl-3 text-white">
             Reach out to Us
           </Title>
           <ShieldCheck className="w-8 h-8" strokeWidth={1} />
@@ -135,7 +135,7 @@ export default function ContactForm() {
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
               <div className="text-[#772571] text-5xl font-bold">✓</div>
-              <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+              <Title className="font-google-sans! font-semibold">Thank You!</Title>
               <Paragraph className="">
                 Your query has been submitted successfully. Our team will
                 contact you shortly.
@@ -152,7 +152,7 @@ export default function ContactForm() {
             <>
               {/* Full Name */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Full Name*</label>
+                <label>Full Name*</label>
                 <input
                   type="text"
                   required
@@ -165,7 +165,7 @@ export default function ContactForm() {
               </div>
               {/* Firm Name */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Firm Name*</label>
+                <label>Firm Name*</label>
                 <input
                   type="text"
                   required
@@ -179,7 +179,7 @@ export default function ContactForm() {
 
               {/* Mobile Number */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Mobile Number*</label>
+                <label>Mobile Number*</label>
                 <input
                   type="tel"
                   required
@@ -194,7 +194,7 @@ export default function ContactForm() {
               {/* City & Pin Code */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col border-b mt-1">
-                  <label className="text-base lg:text-xl">City</label>
+                  <label>City</label>
                   <input
                     type="text"
                     value={formData.city}
@@ -205,7 +205,7 @@ export default function ContactForm() {
                   />
                 </div>
                 <div className="flex flex-col border-b mt-1">
-                  <label className="text-base lg:text-xl">Pin Code*</label>
+                  <label>Pin Code*</label>
                   <input
                     type="text"
                     required
@@ -222,7 +222,7 @@ export default function ContactForm() {
               <div
                 className={`flex flex-col mt-1 relative ${desktopQueryOpen ? "" : "border-b"}`}
               >
-                <label className="text-base lg:text-xl">Type of Query</label>
+                <label>Type of Query</label>
                 <div
                   onClick={() => setDesktopQueryOpen(!desktopQueryOpen)}
                   className="flex items-center justify-between pb-1 cursor-pointer select-none"
@@ -278,7 +278,7 @@ export default function ContactForm() {
 
               {/* Message */}
               <div className="flex flex-col border-b mt-1">
-                <label className="text-base lg:text-xl">Message</label>
+                <label>Message</label>
                 <textarea
                   rows={2}
                   value={formData.message}
@@ -386,7 +386,7 @@ export default function ContactForm() {
                 <>
                   {/* Full Name */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">Full Name*</label>
+                    <label>Full Name*</label>
                     <input
                       type="text"
                       required
@@ -400,7 +400,7 @@ export default function ContactForm() {
 
                   {/* Firm Name */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">Firm Name*</label>
+                    <label>Firm Name*</label>
                     <input
                       type="text"
                       required
@@ -414,7 +414,7 @@ export default function ContactForm() {
 
                   {/* Mobile Number */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">
+                    <label>
                       Mobile Number*
                     </label>
                     <input
@@ -434,7 +434,7 @@ export default function ContactForm() {
                   {/* City & Pin Code */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col border-b mt-1">
-                      <label className="text-base lg:text-xl">City</label>
+                      <label>City</label>
                       <input
                         type="text"
                         value={formData.city}
@@ -445,7 +445,7 @@ export default function ContactForm() {
                       />
                     </div>
                     <div className="flex flex-col border-b mt-1">
-                      <label className="text-base lg:text-xl">Pin Code*</label>
+                      <label>Pin Code*</label>
                       <input
                         type="text"
                         required
@@ -462,7 +462,7 @@ export default function ContactForm() {
                   <div
                     className={`flex flex-col mt-1 relative ${mobileQueryOpen ? "" : "border-b"}`}
                   >
-                    <label className="text-base lg:text-xl">
+                    <label>
                       Type of Query
                     </label>
                     <div
@@ -526,7 +526,7 @@ export default function ContactForm() {
 
                   {/* Message */}
                   <div className="flex flex-col border-b mt-1">
-                    <label className="text-base lg:text-xl">Message</label>
+                    <label>Message</label>
                     <textarea
                       rows={2}
                       value={formData.message}
