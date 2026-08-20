@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { MoveUpRight } from "lucide-react";
+import { Heading, Subtitle } from "@/components/ui";
 
 interface GalleryItem {
   title?: string;
@@ -35,12 +36,12 @@ export default function Gallery({ data }: GalleryProps = {}) {
   return (
     <section className="space-y-4">
       <div className="flex flex-col space-y-4 max-w-3xl text-center md:text-left">
-        <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl max-w-full md:max-w-xl px-6 md:px-0">
+        <Heading className="max-w-full md:max-w-xl px-6 md:px-0 text-center md:text-left">
           {title}
-        </h2>
-        <p className="text-lg lg:text-2xl px-9 md:px-0">
+        </Heading>
+        <Subtitle className="px-9 md:px-0 text-center md:text-left">
           {desc}
-        </p>
+        </Subtitle>
       </div>
       
       {/* Desktop view */}

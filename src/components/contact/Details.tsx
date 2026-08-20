@@ -1,6 +1,7 @@
 import { Phone, Mail, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { ContactSection } from "@/lib/api";
+import { Heading, Title, Paragraph } from "@/components/ui";
 
 const defaultSections: ContactSection[] = [
   {
@@ -77,15 +78,15 @@ export default function Details({
   return (
     <section className="flex flex-col items-center lg:items-start text-center lg:text-start max-w-xl px-5 space-y-5 text-[#222]">
       {/* Title */}
-      <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-[38px]">
+      <Heading className="text-[28px] sm:text-3xl lg:text-[38px]">
         {mainHeading || "We are always happy to assist you."}
-      </h2>
+      </Heading>
       <main className="flex flex-col my-6 gap-8 w-full">
         {displaySections.map((section, idx) => (
           <div key={idx} className="flex flex-col space-y-4">
-            <p className="font-bold text-xl lg:text-2xl text-left">
+            <Title className="font-google-sans font-bold text-xl lg:text-2xl text-left">
               {section.title}
-            </p>
+            </Title>
             <div className="flex flex-col gap-4">
               {section.details && section.details.map((item, itemIdx) => (
                 <div

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
+import { Heading, Subtitle, Title, Paragraph } from "@/components/ui";
 
 interface ReachLeftProps {
   data?: {
@@ -54,13 +55,13 @@ export function ReachLeft({ data }: ReachLeftProps) {
 
   return (
     <div className="flex flex-col space-y-6 text-[#222]">
-      <p className="text-lg md:text-2xl max-w-175 text-center md:text-start">
+      <Subtitle className="max-w-175 text-center md:text-start">
         {desc}
-      </p>
+      </Subtitle>
       {/* Feature Cards Box */}
-      <h2 className="font-amethysta text-[28px] md:text-[38px] text-center md:text-start px-10 md:px-0">
+      <Heading className="text-center md:text-start px-10 md:px-0">
         {title}
-      </h2>
+      </Heading>
       <div className="w-full bg-linear-to-r from-[#772571] to-[#E7071C] text-white rounded-[20px] p-10 md:p-12 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center justify-center">
           {displayCards.map((card, index) => (
@@ -71,10 +72,10 @@ export function ReachLeft({ data }: ReachLeftProps) {
               <div className="flex items-center justify-center mb-4 md:mb-5">
                 {renderIcon(card.icon)}
               </div>
-              <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
+              <Title as="h3" className="mb-2.5 md:mb-5 text-white">
                 {card.title}
-              </h3>
-              <p className="text-base md:text-lg opacity-90">{card.desc}</p>
+              </Title>
+              <Paragraph className="opacity-90 text-white">{card.desc}</Paragraph>
             </div>
           ))}
         </div>
@@ -238,9 +239,9 @@ export function ReachForm({
       <div className="hidden relative xl:block w-full bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
         {/* Card Header */}
         <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-          <h3 className="text-[24px] md:text-[30px] font-medium pl-3">
+          <Title className="font-google-sans! font-medium pl-3 text-white">
             Reach out to Us
-          </h3>
+          </Title>
           <ShieldCheck className="w-8 h-8" strokeWidth={1} />
         </div>
 
@@ -252,11 +253,11 @@ export function ReachForm({
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
               <div className="text-[#772571] text-5xl font-bold">✓</div>
-              <h4 className="text-2xl font-semibold">Thank You!</h4>
-              <p className="">
+              <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+              <Paragraph className="">
                 Your query has been submitted successfully. Our team will
                 contact you shortly.
-              </p>
+              </Paragraph>
               <button
                 type="button"
                 onClick={() => setFormSubmitted(false)}
@@ -493,37 +494,35 @@ export function ReachForm({
         >
           {/* Card Header */}
           <div
-            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${
-              isOpen
+            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${isOpen
                 ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
                 : "active-gradient-border rounded-[20px]"
-            }`}
+              }`}
           >
-            <h3 className="text-[24px] md:text-[30px] font-medium">
+            <Title className="font-google-sans! text-[24px] md:text-[30px] font-medium text-white">
               Reach out to Us
-            </h3>
+            </Title>
             <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
           </div>
           {/* Form Container */}
           <div
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              isOpen
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen
                 ? "max-h-200 opacity-100"
                 : "max-h-0 opacity-0 pointer-events-none"
-            }`}
+              }`}
           >
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col px-8 py-4 space-y-1"
+              className="flex flex-col px-8 py-6 space-y-1"
             >
               {formSubmitted ? (
                 <div className="text-center py-10 space-y-4">
                   <div className="text-[#772571] text-5xl font-bold">✓</div>
-                  <h4 className="text-2xl font-semibold">Thank You!</h4>
-                  <p className="">
+                  <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+                  <Paragraph className="">
                     Your query has been submitted successfully. Our team will
                     contact you shortly.
-                  </p>
+                  </Paragraph>
                   <button
                     type="button"
                     onClick={() => setFormSubmitted(false)}

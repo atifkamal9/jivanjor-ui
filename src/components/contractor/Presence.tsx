@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Heading, Title, Paragraph } from "@/components/ui";
 
 const stats = [
   {
@@ -54,9 +55,9 @@ export default function Presence({ data }: PresenceProps = {}) {
     <section className="w-full">
       <div className="flex flex-col items-center md:items-start text-center md:text-start max-w-4xl px-5 space-y-5">
         {/* Title */}
-        <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-[38px] font-normal text-[#222] leading-tight">
+        <Heading className="text-[#222]">
           {title}
-        </h2>
+        </Heading>
 
         {/* Stats Grid */}
         <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
@@ -80,10 +81,10 @@ export default function Presence({ data }: PresenceProps = {}) {
                 </div>
                 {/* Stat Number & Label */}
                 <div className="flex-1 flex-col space-y-1">
-                  <div className="text-[26px] text-3xl xl:text-[34px] font-medium">
+                  <Title className="font-google-sans! font-medium">
                     {stat.value}
-                  </div>
-                  <div className="text-base md:text-xl">{stat.label}</div>
+                  </Title>
+                  <Paragraph>{stat.label}</Paragraph>
                 </div>
               </div>
             );

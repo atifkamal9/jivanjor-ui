@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
+import { Heading, Subtitle, Title, Paragraph } from "@/components/ui";
 
 interface ReachLeftProps {
   data?: {
@@ -58,16 +59,16 @@ export function ReachLeft({ data }: ReachLeftProps) {
 
   return (
     <div className="flex flex-col space-y-6 text-[#222]">
-      <h3 className="font-amethysta text-[28px] md:text-3xl text-center md:text-start leading-tight">
+      <Heading className="text-center md:text-start leading-tight">
         {title}
-      </h3>
+      </Heading>
       {/* Top section: Text, Download button and Promo Image */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
         {/* App text */}
         <div className="hidden md:block col-span-7 max-w-md space-y-4">
-          <p className="text-lg md:text-2xl leading-relaxed">
+          <Subtitle className="leading-relaxed">
             {appText}
-          </p>
+          </Subtitle>
           <div>
             <a
               target="_blank"
@@ -97,9 +98,9 @@ export function ReachLeft({ data }: ReachLeftProps) {
         </div>
 
         <div className="flex flex-col items-center text-center md:hidden space-y-4 max-w-85 mx-auto">
-          <p className="text-lg">
+          <Subtitle className="leading-relaxed">
             {appText}
-          </p>
+          </Subtitle>
           <div>
             <a
               target="_blank"
@@ -130,10 +131,10 @@ export function ReachLeft({ data }: ReachLeftProps) {
               <div className="flex items-center justify-center mb-4 md:mb-5">
                 {renderIcon(card.icon)}
               </div>
-              <h3 className="font-amethysta text-[22px] md:text-[26px] mb-2.5 md:mb-5">
+              <Title as="h3" className="mb-2.5 md:mb-5 text-white">
                 {card.title}
-              </h3>
-              <p className="text-base md:text-lg opacity-90">{card.desc}</p>
+              </Title>
+              <Paragraph className="opacity-90 text-white">{card.desc}</Paragraph>
             </div>
           ))}
         </div>
@@ -286,9 +287,9 @@ export function ReachForm({
       <div className="hidden relative xl:block w-full bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
         {/* Card Header */}
         <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-          <h3 className="text-[24px] md:text-[30px] font-medium pl-3">
+          <Title className="font-google-sans! font-medium pl-3 text-white">
             Reach out to Us
-          </h3>
+          </Title>
           <ShieldCheck className="w-8 h-8" strokeWidth={1} />
         </div>
 
@@ -300,11 +301,11 @@ export function ReachForm({
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
               <div className="text-[#772571] text-5xl font-bold">✓</div>
-              <h4 className="text-2xl font-semibold">Thank You!</h4>
-              <p className="">
+              <Title className="font-google-sans! font-semibold">Thank You!</Title>
+              <Paragraph className="">
                 Your query has been submitted successfully. Our team will
                 contact you shortly.
-              </p>
+              </Paragraph>
               <button
                 type="button"
                 onClick={() => setFormSubmitted(false)}
@@ -380,11 +381,10 @@ export function ReachForm({
                   className="flex items-center justify-between pb-1 cursor-pointer select-none"
                 >
                   <span
-                    className={`text-base pl-1.5 ${
-                      formData.queryType
-                        ? "text-foreground"
-                        : "text-foreground/60"
-                    }`}
+                    className={`text-base pl-1.5 ${formData.queryType
+                      ? "text-foreground"
+                      : "text-foreground/60"
+                      }`}
                   >
                     {formData.queryType
                       ? formData.queryType === "Product Range"
@@ -397,9 +397,8 @@ export function ReachForm({
                       : "Select option"}
                   </span>
                   <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      desktopQueryOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 transition-transform duration-200 ${desktopQueryOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </div>
 
@@ -499,24 +498,22 @@ export function ReachForm({
         >
           {/* Card Header */}
           <div
-            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${
-              isOpen
-                ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
-                : "active-gradient-border rounded-[20px]"
-            }`}
+            className={`flex items-center justify-between px-5 py-4 transition-all duration-500 ease-in-out ${isOpen
+              ? "bg-linear-to-r from-[#FF0009] to-[#772571] text-white rounded-t-[20px]"
+              : "active-gradient-border rounded-[20px]"
+              }`}
           >
-            <h3 className="text-[24px] md:text-[30px] font-medium">
+            <Title className="font-google-sans! text-[24px] md:text-[30px] font-medium text-white">
               Reach out to Us
-            </h3>
+            </Title>
             <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
           </div>
           {/* Form Container */}
           <div
-            className={`transition-all duration-500 ease-in-out overflow-hidden ${
-              isOpen
-                ? "max-h-200 opacity-100"
-                : "max-h-0 opacity-0 pointer-events-none"
-            }`}
+            className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen
+              ? "max-h-200 opacity-100"
+              : "max-h-0 opacity-0 pointer-events-none"
+              }`}
           >
             <form
               onSubmit={handleSubmit}
@@ -525,11 +522,11 @@ export function ReachForm({
               {formSubmitted ? (
                 <div className="text-center py-10 space-y-4">
                   <div className="text-[#772571] text-5xl font-bold">✓</div>
-                  <h4 className="text-2xl font-semibold">Thank You!</h4>
-                  <p className="">
+                  <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+                  <Paragraph className="">
                     Your query has been submitted successfully. Our team will
                     contact you shortly.
-                  </p>
+                  </Paragraph>
                   <button
                     type="button"
                     onClick={() => setFormSubmitted(false)}
@@ -612,11 +609,10 @@ export function ReachForm({
                       className="flex items-center justify-between pb-1 cursor-pointer select-none"
                     >
                       <span
-                        className={`text-base pl-1.5 ${
-                          formData.queryType
-                            ? "text-foreground"
-                            : "text-foreground/60"
-                        }`}
+                        className={`text-base pl-1.5 ${formData.queryType
+                          ? "text-foreground"
+                          : "text-foreground/60"
+                          }`}
                       >
                         {formData.queryType
                           ? formData.queryType === "Product Range"
@@ -629,9 +625,8 @@ export function ReachForm({
                           : "Select option"}
                       </span>
                       <ChevronDown
-                        className={`w-5 h-5 transition-transform duration-200 ${
-                          mobileQueryOpen ? "rotate-180" : ""
-                        }`}
+                        className={`w-5 h-5 transition-transform duration-200 ${mobileQueryOpen ? "rotate-180" : ""
+                          }`}
                       />
                     </div>
 

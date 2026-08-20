@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ShieldCheck, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
+import { Title, Paragraph } from "@/components/ui";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -120,9 +121,9 @@ export default function ContactForm() {
       <div className="hidden relative lg:block w-full max-w-2xl bg-white rounded-[20px] shadow-[4px_4px_12px_4px_rgba(0,0,0,0.1)] overflow-hidden">
         {/* Card Header */}
         <div className="flex items-center justify-between p-5 bg-linear-to-r from-[#FF0009] to-[#772571] text-white">
-          <h3 className="text-[20px] md:text-[24px] font-medium pl-3">
+          <Title className="font-google-sans! text-[20px] md:text-[24px] font-medium pl-3 text-white">
             Reach out to Us
-          </h3>
+          </Title>
           <ShieldCheck className="w-8 h-8" strokeWidth={1} />
         </div>
 
@@ -134,11 +135,11 @@ export default function ContactForm() {
           {formSubmitted ? (
             <div className="text-center py-10 space-y-4">
               <div className="text-[#772571] text-5xl font-bold">✓</div>
-              <h4 className="text-2xl font-semibold">Thank You!</h4>
-              <p className="">
+              <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+              <Paragraph className="">
                 Your query has been submitted successfully. Our team will
                 contact you shortly.
-              </p>
+              </Paragraph>
               <button
                 type="button"
                 onClick={() => setFormSubmitted(false)}
@@ -349,9 +350,9 @@ export default function ContactForm() {
               : "active-gradient-border rounded-[20px]"
               }`}
           >
-            <h3 className="text-[24px] md:text-[30px] font-medium">
+            <Title className="font-google-sans! text-[24px] md:text-[30px] font-medium text-white">
               Reach out to Us
-            </h3>
+            </Title>
             <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
           </div>
           {/* Form Container with Smooth Height Transition */}
@@ -368,11 +369,11 @@ export default function ContactForm() {
               {formSubmitted ? (
                 <div className="text-center py-10 space-y-4">
                   <div className="text-[#772571] text-5xl font-bold">✓</div>
-                  <h4 className="text-2xl font-semibold">Thank You!</h4>
-                  <p className="">
+                  <Title className="font-google-sans! text-2xl font-semibold">Thank You!</Title>
+                  <Paragraph className="">
                     Your query has been submitted successfully. Our team will
                     contact you shortly.
-                  </p>
+                  </Paragraph>
                   <button
                     type="button"
                     onClick={() => setFormSubmitted(false)}

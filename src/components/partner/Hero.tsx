@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { Heading } from "@/components/ui";
 
 interface HeroProps {
   hideText?: boolean;
@@ -45,9 +46,9 @@ export default function Hero({ hideText = false, data }: HeroProps) {
           </div>
 
           {/* Title */}
-          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-[40px] font-normal max-w-180 text-start">
+          <Heading className="max-w-180 text-start text-white">
             {title}
-          </h2>
+          </Heading>
         </div>
       </div>
 
@@ -73,9 +74,9 @@ export default function Hero({ hideText = false, data }: HeroProps) {
         </div>
 
         {/* Title */}
-        <h2 className="font-amethysta text-[28px] font-normal max-w-sm text-center">
+        <Heading className="max-w-sm text-center">
           {title}
-        </h2>
+        </Heading>
       </div>
     </section>
   );
