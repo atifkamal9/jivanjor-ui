@@ -54,7 +54,7 @@ export default function Details({
 
   const renderIcon = (iconStr: string, label: string) => {
     if (!iconStr) {
-      return <Phone className="w-6 h-6 text-[#772571]" />;
+      return <Phone className="text-[#772571]" />;
     }
     if (iconStr.startsWith("/") || iconStr.startsWith("http")) {
       return (
@@ -62,17 +62,17 @@ export default function Details({
           src={iconStr}
           className="aspect-square object-contain"
           alt={label || "Icon"}
-          width={30}
-          height={30}
+          width={20}
+          height={20}
         />
       );
     }
     const lower = iconStr.toLowerCase();
-    if (lower.includes("phone")) return <Phone className="w-6 h-6 text-[#772571]" />;
-    if (lower.includes("mail") || lower.includes("email")) return <Mail className="w-6 h-6 text-[#772571]" />;
-    if (lower.includes("clock") || lower.includes("hour") || lower.includes("time")) return <Clock className="w-6 h-6 text-[#772571]" />;
-    if (lower.includes("pin") || lower.includes("address") || lower.includes("map")) return <MapPin className="w-6 h-6 text-[#772571]" />;
-    return <Phone className="w-6 h-6 text-[#772571]" />;
+    if (lower.includes("phone")) return <Phone className="text-[#772571]" />;
+    if (lower.includes("mail") || lower.includes("email")) return <Mail className="text-[#772571]" />;
+    if (lower.includes("clock") || lower.includes("hour") || lower.includes("time")) return <Clock className="text-[#772571]" />;
+    if (lower.includes("pin") || lower.includes("address") || lower.includes("map")) return <MapPin className="text-[#772571]" />;
+    return <Phone className="text-[#772571]" />;
   };
 
   return (
@@ -91,10 +91,10 @@ export default function Details({
               {section.details && section.details.map((item, itemIdx) => (
                 <div
                   key={itemIdx}
-                  className="flex items-start text-lg lg:text-2xl w-full"
+                  className="flex items-start w-full"
                 >
                   {/* Icon */}
-                  <div className="flex items-center w-6.5 h-6.5 pr-2 shrink-0">
+                  <div className="flex items-center w-6.5 h-6.5 pb-1 pr-2 shrink-0">
                     {renderIcon(item.icon, item.label)}
                   </div>
                   {/* Label & Value Container */}
