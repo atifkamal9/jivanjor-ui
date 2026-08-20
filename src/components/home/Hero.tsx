@@ -196,7 +196,7 @@ export default function Hero({ data }: HeroProps) {
   const activeCta2Link = currentSlide?.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
 
   return (
-    <section className="relative w-full h-146 lg:h-130 2xl:h-164.5 overflow-hidden bg-black text-white">
+    <section className="relative w-full h-130 xd:h-164.5 overflow-hidden bg-black text-white">
       <Swiper
         onSwiper={setSwiperInstance}
         onSlideChange={(swiper) => {

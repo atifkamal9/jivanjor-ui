@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import { Heading, Subtitle, Title, Paragraph } from "@/components/ui";
 
 interface FaqItem {
   question: string;
@@ -69,12 +70,12 @@ export default function ProductFaq({ product }: ProductFaqProps) {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
+          <Heading as="h2">
             {product?.faqsTitle || "FAQs"}
-          </h2>
-          <p className="text-base md:text-xl max-w-2xl mx-auto leading-normal">
+          </Heading>
+          <Subtitle className="max-w-2xl mx-auto">
             {product?.faqsDescription || "Find quick answers about product use, coverage, setting time, pack sizes and technical details."}
-          </p>
+          </Subtitle>
         </div>
 
         {/* FAQs Container Card */}
@@ -92,9 +93,9 @@ export default function ProductFaq({ product }: ProductFaqProps) {
                     onClick={() => toggleAccordion(idx)}
                     className="w-full text-left py-5 flex justify-between items-center cursor-pointer group select-none gap-4 lg:px-4"
                   >
-                    <span className="font-amethysta text-base sm:text-xl lg:text-2xl group-hover:text-primary transition-colors duration-200 leading-normal lg:px-2">
+                    <Title as="span" className="group-hover:text-primary transition-colors duration-200 leading-normal lg:px-2">
                       {item.question}
-                    </span>
+                    </Title>
 
                     {/* Toggle Icon */}
                     {isOpen ? (
@@ -116,9 +117,9 @@ export default function ProductFaq({ product }: ProductFaqProps) {
                         : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                   >
-                    <p className="text-sm md:text-lg leading-normal font-normal max-w-2xl lg:px-6">
+                    <Paragraph className="leading-normal max-w-2xl lg:px-6">
                       {item.answer}
-                    </p>
+                    </Paragraph>
                   </div>
                 </div>
               );

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
+import { Heading, Title, Subtitle, Paragraph, BodyText } from "@/components/ui";
 
 interface ResponsibilityProps {
   data?: {
@@ -113,14 +114,14 @@ export default function Responsibility({ data }: ResponsibilityProps) {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[28px] md:text-[38px] text-center font-normal mb-4 max-w-xs md:max-w-lg w-full mx-auto">
+        <Heading as="h2" className="text-center mb-4 max-w-xs md:max-w-lg w-full mx-auto">
           {title}
-        </h2>
+        </Heading>
 
         {/* Section Subtitle */}
-        <p className="text-lg sm:text-xl lg:text-2xl text-center max-w-83 md:max-w-4xl mb-4 md:mb-9 mx-auto w-full">
+        <Subtitle className="text-center max-w-83 md:max-w-4xl mb-4 md:mb-9 mx-auto w-full">
           {subtitle}
-        </p>
+        </Subtitle>
 
         {/* Badges Slider (Mobile & Desktop) */}
         <div
@@ -182,9 +183,9 @@ export default function Responsibility({ data }: ResponsibilityProps) {
                     />
                   </div>
                   {/* Badge Label */}
-                  <p className="text-sm md:text-base font-medium text-[#333]">
+                  <BodyText className="text-sm md:text-base font-medium text-[#333]">
                     {badge.title}
-                  </p>
+                  </BodyText>
                 </div>
               </SwiperSlide>
             ))}
@@ -194,12 +195,12 @@ export default function Responsibility({ data }: ResponsibilityProps) {
         {/* Sustainability Inner Card */}
         <div className="w-full bg-surface rounded-[20px] p-0 md:p-10 lg:p-12">
           <div className="flex flex-col items-center text-center px-8 pt-10 md:pt-2">
-            <h3 className="font-amethysta text-[28px] md:text-4xl font-normal mb-4 max-w-full md:max-w-xl">
+            <Heading className="text-center mb-4 max-w-full md:max-w-xl">
               {sustainabilityTitle}
-            </h3>
-            <p className="text-lg md:text-2xl max-w-78 md:max-w-5xl">
+            </Heading>
+            <Subtitle className="text-center max-w-78 md:max-w-5xl">
               {sustainabilitySubtitle}
-            </p>
+            </Subtitle>
           </div>
           <div className="flex flex-col lg:flex-row items-center gap-6 p-4 md:p-8">
             {/* Left Column: Image */}
@@ -226,10 +227,10 @@ export default function Responsibility({ data }: ResponsibilityProps) {
                       width={24}
                     />
                     <div className="flex flex-col items-center justify-center self-stretch leading-normal md:items-start text-center md:text-start px-10 md:px-0 gap-1">
-                      <h3 className="font-amethysta text-[18px] md:text-[22px] font-medium">
+                      <Subtitle className="font-amethysta! font-medium">
                         {practice.title}
-                      </h3>
-                      <p className="text-base sm:text-lg">{practice.desc}</p>
+                      </Subtitle>
+                      <Paragraph>{practice.desc}</Paragraph>
                     </div>
                   </div>
                   {/* Border */}

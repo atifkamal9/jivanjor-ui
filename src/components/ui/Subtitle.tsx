@@ -14,7 +14,7 @@ export default function Subtitle({
 }: SubtitleProps) {
   return (
     <Component
-      className={`font-google-sans text-base sm:text-xl 2xl:text-[22px] leading-normal ${className}`}
+      className={`font-google-sans text-base sm:text-xl xd:text-[22px] leading-normal ${className}`}
       {...props}
     >
       {children}

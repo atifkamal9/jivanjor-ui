@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useFileMetadata } from "@/lib/useFileMetadata";
+import { Heading, Subtitle, Title, Paragraph } from "@/components/ui";
 
 interface ProductResourcesProps {
   product?: any;
@@ -41,12 +42,12 @@ export default function ProductResources({ product }: ProductResourcesProps) {
             alt="badge"
           />
         </div>
-        <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
+        <Heading as="h2">
           Technical Resources
-        </h2>
-        <p className="text-base md:text-xl max-w-2xl mx-auto leading-normal text-neutral-600 dark:text-neutral-400">
+        </Heading>
+        <Subtitle className="max-w-2xl mx-auto text-neutral-600 dark:text-neutral-400">
           Download Technical Data Sheets (TDS), safety manuals, and documentation.
-        </p>
+        </Subtitle>
       </div>
 
       {/* Accordion container */}
@@ -59,14 +60,14 @@ export default function ProductResources({ product }: ProductResourcesProps) {
           >
             {/* Left Content Panel */}
             <div className="flex flex-col animate-fadeIn gap-1.5 relative flex-1 pr-8 lg:pr-0">
-              <span className="font-medium text-lg lg:text-2xl text-black dark:text-white font-google-sans group-hover:text-red-600 transition-colors max-w-60 lg:max-w-lg">
+              <Title as="span" className="font-medium text-lg lg:text-2xl text-black dark:text-white font-google-sans group-hover:text-red-600 transition-colors max-w-60 lg:max-w-lg">
                 {resourceTitle}
-              </span>
+              </Title>
               {isOpen && (
                 <div className="space-y-6 max-w-xs lg:max-w-md pt-2">
-                  <p className="text-base lg:text-lg text-neutral-600 dark:text-neutral-300 font-normal font-google-sans leading-[120%]">
+                  <Paragraph className="text-neutral-600 dark:text-neutral-300 font-normal leading-[120%]">
                     {resourceDescription}
-                  </p>
+                  </Paragraph>
                   <div className="space-y-2">
                     <span className="block font-medium text-xs md:text-sm text-neutral-400 uppercase tracking-wider">
                       {fileMeta.label}

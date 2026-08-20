@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Home, ChevronRight } from "lucide-react";
+import { Heading, Subtitle } from "@/components/ui";
 
 interface HeroProps {
   data?: {
@@ -67,12 +68,12 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
 
         {/* Content */}
         <div className="flex flex-col items-center relative max-w-2xs md:max-w-5xl text-white gap-4 mt-4 md:mt-6 z-10">
-          <h1 className="font-amethysta text-[32px] md:text-4xl leading-[95%]!">
+          <Heading className="leading-[95%]! text-white">
             {title}
-          </h1>
-          <p className="text-base md:text-xl max-w-xl">
+          </Heading>
+          <Subtitle className="max-w-xl text-white/90">
             {desc}
-          </p>
+          </Subtitle>
           <div>
             <Link
               href={ctaLink}

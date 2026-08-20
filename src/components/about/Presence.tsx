@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
 
 interface PresenceProps {
   data?: {
@@ -91,14 +92,14 @@ export default function Presence({ data }: PresenceProps) {
         </div>
 
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[28px] sm:text-3xl md:text-4xl text-center text-[#222] font-normal mb-5">
+        <Heading className="text-center text-[#222] mb-5">
           {title}
-        </h2>
+        </Heading>
 
         {/* Section Subtitle */}
-        <p className="text-lg sm:text-xl lg:text-[24px] text-center text-[#222] max-w-83 md:max-w-5xl mb-4 md:mb-6">
+        <Subtitle className="text-center text-[#222] max-w-83 md:max-w-5xl mb-4 md:mb-6">
           {subtitle}
-        </p>
+        </Subtitle>
 
         <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 items-stretch justify-items-center mb-0 md:mb-4">
           {stats.map((stat, idx) => {
@@ -106,9 +107,8 @@ export default function Presence({ data }: PresenceProps) {
             return (
               <div
                 key={idx}
-                className={`flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300 text-[#222] ${
-                  isLast ? "col-span-2 md:col-span-1" : ""
-                }`}
+                className={`flex flex-col items-center justify-between text-center p-2 transition-shadow duration-300 text-[#222] ${isLast ? "col-span-2 md:col-span-1" : ""
+                  }`}
               >
                 {/* Stat Icon */}
                 <div className="aspect-square h-16 flex items-center justify-center mb-2">
@@ -122,10 +122,10 @@ export default function Presence({ data }: PresenceProps) {
                 </div>
                 {/* Stat Number & Label */}
                 <div className="flex-1 flex-col space-y-1">
-                  <div className="text-[26px] text-3xl xl:text-[34px] font-medium">
+                  <Title className="font-google-sans! font-medium">
                     {stat.value}
-                  </div>
-                  <div className="text-base md:text-xl">{stat.label}</div>
+                  </Title>
+                  <Paragraph>{stat.label}</Paragraph>
                 </div>
               </div>
             );

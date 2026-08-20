@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { api } from "@/lib/api";
+import { Heading } from "@/components/ui";
 
 export default function Hero() {
   const [heroCover, setHeroCover] = useState("/images/main-category-hero.png");
@@ -57,9 +58,9 @@ export default function Hero() {
                   All Products
                 </span>
               </div>
-              <h2 className="font-amethysta font-normal text-3xl sm:text-4xl mt-0 md:mt-6 text-center md:text-start">
+              <Heading className="mt-0 md:mt-6 text-center md:text-start text-black md:text-white">
                 Our Exclusive Product Range
-              </h2>
+              </Heading>
             </div>
           </div>
         </div>

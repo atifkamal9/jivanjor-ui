@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { Heading, Paragraph, Subtitle } from "@/components/ui";
 
 interface HeroProps {
   product?: any;
@@ -64,13 +65,13 @@ export default function Hero({ product, category }: HeroProps) {
           </div>
           <div className="space-y-1 max-w-xs sm:max-w-md">
             {/* Product Title using Serif Amethysta font */}
-            <h1 className="font-amethysta text-[32px] sm:text-4xl lg:text-4xl 2xl:text-5xl font-normal leading-normal">
+            <Heading as="h1" className="text-white">
               {productName}
-            </h1>
+            </Heading>
             {/* Product Tagline */}
-            <p className="font-amethysta text-lg lg:text-xl 2xl:text-2xl leading-[120%]! max-w-3xs sm:max-w-md">
+            <Subtitle className="font-amethysta! text-white/90 leading-[120%]! max-w-3xs sm:max-w-md">
               {productDescription}
-            </p>
+            </Subtitle>
           </div>
           {/* Product Bullet Features list */}
           <div className="space-y-1">
@@ -81,7 +82,7 @@ export default function Hero({ product, category }: HeroProps) {
                 : (feature?.icon || `image ${18 + (fIdx % 3)}.svg`);
 
               return (
-                <div key={fIdx} className="flex items-center gap-3.5">
+                <div key={fIdx} className="flex items-center gap-2">
                   <div className="shrink-0 text-white flex items-center justify-center">
                     <Image
                       src={`/icons/${iconName}`}
@@ -91,9 +92,9 @@ export default function Hero({ product, category }: HeroProps) {
                       height={20}
                     />
                   </div>
-                  <span className="text-lg lg:text-xl 2xl:text-2xl font-normal leading-normal">
+                  <Paragraph className="font-normal leading-normal">
                     {text}
-                  </span>
+                  </Paragraph>
                 </div>
               );
             })}

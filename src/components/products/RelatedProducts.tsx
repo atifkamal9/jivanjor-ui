@@ -2,9 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Heading, Title, Paragraph } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -92,9 +92,9 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-2xl sm:text-3xl lg:text-4xl font-normal leading-normal">
+          <Heading as="h2">
             {product?.relatedTitle || "Related Products"}
-          </h2>
+          </Heading>
         </div>
         <div className="w-full mt-20">
           <Swiper
@@ -154,13 +154,13 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
                     className="rounded-[28px] p-5 pt-32 lg:pt-44 flex flex-1 flex-col items-center text-white w-69 min-h-68 lg:w-69 lg:h-93 lg:min-h-88"
                     style={{ backgroundColor: card.themeColor || "whitesmoke" }}
                   >
-                    <h3 className="text-xl font-semibold text-center mb-1.5">
+                    <Title className="font-google-sans text-2xl! font-semibold text-center mb-2">
                       {card.name}
-                    </h3>
+                    </Title>
                     <div className="w-full h-px bg-white my-3" />
-                    <p className="text-center text-sm lg:text-base leading-normal max-w-60">
+                    <Paragraph className="text-center text-base! leading-normal max-w-60">
                       {card.shortDescription || card.description}
-                    </p>
+                    </Paragraph>
                   </div>
                 </Link>
               </SwiperSlide>

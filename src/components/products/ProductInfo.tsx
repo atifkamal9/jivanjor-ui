@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import ProductFeatures from "./ProductFeatures";
 import RelatedProducts from "./RelatedProducts";
 import ProductFaq from "./ProductFaq";
+import { Title, Subtitle, Paragraph } from "@/components/ui";
 
 type TabName = "Overview" | "Tech Specs" | "USPs" | "Applications" | "FAQs";
 
@@ -249,18 +250,18 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                     alt="badge"
                   />
                 </div>
-                <p className="text-lg sm:text-xl lg:text-2xl font-normal leading-normal">
+                <Subtitle className="max-w-3xl font-normal">
                   {product?.techSpecsDescription || "Watershield provides excellent water-resistance. Its superior flow makes it smooth and easy to apply."}
-                </p>
+                </Subtitle>
               </div>
 
               {/* Split specifications grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 p-6 sm:p-10 lg:p-12 text-center lg:text-start">
                 {/* Left Column: Technical Specifications */}
                 <div>
-                  <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
+                  <Title as="h3" className="pb-1 border-b border-black mb-6 font-medium">
                     Technical Specifications
-                  </h3>
+                  </Title>
                   <div className="space-y-2 max-w-sm text-lg md:text-xl">
                     {product?.techSpecs && product.techSpecs.length > 0 ? (
                       product.techSpecs.map((spec: any, idx: number) => (
@@ -299,9 +300,9 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                 {/* Right Column: Pack Sizes & Documentation */}
                 <div className="">
                   <div>
-                    <h3 className="font-amethysta text-2xl lg:text-3xl pb-1 border-b border-black mb-6 font-medium">
+                    <Title as="h3" className="pb-1 border-b border-black mb-6 font-medium">
                       Pack Sizes & Documentation
-                    </h3>
+                    </Title>
 
                     {/* Grid layout of sizes chips */}
                     <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mb-5 max-w-lg">
@@ -356,12 +357,12 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                             height={40}
                           />
                         </div>
-                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                        <Title as="h4" className="font-medium text-white">
                           {usp.title}
-                        </h4>
-                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                        </Title>
+                        <Paragraph className="font-light max-w-xs mx-auto text-white/90">
                           {usp.description}
-                        </span>
+                        </Paragraph>
                       </div>
                     ))
                   ) : (
@@ -377,13 +378,13 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                             height={40}
                           />
                         </div>
-                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                        <Title as="h4" className="font-medium text-white">
                           Faster Site Rotation
-                        </h4>
-                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                        </Title>
+                        <Paragraph className="font-light max-w-xs mx-auto text-white/90">
                           Fast setting time helps professionals complete work
                           quicker and move between jobs more efficiently.
-                        </span>
+                        </Paragraph>
                       </div>
 
                       {/* USP 2 */}
@@ -397,13 +398,13 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                             height={40}
                           />
                         </div>
-                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                        <Title as="h4" className="font-medium text-white">
                           Smooth Spreadability
-                        </h4>
-                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                        </Title>
+                        <Paragraph className="font-light max-w-xs mx-auto text-white/90">
                           Superior flow and easy spreading help reduce wastage and
                           support better coverage.
-                        </span>
+                        </Paragraph>
                       </div>
 
                       {/* USP 3 */}
@@ -417,13 +418,13 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                             height={40}
                           />
                         </div>
-                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                        <Title as="h4" className="font-medium text-white">
                           Solvent-Free Safety
-                        </h4>
-                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                        </Title>
+                        <Paragraph className="font-light max-w-xs mx-auto text-white/90">
                           Water-based, non-flammable and non-toxic formulation for
                           safer handling during application.
-                        </span>
+                        </Paragraph>
                       </div>
 
                       {/* USP 4 */}
@@ -437,13 +438,13 @@ export default function ProductInfo({ product, allProducts }: ProductInfoProps) 
                             height={40}
                           />
                         </div>
-                        <h4 className="font-amethysta text-2xl md:text-3xl font-medium leading-normal">
+                        <Title as="h4" className="font-medium text-white">
                           Clean Finish After Drying
-                        </h4>
-                        <span className="text-base md:text-lg leading-normal font-light max-w-xs mx-auto">
+                        </Title>
+                        <Paragraph className="font-light max-w-xs mx-auto text-white/90">
                           Dries into a clear transparent film, helping maintain a
                           neat finish around edges and joints.
-                        </span>
+                        </Paragraph>
                       </div>
                     </>
                   )}

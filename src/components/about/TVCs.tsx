@@ -8,6 +8,7 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import { Heading, Subtitle, Paragraph } from "@/components/ui";
 
 interface VideoItem {
   id: string;
@@ -88,14 +89,14 @@ export default function TVCs({ data }: TVCsProps) {
 
       <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center relative z-10">
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-4xl text-center font-normal mb-6 max-w-87.5 md:max-w-5xl">
+        <Heading as="h2" className="text-center mb-6 max-w-87.5 md:max-w-5xl">
           {title}
-        </h2>
+        </Heading>
 
         {/* Section Subtitle */}
-        <p className="text-lg sm:text-xl lg:text-2xl text-center max-w-82.5 md:max-w-5xl mb-8">
+        <Subtitle className="text-center max-w-82.5 md:max-w-5xl mb-8">
           {subtitle}
-        </p>
+        </Subtitle>
 
 
         {/* Swiper Slider */}
@@ -141,9 +142,9 @@ export default function TVCs({ data }: TVCsProps) {
 
                   {/* Title overlay bottom */}
                   <div className="absolute bottom-0 inset-x-0 bg-linear-to-t from-black/80 to-transparent p-6 text-white">
-                    <p className="font-google-sans text-lg font-medium group-hover:text-primary transition-colors">
+                    <Paragraph className="font-medium group-hover:text-primary transition-colors text-white">
                       {video.title}
-                    </p>
+                    </Paragraph>
                   </div>
                 </div>
               </SwiperSlide>

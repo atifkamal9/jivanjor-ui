@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Heading, Subtitle, Title, Paragraph } from "@/components/ui";
 
 interface AccordionItem {
   title: string;
@@ -85,12 +86,12 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
               alt="badge"
             />
           </div>
-          <h2 className="font-amethysta text-[28px] sm:text-3xl lg:text-4xl font-normal leading-normal max-w-75 lg:max-w-full mx-auto">
+          <Heading as="h2" className="max-w-75 lg:max-w-full mx-auto">
             {product?.appsTitle || "Engineered for the Task at Hand"}
-          </h2>
-          <p className="text-base md:text-xl leading-normal max-w-85 lg:max-w-full mx-auto">
+          </Heading>
+          <Subtitle className="max-w-85 lg:max-w-full mx-auto">
             {product?.appsDescription ? product.appsDescription.replace("{productName}", productName) : `Explore where ${productName} fits across furniture, laminates, plywood, boards and professional woodwork applications.`}
-          </p>
+          </Subtitle>
         </div>
 
         {/* Accordion List */}
@@ -107,9 +108,9 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                   onClick={() => toggleAccordion(idx)}
                   className="w-full text-left py-5 flex justify-between items-center cursor-pointer group gap-20 select-none"
                 >
-                  <span className="font-amethysta text-xl lg:text-3xl group-hover:text-primary leading-normal transition-colors duration-200">
+                  <Title as="span" className="group-hover:text-primary leading-normal transition-colors duration-200">
                     {item.title}
-                  </span>
+                  </Title>
 
                   {/* Indicator Toggle icon */}
                   {isOpen ? (
@@ -133,9 +134,9 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                   <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-10 items-start">
                     {/* Left: Text & explore link */}
                     <div className="flex-1 space-y-4 max-w-lg">
-                      <p className="text-sm sm:text-lg leading-normal">
+                      <Paragraph className="leading-normal">
                         {item.description}
-                      </p>
+                      </Paragraph>
                       {/* Explore Link */}
                       {(() => {
                         const exploreLinkUrl = (item.link || item.url || "").trim();

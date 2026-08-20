@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
 
 interface PromiseProps {
   data?: {
@@ -60,14 +61,14 @@ export default function Promise({ data }: PromiseProps) {
           />
         </div>
         {/* Section Heading */}
-        <h2 className="font-amethysta text-[28px] lg:text-[38px] text-center font-normal mb-4">
+        <Heading as="h2" className="text-center mb-4">
           {title}
-        </h2>
+        </Heading>
 
         {/* Section Subtitle */}
-        <p className="text-xl lg:text-[24px] text-center max-w-4xl mb-7">
+        <Subtitle className="text-center max-w-4xl mb-7">
           {subtitle}
-        </p>
+        </Subtitle>
 
         {/* 4 Cards Grid */}
         <div className="w-full bg-surface rounded-3xl p-12 sm:p-12.5">
@@ -86,12 +87,12 @@ export default function Promise({ data }: PromiseProps) {
                     alt="icon"
                   />
                 </div>
-                <h3 className="font-amethysta text-[18px] md:text-[25px] mb-2.5 md:mb-5">
+                <Title as="h3" className="mb-2.5 md:mb-5">
                   {card.title}
-                </h3>
-                <p className="text-base md:text-lg max-w-60 md:max-w-full">
+                </Title>
+                <Paragraph className="max-w-60 md:max-w-full">
                   {card.desc}
-                </p>
+                </Paragraph>
               </div>
             ))}
           </div>

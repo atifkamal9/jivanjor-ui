@@ -14,7 +14,7 @@ export default function Heading({
 }: HeadingProps) {
   return (
     <Component
-      className={`font-amethysta font-normal leading-normal text-[24px] sm:text-[32px] 2xl:text-[42px] ${className}`}
+      className={`font-amethysta font-normal leading-normal text-[24px] sm:text-[32px] xd:text-[42px] ${className}`}
       {...props}
     >
       {children}

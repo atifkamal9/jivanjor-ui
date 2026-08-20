@@ -58,7 +58,7 @@ export default function Ecosystem({ data, ctaData }: EcosystemProps) {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="mx-auto max-w-360 justify-center px-6 space-y-4">
+        <div className="mx-auto max-w-360 justify-center px-6 space-y-4 xd:space-y-6">
           <Heading className="font-amethysta">{ctaTitle}</Heading>
           <div className="flex flex-col items-start justify-between lg:flex-row gap-4">
             <Subtitle className="max-w-xl font-google-sans">{ctaSubtitle}</Subtitle>

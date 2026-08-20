@@ -15,6 +15,7 @@ import {
 
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -435,7 +436,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
     categoriesToUse[0];
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 gap-12 z-100">
+    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-12 xd:my-18 px-5 lg:px-8 gap-12 z-100">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
         <h2 className="text-2xl ">Categories</h2>
@@ -519,12 +520,12 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
         <div className="space-y-4 text-center md:text-start max-w-250">
-          <h1 className="font-amethysta text-[28px] sm:text-4xl leading-normal">
+          <Heading>
             {currentCategoryData.tagline || currentCategoryData.title}
-          </h1>
-          <p className="text-base sm:text-xl leading-normal font-normal">
+          </Heading>
+          <Subtitle>
             {currentCategoryData.description}
-          </p>
+          </Subtitle>
         </div>
 
         {/* Swiper Slider Wrapper with Absolute Navigation Arrows */}
@@ -646,12 +647,12 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">
-          <h1 className="font-amethysta text-[28px] md:text-4xl leading-normal">
+          <Heading>
             {data?.title || "Superior Quality Backed by Research"}
-          </h1>
-          <p className="text-base md:text-xl leading-normal max-w-3xl">
+          </Heading>
+          <Subtitle className="max-w-3xl">
             {data?.desc || data?.description || "Learn how our focus on product development, quality standards and market reach supports India’s woodworking needs."}
-          </p>
+          </Subtitle>
           <Link
             href={data?.ctaLink || data?.buttonLink || data?.actionButtons?.primary?.actionPath || "/about/research-and-innovation"}
             className="inline-flex items-center justify-center font-medium min-w-35 px-6 py-2.5 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center"

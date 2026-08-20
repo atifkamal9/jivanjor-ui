@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { Heading } from "@/components/ui";
 
 export default function HeroCategory({
   category,
@@ -63,9 +64,9 @@ export default function HeroCategory({
                   {breadcrumbText}
                 </span>
               </div>
-              <h2 className="font-amethysta font-normal text-3xl sm:text-4xl mt-0 md:mt-6">
+              <Heading className="mt-0 md:mt-6 text-black md:text-white">
                 {title}
-              </h2>
+              </Heading>
             </div>
           </div>
         </div>

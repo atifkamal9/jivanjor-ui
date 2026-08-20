@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Heading, Title, Paragraph } from "@/components/ui";
 
 interface InnovationProps {
   data?: {
@@ -72,9 +73,9 @@ export default function Innovation({ data }: InnovationProps) {
         </div>
         <div className="px-5 lg:px-20">
           {/* Title */}
-          <h2 className="font-amethysta text-center md:text-start text-[28px] sm:text-3xl lg:text-[38px] mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-lg font-normal my-6 sm:my-7 text-foreground md:text-white">
+          <Heading className="text-center md:text-start mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-lg my-6 sm:my-7 text-foreground md:text-white">
             {title}
-          </h2>
+          </Heading>
 
           {/* Cards Desktop */}
           <div className="hidden md:grid grid-cols-3 gap-4 w-full mb-8 max-w-3xl">
@@ -84,10 +85,10 @@ export default function Innovation({ data }: InnovationProps) {
                 className="flex flex-1 flex-col justify-between transition-all duration-300 bg-surface min-h-64 w-61 rounded-[20px] px-5 py-7 hover:bg-white"
               >
                 <div>
-                  <h2 className="font-amethysta text-[21px] mb-3 pb-3 border-b max-w-43">
+                  <Title className="mb-3 pb-3 border-b max-w-43">
                     {card.title}
-                  </h2>
-                  <p className="text-lg max-w-48">{card.desc}</p>
+                  </Title>
+                  <Paragraph className="max-w-48">{card.desc}</Paragraph>
                 </div>
               </div>
             ))}
@@ -100,10 +101,10 @@ export default function Innovation({ data }: InnovationProps) {
                 className="flex flex-1 flex-col justify-between transition-all duration-300 bg-white p-6 rounded-[20px]"
               >
                 <div>
-                  <h2 className="font-amethysta text-2xl mb-3 pb-3 border-b">
+                  <Title className="mb-3 pb-3 border-b">
                     {card.title}
-                  </h2>
-                  <p className="text-base">{card.desc}</p>
+                  </Title>
+                  <Paragraph>{card.desc}</Paragraph>
                 </div>
               </div>
             ))}
