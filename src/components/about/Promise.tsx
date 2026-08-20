@@ -61,7 +61,7 @@ export default function Promise({ data }: PromiseProps) {
           />
         </div>
         {/* Section Heading */}
-        <Heading as="h2" className="text-center mb-4">
+        <Heading className="text-center mb-4 max-w-xs sm:max-w-4xl">
           {title}
         </Heading>
 
@@ -87,7 +87,7 @@ export default function Promise({ data }: PromiseProps) {
                     alt="icon"
                   />
                 </div>
-                <Title as="h3" className="mb-2.5 md:mb-5">
+                <Title className="mb-2.5 md:mb-5">
                   {card.title}
                 </Title>
                 <Paragraph className="max-w-60 md:max-w-full">

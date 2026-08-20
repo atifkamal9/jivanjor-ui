@@ -14,7 +14,7 @@ export default function Title({
 }: TitleProps) {
   return (
     <Component
-      className={`font-amethysta text-[20px] sm:text-[24px] xd:text-[30px] ${className}`}
+      className={`font-amethysta text-[22px] sm:text-[24px] xd:text-[30px] ${className}`}
       {...props}
     >
       {children}

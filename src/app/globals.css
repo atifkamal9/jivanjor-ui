@@ -21,6 +21,7 @@
   --font-google-sans: var(--font-google-sans);
   --font-amethysta: Amethysta, serif;
   --leading-normal: 110%;
+  --breakpoint-xs: 24rem;
   --breakpoint-xd: 80.125rem;
   --breakpoint-3xl: 100rem;
 }

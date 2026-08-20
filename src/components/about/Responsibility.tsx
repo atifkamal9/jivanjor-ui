@@ -114,7 +114,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
           />
         </div>
         {/* Section Heading */}
-        <Heading as="h2" className="text-center mb-4 max-w-xs md:max-w-lg w-full mx-auto">
+        <Heading className="text-center mb-4 max-w-xs md:max-w-md xd:max-w-xl w-full mx-auto">
           {title}
         </Heading>
 
@@ -195,7 +195,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
         {/* Sustainability Inner Card */}
         <div className="w-full bg-surface rounded-[20px] p-0 md:p-10 lg:p-12">
           <div className="flex flex-col items-center text-center px-8 pt-10 md:pt-2">
-            <Heading className="text-center mb-4 max-w-full md:max-w-xl">
+            <Heading className="text-center mb-4 max-w-full md:max-w-lg">
               {sustainabilityTitle}
             </Heading>
             <Subtitle className="text-center max-w-78 md:max-w-5xl">
@@ -227,9 +227,9 @@ export default function Responsibility({ data }: ResponsibilityProps) {
                       width={24}
                     />
                     <div className="flex flex-col items-center justify-center self-stretch leading-normal md:items-start text-center md:text-start px-10 md:px-0 gap-1">
-                      <Subtitle className="font-amethysta! font-medium">
+                      <Title className="font-medium">
                         {practice.title}
-                      </Subtitle>
+                      </Title>
                       <Paragraph>{practice.desc}</Paragraph>
                     </div>
                   </div>
