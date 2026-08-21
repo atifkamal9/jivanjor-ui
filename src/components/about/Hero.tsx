@@ -55,7 +55,7 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
       </div>
 
       {/* Banner Card */}
-      <div className="about-hero flex flex-col items-center text-center p-6 text-white relative rounded-3xl overflow-hidden min-h-95 md:min-h-102 bg-linear-to-r from-[#E00921] to-[#772571] mx-5 sm:mx-0">
+      <div className="flex flex-col items-center text-center p-6 text-white relative rounded-3xl overflow-hidden min-h-95 md:min-h-102 bg-linear-to-r from-[#E00921] to-[#772571] mx-5 sm:mx-0">
         {/* Background Logo Watermark */}
         <div className="absolute inset-0 pointer-events-none opacity-0 lg:opacity-100 select-none flex items-end justify-center -mt-18 xl:mt-0">
           <Image
