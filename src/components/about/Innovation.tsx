@@ -71,7 +71,7 @@ export default function Innovation({ data }: InnovationProps) {
           />
           {/* Gradients to darken and style as shown in Figma */}
         </div>
-        <div className="px-5 lg:px-20">
+        <div className="px-5 lg:px-8 hd:px-10 3xl:px-8">
           {/* Title */}
           <Heading className="text-center md:text-start mx-auto md:mx-0 md:px-0 max-w-80.5 md:max-w-lg my-6 sm:my-7 text-foreground md:text-white">
             {title}

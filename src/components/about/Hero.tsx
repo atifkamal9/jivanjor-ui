@@ -32,7 +32,7 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
   const mobileImg = data?.media?.[1] || data?.media?.[0] || "/images/about/about-hero-1.png";
 
   return (
-    <section id="about-jivanjor" className="relative w-full max-w-360 mx-auto px-0 sm:px-8 xd:px-10 3xl:px-8 pt-2 sm:pt-9 pb-0.5 overflow-hidden">
+    <section id="about-jivanjor" className="relative w-full max-w-360 mx-auto px-0 sm:px-8 hd:px-10 3xl:px-8 pt-2 sm:pt-9 pb-0.5 overflow-hidden">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-1.5 md:gap-2 mb-6 text-sm md:text-base mx-5 sm:mx-0">
         <Link href="/" className="hover:text-primary transition-colors">

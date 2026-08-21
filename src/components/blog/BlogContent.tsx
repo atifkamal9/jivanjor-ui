@@ -208,7 +208,7 @@ export default function BlogContent({
   return (
     <div className="w-full">
       {/* Hero Image Section */}
-      <section className="max-w-360 mx-auto px-5 mb-6">
+      <section className="max-w-360 mx-auto px-5 lg:px-8 hd:px-10 3xl:px-8 mb-6">
         <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
             src={articleData.image || "/images/blog/Rectangle 125.png"}
@@ -245,7 +245,7 @@ export default function BlogContent({
       </div>
 
       {/* Main Grid: Sidebar + Content */}
-      <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto px-5 gap-5 lg:gap-10 relative">
+      <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto px-5 lg:px-8 hd:px-10 3xl:px-8 gap-5 lg:gap-10 relative">
         {/* Table of Contents Sidebar (Desktop) */}
         {tocSections.length > 0 && (
           <aside className="hidden lg:block w-72 shrink-0 self-start sticky top-28 space-y-4">
@@ -440,7 +440,7 @@ export default function BlogContent({
       {/* Related Articles Section */}
       {relatedPosts.length > 0 && (
         <section className="bg-white">
-          <div className="max-w-360 mx-auto p-5 py-12 md:py-18 space-y-6">
+          <div className="max-w-360 mx-auto p-5 lg:px-8 hd:px-10 3xl:px-8 py-12 md:py-18 space-y-6">
             <h2 className="font-amethysta text-[34px] md:text-[56px] text-center text-[#222] font-normal leading-tight">
               Related Articles
             </h2>

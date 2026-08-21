@@ -102,7 +102,7 @@ export default function Responsibility({ data }: ResponsibilityProps) {
       id="quality-sustainability"
       className="scroll-mt-36 mt-6 md:mt-12 bg-white text-[#222]"
     >
-      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 xd:px-10 3xl:px-8 flex flex-col items-center">
+      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 hd:px-10 3xl:px-8 flex flex-col items-center">
         {/* Header Icon */}
         <div className="mb-4 flex justify-center">
           <Image

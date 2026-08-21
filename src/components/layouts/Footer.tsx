@@ -109,7 +109,7 @@ export default function Footer() {
             className="h-95 w-210"
           />
         </div>
-        <div className="relative z-10 max-w-360 mx-auto px-6 lg:px-8 xd:px-10 3xl:px-8 py-10 lg:py-12.5">
+        <div className="relative z-10 max-w-360 mx-auto px-6 lg:px-8 hd:px-10 3xl:px-8 py-10 lg:py-12.5">
           <div className="flex flex-wrap justify-between gap-12">
             {/* Left section */}
             <div className="shrink-0">

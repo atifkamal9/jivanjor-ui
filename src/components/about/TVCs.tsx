@@ -87,7 +87,7 @@ export default function TVCs({ data }: TVCsProps) {
         />
       </div> */}
 
-      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 xd:px-10 3xl:px-8 flex flex-col items-center relative z-10">
+      <div className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 hd:px-10 3xl:px-8 flex flex-col items-center relative z-10">
         {/* Section Heading */}
         <Heading as="h2" className="text-center mb-6 max-w-87.5 md:max-w-5xl">
           {title}

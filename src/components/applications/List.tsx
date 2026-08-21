@@ -320,7 +320,7 @@ function ListContent({
                 </>
               )}
               <ChevronRight size={16} />
-              <span className="text-foreground/70 line-clamp-1 max-w-[200px] sm:max-w-xs md:max-w-md">
+              <span className="text-foreground/70 line-clamp-1 max-w-50 sm:max-w-xs md:max-w-md">
                 {activeArticle.title}
               </span>
             </div>
@@ -360,7 +360,7 @@ function ListContent({
       )}
 
       {/* Main Section Layout (Left Content + Right Sidebar if listing) */}
-      <section className="max-w-360 mx-auto px-5 pt-4 lg:pt-8 w-full leading-normal text-[#222]">
+      <section className="max-w-360 mx-auto px-5 lg:px-8 hd:px-10 3xl:px-8 pt-4 lg:pt-8 w-full leading-normal text-[#222]">
         <div className="flex flex-col lg:flex-row justify-between gap-6 lg:gap-12 z-50">
 
           {/* MAIN CONTENT COLUMN (Full Width on Article Page, Flex-1 on List Page) */}

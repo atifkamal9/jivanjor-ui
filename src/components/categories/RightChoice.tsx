@@ -43,7 +43,7 @@ export default function RightChoice({ data }: RightChoiceProps = {}) {
             className="w-full h-full object-cover object-center"
           />
         </div>
-        <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-4 xd:space-y-6 py-24 px-5 lg:px-8 xd:px-10 3xl:px-8 lg:py-14">
+        <div className="flex flex-col justify-center text-center md:text-start mx-auto max-w-360 space-y-4 xd:space-y-6 py-24 px-5 lg:px-8 hd:px-10 3xl:px-8 lg:py-14">
           <Heading className="text-white">
             {title}
           </Heading>
