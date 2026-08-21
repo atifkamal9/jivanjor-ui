@@ -422,7 +422,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[350px] py-16 bg-background">
+      <div className="flex flex-col items-center justify-center min-h-87.5 py-16 bg-background">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
           Loading products...
@@ -575,7 +575,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                       style={{ backgroundColor: `${card.color}` }}
                     >
                       {/* Top Row: Floating image & Text info side-by-side */}
-                      <div className="flex flex-col relative xl:flex-row gap-3 items-center xl:items-start">
+                      <div className="flex flex-col relative xl:flex-row gap-2 items-center xl:items-start">
                         {/* Floating image wrapper */}
                         <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-49 h-56 xl:w-46 xl:h-54 object-contain z-100">
                           <Image
@@ -587,7 +587,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                           />
                         </div>
                         {/* Header content */}
-                        <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-0 xl:pl-20 2xl:pl-12">
+                        <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-0 xl:pl-20 xd:pl-18! hd:pl-12! 2xl:pl-10!">
                           <h3 className="text-xl xl:text-2xl font-bold leading-normal">
                             {card.title}
                           </h3>
@@ -663,7 +663,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
             <div className="hidden md:block col-span-1">
               <Image
                 src={data?.image1 || data?.images?.[0] || data?.media?.[0] || "/images/Rectangle 110.png"}
-                className="object-cover w-full h-full max-h-[204px] md:max-h-[280px] rounded-2xl bg-surface"
+                className="object-cover w-full h-full max-h-51 md:max-h-70 rounded-2xl bg-surface"
                 alt={data?.title || "Research Laboratory"}
                 width={400}
                 height={260}
@@ -672,7 +672,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
             <div className="col-span-2">
               <Image
                 src={data?.image2 || data?.images?.[1] || data?.media?.[1] || "/images/Rectangle 111.png"}
-                className="object-cover w-full h-full max-h-[204px] md:max-h-[280px] rounded-2xl bg-surface"
+                className="object-cover w-full h-full max-h-51 md:max-h-70 rounded-2xl bg-surface"
                 alt={data?.title || "Adhesive Testing Laboratory"}
                 width={800}
                 height={260}
