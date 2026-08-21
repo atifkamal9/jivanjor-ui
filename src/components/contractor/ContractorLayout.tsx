@@ -27,7 +27,7 @@ export default function ContractorLayout({ data = {} }: ContractorLayoutProps) {
         />
       </div>
       {/* Main Grid Wrapper */}
-      <div className="max-w-360 mx-auto w-full px-5 lg:px-8 hd:px-10 3xl:px-8 py-10 lg:py-13">
+      <div className="max-w-360 mx-auto w-full px-5 lg:px-8 hd:px-12 3xl:px-8 py-10 lg:py-13">
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-14 items-start">
           {/* Left Column (App, Stats, Testimonials) */}
           <div className="xl:col-span-8 flex flex-col space-y-12 xl:space-y-18">

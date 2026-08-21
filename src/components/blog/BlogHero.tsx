@@ -14,7 +14,7 @@ export default function BlogHero({ title, category }: BlogHeroProps) {
   const breadcrumbTitle = title || "Preventing Laminate Bubbling";
 
   return (
-    <section className="flex flex-col justify-between max-w-360 mx-auto my-2 md:my-3 px-5 lg:px-8 hd:px-10 3xl:px-8 gap-2.5 z-50">
+    <section className="flex flex-col justify-between max-w-360 mx-auto my-2 md:my-3 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-2.5 z-50">
       <div className="flex items-center gap-1.5 text-xs sm:text-sm md:text-base font-medium">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           {/* Home Solid Icon */}

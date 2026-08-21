@@ -271,7 +271,7 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
   const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
 
   return (
-    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 hd:px-10 3xl:px-8 gap-12 z-50">
+    <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-18 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-12 z-50">
       {/* Sidebar Browse By Category Panel (Desktop) */}
       <div className="hidden lg:block space-y-6 lg:w-90 shrink-0 sticky top-28 self-start">
         <h2 className="text-2xl font-google-sans font-medium text-[#222]">
