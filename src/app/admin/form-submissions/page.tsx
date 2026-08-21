@@ -14,25 +14,20 @@ import {
   CheckCircle2,
   AlertTriangle,
   Clock,
-  ExternalLink,
   Copy,
   Check,
   Eye,
   X,
-  Filter,
   Activity,
-  Layers,
   FileSpreadsheet,
-  Calendar,
-  Phone,
-  Mail,
-  MapPin,
-  Building2,
-  ShieldCheck,
+  FileText,
+  Download,
+  ChevronDown,
   HelpCircle,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 
 export default function FormSubmissionsAdminPage() {
   const [submissions, setSubmissions] = useState<FormSubmissionRecord[]>([]);
@@ -61,6 +56,110 @@ export default function FormSubmissionsAdminPage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
   const [retryReason, setRetryReason] = useState("");
+
+  // Export State & Logic
+  const [exporting, setExporting] = useState(false);
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+
+  const formatSubmissionsForExport = (data: FormSubmissionRecord[]) => {
+    return data.map((sub) => ({
+      "Entry ID": sub.crmExternalKey || sub.id,
+      "Submitted At": new Date(sub.submittedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      "Form Type": sub.formType,
+      "Full Name": sub.fullName || "",
+      "Mobile (Raw)": sub.mobileRaw || "",
+      "Mobile (Normalized)": sub.mobileNormalized || "",
+      "Email": sub.email || "",
+      "Firm Name": sub.firmName || "",
+      "City": sub.city || "",
+      "Pin Code": sub.pinCode || "",
+      "Query Type": sub.queryType || "",
+      "Interested In": sub.interestedIn || "",
+      "Line of Business": sub.lineOfBusiness || "",
+      "User Message": sub.message || "",
+      "Consent Version": sub.consentTextVersion || "",
+      "Zoho Sync Status": sub.zohoSyncStatus,
+      "Zoho Contact ID": sub.zohoContactId || "",
+      "Zoho Contact Action": sub.zohoContactAction || "",
+      "Zoho Enquiry ID": sub.zohoEnquiryId || "",
+      "Zoho Enquiry Action": sub.zohoEnquiryAction || "",
+      "Sync Attempts": sub.zohoSyncAttempts || 0,
+      "Last Error Message": sub.zohoLastErrorMessage || "",
+      "UTM Source": sub.utmSource || "",
+      "UTM Medium": sub.utmMedium || "",
+      "UTM Campaign": sub.utmCampaign || "",
+      "Source URL": sub.sourceUrl || "",
+    }));
+  };
+
+  const handleExport = async (format: "csv" | "excel", scope: "filtered" | "selected") => {
+    try {
+      setExporting(true);
+      setExportMenuOpen(false);
+
+      let recordsToExport: FormSubmissionRecord[] = [];
+
+      if (scope === "selected") {
+        if (selectedIds.length === 0) {
+          showToast("error", "Please select at least one submission to export.");
+          return;
+        }
+        recordsToExport = submissions.filter((s) => selectedIds.includes(s.id));
+      } else {
+        // Fetch all matching records for the current filter parameters
+        const res = await api.getFormSubmissions({
+          page: 1,
+          limit: 10000,
+          search,
+          status: statusFilter,
+          formType: formTypeFilter,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
+        });
+        recordsToExport = res.data || [];
+      }
+
+      if (recordsToExport.length === 0) {
+        showToast("error", "No form submissions found to export.");
+        return;
+      }
+
+      const formattedData = formatSubmissionsForExport(recordsToExport);
+
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+      // Auto-adjust column widths
+      if (formattedData.length > 0) {
+        const colWidths = Object.keys(formattedData[0]).map((key) => {
+          const maxLen = Math.max(
+            key.length,
+            ...formattedData.slice(0, 100).map((row) => String((row as any)[key] || "").length)
+          );
+          return { wch: Math.min(Math.max(maxLen + 2, 12), 40) };
+        });
+        worksheet["!cols"] = colWidths;
+      }
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Form Submissions");
+
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const filename = `form_submissions_${scope === "selected" ? "selected_" : ""}${dateStr}.${format === "excel" ? "xlsx" : "csv"}`;
+
+      XLSX.writeFile(
+        workbook,
+        filename,
+        format === "csv" ? { bookType: "csv" } : { bookType: "xlsx" }
+      );
+
+      showToast("success", `Successfully exported ${recordsToExport.length} submission(s) to ${filename}`);
+    } catch (err: any) {
+      console.error("Export failed:", err);
+      showToast("error", err.message || "Failed to export submissions");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // Notification Toast state
   const [toastMessage, setToastMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -290,7 +389,67 @@ export default function FormSubmissionsAdminPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 relative">
+            {/* Export Dropdown Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setExportMenuOpen((prev) => !prev)}
+                disabled={exporting || loading}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                <Download className={`w-4 h-4 ${exporting ? "animate-bounce" : ""}`} />
+                <span>{exporting ? "Exporting..." : "Export"}</span>
+                <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-80" />
+              </button>
+
+              {exportMenuOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-60 bg-background border border-border rounded-2xl shadow-2xl z-40 p-2 space-y-1 animate-[fadeIn_0.1s_ease-out]"
+                >
+                  <div className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-foreground/50">
+                    Export All Matching ({totalSubmissionsCount})
+                  </div>
+                  <button
+                    onClick={() => handleExport("excel", "filtered")}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
+                  >
+                    <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>Export to Excel (.xlsx)</span>
+                  </button>
+                  <button
+                    onClick={() => handleExport("csv", "filtered")}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
+                  >
+                    <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                    <span>Export to CSV (.csv)</span>
+                  </button>
+
+                  {selectedIds.length > 0 && (
+                    <>
+                      <div className="border-t border-border my-1" />
+                      <div className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary">
+                        Export Selected ({selectedIds.length})
+                      </div>
+                      <button
+                        onClick={() => handleExport("excel", "selected")}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
+                      >
+                        <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <span>Selected to Excel (.xlsx)</span>
+                      </button>
+                      <button
+                        onClick={() => handleExport("csv", "selected")}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
+                      >
+                        <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                        <span>Selected to CSV (.csv)</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => {
                 loadSubmissions();
@@ -470,7 +629,28 @@ export default function FormSubmissionsAdminPage() {
               <span className="text-xs font-bold text-primary">
                 {selectedIds.length} submission(s) selected
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={() => handleExport("excel", "selected")}
+                  disabled={exporting}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+                  title="Export selected submissions to Excel (.xlsx)"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Export Excel</span>
+                </button>
+                <button
+                  onClick={() => handleExport("csv", "selected")}
+                  disabled={exporting}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+                  title="Export selected submissions to CSV (.csv)"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Export CSV</span>
+                </button>
+
+                <div className="h-4 w-px bg-border/80 mx-1 hidden sm:block" />
+
                 <input
                   type="text"
                   placeholder="Optional retry reason..."
