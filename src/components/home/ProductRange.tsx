@@ -234,7 +234,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
       <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 hd:px-10 3xl:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full mx-auto my-6">
-          <Heading className="font-normal leading-normal max-w-full md:max-w-md xl:max-w-xl mx-auto">{title}</Heading>
+          <Heading className="font-normal leading-normal max-w-full md:max-w-137 xd:max-w-150 mx-auto">{title}</Heading>
           {/* Categories tabs Desktop */}
           <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mt-4 mb-6">
             {displayCategories.map((cat) => (
