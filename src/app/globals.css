@@ -21,9 +21,13 @@
   --font-google-sans: var(--font-google-sans);
   --font-amethysta: Amethysta, serif;
   --leading-normal: 110%;
+  /* 384px */
   --breakpoint-xs: 24rem;
+  /* 1282px */
   --breakpoint-xd: 80.125rem;
+  /* 1366px */
   --breakpoint-hd: 85.375rem;
+  /* 1600px */
   --breakpoint-3xl: 100rem;
 }
 
