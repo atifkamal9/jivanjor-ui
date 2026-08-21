@@ -32,7 +32,7 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
   const mobileImg = data?.media?.[1] || data?.media?.[0] || "/images/about/about-hero-1.png";
 
   return (
-    <section id="about-jivanjor" className="relative w-full max-w-360 mx-auto px-0 sm:px-8 hd:px-10 3xl:px-8 pt-2 sm:pt-9 pb-0.5 overflow-hidden">
+    <section id="about-jivanjor" className="relative w-full max-w-360 mx-auto px-0 sm:px-8 hd:px-10 3xl:px-8 pt-2 sm:pt-6 pb-0.5 overflow-hidden">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-1.5 md:gap-2 mb-6 text-sm md:text-base mx-5 sm:mx-0">
         <Link href="/" className="hover:text-primary transition-colors">
@@ -55,7 +55,7 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
       </div>
 
       {/* Banner Card */}
-      <div className="flex flex-col items-center text-center p-6 text-white relative rounded-3xl overflow-hidden min-h-95 md:min-h-102 bg-linear-to-r from-[#E00921] to-[#772571] mx-5 sm:mx-0">
+      <div className="about-hero flex flex-col items-center text-center p-6 text-white relative rounded-3xl overflow-hidden min-h-95 md:min-h-102 bg-linear-to-r from-[#E00921] to-[#772571] mx-5 sm:mx-0">
         {/* Background Logo Watermark */}
         <div className="absolute inset-0 pointer-events-none opacity-0 lg:opacity-100 select-none flex items-end justify-center -mt-18 xl:mt-0">
           <Image

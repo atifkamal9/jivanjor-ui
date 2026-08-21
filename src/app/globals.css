@@ -256,3 +256,8 @@ div {
   margin-bottom: 1rem;
   color: #444444;
 }
+
+/* About hero section */
+.about-hero {
+  zoom: 0.96;
+}
