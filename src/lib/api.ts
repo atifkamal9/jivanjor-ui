@@ -1247,6 +1247,7 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    state?: string;
     pinCode?: string;
     queryType?: string;
     message?: string;
@@ -1262,6 +1263,7 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    state?: string;
     pinCode?: string;
     interestedIn?: string;
     lineOfBusiness?: string;
@@ -1277,6 +1279,7 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    state?: string;
     pinCode?: string;
     queryType?: string;
     message?: string;
