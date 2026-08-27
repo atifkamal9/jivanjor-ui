@@ -70,7 +70,6 @@ export default function Hero() {
           alt="Category Hero"
           sizes="100vw"
           className="object-cover object-center hidden md:block"
-          unoptimized
         />
       </div>
     </section>

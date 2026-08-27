@@ -1,13 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Heading, Subtitle } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/navigation";
+
+function getYouTubeId(url?: string) {
+  if (!url) return null;
+  const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+}
 
 const testimonials = [
   {
@@ -15,6 +24,7 @@ const testimonials = [
     name: "Mr. Imran Saifi",
     role: "Contractor Carpenter",
     image: "/images/contractor/testimonial-1.png",
+    videoUrl: "#",
     showPlayButton: true,
   },
   {
@@ -22,6 +32,7 @@ const testimonials = [
     name: "Mr. Imran Saifi",
     role: "Contractor Carpenter",
     image: "/images/contractor/testimonial-2.png",
+    videoUrl: "#",
     showPlayButton: true,
   },
   {
@@ -35,6 +46,7 @@ const testimonials = [
     name: "Mr. Imran Saifi",
     role: "Contractor Carpenter",
     image: "/images/contractor/testimonial-1.png",
+    videoUrl: "#",
     showPlayButton: true,
   },
   {
@@ -50,17 +62,20 @@ interface ProfessionalsProps {
     title?: string;
     desc?: string;
     testimonials?: {
-      type: "video" | "text";
+      type: "video" | "text" | string;
       name: string;
       role: string;
       quote?: string;
       image?: string;
+      videoUrl?: string;
       showPlayButton?: boolean;
     }[];
   };
 }
 
 export default function Professionals({ data }: ProfessionalsProps = {}) {
+  const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
+
   const title = data?.title || "Built Around India’s Woodworking Professionals";
   const desc = data?.desc || "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.";
   const displayTestimonials = data?.testimonials || testimonials;
@@ -108,10 +123,13 @@ export default function Professionals({ data }: ProfessionalsProps = {}) {
               <SwiperSlide key={idx} className="h-full py-4">
                 {item.type === "video" ? (
                   /* Video Card */
-                  <div className="relative overflow-hidden w-full max-w-2xs h-85 mx-auto rounded-[20px] flex flex-col group">
+                  <div
+                    onClick={() => setActiveVideoUrl(item.videoUrl || "#")}
+                    className="relative overflow-hidden w-full max-w-2xs h-85 mx-auto rounded-[20px] flex flex-col group cursor-pointer"
+                  >
                     <Image
                       fill
-                      alt={item.name}
+                      alt={item.name || "Testimonial"}
                       src={item.image || ""}
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -119,7 +137,7 @@ export default function Professionals({ data }: ProfessionalsProps = {}) {
                     <div className="absolute inset-x-0 bottom-0 bg-linear-to-b from-transparent to-black/90 h-43 rounded-b-[20px]" />
 
                     {/* Play circle icon top-right */}
-                    {item.showPlayButton && (
+                    {item.showPlayButton !== false && (
                       <div className="absolute top-6 right-6 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md transition-transform group-hover:scale-110 duration-300 cursor-pointer">
                         <svg
                           width="12"
@@ -137,6 +155,32 @@ export default function Professionals({ data }: ProfessionalsProps = {}) {
                     {/* Overlay info */}
                     <div className="absolute bottom-6 left-6 right-6 text-left z-10">
                       <p className="text-white font-bold text-[18px] leading-tight mb-1">
+                        {item.name}
+                      </p>
+                      <p className="text-white/80 font-normal text-[14px] leading-none">
+                        {item.role}
+                      </p>
+                    </div>
+                  </div>
+                ) : item.type === "image" ? (
+                  /* Image & Quote Card */
+                  <div className="relative overflow-hidden w-full max-w-2xs h-85 mx-auto rounded-[20px] flex flex-col justify-end p-5 text-left group">
+                    {item.image && (
+                      <Image
+                        fill
+                        alt={item.name || "Testimonial"}
+                        src={item.image}
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/25 to-black/55 rounded-[20px]" />
+                    <div className="relative z-10 text-left">
+                      {item.quote && (
+                        <p className="text-white font-normal text-[20px] leading-[1.2] mb-4 drop-shadow-xs">
+                          "{item.quote}"
+                        </p>
+                      )}
+                      <p className="text-white font-bold text-[16px] leading-tight mb-1">
                         {item.name}
                       </p>
                       <p className="text-white/80 font-normal text-[14px] leading-none">
@@ -173,6 +217,53 @@ export default function Professionals({ data }: ProfessionalsProps = {}) {
           </button>
         </div>
       </div>
+
+      {/* Video Modal View */}
+      {activeVideoUrl !== null && (
+        <div
+          onClick={() => setActiveVideoUrl(null)}
+          className="fixed inset-0 z-999 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4"
+        >
+          {/* Modal Container */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setActiveVideoUrl(null)}
+              className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 hover:text-[#ed1c24] transition-all cursor-pointer shadow-md"
+              title="Close Video"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Video Player */}
+            <div className="w-full h-full flex items-center justify-center">
+              {getYouTubeId(activeVideoUrl) ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${getYouTubeId(activeVideoUrl)}?autoplay=1`}
+                  className="w-full h-full border-0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  src={
+                    activeVideoUrl && activeVideoUrl !== "#"
+                      ? activeVideoUrl
+                      : "/videos/testimonial-placeholder.mp4"
+                  }
+                  className="w-full h-full object-cover bg-black"
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

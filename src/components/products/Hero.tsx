@@ -118,7 +118,6 @@ export default function Hero({ product, category }: HeroProps) {
           <Image
             fill
             priority
-            unoptimized
             quality={100}
             src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
             alt={`${productName} background`}
@@ -130,7 +129,6 @@ export default function Hero({ product, category }: HeroProps) {
           <Image
             fill
             priority
-            unoptimized
             quality={100}
             src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
             alt={`${productName} background mobile`}

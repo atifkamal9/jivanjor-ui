@@ -21,6 +21,7 @@ export interface HeroSlideData {
   bgImagePhone?: string;
   videoUrl?: string;
   video?: string;
+  showOverlay?: boolean;
   cta1?: {
     text?: string;
     link?: string;
@@ -64,6 +65,7 @@ interface SlideItem {
   bgImagePhone: string;
   hasVideo: boolean;
   videoUrl?: string;
+  showOverlay?: boolean;
   cta1?: {
     text?: string;
     link?: string;
@@ -94,6 +96,7 @@ export default function Hero({ data }: HeroProps) {
         bgImagePhone: mobileImg,
         hasVideo: isVid,
         videoUrl: s.videoUrl || s.video || "",
+        showOverlay: s.showOverlay,
         cta1: s.cta1,
         cta2: s.cta2,
         title: s.title,
@@ -239,22 +242,25 @@ export default function Hero({ data }: HeroProps) {
                     muted={isMuted}
                     onEnded={handleVideoEnded}
                   />
-                  {/* Mobile Version Overlay */}
-                  <div
-                    className="absolute inset-0 pointer-events-none xl:hidden z-10"
-                    style={{
-                      background:
-                        "linear-gradient(53.58deg, rgba(0, 0, 0, 0.63) 22.03%, rgba(0, 0, 0, 0.34) 56.11%, rgba(102, 102, 102, 0) 95.1%)",
-                    }}
-                  />
-                  {/* Desktop Version Overlay */}
-                  <div
-                    className="absolute inset-0 pointer-events-none hidden xl:block z-10"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, rgba(0, 0, 0, 0.17) 0%, rgba(0, 0, 0, 0.17) 100%), linear-gradient(41.78deg, rgba(0, 0, 0, 0.88) 6.87%, rgba(102, 102, 102, 0) 54.68%)",
-                    }}
-                  />
+                  {/* Mobile & Desktop Version Overlays */}
+                  {slide.showOverlay !== false && (
+                    <>
+                      <div
+                        className="absolute inset-0 pointer-events-none xl:hidden z-10"
+                        style={{
+                          background:
+                            "linear-gradient(53.58deg, rgba(0, 0, 0, 0.63) 22.03%, rgba(0, 0, 0, 0.34) 56.11%, rgba(102, 102, 102, 0) 95.1%)",
+                        }}
+                      />
+                      <div
+                        className="absolute inset-0 pointer-events-none hidden xl:block z-10"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, rgba(0, 0, 0, 0.17) 0%, rgba(0, 0, 0, 0.17) 100%), linear-gradient(41.78deg, rgba(0, 0, 0, 0.88) 6.87%, rgba(102, 102, 102, 0) 54.68%)",
+                        }}
+                      />
+                    </>
+                  )}
                 </div>
               ) : (
                 <>
@@ -262,38 +268,40 @@ export default function Hero({ data }: HeroProps) {
                   <div className="absolute inset-0 xl:hidden z-0">
                     <Image
                       fill
-                      unoptimized
                       src={slide.bgImagePhone}
                       alt="Jivanjor hero mobile background"
                       className="object-cover"
                       priority={idx === 0}
                     />
-                    <div
-                      className="absolute inset-0 pointer-events-none z-10"
-                      style={{
-                        background:
-                          "linear-gradient(53.58deg, rgba(0, 0, 0, 0.63) 22.03%, rgba(0, 0, 0, 0.34) 56.11%, rgba(102, 102, 102, 0) 95.1%)",
-                      }}
-                    />
+                    {slide.showOverlay !== false && (
+                      <div
+                        className="absolute inset-0 pointer-events-none z-10"
+                        style={{
+                          background:
+                            "linear-gradient(53.58deg, rgba(0, 0, 0, 0.63) 22.03%, rgba(0, 0, 0, 0.34) 56.11%, rgba(102, 102, 102, 0) 95.1%)",
+                        }}
+                      />
+                    )}
                   </div>
 
                   {/* Desktop Version Background */}
                   <div className="absolute inset-0 hidden xl:block z-0">
                     <Image
                       fill
-                      unoptimized
                       src={slide.bgImage}
                       alt="Jivanjor hero desktop background"
                       className="object-cover"
                       priority={idx === 0}
                     />
-                    <div
-                      className="absolute inset-0 pointer-events-none z-10"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, rgba(0, 0, 0, 0.17) 0%, rgba(0, 0, 0, 0.17) 100%), linear-gradient(41.78deg, rgba(0, 0, 0, 0.88) 6.87%, rgba(102, 102, 102, 0) 54.68%)",
-                      }}
-                    />
+                    {slide.showOverlay !== false && (
+                      <div
+                        className="absolute inset-0 pointer-events-none z-10"
+                        style={{
+                          background:
+                            "linear-gradient(90deg, rgba(0, 0, 0, 0.17) 0%, rgba(0, 0, 0, 0.17) 100%), linear-gradient(41.78deg, rgba(0, 0, 0, 0.88) 6.87%, rgba(102, 102, 102, 0) 54.68%)",
+                        }}
+                      />
+                    )}
                   </div>
                 </>
               )}

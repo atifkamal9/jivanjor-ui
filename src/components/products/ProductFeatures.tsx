@@ -161,7 +161,6 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                       <div className="col-span-1 relative min-w-30 min-h-40 lg:min-w-49 lg:min-h-60 w-full rounded-2xl overflow-hidden">
                         <Image
                           fill
-                          unoptimized
                           src={item.imageA}
                           alt={`${item.title} detail layout`}
                           className="object-cover"
@@ -171,7 +170,6 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                       <div className="col-span-2 relative min-w-50 min-h-40 lg:min-w-80 lg:min-h-60 w-full rounded-2xl overflow-hidden">
                         <Image
                           fill
-                          unoptimized
                           src={item.imageB}
                           alt={`${item.title} bonding application`}
                           className="object-cover"

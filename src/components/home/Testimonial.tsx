@@ -251,6 +251,32 @@ export default function Testimonial({ data }: TestimonialProps) {
                       </BodyText>
                     </div>
                   </div>
+                ) : item.type === "image" ? (
+                  // Image & Quote Card
+                  <div className="relative overflow-hidden w-full max-w-78 h-85 mx-auto rounded-[20px] flex flex-col justify-end p-7.5 text-left group">
+                    {item.image && (
+                      <Image
+                        src={item.image}
+                        alt={item.name || "Testimonial"}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/25 to-black/55 rounded-[20px]" />
+                    <div className="relative z-10 text-left">
+                      {item.quote && (
+                        <Paragraph className="text-white font-normal text-[20px] leading-[1.2] font-google-sans mb-4 drop-shadow-xs">
+                          "{item.quote}"
+                        </Paragraph>
+                      )}
+                      <Paragraph className="text-white font-bold text-[16px] leading-tight mb-1 font-google-sans">
+                        {item.name}
+                      </Paragraph>
+                      <BodyText className="text-white/80 font-normal text-[14px] leading-none font-google-sans">
+                        {item.role}
+                      </BodyText>
+                    </div>
+                  </div>
                 ) : (
                   // Text Card
                   <div className="w-full max-w-78 h-85 mx-auto bg-[#f5f5f5] rounded-[21px] flex flex-col justify-end p-7.5 text-left">

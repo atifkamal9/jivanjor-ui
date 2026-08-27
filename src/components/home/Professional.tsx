@@ -57,7 +57,7 @@ export default function Professional({ data }: ProfessionalProps) {
             className="flex flex-col items-center mx-auto space-y-4 max-w-40"
           >
             <div className="w-10 h-10 relative flex items-center justify-center">
-              <Image src={f.icon} alt={f.title} width={40} height={40} className="object-contain" unoptimized />
+              <Image src={f.icon} alt={f.title} width={40} height={40} className="object-contain" />
             </div>
             <Title className="leading-normal">
               {f.title}
@@ -72,7 +72,6 @@ export default function Professional({ data }: ProfessionalProps) {
           width={1200}
           height={800}
           priority
-          unoptimized
           className="hidden lg:block w-full h-auto object-cover rounded-2xl"
         />
         <Image
@@ -81,7 +80,6 @@ export default function Professional({ data }: ProfessionalProps) {
           width={1200}
           height={800}
           priority
-          unoptimized
           className="block lg:hidden w-full h-auto object-cover rounded-2xl"
         />
       </div>

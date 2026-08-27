@@ -850,7 +850,6 @@ export default function MainCategories() {
                         alt="Product Backdrop"
                         className="object-cover object-center"
                         src={defaultCardBg || "/images/placeholder.png"}
-                        unoptimized
                       />
                       {/* <div className="absolute inset-0 bg-black/5" /> */}
                       <div className="relative aspect-video w-36 md:w-40 h-36 md:h-40 drop-shadow-2xl z-10 transition-transform duration-300 hover:scale-105">
@@ -859,7 +858,6 @@ export default function MainCategories() {
                           src={product.image}
                           alt={product.title}
                           className="object-contain"
-                          unoptimized
                         />
                       </div>
                     </div>

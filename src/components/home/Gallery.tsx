@@ -59,7 +59,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 1"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
         <a
@@ -77,7 +76,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 2"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
       </div>
@@ -90,7 +88,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 3"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
         <div className="space-y-4">
@@ -109,7 +106,6 @@ export default function Gallery({ items, images }: GalleryProps) {
               alt="Gallery Image 4"
               width={1200}
               height={800}
-              unoptimized
             />
           </div>
         </div>
@@ -120,7 +116,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 5"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
       </div>
@@ -134,7 +129,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 1 Mobile"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
         <div className="row-span-2 rounded-2xl relative overflow-hidden">
@@ -144,7 +138,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 2 Mobile"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
         <a
@@ -166,7 +159,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 4 Mobile"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
         <a
@@ -188,7 +180,6 @@ export default function Gallery({ items, images }: GalleryProps) {
             alt="Gallery Image 5 Mobile"
             width={1200}
             height={800}
-            unoptimized
           />
         </div>
       </div>

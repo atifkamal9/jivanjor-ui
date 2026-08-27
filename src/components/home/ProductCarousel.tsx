@@ -160,7 +160,6 @@ export default function ProductCarousel({ items }: ProductCarouselProps) {
                   <Image
                     fill
                     priority
-                    unoptimized
                     src={card.image}
                     alt={card.title}
                     className="object-contain group-hover:-translate-y-1 transition-all duration-300 z-100"

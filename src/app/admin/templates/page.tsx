@@ -1652,6 +1652,24 @@ export default function TemplatesPage() {
                                   </div>
                                 )}
 
+                                {/* Overlay Background Toggle */}
+                                <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+                                  <input
+                                    type="checkbox"
+                                    id={`tmplHeroShowOverlay-${sIdx}`}
+                                    checked={slide.showOverlay !== false}
+                                    onChange={(e) => {
+                                      const currentSlides = [...(homeSections.hero.slides || [])];
+                                      currentSlides[sIdx] = { ...currentSlides[sIdx], showOverlay: e.target.checked };
+                                      updateSectionField("hero", "slides", currentSlides);
+                                    }}
+                                    className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                  />
+                                  <label htmlFor={`tmplHeroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                    Enable Dark Gradient Overlay Background
+                                  </label>
+                                </div>
+
                                 {/* Per-banner Call-to-action Buttons */}
                                 <div className="pt-3 border-t border-border/60 space-y-3">
                                   <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">

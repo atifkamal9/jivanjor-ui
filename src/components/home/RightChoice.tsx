@@ -88,7 +88,6 @@ export default function RightChoice({ data }: RightChoiceProps) {
           className="hidden lg:block object-fill"
           alt="Right Choice Background"
           priority
-          unoptimized
           fill
         />
         <Image
@@ -96,7 +95,6 @@ export default function RightChoice({ data }: RightChoiceProps) {
           className="object-fill lg:hidden"
           alt="Right Choice Background Mobile"
           priority
-          unoptimized
           fill
         />
         <div className="absolute hidden lg:block inset-0 bg-linear-to-b from-[#FF0009] to-[#772571] w-5" />
@@ -122,7 +120,6 @@ export default function RightChoice({ data }: RightChoiceProps) {
                   className="aspect-square bg-transparent! invert group-hover:invert-0! transition-all duration-300 object-contain"
                   height={48}
                   width={48}
-                  unoptimized
                 />
                 <Subtitle className="font-medium text-base! lg:text-lg! group-hover:text-white transition-colors duration-300">
                   {type.title}

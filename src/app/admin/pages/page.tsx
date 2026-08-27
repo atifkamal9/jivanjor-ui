@@ -1329,15 +1329,17 @@ export default function PagesPage() {
 
   const updateItemField = (sectionKey: string, idx: number, fieldKey: string, value: any) => {
     setFormData((prev: any) => {
-      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      const sectionObj = prev.sections?.[sectionKey];
+      const listKey = sectionKey === "professionals" || (sectionObj && Array.isArray(sectionObj.testimonials)) ? "testimonials" : "items";
+      const items = [...(sectionObj?.[listKey] || [])];
       items[idx] = { ...items[idx], [fieldKey]: value };
       return {
         ...prev,
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections?.[sectionKey],
-            items,
+            ...sectionObj,
+            [listKey]: items,
           },
         },
       };
@@ -1346,7 +1348,9 @@ export default function PagesPage() {
 
   const updateNestedItemField = (sectionKey: string, idx: number, subKey: string, fieldKey: string, value: any) => {
     setFormData((prev: any) => {
-      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      const sectionObj = prev.sections?.[sectionKey];
+      const listKey = sectionKey === "professionals" || (sectionObj && Array.isArray(sectionObj.testimonials)) ? "testimonials" : "items";
+      const items = [...(sectionObj?.[listKey] || [])];
       items[idx] = {
         ...items[idx],
         [subKey]: {
@@ -1359,8 +1363,8 @@ export default function PagesPage() {
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections?.[sectionKey],
-            items,
+            ...sectionObj,
+            [listKey]: items,
           },
         },
       };
@@ -1369,14 +1373,16 @@ export default function PagesPage() {
 
   const addItem = (sectionKey: string, defaultItem: any) => {
     setFormData((prev: any) => {
-      const items = [...(prev.sections?.[sectionKey]?.items || []), defaultItem];
+      const sectionObj = prev.sections?.[sectionKey];
+      const listKey = sectionKey === "professionals" || (sectionObj && Array.isArray(sectionObj.testimonials)) ? "testimonials" : "items";
+      const items = [...(sectionObj?.[listKey] || []), defaultItem];
       return {
         ...prev,
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections?.[sectionKey],
-            items,
+            ...sectionObj,
+            [listKey]: items,
           },
         },
       };
@@ -1385,7 +1391,9 @@ export default function PagesPage() {
 
   const moveItem = (sectionKey: string, idx: number, direction: "up" | "down") => {
     setFormData((prev: any) => {
-      const items = [...(prev.sections?.[sectionKey]?.items || [])];
+      const sectionObj = prev.sections?.[sectionKey];
+      const listKey = sectionKey === "professionals" || (sectionObj && Array.isArray(sectionObj.testimonials)) ? "testimonials" : "items";
+      const items = [...(sectionObj?.[listKey] || [])];
       const newIdx = direction === "up" ? idx - 1 : idx + 1;
       if (newIdx < 0 || newIdx >= items.length) return prev;
       [items[idx], items[newIdx]] = [items[newIdx], items[idx]];
@@ -1394,8 +1402,8 @@ export default function PagesPage() {
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections[sectionKey],
-            items,
+            ...sectionObj,
+            [listKey]: items,
           },
         },
       };
@@ -1439,14 +1447,16 @@ export default function PagesPage() {
 
   const removeItem = (sectionKey: string, idx: number) => {
     setFormData((prev: any) => {
-      const items = (prev.sections?.[sectionKey]?.items || []).filter((_: any, i: number) => i !== idx);
+      const sectionObj = prev.sections?.[sectionKey];
+      const listKey = sectionKey === "professionals" || (sectionObj && Array.isArray(sectionObj.testimonials)) ? "testimonials" : "items";
+      const items = (sectionObj?.[listKey] || []).filter((_: any, i: number) => i !== idx);
       return {
         ...prev,
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections?.[sectionKey],
-            items,
+            ...sectionObj,
+            [listKey]: items,
           },
         },
       };
@@ -2386,6 +2396,24 @@ export default function PagesPage() {
                                     </div>
                                   </div>
                                 )}
+
+                                {/* Overlay Background Toggle */}
+                                <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+                                  <input
+                                    type="checkbox"
+                                    id={`heroShowOverlay-${sIdx}`}
+                                    checked={slide.showOverlay !== false}
+                                    onChange={(e) => {
+                                      const currentSlides = [...(formData.sections.hero.slides || [])];
+                                      currentSlides[sIdx] = { ...currentSlides[sIdx], showOverlay: e.target.checked };
+                                      updateSectionField("hero", "slides", currentSlides);
+                                    }}
+                                    className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                  />
+                                  <label htmlFor={`heroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                    Enable Dark Gradient Overlay Background
+                                  </label>
+                                </div>
 
                                 {/* Per-banner Call-to-action Buttons */}
                                 <div className="pt-3 border-t border-border/60 space-y-3">
@@ -3664,6 +3692,7 @@ export default function PagesPage() {
                                     className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer"
                                   >
                                     <option value="text">Text Quote Card</option>
+                                    <option value="image">Image & Quote Card</option>
                                     <option value="video">Video Card</option>
                                   </select>
                                 </div>
@@ -3694,17 +3723,18 @@ export default function PagesPage() {
 
                               {item.type === "video" ? (
                                 <div className="space-y-3 border-t border-border/50 pt-2">
-                                  <div>
-                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Video URL (YouTube or Direct MP4 Link)</label>
-                                    <input
-                                      type="text"
-                                      value={item.videoUrl || ""}
-                                      onChange={(e) => updateItemField("testimonials", idx, "videoUrl", e.target.value)}
-                                      placeholder="https://www.youtube.com/watch?v=..."
-                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
-                                    />
-                                  </div>
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                      <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Upload Video File</label>
+                                      <MediaUpload
+                                        value={item.videoUrl || ""}
+                                        onChange={(url) => updateItemField("testimonials", idx, "videoUrl", url)}
+                                        folder="testimonials"
+                                        accept="video"
+                                        size="compact"
+                                        aspect="video"
+                                      />
+                                    </div>
                                     <div>
                                       <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
                                       <ImageUpload
@@ -3715,18 +3745,51 @@ export default function PagesPage() {
                                         aspect="video"
                                       />
                                     </div>
-                                    <div className="flex items-center gap-2 pt-4 pl-2">
-                                      <input
-                                        type="checkbox"
-                                        id={`homeShowPlayButton-${idx}`}
-                                        checked={item.showPlayButton !== false}
-                                        onChange={(e) => updateItemField("testimonials", idx, "showPlayButton", e.target.checked)}
-                                        className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
-                                      />
-                                      <label htmlFor={`homeShowPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
-                                        Show Play Button
-                                      </label>
-                                    </div>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Or Video Link (YouTube or External URL)</label>
+                                    <input
+                                      type="text"
+                                      value={item.videoUrl || ""}
+                                      onChange={(e) => updateItemField("testimonials", idx, "videoUrl", e.target.value)}
+                                      placeholder="https://www.youtube.com/watch?v=... or direct MP4 URL"
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-2 pt-1 pl-1">
+                                    <input
+                                      type="checkbox"
+                                      id={`homeShowPlayButton-${idx}`}
+                                      checked={item.showPlayButton !== false}
+                                      onChange={(e) => updateItemField("testimonials", idx, "showPlayButton", e.target.checked)}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                                    />
+                                    <label htmlFor={`homeShowPlayButton-${idx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Show Play Button
+                                    </label>
+                                  </div>
+                                </div>
+                              ) : item.type === "image" ? (
+                                <div className="border-t border-border/50 pt-2 space-y-3">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Background Image</label>
+                                    <ImageUpload
+                                      value={item.image || ""}
+                                      onChange={(url) => updateItemField("testimonials", idx, "image", url)}
+                                      folder="templates"
+                                      size="compact"
+                                      aspect="video"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                    <textarea
+                                      rows={2}
+                                      value={item.quote || ""}
+                                      onChange={(e) => updateItemField("testimonials", idx, "quote", e.target.value)}
+                                      placeholder="Aquabond kitchen ka specialist hai."
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                    />
                                   </div>
                                 </div>
                               ) : (
@@ -3739,16 +3802,6 @@ export default function PagesPage() {
                                       onChange={(e) => updateItemField("testimonials", idx, "quote", e.target.value)}
                                       placeholder="Aquabond kitchen ka specialist hai."
                                       className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                                    />
-                                  </div>
-                                  <div>
-                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Optional Avatar Image</label>
-                                    <ImageUpload
-                                      value={item.image || ""}
-                                      onChange={(url) => updateItemField("testimonials", idx, "image", url)}
-                                      folder="templates"
-                                      size="compact"
-                                      aspect="square"
                                     />
                                   </div>
                                 </div>
@@ -6202,6 +6255,7 @@ export default function PagesPage() {
                                     className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs text-foreground outline-none cursor-pointer border-border"
                                   >
                                     <option value="text">Text Quote Card</option>
+                                    <option value="image">Image & Quote Card</option>
                                     <option value="video">Video Card</option>
                                   </select>
                                 </div>
@@ -6229,21 +6283,45 @@ export default function PagesPage() {
                               </div>
 
                               {item.type === "video" ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-border/50 pt-2">
+                                <div className="space-y-3 border-t border-border/50 pt-2">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                      <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Upload Video File</label>
+                                      <MediaUpload
+                                        value={item.videoUrl || ""}
+                                        onChange={(url) => updateItemField("professionals", idx, "videoUrl", url)}
+                                        folder="testimonials"
+                                        accept="video"
+                                        size="compact"
+                                        aspect="video"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
+                                      <ImageUpload
+                                        value={item.image || ""}
+                                        onChange={(url) => updateItemField("professionals", idx, "image", url)}
+                                        folder="templates"
+                                        size="compact"
+                                        aspect="video"
+                                      />
+                                    </div>
+                                  </div>
                                   <div>
-                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Thumbnail Image</label>
-                                    <ImageUpload
-                                      value={item.image || ""}
-                                      onChange={(url) => updateItemField("professionals", idx, "image", url)}
-                                      folder="templates"
-                                      size="compact"
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Or Video Link (YouTube or External URL)</label>
+                                    <input
+                                      type="text"
+                                      value={item.videoUrl || ""}
+                                      onChange={(e) => updateItemField("professionals", idx, "videoUrl", e.target.value)}
+                                      placeholder="https://www.youtube.com/watch?v=... or direct MP4 URL"
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs"
                                     />
                                   </div>
-                                  <div className="flex items-center gap-2 pt-4 pl-2">
+                                  <div className="flex items-center gap-2 pt-1 pl-1">
                                     <input
                                       type="checkbox"
                                       id={`showPlayButton-${idx}`}
-                                      checked={!!item.showPlayButton}
+                                      checked={item.showPlayButton !== false}
                                       onChange={(e) => updateItemField("professionals", idx, "showPlayButton", e.target.checked)}
                                       className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
                                     />
@@ -6252,15 +6330,40 @@ export default function PagesPage() {
                                     </label>
                                   </div>
                                 </div>
+                              ) : item.type === "image" ? (
+                                <div className="border-t border-border/50 pt-2 space-y-3">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Card Background Image</label>
+                                    <ImageUpload
+                                      value={item.image || ""}
+                                      onChange={(url) => updateItemField("professionals", idx, "image", url)}
+                                      folder="templates"
+                                      size="compact"
+                                      aspect="video"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                    <textarea
+                                      rows={2}
+                                      value={item.quote || ""}
+                                      onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
+                                      placeholder="Aquabond kitchen ka specialist hai."
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                    />
+                                  </div>
+                                </div>
                               ) : (
-                                <div className="border-t border-border/50 pt-2">
-                                  <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
-                                  <textarea
-                                    rows={2}
-                                    value={item.quote || ""}
-                                    onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
-                                    className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
-                                  />
+                                <div className="border-t border-border/50 pt-2 space-y-2">
+                                  <div>
+                                    <label className="block text-[10px] font-bold text-foreground/50 uppercase tracking-wider mb-1">Quote Description</label>
+                                    <textarea
+                                      rows={2}
+                                      value={item.quote || ""}
+                                      onChange={(e) => updateItemField("professionals", idx, "quote", e.target.value)}
+                                      className="w-full px-3 py-1.5 bg-background border border-border rounded-xl text-xs resize-none"
+                                    />
+                                  </div>
                                 </div>
                               )}
                             </div>
