@@ -116,20 +116,24 @@ export default function Hero({ product, category }: HeroProps) {
         <div className="order-1 lg:order-2 w-full lg:w-[60%] relative h-72 sm:h-100 lg:h-full overflow-hidden">
           {/* Desktop Kitchen Backdrop Image */}
           <Image
-            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
-            alt={`${productName} background`}
             fill
             priority
+            unoptimized
+            quality={100}
+            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
+            alt={`${productName} background`}
             className="hidden lg:block object-cover"
-            sizes="(max-width: 768px) 100vw, 60vw"
+            sizes="(max-width: 1024px) 100vw, 60vw"
           />
 
           {/* Mobile Kitchen Backdrop Image */}
           <Image
-            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
-            alt={`${productName} background mobile`}
             fill
             priority
+            unoptimized
+            quality={100}
+            src={product?.backgroundImage || product?.bgImage || "/images/products-cover.png"}
+            alt={`${productName} background mobile`}
             className="block lg:hidden object-cover"
             sizes="100vw"
           />
