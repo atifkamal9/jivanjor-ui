@@ -353,7 +353,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
     ? categories.filter((c) => c.parent_category === parentId)
     : categories.filter((c) => c.parent_category)
   ).filter((c) => c.isVisible !== false && !c.hideInMenu)
-   .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
   const categoriesData = categories.length > 0 && currentSubcategory
     ? siblingSubcategories.map((sub) => {
@@ -538,7 +538,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
               loop={false}
               observer={true}
               observeParents={true}
-              centerInsufficientSlides={true}
+              // centerInsufficientSlides={true}
               spaceBetween={16}
               slidesPerView={1}
               navigation={{
