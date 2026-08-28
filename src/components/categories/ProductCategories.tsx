@@ -352,7 +352,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
   const siblingSubcategories = (parentId
     ? categories.filter((c) => c.parent_category === parentId)
     : categories.filter((c) => c.parent_category)
-  ).filter((c) => c.isVisible !== false && !c.hideInMenu);
+  ).filter((c) => c.isVisible !== false && !c.hideInMenu)
+   .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
   const categoriesData = categories.length > 0 && currentSubcategory
     ? siblingSubcategories.map((sub) => {

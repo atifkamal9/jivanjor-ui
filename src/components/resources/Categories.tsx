@@ -346,13 +346,14 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 ];
 
 function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCategoryData[] {
-  const roots = cats.filter(c => !c.parent_category);
+  const sortedCats = [...cats].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  const roots = sortedCats.filter(c => !c.parent_category);
   if (roots.length === 0) return [];
 
   const mainCategories: MainCategoryData[] = [];
 
   for (const root of roots) {
-    const subs = cats.filter(c => c.parent_category === root.id);
+    const subs = sortedCats.filter(c => c.parent_category === root.id);
     const subCategoriesList: SubCategoryData[] = [];
 
     for (const sub of subs) {

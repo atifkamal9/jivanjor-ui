@@ -5,12 +5,32 @@ import { ChevronRight } from "lucide-react";
 interface HeroProps {
   heroImage?: string;
   heroTitle?: string;
+  breadcrumb?: string;
+  breadcrumbTitle?: string;
+  data?: {
+    title?: string;
+    heroTitle?: string;
+    breadcrumb?: string;
+    breadcrumbTitle?: string;
+  };
 }
 
 export default function Hero({
   heroImage = "/images/image 24.png",
   heroTitle = "Contact Us",
+  breadcrumb,
+  breadcrumbTitle,
+  data,
 }: HeroProps) {
+  const displayTitle = data?.heroTitle || data?.title || heroTitle || "Contact Us";
+  const displayBreadcrumb =
+    data?.breadcrumb ||
+    data?.breadcrumbTitle ||
+    breadcrumb ||
+    breadcrumbTitle ||
+    displayTitle ||
+    "Contact Us";
+
   return (
     <section className="relative w-full">
       <div className="hidden md:block relative h-67 bg-black/60">
@@ -18,7 +38,7 @@ export default function Hero({
         <Image
           src={heroImage || "/images/image 24.png"}
           fill
-          alt={heroTitle || "Contact Us Hero"}
+          alt={displayTitle || "Contact Us Hero"}
           priority
           className="object-cover object-center pointer-events-none"
         />
@@ -36,7 +56,7 @@ export default function Hero({
               </svg>
             </Link>
             <ChevronRight size={16} />
-            <span className="font-normal text-lg opacity-85">{heroTitle || "Contact Us"}</span>
+            <span className="font-normal text-lg opacity-85">{displayBreadcrumb}</span>
           </div>
         </div>
       </div>
@@ -55,7 +75,7 @@ export default function Hero({
             </svg>
           </Link>
           <ChevronRight size={16} />
-          <span className="font-normal text-lg opacity-85">{heroTitle || "Contact Us"}</span>
+          <span className="font-normal text-lg opacity-85">{displayBreadcrumb}</span>
         </div>
       </div>
     </section>

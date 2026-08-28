@@ -22,6 +22,9 @@ import {
   ChevronRight,
   Eye,
   EyeOff,
+  ArrowUp,
+  ArrowDown,
+  GripVertical,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -84,6 +87,7 @@ export default function CategoriesPage() {
     rightChoiceCtaLink: "",
     hideInMenu: false,
     isVisible: true,
+    displayOrder: 0,
   });
 
   // SEO metadata states
@@ -112,12 +116,106 @@ export default function CategoriesPage() {
         api.getCategories(),
         api.getSeoMetadata()
       ]);
-      setCategories(catsList);
+      const sortedCats = [...catsList].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+      setCategories(sortedCats);
       setSeos(seosList);
     } catch (err) {
       console.error("Failed to load categories/SEO", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Drag and drop state
+  const [draggedItem, setDraggedItem] = useState<{ id: string; parentId: string | null } | null>(null);
+  const [dragOverItemId, setDragOverItemId] = useState<string | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, id: string, parentId: string | null) => {
+    setDraggedItem({ id, parentId });
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDragOver = (e: React.DragEvent, targetId: string, parentId: string | null) => {
+    e.preventDefault();
+    if (!draggedItem) return;
+    if (draggedItem.parentId === parentId && draggedItem.id !== targetId) {
+      e.dataTransfer.dropEffect = "move";
+      setDragOverItemId(targetId);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverItemId(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetId: string, parentId: string | null) => {
+    e.preventDefault();
+    setDragOverItemId(null);
+    if (!draggedItem) return;
+    if (draggedItem.parentId !== parentId || draggedItem.id === targetId) return;
+
+    const siblings = parentId
+      ? categories.filter((c) => c.parent_category === parentId)
+      : categories.filter((c) => !c.parent_category);
+
+    const fromIdx = siblings.findIndex((c) => c.id === draggedItem.id);
+    const toIdx = siblings.findIndex((c) => c.id === targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    const updated = [...siblings];
+    const [moved] = updated.splice(fromIdx, 1);
+    updated.splice(toIdx, 0, moved);
+
+    const reorderPayload = updated.map((c, idx) => ({
+      id: c.id,
+      displayOrder: idx + 1,
+    }));
+
+    try {
+      await api.reorderCategories(reorderPayload);
+      await loadData();
+    } catch (err) {
+      console.error("Failed to save drag order:", err);
+    } finally {
+      setDraggedItem(null);
+    }
+  };
+
+  const handleMoveCategory = async (category: Category, direction: "up" | "down", siblings: Category[]) => {
+    const currentIndex = siblings.findIndex((c) => c.id === category.id);
+    if (currentIndex === -1) return;
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= siblings.length) return;
+
+    const updatedSiblings = [...siblings];
+    const [moved] = updatedSiblings.splice(currentIndex, 1);
+    updatedSiblings.splice(targetIndex, 0, moved);
+
+    const reorderPayload = updatedSiblings.map((c, idx) => ({
+      id: c.id,
+      displayOrder: idx + 1,
+    }));
+
+    try {
+      await api.reorderCategories(reorderPayload);
+      await loadData();
+    } catch (err) {
+      console.error("Failed to reorder categories:", err);
+    }
+  };
+
+  const handleOrderInputChange = async (id: string, newOrder: number) => {
+    try {
+      const targetCat = categories.find((c) => c.id === id);
+      if (!targetCat) return;
+      await api.saveCategory({
+        ...targetCat,
+        displayOrder: newOrder,
+      });
+      await loadData();
+    } catch (err) {
+      console.error("Failed to update order:", err);
     }
   };
 
@@ -155,6 +253,7 @@ export default function CategoriesPage() {
       rightChoiceCtaLink: "",
       hideInMenu: false,
       isVisible: true,
+      displayOrder: categories.length + 1,
     });
     setSeoMetaTitle("");
     setSeoMetaDescription("");
@@ -191,6 +290,7 @@ export default function CategoriesPage() {
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
       hideInMenu: category.hideInMenu || false,
       isVisible: category.isVisible !== undefined ? category.isVisible : !category.hideInMenu,
+      displayOrder: category.displayOrder ?? 0,
     });
 
     const matchedSeo = seos.find(
@@ -389,6 +489,7 @@ export default function CategoriesPage() {
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Category Structure</th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-center w-40">Display Order</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Description</th>
                     <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
                   </tr>
@@ -417,9 +518,26 @@ export default function CategoriesPage() {
                       return (
                         <React.Fragment key={mainCat.id}>
                           {/* Main Category Row */}
-                          <tr className="hover:bg-gray-50/20 dark:hover:bg-zinc-800/10 transition-colors bg-gray-50/5 dark:bg-zinc-900/5">
+                          <tr
+                            key={mainCat.id}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, mainCat.id, null)}
+                            onDragOver={(e) => handleDragOver(e, mainCat.id, null)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={(e) => handleDrop(e, mainCat.id, null)}
+                            className={`hover:bg-gray-50/20 dark:hover:bg-zinc-800/10 transition-all bg-gray-50/5 dark:bg-zinc-900/5 ${
+                              dragOverItemId === mainCat.id ? "border-t-2 border-red-500 bg-red-50/30 dark:bg-red-950/30" : ""
+                            }`}
+                          >
                             <td className="p-5 font-semibold">
                               <div className="flex items-center gap-3">
+                                <div
+                                  className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400 cursor-grab active:cursor-grabbing transition-colors shrink-0"
+                                  title="Drag to reorder category"
+                                >
+                                  <GripVertical className="h-4 w-4" />
+                                </div>
+
                                 <button
                                   type="button"
                                   disabled={subCats.length === 0}
@@ -469,6 +587,34 @@ export default function CategoriesPage() {
                                 </div>
                               </div>
                             </td>
+                            <td className="p-5 text-center">
+                              <div className="inline-flex items-center justify-center gap-1 bg-gray-50 dark:bg-zinc-800 p-1.5 rounded-xl border border-gray-200 dark:border-zinc-700">
+                                <button
+                                  type="button"
+                                  disabled={filteredMainCategories.findIndex((c) => c.id === mainCat.id) === 0}
+                                  onClick={() => handleMoveCategory(mainCat, "up", filteredMainCategories)}
+                                  className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-700 text-gray-600 dark:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer transition-all"
+                                  title="Move category up"
+                                >
+                                  <ArrowUp className="h-3.5 w-3.5" />
+                                </button>
+                                <input
+                                  type="number"
+                                  value={mainCat.displayOrder ?? 0}
+                                  onChange={(e) => handleOrderInputChange(mainCat.id, parseInt(e.target.value) || 0)}
+                                  className="w-10 text-center text-xs font-bold bg-transparent outline-none border-b border-transparent focus:border-red-500 text-gray-900 dark:text-zinc-100"
+                                />
+                                <button
+                                  type="button"
+                                  disabled={filteredMainCategories.findIndex((c) => c.id === mainCat.id) === filteredMainCategories.length - 1}
+                                  onClick={() => handleMoveCategory(mainCat, "down", filteredMainCategories)}
+                                  className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-700 text-gray-600 dark:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer transition-all"
+                                  title="Move category down"
+                                >
+                                  <ArrowDown className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            </td>
                             <td className="p-5 text-sm text-gray-500 dark:text-zinc-400 max-w-xs truncate">
                               {mainCat.description || "No description provided."}
                             </td>
@@ -511,9 +657,25 @@ export default function CategoriesPage() {
                           {/* Child categories loop */}
                           {!isCollapsed &&
                             subCats.map((sub) => (
-                              <tr key={sub.id} className="hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-colors bg-white dark:bg-zinc-900 animate-[fadeIn_0.15s_ease-out]">
+                              <tr
+                                key={sub.id}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, sub.id, mainCat.id)}
+                                onDragOver={(e) => handleDragOver(e, sub.id, mainCat.id)}
+                                onDragLeave={handleDragLeave}
+                                onDrop={(e) => handleDrop(e, sub.id, mainCat.id)}
+                                className={`hover:bg-gray-50/10 dark:hover:bg-zinc-800/5 transition-all bg-white dark:bg-zinc-900 animate-[fadeIn_0.15s_ease-out] ${
+                                  dragOverItemId === sub.id ? "border-t-2 border-red-500 bg-red-50/30 dark:bg-red-950/30" : ""
+                                }`}
+                              >
                                 <td className="p-5 pl-14">
                                   <div className="flex items-center gap-2">
+                                    <div
+                                      className="p-1 text-gray-300 hover:text-red-600 dark:hover:text-red-400 cursor-grab active:cursor-grabbing transition-colors shrink-0"
+                                      title="Drag to reorder sub-category"
+                                    >
+                                      <GripVertical className="h-4 w-4" />
+                                    </div>
                                     <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
                                     <div>
                                       <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
@@ -530,6 +692,34 @@ export default function CategoriesPage() {
                                       </p>
                                       <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-wider">/{sub.slug}</p>
                                     </div>
+                                  </div>
+                                </td>
+                                <td className="p-5 text-center">
+                                  <div className="inline-flex items-center justify-center gap-1 bg-gray-50/50 dark:bg-zinc-950 p-1 rounded-xl border border-gray-100 dark:border-zinc-800">
+                                    <button
+                                      type="button"
+                                      disabled={subCats.findIndex((s) => s.id === sub.id) === 0}
+                                      onClick={() => handleMoveCategory(sub, "up", subCats)}
+                                      className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-800 text-gray-600 dark:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer transition-all"
+                                      title="Move sub-category up"
+                                    >
+                                      <ArrowUp className="h-3.5 w-3.5" />
+                                    </button>
+                                    <input
+                                      type="number"
+                                      value={sub.displayOrder ?? 0}
+                                      onChange={(e) => handleOrderInputChange(sub.id, parseInt(e.target.value) || 0)}
+                                      className="w-10 text-center text-xs font-bold bg-transparent outline-none border-b border-transparent focus:border-red-500 text-gray-900 dark:text-zinc-100"
+                                    />
+                                    <button
+                                      type="button"
+                                      disabled={subCats.findIndex((s) => s.id === sub.id) === subCats.length - 1}
+                                      onClick={() => handleMoveCategory(sub, "down", subCats)}
+                                      className="p-1 rounded-lg hover:bg-white dark:hover:bg-zinc-800 text-gray-600 dark:text-zinc-300 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer transition-all"
+                                      title="Move sub-category down"
+                                    >
+                                      <ArrowDown className="h-3.5 w-3.5" />
+                                    </button>
                                   </div>
                                 </td>
                                 <td className="p-5 text-sm text-gray-400 dark:text-zinc-500 max-w-xs truncate">
@@ -717,6 +907,20 @@ export default function CategoriesPage() {
                             </option>
                           ))}
                       </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                        Display Order Position
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.displayOrder}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, displayOrder: parseInt(e.target.value) || 0 }))}
+                        placeholder="e.g. 1"
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
+                      />
+                      <p className="text-[11px] text-gray-400 mt-1">Numerical order position (lower numbers appear first on the website menu and catalog).</p>
                     </div>
 
                     <div>

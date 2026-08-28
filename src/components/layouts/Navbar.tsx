@@ -62,8 +62,12 @@ export default function Navbar() {
           }
         }
 
+        const sortedCats = [...catsList].sort((a: any, b: any) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+        setDbCategories(sortedCats);
+        if (settingsRes) setSiteSettings(settingsRes);
+
         // Find first main category and make it the active one
-        const firstMain = catsList.find((cat: any) => !cat.parent_category);
+        const firstMain = sortedCats.find((cat: any) => !cat.parent_category);
         if (firstMain) {
           setActiveCategory(firstMain.name);
         }
@@ -617,7 +621,7 @@ export default function Navbar() {
                         />
                       </div>
                       <Link
-                        href="/categories"
+                        href="/categories/super-premium-adhesive"
                         onClick={() => setActiveMenu(null)}
                         className="mt-5 px-5 py-2 rounded-full text-white text-sm font-medium bg-linear-to-br from-[#FF0009] to-[#772571] hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 whitespace-nowrap max-w-fit"
                       >

@@ -1330,69 +1330,110 @@ export default function TemplatesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
-                      <div className="md:col-span-2">
+                      <div>
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
-                          Hero Banner Subtitle Text
+                          Breadcrumb Text
                         </label>
-                        <textarea
-                          rows={2}
-                          value={homeSections.hero.subtitle || homeSections.hero.desc || ""}
+                        <input
+                          type="text"
+                          value={homeSections.hero.breadcrumb || homeSections.hero.breadcrumbTitle || homeSections.hero.label || ""}
                           onChange={(e) => {
-                            updateSectionField("hero", "subtitle", e.target.value);
-                            updateSectionField("hero", "desc", e.target.value);
+                            updateSectionField("hero", "breadcrumb", e.target.value);
+                            updateSectionField("hero", "breadcrumbTitle", e.target.value);
+                            updateSectionField("hero", "label", e.target.value);
                           }}
-                          placeholder="Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                          placeholder="e.g. Contractor Connect / Become a Dealer / Contact Us"
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
+                      {currentLayoutType !== "partner" && currentLayoutType !== "contractor" && currentLayoutType !== "contact" && (
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">
+                            Hero Banner Subtitle Text
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={homeSections.hero.subtitle || homeSections.hero.desc || ""}
+                            onChange={(e) => {
+                              updateSectionField("hero", "subtitle", e.target.value);
+                              updateSectionField("hero", "desc", e.target.value);
+                            }}
+                            placeholder="Engineered for consistency. Built for the contractors and carpenters who shape India's woodwork."
+                            className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary resize-none"
+                          />
+                        </div>
+                      )}
                     </div>
 
                     {/* Hero Action Buttons */}
-                    <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
-                      <h4 className="text-xs font-black uppercase text-primary tracking-wider">Default CTA Action Buttons Setup</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Primary Button */}
-                        <div className="space-y-3">
-                          <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Primary Call-to-action</span>
-                          <input
-                            type="text"
-                            value={homeSections.hero.actionButtons?.primary?.text || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, text: e.target.value })}
-                            placeholder="Button Text"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                          <input
-                            type="text"
-                            value={homeSections.hero.actionButtons?.primary?.actionPath || ""}
-                            onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, actionPath: e.target.value })}
-                            placeholder="Action Path (e.g. #about-query-section)"
-                            className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
-                          />
-                        </div>
-                        {/* Secondary Button */}
-                        {currentLayoutType !== "about" && (
+                    {currentLayoutType !== "partner" && currentLayoutType !== "contractor" && currentLayoutType !== "contact" && (
+                      <div className="p-5 border border-border bg-surface/20 rounded-2xl space-y-4">
+                        <h4 className="text-xs font-black uppercase text-primary tracking-wider">Default CTA Action Buttons Setup</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Primary Button */}
                           <div className="space-y-3">
-                            <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
+                            <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Primary Call-to-action</span>
                             <input
                               type="text"
-                              value={homeSections.hero.actionButtons?.secondary?.text || ""}
-                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, text: e.target.value })}
+                              value={homeSections.hero.actionButtons?.primary?.text || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, text: e.target.value })}
                               placeholder="Button Text"
                               className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                             />
                             <input
                               type="text"
-                              value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
-                              onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
-                              placeholder="Action Path (e.g. /about)"
+                              value={homeSections.hero.actionButtons?.primary?.actionPath || ""}
+                              onChange={(e) => updateNestedField("hero", "actionButtons", "primary", { ...homeSections.hero.actionButtons?.primary, actionPath: e.target.value })}
+                              placeholder="Action Path (e.g. #about-query-section)"
                               className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
                             />
                           </div>
-                        )}
+                          {/* Secondary Button */}
+                          {currentLayoutType !== "about" && (
+                            <div className="space-y-3">
+                              <span className="text-[10px] font-black uppercase text-foreground/45 tracking-wider">Secondary Call-to-action</span>
+                              <input
+                                type="text"
+                                value={homeSections.hero.actionButtons?.secondary?.text || ""}
+                                onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, text: e.target.value })}
+                                placeholder="Button Text"
+                                className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                              />
+                              <input
+                                type="text"
+                                value={homeSections.hero.actionButtons?.secondary?.actionPath || ""}
+                                onChange={(e) => updateNestedField("hero", "actionButtons", "secondary", { ...homeSections.hero.actionButtons?.secondary, actionPath: e.target.value })}
+                                placeholder="Action Path (e.g. /about)"
+                                className="w-full px-4 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
-                    {currentLayoutType === "about" ? (
+                    {currentLayoutType === "partner" || currentLayoutType === "contractor" ? (
+                      <div className="space-y-6 border-t border-border pt-6 mt-4">
+                        <div className="space-y-2">
+                          <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">
+                            Hero Background Banner Image
+                          </label>
+                          <ImageUpload
+                            value={homeSections.hero.bgImage || homeSections.hero.heroImage || homeSections.hero.media?.[0] || homeSections.hero.image || ""}
+                            onChange={(url) => {
+                              const newMedia = [...(homeSections.hero.media || [])];
+                              newMedia[0] = url;
+                              updateSectionField("hero", "bgImage", url);
+                              updateSectionField("hero", "heroImage", url);
+                              updateSectionField("hero", "image", url);
+                              updateSectionField("hero", "media", newMedia);
+                            }}
+                            folder="templates"
+                          />
+                          <span className="text-[10px] text-foreground/40 font-medium">Recommended aspect ratio: 16:9 (e.g. 1920x1080)</span>
+                        </div>
+                      </div>
+                    ) : currentLayoutType === "about" ? (
                       <div className="space-y-6 border-t border-border pt-6 mt-4">
                         <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl text-xs font-bold text-primary leading-relaxed">
                           💡 INFO: The about hero template requires 2 images: one optimized for desktop screens and one optimized for mobile screens.

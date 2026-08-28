@@ -81,6 +81,7 @@ export interface Category {
   rightChoice?: { title?: string; subtitle?: string; ctaText?: string; ctaLink?: string };
   hideInMenu?: boolean;
   isVisible?: boolean;
+  displayOrder?: number;
 }
 
 export interface Material {
@@ -328,6 +329,7 @@ function mapCategoryFromBackend(cat: any): Category {
     icon: cat.icon || "",
     hideInMenu: !isVisible,
     isVisible,
+    displayOrder: cat.displayOrder ?? cat.display_order ?? 0,
   };
 }
 
@@ -791,6 +793,15 @@ export const api = {
   deleteCategory: async (id: string): Promise<boolean> => {
     await client.delete(`/categories/${id}`);
     return true;
+  },
+  reorderCategories: async (items: { id: string; displayOrder: number }[]): Promise<boolean> => {
+    try {
+      await client.put("/categories/reorder", { items });
+      return true;
+    } catch (err) {
+      console.error("Failed to reorder categories:", err);
+      return false;
+    }
   },
 
   // MATERIALS

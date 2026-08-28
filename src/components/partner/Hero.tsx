@@ -7,13 +7,35 @@ interface HeroProps {
   hideText?: boolean;
   data?: {
     title?: string;
+    breadcrumb?: string;
+    breadcrumbTitle?: string;
+    label?: string;
+    categoryTitle?: string;
     media?: string[];
+    bgImage?: string;
+    heroImage?: string;
+    image?: string;
+    slides?: any[];
   };
 }
 
 export default function Hero({ hideText = false, data }: HeroProps) {
   const title = data?.title || "Build Your Dealership with a Growing Distribution Network";
-  const bgImage = data?.media?.[0] || "/images/dealer/Rectangle 2.png";
+  const breadcrumb =
+    data?.breadcrumb ||
+    data?.breadcrumbTitle ||
+    data?.label ||
+    data?.categoryTitle ||
+    "Become a Dealer";
+  const bgImage =
+    data?.bgImage ||
+    data?.heroImage ||
+    data?.image ||
+    data?.media?.[0] ||
+    data?.slides?.[0]?.bgImage ||
+    data?.slides?.[0]?.media?.[0] ||
+    data?.slides?.[0]?.image ||
+    "/images/dealer/Rectangle 2.png";
 
   return (
     <section className="relative w-full">
@@ -41,7 +63,7 @@ export default function Hero({ hideText = false, data }: HeroProps) {
             </Link>
             <ChevronRight size={16} />
             <span className="font-normal text-lg opacity-85">
-              Become a Dealer
+              {breadcrumb}
             </span>
           </div>
 
@@ -69,7 +91,7 @@ export default function Hero({ hideText = false, data }: HeroProps) {
           </Link>
           <ChevronRight size={16} />
           <span className="font-normal text-lg opacity-85">
-            Become a Dealer
+            {breadcrumb}
           </span>
         </div>
 
