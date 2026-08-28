@@ -5,12 +5,9 @@
  */
 
 import { api } from "@/lib/api";
-import { findPinCode } from "@/lib/pincodeStore";
+import { findPinCode, type PinCodeInfo } from "@/lib/pincodeStore";
 
-export interface PinCodeInfo {
-  city: string;
-  state: string;
-}
+export type { PinCodeInfo };
 
 // In-memory cache for ultra-fast repeated lookups during a user session
 const sessionPinCache = new Map<string, PinCodeInfo>();
@@ -46,6 +43,7 @@ export async function lookupPinCode(pinCode: string): Promise<PinCodeInfo | null
     const apiResult = await api.lookupPinCode(cleanPin);
     if (apiResult && (apiResult.city || apiResult.state)) {
       const info: PinCodeInfo = {
+        location: apiResult.location,
         city: apiResult.city,
         state: apiResult.state,
       };

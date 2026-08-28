@@ -1247,9 +1247,11 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    location?: string;
     state?: string;
     pinCode?: string;
     queryType?: string;
+    interestedIn?: string;
     message?: string;
     consent: boolean;
     sourceUrl?: string;
@@ -1263,8 +1265,10 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    location?: string;
     state?: string;
     pinCode?: string;
+    queryType?: string;
     interestedIn?: string;
     lineOfBusiness?: string;
     message?: string;
@@ -1279,9 +1283,11 @@ export const api = {
     mobileNumber: string;
     email?: string;
     city?: string;
+    location?: string;
     state?: string;
     pinCode?: string;
     queryType?: string;
+    interestedIn?: string;
     message?: string;
     consent: boolean;
     sourceUrl?: string;
@@ -1334,7 +1340,10 @@ export const api = {
     return res.data;
   },
   replacePinCodes: async (records: any[]): Promise<{ status: string; count: number; updatedAt: string; message: string }> => {
-    const res = await axios.post("/api/pincodes", { records });
+    // 1. Save directly to backend Database (jivanjor-server -> Supabase PostgreSQL)
+    const res = await client.post("/pincodes/replace", { records });
+    // 2. Sync local Next.js cache file only after database write succeeds
+    axios.post("/api/pincodes", { records }).catch(() => {});
     return res.data;
   },
 };
@@ -1349,6 +1358,8 @@ export interface FormSubmissionRecord {
   mobileNormalized: string;
   email?: string | null;
   city?: string | null;
+  location?: string | null;
+  state?: string | null;
   pinCode?: string | null;
   queryType?: string | null;
   interestedIn?: string | null;

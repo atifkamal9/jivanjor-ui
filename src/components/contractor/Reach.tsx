@@ -145,7 +145,6 @@ export function ReachLeft({ data }: ReachLeftProps) {
 export function ReachForm(props: ContactFormProps = {}) {
   return (
     <ContactForm
-      defaultQueryType="Contractor Connect App"
       formType="CONTRACTOR"
       {...props}
     />

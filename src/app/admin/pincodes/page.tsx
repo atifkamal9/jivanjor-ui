@@ -213,17 +213,13 @@ export default function AdminPincodesPage() {
         state: r.state,
       }));
 
-      // 1. Save to local store for instant offline UI lookup
-      const localResult = savePincodeMap(recordsToSave);
+      // 1. Save directly to Database FIRST (Supabase PostgreSQL as Single Source of Truth)
+      const dbResult = await api.replacePinCodes(recordsToSave);
 
-      // 2. Call server replacement API
-      try {
-        await api.replacePinCodes(recordsToSave);
-      } catch (err) {
-        console.warn("Server API replacement skipped (using client store):", err);
-      }
+      // 2. Update local browser store ONLY AFTER database write succeeds
+      savePincodeMap(recordsToSave);
 
-      setUploadSuccessMsg(`Successfully imported and replaced ${localResult.count} PIN code mappings!`);
+      setUploadSuccessMsg(`Successfully saved ${dbResult.count || validRows.length} PIN codes to Supabase Database!`);
       setTimeout(() => {
         setIsModalOpen(false);
         setParsedRows([]);
@@ -233,7 +229,8 @@ export default function AdminPincodesPage() {
         loadPincodes(1, search);
       }, 1500);
     } catch (err: any) {
-      alert("Error saving PIN codes: " + (err.message || "Failed to update"));
+      console.error("Database save error:", err);
+      alert("Failed to save PIN codes to Database: " + (err.response?.data?.message || err.message || "Database connection error"));
     } finally {
       setIsUploading(false);
     }

@@ -70,10 +70,11 @@ export default function FormSubmissionsAdminPage() {
       "Mobile (Raw)": sub.mobileRaw || "",
       "Mobile (Normalized)": sub.mobileNormalized || "",
       "Email": sub.email || "",
-      "Firm Name": sub.firmName || "",
+      "Location / Area": sub.location || "",
       "City": sub.city || "",
+      "State": sub.state || "",
       "Pin Code": sub.pinCode || "",
-      "Query Type": sub.queryType || "",
+      "Query Type": sub.queryType || sub.interestedIn || "",
       "Interested In": sub.interestedIn || "",
       "Line of Business": sub.lineOfBusiness || "",
       "User Message": sub.message || "",
@@ -691,7 +692,6 @@ export default function FormSubmissionsAdminPage() {
                   <th className="px-2 py-3">Location</th>
                   <th className="px-2 py-3">CRM Sync Status</th>
                   <th className="px-2 py-3">Zoho Record IDs</th>
-                  <th className="px-2 py-3 text-center hidden 2xl:block">Attempts</th>
                   <th className="px-2 py-3 text-right">Actions</th>
                 </tr>
               </thead>
@@ -801,11 +801,6 @@ export default function FormSubmissionsAdminPage() {
                         ) : (
                           <span className="text-foreground/40 block mt-0.5">—</span>
                         )}
-                      </td>
-
-                      {/* Attempt Count */}
-                      <td className="px-2 py-3 text-center font-bold text-foreground hidden 2xl:block">
-                        {sub.zohoSyncAttempts}
                       </td>
 
                       {/* Actions */}
@@ -959,20 +954,20 @@ export default function FormSubmissionsAdminPage() {
                         </div>
 
                         <div className="p-3 rounded-xl bg-surface border border-border space-y-0.5">
-                          <span className="text-[10px] text-foreground/50 font-bold uppercase">Firm Name</span>
-                          <p className="text-xs font-extrabold text-foreground">{selectedSubmission.firmName || "—"}</p>
+                          <span className="text-[10px] text-foreground/50 font-bold uppercase">Location / Area</span>
+                          <p className="text-xs font-extrabold text-foreground">{selectedSubmission.location || "—"}</p>
                         </div>
 
                         <div className="p-3 rounded-xl bg-surface border border-border space-y-0.5">
-                          <span className="text-[10px] text-foreground/50 font-bold uppercase">City & Pin Code</span>
+                          <span className="text-[10px] text-foreground/50 font-bold uppercase">City & State (Pin)</span>
                           <p className="text-xs font-extrabold text-foreground">
-                            {selectedSubmission.city || "—"} ({selectedSubmission.pinCode || "—"})
+                            {[selectedSubmission.city, selectedSubmission.state].filter(Boolean).join(", ") || "—"} ({selectedSubmission.pinCode || "—"})
                           </p>
                         </div>
 
                         <div className="p-3 rounded-xl bg-surface border border-border space-y-0.5">
                           <span className="text-[10px] text-foreground/50 font-bold uppercase">Query Type</span>
-                          <p className="text-xs font-extrabold text-foreground">{selectedSubmission.queryType || "—"}</p>
+                          <p className="text-xs font-extrabold text-foreground">{selectedSubmission.queryType || selectedSubmission.interestedIn || "—"}</p>
                         </div>
 
                         {selectedSubmission.interestedIn && (

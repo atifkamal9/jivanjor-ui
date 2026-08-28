@@ -163,6 +163,18 @@ export async function POST(req: NextRequest) {
 
     const success = writePincodesToFile(fileContent);
 
+    // Forward to backend server to populate Supabase PostgreSQL database
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      await fetch(`${serverUrl}/pincodes/replace`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ records }),
+      });
+    } catch (dbErr) {
+      console.warn("Backend server sync skipped:", dbErr);
+    }
+
     if (!success) {
       return NextResponse.json(
         { status: "error", message: "Failed to save PIN code dataset to storage" },

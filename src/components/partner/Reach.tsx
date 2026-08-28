@@ -87,7 +87,6 @@ export function ReachLeft({ data }: ReachLeftProps) {
 export function ReachForm(props: ContactFormProps = {}) {
   return (
     <ContactForm
-      defaultQueryType="Dealer Enrolment"
       formType="DEALER"
       {...props}
     />

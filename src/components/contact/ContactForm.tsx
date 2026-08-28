@@ -16,10 +16,12 @@ export interface ContactFormProps {
 }
 
 const QUERY_OPTIONS = [
-  { val: "Product Range", label: "Product Range Query" },
-  { val: "Dealer Enrolment", label: "Dealer Inquiry" },
-  { val: "Contractor Connect App", label: "Contractor Club App" },
-  { val: "Other", label: "Other Query" },
+  { val: "Product Guidance", label: "Product Guidance" },
+  { val: "Technical Support", label: "Technical Support" },
+  { val: "Become a Dealer", label: "Become a Dealer" },
+  { val: "Join as a Contractor Partner", label: "Join as a Contractor Partner" },
+  { val: "Achievers Club App Query", label: "Achievers Club App Query" },
+  { val: "Other Enquiry", label: "Other Enquiry" },
 ];
 
 export default function ContactForm({
@@ -35,6 +37,7 @@ export default function ContactForm({
     mobileNumber: "",
     pinCode: "",
     city: "",
+    location: "",
     state: "",
     queryType: defaultQueryType,
     message: "",
@@ -72,17 +75,48 @@ export default function ContactForm({
     setFormData((prev) => ({ ...prev, pinCode: cleanVal }));
 
     if (cleanVal.length === 6) {
-      const location = await lookupPinCode(cleanVal);
-      if (location) {
+      const loc = await lookupPinCode(cleanVal);
+      console.log("location--->", loc);
+
+      if (loc) {
         setFormData((prev) => ({
           ...prev,
-          city: location.city,
-          state: location.state,
+          city: loc.city,
+          state: loc.state,
+          location: (loc as any).location || "",
         }));
       }
-    } else if (formData.city || formData.state) {
-      setFormData((prev) => ({ ...prev, city: "", state: "" }));
+    } else if (formData.city || formData.state || formData.location) {
+      setFormData((prev) => ({ ...prev, city: "", state: "", location: "" }));
     }
+  };
+
+  const handleMobileChange = (val: string) => {
+    const clean = val.replace(/\D/g, "").slice(0, 10);
+    setFormData((prev) => ({ ...prev, mobileNumber: clean }));
+  };
+
+  const validateMobileNumber = (rawMobile: string): { valid: boolean; error?: string } => {
+    let clean = rawMobile.replace(/\D/g, "");
+    if (clean.length === 12 && clean.startsWith("91")) clean = clean.slice(2);
+    if (clean.length === 11 && clean.startsWith("0")) clean = clean.slice(1);
+
+    if (!clean) {
+      return { valid: false, error: "Please enter your Mobile Number." };
+    }
+    if (clean.length !== 10) {
+      return { valid: false, error: "Please enter a valid 10-digit Mobile Number." };
+    }
+    if (!/^[6-9]/.test(clean)) {
+      return { valid: false, error: "Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9." };
+    }
+    if (/^(\d)\1{9}$/.test(clean)) {
+      return { valid: false, error: "Please enter a valid mobile number (repeating digits like 1000000000 / 9999999999 are not allowed)." };
+    }
+    if (/^[6-9]0{9}$/.test(clean) || clean === "1234567890" || clean === "9876543210" || clean === "0123456789") {
+      return { valid: false, error: "Please enter a valid, active mobile number." };
+    }
+    return { valid: true };
   };
 
   const getQueryTypeDisplayLabel = (val: string) => {
@@ -97,12 +131,17 @@ export default function ContactForm({
       alert("Please enter your Full Name.");
       return;
     }
-    if (!formData.mobileNumber.trim()) {
-      alert("Please enter your Mobile Number.");
+    const mobileCheck = validateMobileNumber(formData.mobileNumber);
+    if (!mobileCheck.valid) {
+      alert(mobileCheck.error);
       return;
     }
     if (!formData.pinCode || formData.pinCode.length !== 6) {
       alert("Please enter a valid 6-digit PIN Code.");
+      return;
+    }
+    if (!formData.queryType) {
+      alert("Please select a Type of Query.");
       return;
     }
     if (!formData.consent) {
@@ -114,14 +153,17 @@ export default function ContactForm({
     setErrorMessage("");
 
     try {
+      const cleanMobile = formData.mobileNumber.replace(/\D/g, "").slice(-10);
       const payload = {
         fullName: formData.fullName,
         firmName: "", // Firm name removed from UI as requested
-        mobileNumber: formData.mobileNumber,
+        mobileNumber: cleanMobile,
         city: formData.city,
         state: formData.state,
+        location: formData.location,
         pinCode: formData.pinCode,
         queryType: formData.queryType,
+        interestedIn: formData.queryType,
         message: formData.message,
         consent: formData.consent,
         sourceUrl: typeof window !== "undefined" ? window.location.href : "",
@@ -130,12 +172,21 @@ export default function ContactForm({
       if (formType === "DEALER") {
         await api.submitDealerForm({
           ...payload,
-          interestedIn: formData.queryType || "Dealer Enrolment",
+          queryType: formData.queryType,
+          interestedIn: formData.queryType || "Become a Dealer",
         });
       } else if (formType === "CONTRACTOR") {
-        await api.submitContractorForm(payload);
+        await api.submitContractorForm({
+          ...payload,
+          queryType: formData.queryType,
+          interestedIn: formData.queryType,
+        });
       } else {
-        await api.submitContactForm(payload);
+        await api.submitContactForm({
+          ...payload,
+          queryType: formData.queryType,
+          interestedIn: formData.queryType,
+        });
       }
 
       setFormSubmitted(true);
@@ -144,6 +195,7 @@ export default function ContactForm({
         mobileNumber: "",
         pinCode: "",
         city: "",
+        location: "",
         state: "",
         queryType: defaultQueryType,
         message: "",
@@ -217,8 +269,10 @@ export default function ContactForm({
         <input
           type="tel"
           required
+          maxLength={10}
+          placeholder="e.g. 9876543210"
           value={formData.mobileNumber}
-          onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
+          onChange={(e) => handleMobileChange(e.target.value)}
           className="w-full bg-transparent border-0 p-0 text-foreground text-base focus:ring-0 focus:outline-none"
         />
       </div>
