@@ -1092,18 +1092,14 @@ export default function ProductsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex justify-between items-center">
+                      <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                         <span>Short Description (Cards &amp; Quick Teaser)</span>
-                        <span className={`text-[10px] font-bold ${formData.short_description.length >= 80 ? "text-amber-500" : "text-gray-400"}`}>
-                          {formData.short_description.length} / 80 chars max
-                        </span>
                       </label>
                       <input
                         type="text"
-                        maxLength={80}
                         value={formData.short_description}
                         onChange={(e) => setFormData((prev) => ({ ...prev, short_description: e.target.value }))}
-                        placeholder="Brief overview teaser (max 80 characters e.g. Water-resistant, high-strength adhesive...)"
+                        placeholder="Brief overview teaser e.g. Water-resistant, high-strength adhesive..."
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                       />
                     </div>
@@ -1398,7 +1394,6 @@ export default function ProductsPage() {
                               type="text"
                               required
                               minLength={3}
-                              maxLength={30}
                               value={bullet.text}
                               onChange={(e) => setFormData(prev => {
                                 const list = [...prev.overviewBullets];

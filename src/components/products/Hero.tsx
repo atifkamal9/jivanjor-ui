@@ -89,8 +89,8 @@ export default function Hero({ product, category }: HeroProps) {
                       src={`/icons/${iconName}`}
                       className="aspect-square object-contain"
                       alt={text}
-                      width={20}
-                      height={20}
+                      width={30}
+                      height={30}
                     />
                   </div>
                   <Paragraph className="font-normal leading-normal">
