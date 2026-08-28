@@ -1317,6 +1317,26 @@ export const api = {
     const res = await client.get(`/admin/form-submissions/health`);
     return res.data?.data;
   },
+  lookupPinCode: async (pinCode: string): Promise<{ pinCode: string; city: string; state: string; location?: string | null } | null> => {
+    try {
+      const res = await axios.get(`/api/pincodes?pin=${encodeURIComponent(pinCode)}`);
+      return res.data?.data || null;
+    } catch {
+      return null;
+    }
+  },
+  getPinCodes: async (params?: { page?: number; limit?: number; search?: string }): Promise<{ status: string; total: number; page: number; limit: number; totalPages: number; updatedAt: string | null; records: any[] }> => {
+    const query = new URLSearchParams();
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.limit) query.set("limit", String(params.limit));
+    if (params?.search) query.set("search", params.search);
+    const res = await axios.get(`/api/pincodes?${query.toString()}`);
+    return res.data;
+  },
+  replacePinCodes: async (records: any[]): Promise<{ status: string; count: number; updatedAt: string; message: string }> => {
+    const res = await axios.post("/api/pincodes", { records });
+    return res.data;
+  },
 };
 
 export interface FormSubmissionRecord {

@@ -21,6 +21,7 @@ import {
   X,
   Compass,
   Inbox,
+  MapPin,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -303,6 +304,16 @@ export default function DashboardPage() {
       group: "system",
       gradient: "from-blue-600 to-cyan-600",
       badge: "CRM Sync",
+    },
+    {
+      id: "pincode-master",
+      title: "Pincode Master",
+      desc: "Upload Excel & manage pincode-to-city mapping database",
+      href: "/admin/pincodes",
+      icon: MapPin,
+      group: "system",
+      gradient: "from-[#FF0009] to-[#772571]",
+      badge: "Master Data",
     },
     {
       id: "sitemap-manager",

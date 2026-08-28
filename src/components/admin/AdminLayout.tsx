@@ -29,6 +29,7 @@ import {
   Settings,
   ShieldCheck,
   Inbox,
+  MapPin,
 } from "lucide-react";
 
 
@@ -49,6 +50,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { name: "Sitemap", href: "/admin/sitemap", icon: Compass },
   { name: "User Management", href: "/admin/users", icon: UserCheck },
   { name: "Form Submissions", href: "/admin/form-submissions", icon: Inbox },
+  { name: "Pincode Mapping", href: "/admin/pincodes", icon: MapPin },
 ];
 
 
