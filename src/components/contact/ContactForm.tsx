@@ -76,8 +76,6 @@ export default function ContactForm({
 
     if (cleanVal.length === 6) {
       const loc = await lookupPinCode(cleanVal);
-      console.log("location--->", loc);
-
       if (loc) {
         setFormData((prev) => ({
           ...prev,
