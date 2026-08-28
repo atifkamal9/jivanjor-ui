@@ -58,7 +58,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Watershield - Technical Data Sheet",
+            title: "Watershield",
             description:
               "Provides excellent water-resistance. Its superior flow makes it smooth and easy to apply.",
             mobileDesc:
@@ -73,7 +73,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
             ],
           },
           {
-            title: "Aquabond - Technical Data Sheet",
+            title: "Aquabond",
             description:
               "Heatproof and waterproof adhesive. Aquabond kitchen ka specialist hai.",
             mobileDesc: "Heatproof and waterproof adhesive.",
@@ -87,7 +87,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
             ],
           },
           {
-            title: "Aquaprotekt - Technical Data Sheet",
+            title: "Aquaprotekt",
             description:
               "Provides excellent water protection and moisture resistance for premium woodwork.",
             mobileDesc:
@@ -105,7 +105,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
       },
       {
         name: "Super Premium",
-        title: "Super Premium Adhesives by Jivanjor - Technical Data Sheet",
+        title: "Super Premium Adhesives by Jivanjor",
         description:
           "Explore where Supremo fits across furniture, laminates, plywood, boards and professional woodwork applications. Learn how our super premium adhesives provide unmatched bonding strength.",
         icon: "/images/Champion Super.png",
@@ -135,7 +135,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Aquabond.png",
         products: [
           {
-            title: "Termilok - Technical Data Sheet",
+            title: "Termilok",
             description:
               "Protects wood from termites, moisture damage, and fungal decay, ensuring lifelong durability.",
             mobileDesc: "Protects wood from termites and moisture damage.",
@@ -158,7 +158,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Foambond - Technical Data Sheet",
+            title: "Foambond",
             description:
               "Great for upholstery, it connects foam, resin, leather, fabrics and metal.",
             mobileDesc:
@@ -182,7 +182,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Foambond Specialty - Technical Data Sheet",
+            title: "Foambond Specialty",
             description:
               "Speciality adhesive for upholstery, foam, PVC, acrylic, and edge banding.",
             mobileDesc:
@@ -206,7 +206,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Champion Regular - Technical Data Sheet",
+            title: "Champion Regular",
             description:
               "Standard grade woodworking adhesive offering consistent performance and value.",
             mobileDesc:
@@ -226,7 +226,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Hero - Technical Data Sheet",
+            title: "Hero",
             description:
               "Zero-VOC, low odor, and environmentally sustainable adhesive options.",
             mobileDesc:
@@ -251,7 +251,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Tile Fix - Technical Data Sheet",
+            title: "Tile Fix",
             description:
               "High performance adhesive for fixing tiles on walls and floors.",
             mobileDesc: "Adhesive for tiles.",
@@ -270,7 +270,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Foambond.png",
         products: [
           {
-            title: "Premium Grout - Technical Data Sheet",
+            title: "Premium Grout",
             description:
               "Water-resistant cementitious grout for tile joint filling.",
             mobileDesc: "Tile joint filling grout.",
@@ -289,7 +289,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Kwik Waterproof - Technical Data Sheet",
+            title: "Kwik Waterproof",
             description:
               "Advanced waterproofing liquid compound for roofs and basements.",
             mobileDesc: "Waterproofing compound.",
@@ -313,7 +313,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Champion Super.png",
         products: [
           {
-            title: "Pipe Lock - Technical Data Sheet",
+            title: "Pipe Lock",
             description: "Leak-proof pipe joint sealant for plumbing systems.",
             mobileDesc: "Pipe joint sealant.",
             color: "bg-[#0083CB]",
@@ -331,7 +331,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
         icon: "/images/Watershield.png",
         products: [
           {
-            title: "Kwik Spray - Technical Data Sheet",
+            title: "Kwik Spray",
             description: "Multi-purpose rust penetrant and lubrication spray.",
             mobileDesc: "Lubrication spray.",
             color: "bg-[#0498AA]",
@@ -346,7 +346,8 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 ];
 
 function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCategoryData[] {
-  const sortedCats = [...cats].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+  const sortedCats = [...visibleCats].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
   const roots = sortedCats.filter(c => !c.parent_category);
   if (roots.length === 0) return [];
 
@@ -358,6 +359,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
 
     for (const sub of subs) {
       const subProds = prods.filter((p) => {
+        if (p.isVisible === false) return false;
         const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
         return catIds.some(
           (id) =>
@@ -376,7 +378,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
         }
 
         return {
-          title: p.techResourceTitle || `${p.name} - Technical Data Sheet`,
+          title: p.name,
           description: p.techResourceDescription || p.description || "Provides excellent white PVA wood glue bonding performance.",
           mobileDesc: p.techResourceDescription || p.description || "White PVA woodwork adhesive.",
           color: p.themeColor || "#0498AA",
