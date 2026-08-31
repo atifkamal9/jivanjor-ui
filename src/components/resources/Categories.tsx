@@ -360,6 +360,9 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
     for (const sub of subs) {
       const subProds = prods.filter((p) => {
         if (p.isVisible === false) return false;
+        const tdsUrl = (p.techResourceFileUrl || p.documentUrl || "").trim();
+        if (!tdsUrl || tdsUrl === "#") return false;
+
         const catIds = Array.from(new Set([p.category_id, ...(p.category_ids || p.categoryIds || [])])).filter(Boolean);
         return catIds.some(
           (id) =>
@@ -377,6 +380,8 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
           bullets = p.overviewBullets.map((b: any) => typeof b === 'string' ? b : (b?.text || ""));
         }
 
+        const tdsUrl = (p.techResourceFileUrl || p.documentUrl || "").trim();
+
         return {
           title: p.name,
           description: p.techResourceDescription || p.description || "Provides excellent white PVA wood glue bonding performance.",
@@ -385,7 +390,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
           badge: sub.name,
           image: p.image || "/images/Watershield.png",
           features: bullets.filter(b => b.trim() !== ""),
-          fileUrl: p.techResourceFileUrl || p.documentUrl || "/docs/technical.pdf",
+          fileUrl: tdsUrl,
         };
       });
 
@@ -410,7 +415,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
 }
 
 export default function Categories() {
-  const [categoriesData, setCategoriesData] = useState<MainCategoryData[]>(MAIN_CATEGORIES_DATA);
+  const [categoriesData, setCategoriesData] = useState<MainCategoryData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -423,9 +428,9 @@ export default function Categories() {
 
         if (catsList.length > 0 && prodsList.length > 0) {
           const dynamicData = buildDynamicCategories(catsList, prodsList);
-          if (dynamicData.length > 0) {
-            setCategoriesData(dynamicData);
+          setCategoriesData(dynamicData);
 
+          if (dynamicData.length > 0) {
             const firstMain = dynamicData[0];
             setActiveMainCategory(firstMain.name);
             if (firstMain.subCategories.length > 0) {
@@ -742,80 +747,92 @@ export default function Categories() {
       <div className="flex-1 min-w-0 mt-0 lg:mt-12 overflow-x-clip space-y-8 z-10">
         {/* Product Accordion Container */}
         <div className="flex flex-col bg-surface rounded-[20px] p-4 lg:p-8 w-full">
-          {currentSubCategoryData.products.map((product, idx) => {
-            const isOpen = openAccordionIndex === idx;
-            return (
-              <div
-                key={`${product.title}-${idx}`}
-                onClick={() => !isOpen && toggleAccordion(idx)}
-                className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
-              >
-                {/* Accordion Content Panel */}
-                <div className="flex flex-col animate-fadeIn gap-1.5 relative">
-                  <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors max-w-60 lg:max-w-lg">
-                    {product.title}
-                  </span>
-                  {isOpen && (
-                    <div className="space-y-6 max-w-xs lg:max-w-md">
-                      {/* Left Column: Description & Action */}
-                      <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
-                        {product.description}
-                      </p>
-                      <div className="space-y-2">
-                        <ResourceFileMeta fileUrl={product.fileUrl || "/docs/technical.pdf"} fileSize={product.fileSize} />
-                        <Link
-                          href={product.fileUrl || "/docs/technical.pdf"}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
-                        >
-                          Download
-                        </Link>
+          {currentSubCategoryData?.products && currentSubCategoryData.products.length > 0 ? (
+            currentSubCategoryData.products.map((product, idx) => {
+              const isOpen = openAccordionIndex === idx;
+              return (
+                <div
+                  key={`${product.title}-${idx}`}
+                  onClick={() => !isOpen && toggleAccordion(idx)}
+                  className={`flex flex-col lg:flex-row justify-between cursor-pointer select-none group border-b last:border-b-0 gap-4 ${isOpen ? "items-start py-6 lg:py-9" : "py-4.5"}`}
+                >
+                  {/* Accordion Content Panel */}
+                  <div className="flex flex-col animate-fadeIn gap-1.5 relative">
+                    <span className="font-medium text-xl lg:text-3xl text-black font-google-sans group-hover:text-primary transition-colors max-w-60 lg:max-w-lg">
+                      {product.title}
+                    </span>
+                    {isOpen && (
+                      <div className="space-y-6 max-w-xs lg:max-w-md">
+                        {/* Left Column: Description & Action */}
+                        <p className="text-base lg:text-lg text-black font-normal font-google-sans leading-[120%]">
+                          {product.description}
+                        </p>
+                        {product.fileUrl && product.fileUrl !== "#" && (
+                          <div className="space-y-2">
+                            <ResourceFileMeta fileUrl={product.fileUrl} fileSize={product.fileSize} />
+                            <Link
+                              href={product.fileUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center justify-center font-medium min-w-25 mt-1.5 px-6 py-2 rounded-full text-sm bg-linear-to-br from-[#FF0009] to-[#772571] text-white hover:opacity-95 shadow-md hover:shadow-lg transition-all text-center max-w-fit cursor-pointer"
+                            >
+                              Download
+                            </Link>
+                          </div>
+                        )}
                       </div>
+                    )}
+                    {/* Cross button for mobiles */}
+                    <div
+                      onClick={() => toggleAccordion(idx)}
+                      className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                    >
+                      <Plus size={24} strokeWidth={2} />
                     </div>
+                  </div>
+                  {/* Right Column: Styled Image Display */}
+                  {isOpen && (
+                    <Link
+                      target="_blank"
+                      rel="noreferrer"
+                      href={`/products?product=${product.title}`}
+                      className="flex items-center justify-end lg:justify-center relative animate-fadeIn -mt-22 lg:mt-0 w-full lg:w-106 overflow-hidden">
+                      {/* <div className="absolute inset-0 bg-black/5" /> */}
+                      <div className="relative mb-4 mr-4 lg:mr-0 w-50 h-58 z-10 transition-transform duration-300">
+                        <Image
+                          src={product.image}
+                          alt={product.title}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                      <div
+                        className={`${product.color.startsWith("bg-") ? product.color : ""} absolute bottom-0 rounded-[20px] min-h-32 w-full`}
+                        style={{ backgroundColor: !product.color.startsWith("bg-") ? product.color : undefined }}
+                      >
+                        <Image
+                          fill
+                          src="/images/watermark pro.svg"
+                          alt={product.title}
+                          className="object-contain rounded-[20px] scale-x-105"
+                        />
+                      </div>
+                    </Link>
                   )}
-                  {/* Cross button for mobiles */}
                   <div
                     onClick={() => toggleAccordion(idx)}
-                    className={`absolute top-0 right-0 lg:hidden transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
+                    className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
                   >
                     <Plus size={24} strokeWidth={2} />
                   </div>
                 </div>
-                {/* Right Column: Styled Image Display */}
-                {isOpen && (
-                  <div className="flex items-center justify-end lg:justify-center relative animate-fadeIn -mt-22 lg:mt-0 w-full lg:w-106 overflow-hidden">
-                    {/* <div className="absolute inset-0 bg-black/5" /> */}
-                    <div className="relative mb-4 mr-4 lg:mr-0 w-50 h-58 z-10 transition-transform duration-300">
-                      <Image
-                        src={product.image}
-                        alt={product.title}
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                    <div
-                      className={`${product.color.startsWith("bg-") ? product.color : ""} absolute bottom-0 rounded-[20px] min-h-32 w-full`}
-                      style={{ backgroundColor: !product.color.startsWith("bg-") ? product.color : undefined }}
-                    >
-                      <Image
-                        src="/images/watermark pro.svg"
-                        alt={product.title}
-                        fill
-                        className="object-contain rounded-[20px] scale-x-105"
-                      />
-                    </div>
-                  </div>
-                )}
-                <div
-                  onClick={() => toggleAccordion(idx)}
-                  className={`hidden lg:block transition-transform duration-300 ${isOpen ? "rotate-45 text-[#FF0009]" : ""}`}
-                >
-                  <Plus size={24} strokeWidth={2} />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          ) : (
+            <div className="py-12 text-center text-foreground/60 text-base font-medium font-google-sans">
+              No technical data sheets (TDS) available for this category.
+            </div>
+          )}
         </div>
       </div>
     </section>
