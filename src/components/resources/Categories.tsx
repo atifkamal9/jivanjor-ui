@@ -795,7 +795,7 @@ export default function Categories() {
                     <Link
                       target="_blank"
                       rel="noreferrer"
-                      href={`/products?product=${product.title}`}
+                      href={`/products?product=${product.title.toLowerCase()}`}
                       className="flex items-center justify-end lg:justify-center relative animate-fadeIn -mt-22 lg:mt-0 w-full lg:w-106 overflow-hidden">
                       {/* <div className="absolute inset-0 bg-black/5" /> */}
                       <div className="relative mb-4 mr-4 lg:mr-0 w-50 h-58 z-10 transition-transform duration-300">
