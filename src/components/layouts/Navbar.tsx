@@ -377,7 +377,7 @@ export default function Navbar() {
       orderedMainCats = [...mainCats].sort((a, b) => {
         const oa = orderMap.get(a.id) ?? 9999;
         const ob = orderMap.get(b.id) ?? 9999;
-        return oa - ob;
+        return Number(oa) - Number(ob);
       });
     }
 
@@ -396,7 +396,7 @@ export default function Navbar() {
             subCats = [...subCats].sort((a, b) => {
               const oa = subOrderMap.has(a.id) ? subOrderMap.get(a.id)! : 9999;
               const ob = subOrderMap.has(b.id) ? subOrderMap.get(b.id)! : 9999;
-              return oa - ob;
+              return Number(oa) - Number(ob);
             });
           }
         } catch { /* ignore */ }
@@ -407,10 +407,10 @@ export default function Navbar() {
         products: subCats.map((sub) => ({
           name: sub.name,
           slug: sub.slug,
-          image: "/images/Watershield.png",
+          image: sub.heroImage || "/images/Watershield.png",
           bgColor: "bg-[#0083CB]"
         })),
-        categoryImage: "/images/mega-menu.png"
+        categoryImage: cat.heroImage || cat.icon || undefined
       };
     });
   })();
@@ -576,6 +576,12 @@ export default function Navbar() {
                 activeMenu === "products";
 
               if (isProductMenu) {
+                const productImage =
+                  hoveredSubItemObj?.image ||
+                  activeItem?.image ||
+                  activeCategoryData?.categoryImage ||
+                  "/images/mega-menu.png";
+
                 return (
                   <div className="flex">
                     {/* Left Column: Top-level Category List */}
@@ -583,8 +589,14 @@ export default function Navbar() {
                       {dynamicProductCategories.map((cat) => (
                         <button
                           key={cat.name}
-                          onMouseEnter={() => setActiveCategory(cat.name)}
-                          onClick={() => setActiveCategory(cat.name)}
+                          onMouseEnter={() => {
+                            setActiveCategory(cat.name);
+                            setHoveredSubItemObj(null);
+                          }}
+                          onClick={() => {
+                            setActiveCategory(cat.name);
+                            setHoveredSubItemObj(null);
+                          }}
                           className={`flex items-center justify-between group w-full text-left text-base py-0.5 transition-all duration-150 cursor-pointer border-b border-black last:border-b-0 ${activeCategory === cat.name ? "font-bold" : "font-normal hover:font-bold"
                             }`}
                         >
@@ -604,6 +616,11 @@ export default function Navbar() {
                           key={prod.name}
                           className="py-0.5 text-base leading-[150%] hover:font-bold transition-colors duration-150 cursor-pointer"
                           onClick={() => setActiveMenu(null)}
+                          onMouseEnter={() => {
+                            if (prod.image && prod.image !== "/images/Watershield.png") {
+                              setHoveredSubItemObj(prod);
+                            }
+                          }}
                         >
                           {prod.name}
                         </Link>
@@ -612,12 +629,12 @@ export default function Navbar() {
 
                     {/* Right Column: Category Image + View All Button */}
                     <div className="flex flex-col py-6 min-w-65 pr-8">
-                      <div className="relative w-full min-h-42 rounded-2xl overflow-hidden">
+                      <div className="relative w-full min-h-42 rounded-2xl overflow-hidden bg-surface/50">
                         <Image
-                          src={activeCategoryData.categoryImage}
+                          src={productImage}
                           alt={activeCategoryData.name}
                           fill
-                          className="object-cover"
+                          className="object-cover transition-all duration-300"
                         />
                       </div>
                       <Link
