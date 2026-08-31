@@ -538,14 +538,56 @@ export default function Navbar() {
               );
             })}
 
-          <Link href="#" className="hover:scale-110 transition-colors py-4">
-            <Image
-              src="/images/whatsapp-icon.svg"
-              alt="Enquire Now"
-              width={34}
-              height={34}
-            />
-          </Link>
+          {(() => {
+            const whatsappMeta = (siteSettings?.contactPage?.sections || []).find(
+              (s: any) => s.title === "_whatsapp_config"
+            );
+
+            const rawWhatsapp =
+              whatsappMeta?.whatsappNumber !== undefined
+                ? whatsappMeta.whatsappNumber
+                : (siteSettings?.whatsappUrl ||
+                  siteSettings?.socialLinks?.whatsappUrl ||
+                  siteSettings?.whatsappNumber ||
+                  siteSettings?.socialLinks?.whatsappNumber ||
+                  "");
+
+            const showWhatsappInNavbar =
+              whatsappMeta?.showWhatsappInHeader !== undefined
+                ? Boolean(whatsappMeta.showWhatsappInHeader)
+                : (siteSettings?.hideWhatsappInHeader !== true &&
+                  siteSettings?.showWhatsappInHeader !== false);
+
+            if (!showWhatsappInNavbar) return null;
+
+            let whatsappHref = "#";
+            if (rawWhatsapp && rawWhatsapp.trim()) {
+              const trimmed = rawWhatsapp.trim();
+              if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("wa.me/")) {
+                whatsappHref = trimmed.startsWith("wa.me/") ? `https://${trimmed}` : trimmed;
+              } else {
+                const digits = trimmed.replace(/[^0-9]/g, "");
+                if (digits) whatsappHref = `https://wa.me/${digits}`;
+              }
+            }
+
+            return (
+              <Link
+                href={whatsappHref}
+                target={whatsappHref !== "#" ? "_blank" : "_self"}
+                rel="noopener noreferrer"
+                className="hover:scale-110 transition-colors py-4"
+                title="Enquire on WhatsApp"
+              >
+                <Image
+                  src="/images/whatsapp-icon.svg"
+                  alt="Enquire Now"
+                  width={34}
+                  height={34}
+                />
+              </Link>
+            );
+          })()}
         </div>
 
         {/* Backdrop Overlay with Blur */}
@@ -766,14 +808,56 @@ export default function Navbar() {
 
         {/* Mobile Controls */}
         <div className="flex items-center gap-2 lg:hidden mr-2">
-          <Link href="#" className="hover:scale-110 transition-colors">
-            <Image
-              src="/images/whatsapp-icon.svg"
-              alt="Enquire Now"
-              width={28}
-              height={28}
-            />
-          </Link>
+          {(() => {
+            const whatsappMeta = (siteSettings?.contactPage?.sections || []).find(
+              (s: any) => s.title === "_whatsapp_config"
+            );
+
+            const rawWhatsapp =
+              whatsappMeta?.whatsappNumber !== undefined
+                ? whatsappMeta.whatsappNumber
+                : (siteSettings?.whatsappUrl ||
+                  siteSettings?.socialLinks?.whatsappUrl ||
+                  siteSettings?.whatsappNumber ||
+                  siteSettings?.socialLinks?.whatsappNumber ||
+                  "");
+
+            const showWhatsappInNavbar =
+              whatsappMeta?.showWhatsappInHeader !== undefined
+                ? Boolean(whatsappMeta.showWhatsappInHeader)
+                : (siteSettings?.hideWhatsappInHeader !== true &&
+                  siteSettings?.showWhatsappInHeader !== false);
+
+            if (!showWhatsappInNavbar) return null;
+
+            let whatsappHref = "#";
+            if (rawWhatsapp && rawWhatsapp.trim()) {
+              const trimmed = rawWhatsapp.trim();
+              if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("wa.me/")) {
+                whatsappHref = trimmed.startsWith("wa.me/") ? `https://${trimmed}` : trimmed;
+              } else {
+                const digits = trimmed.replace(/[^0-9]/g, "");
+                if (digits) whatsappHref = `https://wa.me/${digits}`;
+              }
+            }
+
+            return (
+              <Link
+                href={whatsappHref}
+                target={whatsappHref !== "#" ? "_blank" : "_self"}
+                rel="noopener noreferrer"
+                className="hover:scale-110 transition-colors"
+                title="Enquire on WhatsApp"
+              >
+                <Image
+                  src="/images/whatsapp-icon.svg"
+                  alt="Enquire Now"
+                  width={28}
+                  height={28}
+                />
+              </Link>
+            );
+          })()}
           <button
             onClick={toggleMenu}
             className="relative transition-colors z-60 cursor-pointer"

@@ -50,7 +50,8 @@ export default function Details({
   mainHeading = "We are always happy to assist you.",
   sections = defaultSections,
 }: DetailsProps) {
-  const displaySections = sections && sections.length > 0 ? sections : defaultSections;
+  const rawSections = sections && sections.length > 0 ? sections : defaultSections;
+  const displaySections = rawSections.filter((s) => s.title !== "_whatsapp_config");
 
   const renderIcon = (iconStr: string, label: string) => {
     if (!iconStr) {

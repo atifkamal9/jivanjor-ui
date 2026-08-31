@@ -60,10 +60,12 @@ export default function AdminSettingsPage() {
   const [footerMobileLogo, setFooterMobileLogo] = useState("");
   const [categoryHeroCover, setCategoryHeroCover] = useState("");
   const [categoryCardBg, setCategoryCardBg] = useState("");
+  const [showWhatsappInHeader, setShowWhatsappInHeader] = useState(true);
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
     instagram: "",
-    youtube: ""
+    youtube: "",
+    whatsappNumber: ""
   });
   const [rightChoiceBanner, setRightChoiceBanner] = useState({
     title: "",
@@ -109,11 +111,23 @@ export default function AdminSettingsPage() {
       setFooterMobileLogo(res.footerMobileLogo || res.footerDesktopLogo || res.mobileLogo || res.desktopLogo || "");
       setCategoryHeroCover(res.categoryHeroCover || "");
       setCategoryCardBg(res.categoryCardBg || "");
+
+      const whatsappSec = (res.contactPage?.sections || []).find((s: any) => s.title === "_whatsapp_config");
+      const whatsappNumberVal = whatsappSec?.whatsappNumber !== undefined
+        ? whatsappSec.whatsappNumber
+        : (res.socialLinks?.whatsappNumber || res.whatsappNumber || "");
+
+      const showWhatsappVal = whatsappSec?.showWhatsappInHeader !== undefined
+        ? Boolean(whatsappSec.showWhatsappInHeader)
+        : (res.showWhatsappInHeader !== false && res.hideWhatsappInHeader !== true);
+
       setSocialLinks({
         facebook: res.socialLinks?.facebook || "",
         instagram: res.socialLinks?.instagram || "",
         youtube: res.socialLinks?.youtube || "",
+        whatsappNumber: whatsappNumberVal,
       });
+      setShowWhatsappInHeader(showWhatsappVal);
       setRightChoiceBanner({
         title: res.rightChoiceBanner?.title || "",
         subtitle: res.rightChoiceBanner?.subtitle || "",
@@ -146,6 +160,15 @@ export default function AdminSettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
+      const userSections = (contactPage.sections || []).filter((s: any) => s.title !== "_whatsapp_config");
+      const whatsappMetaSection = {
+        title: "_whatsapp_config",
+        whatsappNumber: socialLinks.whatsappNumber.trim(),
+        showWhatsappInHeader: showWhatsappInHeader,
+        details: [],
+      };
+      const updatedSections = [...userSections, whatsappMetaSection];
+
       const updated = await api.updateSettings({
         headerDesktopLogo: headerDesktopLogo.trim() || undefined,
         headerMobileLogo: headerMobileLogo.trim() || undefined,
@@ -159,7 +182,11 @@ export default function AdminSettingsPage() {
           facebook: socialLinks.facebook.trim(),
           instagram: socialLinks.instagram.trim(),
           youtube: socialLinks.youtube.trim(),
+          whatsappNumber: socialLinks.whatsappNumber.trim(),
         },
+        whatsappNumber: socialLinks.whatsappNumber.trim(),
+        showWhatsappInHeader: showWhatsappInHeader,
+        hideWhatsappInHeader: !showWhatsappInHeader,
         rightChoiceBanner: {
           title: rightChoiceBanner.title.trim(),
           subtitle: rightChoiceBanner.subtitle.trim(),
@@ -171,7 +198,7 @@ export default function AdminSettingsPage() {
           heroTitle: contactPage.heroTitle?.trim() || undefined,
           mainHeading: contactPage.mainHeading?.trim() || undefined,
           watermarkImage: contactPage.watermarkImage?.trim() || undefined,
-          sections: contactPage.sections || [],
+          sections: updatedSections,
         },
       });
 
@@ -182,11 +209,23 @@ export default function AdminSettingsPage() {
         setFooterMobileLogo(updated.footerMobileLogo || updated.mobileLogo || "");
         setCategoryHeroCover(updated.categoryHeroCover || "");
         setCategoryCardBg(updated.categoryCardBg || "");
+
+        const updatedWhatsappSec = (updated.contactPage?.sections || updatedSections).find((s: any) => s.title === "_whatsapp_config");
+        const updatedWhatsappNum = updatedWhatsappSec?.whatsappNumber !== undefined
+          ? updatedWhatsappSec.whatsappNumber
+          : (updated.socialLinks?.whatsappNumber || updated.whatsappNumber || socialLinks.whatsappNumber);
+
+        const updatedShowWhatsapp = updatedWhatsappSec?.showWhatsappInHeader !== undefined
+          ? Boolean(updatedWhatsappSec.showWhatsappInHeader)
+          : (updated.showWhatsappInHeader !== false && updated.hideWhatsappInHeader !== true);
+
         setSocialLinks({
           facebook: updated.socialLinks?.facebook || "",
           instagram: updated.socialLinks?.instagram || "",
           youtube: updated.socialLinks?.youtube || "",
+          whatsappNumber: updatedWhatsappNum,
         });
+        setShowWhatsappInHeader(updatedShowWhatsapp);
         setRightChoiceBanner({
           title: updated.rightChoiceBanner?.title || "",
           subtitle: updated.rightChoiceBanner?.subtitle || "",
@@ -391,7 +430,7 @@ export default function AdminSettingsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Facebook */}
                 <div>
                   <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
@@ -454,6 +493,48 @@ export default function AdminSettingsPage() {
                     className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
                 </div>
+
+                {/* WhatsApp */}
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-bold text-foreground/80 mb-1">
+                    <Image
+                      src="/images/whatsapp-icon.svg"
+                      className="aspect-square"
+                      width={18}
+                      height={18}
+                      alt="WhatsApp"
+                    />
+                    <span>WhatsApp Number / Link</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={socialLinks.whatsappNumber}
+                    onChange={(e) => setSocialLinks({ ...socialLinks, whatsappNumber: e.target.value })}
+                    placeholder="e.g. +91 9876543210 or wa.me/..."
+                    className="w-full p-2 rounded-md bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              {/* Navbar WhatsApp Icon Display Toggle */}
+              <div className="pt-4 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xs font-bold text-foreground">Header Navbar WhatsApp Icon Visibility</h3>
+                  <p className="text-[11px] text-foreground/50">
+                    Control whether the quick enquiry WhatsApp icon is displayed in the main website header.
+                  </p>
+                </div>
+                <label className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-surface/50 cursor-pointer select-none shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={showWhatsappInHeader}
+                    onChange={(e) => setShowWhatsappInHeader(e.target.checked)}
+                    className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                  />
+                  <span className="text-xs font-bold text-foreground">
+                    {showWhatsappInHeader ? "Icon Visible on Navbar" : "Icon Hidden from Navbar"}
+                  </span>
+                </label>
               </div>
             </div>
 
@@ -665,11 +746,13 @@ export default function AdminSettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  {contactPage.sections?.map((section, secIdx) => (
-                    <div
-                      key={secIdx}
-                      className="p-4 rounded-xl border border-border/80 bg-surface/50 space-y-4 relative"
-                    >
+                  {(contactPage.sections || [])
+                    .filter((section) => section.title !== "_whatsapp_config")
+                    .map((section, secIdx) => (
+                      <div
+                        key={secIdx}
+                        className="p-4 rounded-xl border border-border/80 bg-surface/50 space-y-4 relative"
+                      >
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex-1">
                           <label className="block text-[11px] font-bold text-foreground/60 uppercase mb-1">

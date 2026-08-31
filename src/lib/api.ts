@@ -99,6 +99,8 @@ export interface ContactDetailItem {
 export interface ContactSection {
   title: string;
   details: ContactDetailItem[];
+  whatsappNumber?: string;
+  showWhatsappInHeader?: boolean;
 }
 
 export interface ContactPageSettings {
@@ -125,7 +127,13 @@ export interface SiteSettings {
     youtube?: string;
     linkedin?: string;
     twitter?: string;
+    whatsappNumber?: string;
+    whatsappUrl?: string;
   };
+  showWhatsappInHeader?: boolean;
+  hideWhatsappInHeader?: boolean;
+  whatsappNumber?: string;
+  whatsappUrl?: string;
   rightChoiceBanner?: {
     title?: string;
     subtitle?: string;
