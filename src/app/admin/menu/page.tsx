@@ -94,12 +94,14 @@ export default function AdminMenuPage() {
     type: MenuType;
     url: string;
     target: "_self" | "_blank";
+    description: string;
     image: string;
   }>({
     title: "",
     type: "menu",
     url: "",
     target: "_self",
+    description: "",
     image: "",
   });
 
@@ -564,7 +566,7 @@ export default function AdminMenuPage() {
   // ── HEADER MODAL HANDLERS ──────────────────────────────────────────────
   const openAddMainModal = () => {
     setEditingMainIndex(null);
-    setMainFormData({ title: "", type: "menu", url: "", target: "_self", image: "" });
+    setMainFormData({ title: "", type: "menu", url: "", target: "_self", description: "", image: "" });
     setMainModalOpen(true);
   };
 
@@ -576,6 +578,7 @@ export default function AdminMenuPage() {
       type: item.type,
       url: item.url || "",
       target: item.target || "_self",
+      description: item.description || "",
       image: item.image || "",
     });
     setMainModalOpen(true);
@@ -598,6 +601,7 @@ export default function AdminMenuPage() {
         type: mainFormData.type,
         url: urlValue,
         target: mainFormData.type === "external_link" ? mainFormData.target : "_self",
+        description: mainFormData.description.trim() || undefined,
         image: mainFormData.image.trim() || null,
         isMegaMenu: mainFormData.type === "menu",
       };
@@ -608,6 +612,7 @@ export default function AdminMenuPage() {
         type: mainFormData.type,
         url: urlValue,
         target: mainFormData.type === "external_link" ? mainFormData.target : "_self",
+        description: mainFormData.description.trim() || undefined,
         image: mainFormData.image.trim() || null,
         isMegaMenu: mainFormData.type === "menu",
         isStatic: false,
@@ -1253,6 +1258,11 @@ export default function AdminMenuPage() {
                                 </span>
                               )}
                             </div>
+                            {mainItem.description && (
+                              <p className="text-xs text-foreground/70 line-clamp-1 mt-0.5" title={mainItem.description}>
+                                {mainItem.description}
+                              </p>
+                            )}
                             <p className="text-[11px] text-foreground/50 truncate mt-0.5">
                               {mainItem.type === "menu" ? "No URL (Trigger only)" : mainItem.url || "No link"}
                             </p>
@@ -2003,6 +2013,22 @@ export default function AdminMenuPage() {
                     placeholder="e.g. About Us, Products, Blog"
                     className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-sm text-foreground focus:outline-hidden focus:border-primary"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-foreground/80 mb-1">
+                    Description (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={mainFormData.description}
+                    onChange={(e) => setMainFormData({ ...mainFormData, description: e.target.value })}
+                    placeholder="Default description displayed inside mega menu preview middle column"
+                    className="w-full px-3 py-2 rounded-xl bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary resize-none"
+                  />
+                  <p className="text-[11px] text-foreground/50 mt-1">
+                    This dynamic text will show as default description in the middle column of the mega menu.
+                  </p>
                 </div>
 
                 <div>

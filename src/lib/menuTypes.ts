@@ -18,6 +18,7 @@ export interface MenuItem {
   type: MenuType;
   url?: string | null;
   target?: '_self' | '_blank';
+  description?: string;
   image?: string | null;
   isStatic?: boolean;
   isMegaMenu?: boolean;
@@ -57,6 +58,7 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     id: 'nav-about',
     title: 'About Jivanjor',
     type: 'menu',
+    description: "Learn about Jivanjor's historical commitment to quality, research, and crafting state-of-the-art polymer formulations for builders and carpenters worldwide.",
     isMegaMenu: true,
     isStatic: false,
     order: 1,
@@ -73,6 +75,7 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     id: 'nav-products',
     title: 'Products',
     type: 'menu',
+    description: "Explore our comprehensive range of high-performance woodworking adhesives, specialty formulations, and water-resistant bonding solutions.",
     isMegaMenu: true,
     isStatic: true, // Static product menu
     order: 2,
@@ -83,6 +86,7 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     id: 'nav-applications',
     title: 'Applications',
     type: 'menu',
+    description: "Explore the full range of Jivanjor adhesive solutions crafted for every woodworking application — furniture, laminates, kitchens, and beyond.",
     isMegaMenu: true,
     isStatic: false,
     order: 3,
@@ -100,6 +104,7 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     id: 'nav-knowledge',
     title: 'Knowledge Center',
     type: 'menu',
+    description: "Discover expert adhesive guides, woodworking application tips, and technical resources to ensure the strongest bonds.",
     isMegaMenu: true,
     isStatic: false,
     order: 4,
@@ -116,6 +121,7 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     id: 'nav-partner',
     title: 'Partner',
     type: 'menu',
+    description: "Connect with Jivanjor as an authorized dealer, distributor, contractor, or master carpenter across India.",
     isMegaMenu: true,
     isStatic: false,
     order: 5,

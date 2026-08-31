@@ -727,7 +727,14 @@ export default function Navbar() {
               return (
                 <div className="flex">
                   {/* Left Column: Sub-item Links */}
-                  <div className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12">
+                  <div
+                    className="flex flex-col bg-surface min-w-75 min-h-75 p-6 pb-12"
+                    onMouseLeave={() => {
+                      setHoveredGenericSubItem(null);
+                      setHoveredSubItemObj(null);
+                      if (isKnowledgeNav) setHoveredKnowledgeItem(null);
+                    }}
+                  >
                     {subItems.length > 0 ? (
                       subItems.map((sub) => {
                         const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, activeItem);
@@ -741,7 +748,7 @@ export default function Navbar() {
                               onClick={() => setActiveMenu(null)}
                               onMouseEnter={() => {
                                 if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
-                                setHoveredGenericSubItem(sub.description || sub.title);
+                                setHoveredGenericSubItem(sub.description?.trim() ? sub.description.trim() : null);
                                 setHoveredSubItemObj({ ...sub, url: normalizedUrl });
                               }}
                               className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
@@ -757,7 +764,7 @@ export default function Navbar() {
                             onClick={() => setActiveMenu(null)}
                             onMouseEnter={() => {
                               if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
-                              setHoveredGenericSubItem(sub.description || sub.title);
+                              setHoveredGenericSubItem(sub.description?.trim() ? sub.description.trim() : null);
                               setHoveredSubItemObj({ ...sub, url: normalizedUrl });
                             }}
                             className="flex items-center justify-between group w-full text-left text-base leading-[200%]! py-0.5 hover:font-bold transition-all duration-150 cursor-pointer border-b border-black last:border-b-0"
@@ -775,6 +782,7 @@ export default function Navbar() {
                   <div className="flex flex-col flex-1 p-8">
                     <p className="text-lg text-foreground">
                       {hoveredGenericSubItem ||
+                        activeItem.description ||
                         (activeItem.id === "nav-about"
                           ? aboutDescription
                           : activeItem.id === "nav-applications"
