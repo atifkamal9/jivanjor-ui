@@ -33,7 +33,9 @@ export default function ContractorLayout({ data = {} }: ContractorLayoutProps) {
           <div className="xl:col-span-8 flex flex-col space-y-12 xl:space-y-18">
             <ReachLeft data={data.reachLeft} />
             <Presence data={data.presence} />
-            <Professionals data={data.professionals} />
+            {data.professionals?.enabled !== false && data.professionals?.hideSection !== true && data.professionals?.hide !== true && (
+              <Professionals data={data.professionals} />
+            )}
           </div>
 
           {/* Right Column (Sticky Form) */}

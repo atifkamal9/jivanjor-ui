@@ -4768,9 +4768,29 @@ export default function TemplatesPage() {
                 {/* ── Contractor Testimonials Tab ── */}
                 {activeTab === "professionals" && homeSections.professionals && (
                   <div className="space-y-6 animate-[fadeIn_0.15s_ease-out]">
-                    <div className="flex items-center gap-2 border-b border-border pb-3">
-                      <Bookmark className="h-5 w-5 text-primary" />
-                      <h3 className="text-base font-extrabold text-foreground">Woodworking Professionals Testimonials</h3>
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-2">
+                        <Bookmark className="h-5 w-5 text-primary" />
+                        <h3 className="text-base font-extrabold text-foreground">Woodworking Professionals Testimonials</h3>
+                      </div>
+                      <label className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-border bg-surface/50 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={homeSections.professionals.enabled !== false && homeSections.professionals.hideSection !== true && homeSections.professionals.hide !== true}
+                          onChange={(e) => {
+                            const isVisible = e.target.checked;
+                            updateSectionField("professionals", "enabled", isVisible);
+                            updateSectionField("professionals", "hideSection", !isVisible);
+                            updateSectionField("professionals", "hide", !isVisible);
+                          }}
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+                        />
+                        <span className="text-xs font-bold text-foreground">
+                          {homeSections.professionals.enabled !== false && homeSections.professionals.hideSection !== true && homeSections.professionals.hide !== true
+                            ? "Section Visible (Shown on Contractor page)"
+                            : "Section Hidden (Hidden on Contractor page)"}
+                        </span>
+                      </label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">

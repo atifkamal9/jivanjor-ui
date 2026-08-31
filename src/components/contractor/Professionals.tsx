@@ -76,6 +76,10 @@ interface ProfessionalsProps {
 export default function Professionals({ data }: ProfessionalsProps = {}) {
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
 
+  if ((data as any)?.enabled === false || (data as any)?.hideSection === true || (data as any)?.hide === true) {
+    return null;
+  }
+
   const title = data?.title || "Built Around India’s Woodworking Professionals";
   const desc = data?.desc || "Jivanjor continues to grow through the trust of carpenters, contractors, dealers and channel partners across India’s woodworking ecosystem.";
   const displayTestimonials = data?.testimonials || testimonials;
