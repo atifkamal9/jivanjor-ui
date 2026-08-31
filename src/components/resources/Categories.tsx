@@ -22,6 +22,7 @@ function ResourceFileMeta({ fileUrl, fileSize }: { fileUrl?: string; fileSize?: 
 }
 
 interface ProductCard {
+  slug?: string;
   title: string;
   description: string;
   mobileDesc: string;
@@ -383,6 +384,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
         const tdsUrl = (p.techResourceFileUrl || p.documentUrl || "").trim();
 
         return {
+          slug: p.slug,
           title: p.name,
           description: p.techResourceDescription || p.description || "Provides excellent white PVA wood glue bonding performance.",
           mobileDesc: p.techResourceDescription || p.description || "White PVA woodwork adhesive.",
@@ -795,7 +797,7 @@ export default function Categories() {
                     <Link
                       target="_blank"
                       rel="noreferrer"
-                      href={`/products?product=${product.title.toLowerCase()}`}
+                      href={`/products?product=${product.slug || product.title.toLowerCase().replace(/\s+/g, '-')}`}
                       className="flex items-center justify-end lg:justify-center relative animate-fadeIn -mt-22 lg:mt-0 w-full lg:w-106 overflow-hidden">
                       {/* <div className="absolute inset-0 bg-black/5" /> */}
                       <div className="relative mb-4 mr-4 lg:mr-0 w-50 h-58 z-10 transition-transform duration-300">
