@@ -315,7 +315,7 @@ export default function Hero({ data }: HeroProps) {
         <div className="relative mx-auto max-w-360 h-full w-full">
           <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
             {/* Title */}
-            <Heading className="text-[40px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
+            <Heading className="text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
               {activeTitle}
             </Heading>
 

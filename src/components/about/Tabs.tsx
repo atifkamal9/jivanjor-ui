@@ -152,7 +152,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
               >
                 {tab.icon}
               </div>
-              <span className="font-medium text-[10px] text-center leading-tight!">
+              <span className="font-medium text-[9px] xs:text-[10px] text-center leading-tight!">
                 {tab.label}
               </span>
             </button>

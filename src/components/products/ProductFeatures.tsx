@@ -157,8 +157,8 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                     </div>
 
                     {/* Right: Two side-by-side images */}
-                    <div className="grid grid-cols-3 gap-1.5 lg:gap-5 shrink-0 items-center justify-center lg:justify-end pr-0 lg:pr-12">
-                      <div className="col-span-1 relative min-w-30 min-h-40 lg:min-w-49 lg:min-h-60 w-full rounded-2xl overflow-hidden">
+                    <div className="grid grid-cols-3 gap-1.5 lg:gap-5 shrink-0 items-center justify-center lg:justify-end pr-0 lg:pr-12 w-full md:w-fit">
+                      <div className="col-span-1 relative min-w-24 xs:min-w-28 sm:min-w-30 lg:min-w-49 lg:min-h-60 min-h-36 xs:min-h-40 w-full rounded-2xl overflow-hidden">
                         <Image
                           fill
                           src={item.imageA}
@@ -167,7 +167,7 @@ export default function ProductFeatures({ product }: ProductFeaturesProps) {
                           sizes="(max-width: 768px) 130px, 180px"
                         />
                       </div>
-                      <div className="col-span-2 relative min-w-50 min-h-40 lg:min-w-80 lg:min-h-60 w-full rounded-2xl overflow-hidden">
+                      <div className="col-span-2 relative min-w-44 xs:min-w-48 sm:min-w-50 lg:min-w-80 min-h-36 xs:min-h-40 lg:min-h-60 w-full rounded-2xl overflow-hidden">
                         <Image
                           fill
                           src={item.imageB}

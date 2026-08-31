@@ -67,8 +67,8 @@ export default function Hero({ data, subpageTitle }: HeroProps) {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col items-center relative max-w-2xs md:max-w-5xl text-white gap-4 mt-4 md:mt-6 z-10">
-          <Heading className="text-[36px]! xs:text-[40px]! xd:text-[44px]! tracking-[0%] text-white leading-[95%]">
+        <div className="flex flex-col items-center relative max-w-60 sm:max-w-3xs md:max-w-5xl text-white gap-4 mt-4 md:mt-6 z-10">
+          <Heading className="text-center text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[95%]">
             {title}
           </Heading>
           <Subtitle className="max-w-xl text-white/90">
