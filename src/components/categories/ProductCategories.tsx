@@ -8,15 +8,12 @@ import {
   ChevronRight,
   ChevronRightCircle,
   ChevronLeftCircle,
-  ThumbsUp,
-  Shield,
-  Gauge,
 } from "lucide-react";
 
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
-import { Heading, Title, Subtitle, Paragraph } from "@/components/ui";
+import { Heading, Subtitle } from "@/components/ui";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -596,9 +593,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
               {[...Array(2)].map((_, idx) => (
                 <div
                   key={idx}
-                  className={`relative pt-21 xl:pt-12 mx-auto lg:mx-0 w-full flex justify-center lg:justify-start ${
-                    idx > 0 ? "hidden sm:flex" : "flex"
-                  }`}
+                  className={`relative pt-21 xl:pt-12 mx-auto lg:mx-0 w-full flex justify-center lg:justify-start ${idx > 0 ? "hidden sm:flex" : "flex"
+                    }`}
                 >
                   <div className="rounded-3xl px-10 py-6 bg-linear-to-br from-neutral-200/70 to-neutral-300/70 flex flex-col gap-4 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64 shadow-md border border-neutral-200/50 animate-pulse mx-auto lg:mx-0">
                     <div className="flex flex-col relative xl:flex-row gap-2 items-center xl:items-start">
@@ -671,7 +667,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                     {/* Card Main Body */}
                     <Link
                       href={`/products?product=${card.slug || card.title.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64"
+                      className="group rounded-3xl px-10 py-6 text-white flex flex-col gap-4 transition-transform duration-300 ease-in-out w-full max-w-69 xl:max-w-108 min-h-68 xl:min-h-64"
                       style={{ backgroundColor: `${card.color}` }}
                     >
                       {/* Top Row: Floating image & Text info side-by-side */}

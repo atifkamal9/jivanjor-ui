@@ -167,10 +167,10 @@ export default function RelatedProducts({ product, allProducts = [] }: RelatedPr
             ))}
           </Swiper>
           {/* Navigation */}
-          <button className="rel-swiper-prev absolute -left-2 top-[60%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+          <button className="rel-swiper-prev absolute -left-1.5 top-[65%] z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
             <ChevronLeft size={44} strokeWidth={2.5} />
           </button>
-          <button className="rel-swiper-next absolute -right-2 top-[60%] -translate-y-1/2 z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+          <button className="rel-swiper-next absolute -right-1.5 top-[65%] z-10 text-[#ed1c24] cursor-pointer hover:scale-110 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
             <ChevronRight size={44} strokeWidth={2.5} />
           </button>
         </div>

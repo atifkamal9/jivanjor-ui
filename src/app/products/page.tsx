@@ -5,6 +5,7 @@ import { useEffect, useState, Suspense } from "react";
 import { api, Product, Category } from "@/lib/api";
 import Hero from "@/components/products/Hero";
 import ProductInfo from "@/components/products/ProductInfo";
+import ProductSkeleton from "@/components/products/ProductSkeleton";
 import { RightChoice } from "@/components/categories";
 
 function ProductPageContent() {
@@ -62,14 +63,7 @@ function ProductPageContent() {
   }, [productSlug]);
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        <p className="mt-4 text-lg font-semibold text-foreground/60">
-          Loading product details...
-        </p>
-      </div>
-    );
+    return <ProductSkeleton />;
   }
 
   return (
@@ -83,16 +77,7 @@ function ProductPageContent() {
 
 export default function Products() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="mt-4 text-lg font-semibold text-foreground/60">
-            Loading...
-          </p>
-        </div>
-      }
-    >
+    <Suspense fallback={<ProductSkeleton />}>
       <ProductPageContent />
     </Suspense>
   );
