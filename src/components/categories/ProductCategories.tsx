@@ -294,13 +294,17 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
   };
 
   useEffect(() => {
+    let isMounted = true;
     async function loadData() {
       try {
-        setLoading(true);
+        if (categories.length === 0) {
+          setLoading(true);
+        }
         const [cats, prods] = await Promise.all([
           api.getCategories(),
           api.getProducts(),
         ]);
+        if (!isMounted) return;
         setCategories(cats);
         setProducts(prods);
 
@@ -308,33 +312,70 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
         if (category) {
           const match = cats.find((c) => c.slug === category);
           if (match) {
-            setActiveCategory(match.name);
-            if (onCategoryChange) {
-              onCategoryChange(match);
+            if (!match.parent_category) {
+              const firstChild = cats.find((c) => c.parent_category === match.id && c.isVisible !== false && !c.hideInMenu);
+              if (firstChild) {
+                setActiveCategory(firstChild.name);
+                if (onCategoryChange) {
+                  onCategoryChange(firstChild);
+                }
+              } else {
+                setActiveCategory(match.name);
+                if (onCategoryChange) {
+                  onCategoryChange(match);
+                }
+              }
+            } else {
+              setActiveCategory(match.name);
+              if (onCategoryChange) {
+                onCategoryChange(match);
+              }
             }
           }
         }
       } catch (err) {
         console.error("Failed to load category/product data, falling back to static content:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
     loadData();
-  }, [category]);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-
+  // Sync activeCategory when category slug prop changes from URL navigation without re-fetching
+  useEffect(() => {
+    if (category && categories.length > 0) {
+      const match = categories.find((c) => c.slug === category);
+      if (match) {
+        const targetName = !match.parent_category
+          ? (categories.find((c) => c.parent_category === match.id && c.isVisible !== false && !c.hideInMenu)?.name || match.name)
+          : match.name;
+        if (targetName && targetName !== activeCategory) {
+          setActiveCategory(targetName);
+        }
+      }
+    }
+  }, [category, categories, activeCategory]);
 
   // Find subcategory matching the slug, find parent and its siblings
-  const currentSubcategory = categories.find((c) => c.slug === category);
-  const parentId = currentSubcategory?.parent_category || null;
+  const matchedCategory = categories.find((c) => c.slug === category);
+  const isParent = matchedCategory && !matchedCategory.parent_category;
+  const parentId = isParent
+    ? matchedCategory.id
+    : (matchedCategory?.parent_category || null);
+
   const siblingSubcategories = (parentId
     ? categories.filter((c) => c.parent_category === parentId)
     : categories.filter((c) => c.parent_category)
   ).filter((c) => c.isVisible !== false && !c.hideInMenu)
     .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
-  const categoriesData = categories.length > 0 && currentSubcategory
+  const categoriesData = categories.length > 0 && (matchedCategory || siblingSubcategories.length > 0)
     ? siblingSubcategories.map((sub) => {
       const subProducts = products.filter((p) => {
         if (p.isVisible === false) return false;
@@ -356,7 +397,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
         products: subProducts.map((p) => {
           let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
           if (p?.overviewBullets && p.overviewBullets.length > 0) {
-            featuresList = p?.overviewBullets
+            featuresList = p?.overviewBullets;
           } else if (p?.metadata) {
             const cleaned = p.metadata.split(",").map((f: string) => f.trim()).filter(Boolean);
             if (cleaned.length > 0) {
@@ -398,126 +439,192 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
     }
   }, [activeCategory, categoriesToUse]);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-87.5 py-16 bg-background">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
-          Loading products...
-        </p>
-      </div>
-    );
-  }
-
   const currentCategoryData =
     categoriesToUse.find((c) => c.name === activeCategory) ||
-    categoriesToUse[0];
+    categoriesToUse[0] || {
+      name: "",
+      tagline: "",
+      title: "",
+      description: "",
+      icon: "",
+      products: [],
+    };
 
   return (
     <section className="flex flex-col lg:flex-row justify-between max-w-360 mx-auto my-4 sm:my-6 lg:my-12 xd:my-18 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-12 z-100">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-6 lg:w-[320px] shrink-0 sticky top-28 self-start">
-        <h2 className="text-2xl ">Categories</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
-          {categoriesToUse.map((cat) => {
-            const isActive = activeCategory === cat.name;
-            return (
-              <button
-                key={cat.name}
-                onClick={() => handleCategorySelect(cat.name)}
-                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
-                  }`}
+        <h2 className="text-2xl">Categories</h2>
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center bg-white shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)] border border-neutral-100/60 animate-pulse"
               >
-                <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
-                  <Image
-                    src={cat.icon}
-                    alt={cat.name}
-                    width={40}
-                    height={40}
-                    className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
-                  />
-                </div>
-                <span className="font-medium text-sm leading-normal">
-                  {cat.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      {/* Mobile categories tabs */}
-      <div className="flex lg:hidden items-center justify-between w-full gap-2">
-        <button
-          onClick={handlePrev}
-          aria-label="Previous categories"
-          className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
-            ? "block pointer-events-auto"
-            : "hidden pointer-events-none invisible"
-            }`}
-        >
-          <ChevronLeftCircle size={16} className="text-[#FF0009]" />
-        </button>
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <Swiper
-            modules={[Navigation]}
-            slidesPerView={2}
-            spaceBetween={6}
-            watchOverflow={true}
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper;
-              updateArrows(swiper);
-            }}
-            onSlideChange={updateArrows}
-            onReachBeginning={updateArrows}
-            onReachEnd={updateArrows}
-            onToEdge={updateArrows}
-            onFromEdge={updateArrows}
-            className="w-full"
-          >
-            {categoriesToUse.map((cat, idx) => {
+                <div className="w-10 h-10 mb-2 rounded-full bg-neutral-200/80" />
+                <div className="h-3.5 w-20 rounded bg-neutral-200/80" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
+            {categoriesToUse.map((cat) => {
               const isActive = activeCategory === cat.name;
               return (
-                <SwiperSlide key={cat.name} className="h-auto flex">
-                  <button
-                    onClick={() => handleCategorySelect(cat.name, idx)}
-                    className={`${isActive
-                      ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
-                      : "bg-surface text-black"
-                      } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[10px] sm:text-sm text-nowrap text-center flex items-center justify-center transition-all leading-tight`}
-                  >
+                <button
+                  key={cat.name}
+                  onClick={() => handleCategorySelect(cat.name)}
+                  className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
+                    }`}
+                >
+                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
+                    <Image
+                      src={cat.icon}
+                      alt={cat.name}
+                      width={40}
+                      height={40}
+                      className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
+                    />
+                  </div>
+                  <span className="font-medium text-sm leading-normal">
                     {cat.name}
-                  </button>
-                </SwiperSlide>
+                  </span>
+                </button>
               );
             })}
-          </Swiper>
-        </div>
-        <button
-          onClick={handleNext}
-          aria-label="Next categories"
-          className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
-            ? "block pointer-events-auto"
-            : "hidden pointer-events-none invisible"
-            }`}
-        >
-          <ChevronRightCircle size={16} className="text-[#FF0009]" />
-        </button>
+          </div>
+        )}
       </div>
+
+      {/* Mobile categories tabs */}
+      {loading ? (
+        <div className="flex lg:hidden items-center justify-between w-full gap-2 py-1">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 h-9 rounded-3xl bg-neutral-200/80 animate-pulse"
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex lg:hidden items-center justify-between w-full gap-2">
+          <button
+            onClick={handlePrev}
+            aria-label="Previous categories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none invisible"
+              }`}
+          >
+            <ChevronLeftCircle size={16} className="text-[#FF0009]" />
+          </button>
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={6}
+              watchOverflow={true}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                updateArrows(swiper);
+              }}
+              onSlideChange={updateArrows}
+              onReachBeginning={updateArrows}
+              onReachEnd={updateArrows}
+              onToEdge={updateArrows}
+              onFromEdge={updateArrows}
+              className="w-full"
+            >
+              {categoriesToUse.map((cat, idx) => {
+                const isActive = activeCategory === cat.name;
+                return (
+                  <SwiperSlide key={cat.name} className="h-auto flex">
+                    <button
+                      onClick={() => handleCategorySelect(cat.name, idx)}
+                      className={`${isActive
+                        ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
+                        : "bg-surface text-black"
+                        } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[10px] sm:text-sm text-nowrap text-center flex items-center justify-center transition-all leading-tight`}
+                    >
+                      {cat.name}
+                    </button>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </div>
+          <button
+            onClick={handleNext}
+            aria-label="Next categories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none invisible"
+              }`}
+          >
+            <ChevronRightCircle size={16} className="text-[#FF0009]" />
+          </button>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <div className="flex-1 space-y-8 min-w-0 overflow-x-clip z-10">
         {/* Category Heading & Description */}
-        <div className="space-y-4 text-center md:text-start max-w-250">
-          <Heading>
-            {currentCategoryData.tagline || currentCategoryData.title}
-          </Heading>
-          <Subtitle>
-            {currentCategoryData.description}
-          </Subtitle>
-        </div>
+        {loading ? (
+          <div className="space-y-4 text-center md:text-start max-w-250 animate-pulse">
+            <div className="h-8 md:h-10 w-3/4 max-w-md bg-neutral-200/80 rounded-lg mx-auto md:mx-0" />
+            <div className="space-y-2 pt-1">
+              <div className="h-4 w-full max-w-xl bg-neutral-200/70 rounded mx-auto md:mx-0" />
+              <div className="h-4 w-4/5 max-w-lg bg-neutral-200/70 rounded mx-auto md:mx-0" />
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4 text-center md:text-start max-w-250">
+            <Heading>
+              {currentCategoryData.tagline || currentCategoryData.title}
+            </Heading>
+            <Subtitle>
+              {currentCategoryData.description}
+            </Subtitle>
+          </div>
+        )}
 
-        {/* Swiper Slider Wrapper with Absolute Navigation Arrows */}
-        {currentCategoryData.products.length > 0 &&
+        {/* Product Cards Swiper / Grid Area */}
+        {loading ? (
+          <div className="relative px-4 sm:px-12 overflow-visible">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+              {[...Array(2)].map((_, idx) => (
+                <div key={idx} className="relative pt-21 xl:pt-12 mx-auto lg:mx-0 w-full">
+                  <div className="rounded-3xl px-10 py-6 bg-linear-to-br from-neutral-200/70 to-neutral-300/70 flex flex-col gap-4 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64 shadow-md border border-neutral-200/50 animate-pulse">
+                    <div className="flex flex-col relative xl:flex-row gap-2 items-center xl:items-start">
+                      {/* Floating Image Skeleton */}
+                      <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-40 h-48 xl:w-44 xl:h-52 rounded-2xl bg-neutral-300/80 z-10 shadow-sm" />
+                      {/* Content Skeleton */}
+                      <div className="flex flex-1 flex-col text-center xl:text-start xl:ml-auto max-w-54 w-full gap-2 pt-30 xl:pt-0 xl:pl-20 xd:pl-18! hd:pl-12! 2xl:pl-10!">
+                        <div className="h-6 w-32 bg-white/50 rounded mx-auto xl:mx-0" />
+                        <div className="w-full h-px bg-white/30 my-1" />
+                        <div className="space-y-1.5 hidden xl:block">
+                          <div className="h-3.5 w-full bg-white/40 rounded" />
+                          <div className="h-3.5 w-4/5 bg-white/40 rounded" />
+                        </div>
+                        <div className="h-3.5 w-36 bg-white/40 rounded xl:hidden mx-auto" />
+                      </div>
+                    </div>
+                    {/* Bullet Points Skeleton */}
+                    <div className="hidden absolute bottom-6 xl:block space-y-2">
+                      {[...Array(3)].map((_, fIdx) => (
+                        <div key={fIdx} className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded-full bg-white/50 shrink-0" />
+                          <div className="h-3.5 w-32 bg-white/40 rounded" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : currentCategoryData.products.length > 0 ? (
           <div className="relative px-12 overflow-visible">
             <Swiper
               modules={[Navigation]}
@@ -631,7 +738,11 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
               <ChevronRight size={48} strokeWidth={2.5} />
             </button>
           </div>
-        }
+        ) : (
+          <div className="py-12 px-6 text-center text-muted-foreground bg-surface/50 rounded-2xl">
+            No products found in this category.
+          </div>
+        )}
 
         {/* Lower Research & Development Section */}
         <div className="space-y-4 pt-4 text-center md:text-start">

@@ -544,8 +544,6 @@ export default function MainCategories() {
   const currentSubCategoryData =
     subCategories.find((s) => s.name === activeSubCategory) || subCategories[0] || { name: "", title: "", description: "", shortDescription: "", icon: "", products: [] };
 
-
-
   // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -566,8 +564,6 @@ export default function MainCategories() {
     };
   }, []);
 
-
-
   useEffect(() => {
     if (prevActiveSubCategoryRef.current !== activeSubCategory) {
       prevActiveSubCategoryRef.current = activeSubCategory;
@@ -585,17 +581,6 @@ export default function MainCategories() {
       }
     }
   }, [activeSubCategory, subCategories]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[350px] py-16 bg-background">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        <p className="mt-4 text-lg font-semibold text-foreground/60 font-google-sans">
-          Loading categories...
-        </p>
-      </div>
-    );
-  }
 
   const handleMainCategoryChange = (name: string) => {
     setActiveMainCategory(name);
@@ -635,166 +620,225 @@ export default function MainCategories() {
     <section className="flex flex-col lg:flex-row justify-between leading-normal max-w-360 mx-auto my-4 sm:my-6 lg:my-9 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-4 lg:gap-12 z-100">
       {/* Sidebar Categories Panel */}
       <div className="hidden lg:block space-y-4 lg:w-[320px] shrink-0 sticky top-28 self-start z-30">
-        <h2 className="text-2xl ">Categories</h2>
+        <h2 className="text-2xl">Categories</h2>
         {/* Dropdown Selector */}
-        <div className="relative" ref={desktopDropdownRef}>
-          <button
-            onClick={toggleDropdown}
-            className="relative w-82 max-w-full rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 py-3.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer z-20"
-          >
-            <span>{activeMainCategory}</span>
-            <ChevronDown
-              size={20}
-              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
-            />
-          </button>
-          {dropdownOpen && (
-            <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden space-y-1.5 z-10">
-              {mainCategoriesToUse.map((cat) => (
-                <button
-                  key={cat.name}
-                  onClick={() => handleMainCategoryChange(cat.name)}
-                  className="flex items-center justify-between w-full px-4.5 gap-2 hover:font-bold text-base text-black transition-colors cursor-pointer"
-                >
-                  <span>{cat.name}</span>
-                  <ChevronRight
-                    size={16}
-                    className="text-primary transition-transform duration-300"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {loading ? (
+          <div className="w-82 max-w-full h-13 rounded-[20px] bg-neutral-200/80 animate-pulse" />
+        ) : (
+          <div className="relative" ref={desktopDropdownRef}>
+            <button
+              onClick={toggleDropdown}
+              className="relative w-82 max-w-full rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 py-3.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] hover:opacity-95 transition-all cursor-pointer z-20"
+            >
+              <span>{activeMainCategory}</span>
+              <ChevronDown
+                size={20}
+                className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {dropdownOpen && (
+              <div className="absolute top-4 left-0 w-82 max-w-full bg-surface rounded-b-[20px] pt-12 pb-5 overflow-hidden space-y-1.5 z-10">
+                {mainCategoriesToUse.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => handleMainCategoryChange(cat.name)}
+                    className="flex items-center justify-between w-full px-4.5 gap-2 hover:font-bold text-base text-black transition-colors cursor-pointer"
+                  >
+                    <span>{cat.name}</span>
+                    <ChevronRight
+                      size={16}
+                      className="text-primary transition-transform duration-300"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {/* Divider */}
         <div className="mx-auto max-w-43 border-t-[1.5px] border-[#C4C4C4] my-5" />
         {/* Subcategories grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
-          {subCategories.map((sub) => {
-            const isActive = activeSubCategory === sub.name;
-            return (
-              <button
-                key={sub.name}
-                onClick={() => handleSubCategoryChange(sub.name)}
-                className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
-                  }`}
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center bg-white shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.06)] border border-neutral-100/60 animate-pulse"
               >
-                <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
-                  <Image
-                    src={sub.icon}
-                    alt={sub.name}
-                    width={40}
-                    height={40}
-                    className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
-                  />
-                </div>
-                <span className="font-medium text-sm">
-                  {sub.name}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                <div className="w-10 h-10 mb-2 rounded-full bg-neutral-200/80" />
+                <div className="h-3.5 w-20 rounded bg-neutral-200/80" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4">
+            {subCategories.map((sub) => {
+              const isActive = activeSubCategory === sub.name;
+              return (
+                <button
+                  key={sub.name}
+                  onClick={() => handleSubCategoryChange(sub.name)}
+                  className={`group rounded-2xl w-40 min-h-24 flex flex-col items-center justify-center p-3 text-center transition-all duration-300 cursor-pointer shadow-[4px_4px_6.9px_4px_rgba(0,0,0,0.10)] hover:shadow-xl ${isActive ? "active-gradient-border" : "bg-white"
+                    }`}
+                >
+                  <div className="relative w-10 h-10 mb-2 flex items-center justify-center">
+                    <Image
+                      src={sub.icon}
+                      alt={sub.name}
+                      width={40}
+                      height={40}
+                      className="object-contain max-h-full max-w-full drop-shadow-sm group-hover:scale-125 transition-all duration-300"
+                    />
+                  </div>
+                  <span className="font-medium text-sm">
+                    {sub.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Mobile categories tabs */}
       <div className="flex flex-col lg:hidden w-full gap-4 relative z-30">
         {/* Dropdown for Main Category on Mobile */}
-        <div className="relative w-full" ref={mobileDropdownRef}>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="relative w-full h-13 rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden z-20"
-          >
-            <span>{activeMainCategory}</span>
-            <ChevronDown
-              size={20}
-              className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
-            />
-          </button>
-          {dropdownOpen && (
-            <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-8 pb-5 overflow-hidden space-y-1.5 z-10">
-              {mainCategoriesToUse.map((cat) => (
-                <button
-                  key={cat.name}
-                  onClick={() => handleMainCategoryChange(cat.name)}
-                  className="flex items-center justify-between w-full text-left px-6 py-0.5 hover:bg-gray-50 text-base font-medium text-black cursor-pointer"
-                >
-                  <span>{cat.name}</span>
-                  <ChevronRight
-                    size={16}
-                    className="text-primary transition-transform duration-300"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        {loading ? (
+          <div className="w-full h-13 rounded-[20px] bg-neutral-200/80 animate-pulse" />
+        ) : (
+          <div className="relative w-full" ref={mobileDropdownRef}>
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="relative w-full h-13 rounded-[20px] bg-linear-to-r from-[#FF0009] to-[#772571] text-white flex items-center justify-between px-4.5 font-google-sans text-lg shadow-[4px_4px_6.9px_rgba(0,0,0,0.1)] cursor-pointer overflow-hidden z-20"
+            >
+              <span>{activeMainCategory}</span>
+              <ChevronDown
+                size={20}
+                className={`transition-transform duration-300 ${dropdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {dropdownOpen && (
+              <div className="absolute top-8 left-0 w-full bg-surface rounded-b-[20px] pt-8 pb-5 overflow-hidden space-y-1.5 z-10">
+                {mainCategoriesToUse.map((cat) => (
+                  <button
+                    key={cat.name}
+                    onClick={() => handleMainCategoryChange(cat.name)}
+                    className="flex items-center justify-between w-full text-left px-6 py-0.5 hover:bg-gray-50 text-base font-medium text-black cursor-pointer"
+                  >
+                    <span>{cat.name}</span>
+                    <ChevronRight
+                      size={16}
+                      className="text-primary transition-transform duration-300"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {/* Divider */}
         <div className="border-t w-full border-[#C4C4C4] mx-auto max-w-43" />
         {/* Subcategories Horizontal Tabs */}
-        <div className="flex items-center justify-between w-full gap-2">
-          <button
-            onClick={handlePrev}
-            aria-label="Previous subcategories"
-            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
-              ? "block pointer-events-auto"
-              : "hidden pointer-events-none"
-              }`}
-          >
-            <ChevronLeftCircle size={16} className="text-[#FF0009]" />
-          </button>
-          <div className="flex-1 min-w-0 overflow-hidden">
-            <Swiper
-              modules={[Navigation]}
-              slidesPerView={2}
-              spaceBetween={6}
-              watchOverflow={true}
-              onSwiper={(swiper) => {
-                swiperRef.current = swiper;
-                updateArrows(swiper);
-              }}
-              onSlideChange={updateArrows}
-              onReachBeginning={updateArrows}
-              onReachEnd={updateArrows}
-              onToEdge={updateArrows}
-              onFromEdge={updateArrows}
-              className="w-full"
-            >
-              {subCategories.map((sub, idx) => {
-                const isActive = activeSubCategory === sub.name;
-                return (
-                  <SwiperSlide key={sub.name} className="h-auto flex">
-                    <button
-                      onClick={() => handleSubCategoryChange(sub.name, idx)}
-                      className={`w-full cursor-pointer rounded-3xl text-[10px] sm:text-sm text-center p-2 font-medium transition-all duration-300 flex items-center justify-center leading-tight ${isActive
-                        ? "active-gradient-border-surface"
-                        : "bg-surface text-black"
-                        }`}
-                    >
-                      {sub.name}
-                    </button>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+        {loading ? (
+          <div className="flex items-center justify-between w-full gap-2 py-1">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="flex-1 h-9 rounded-3xl bg-neutral-200/80 animate-pulse"
+              />
+            ))}
           </div>
-          <button
-            onClick={handleNext}
-            aria-label="Next subcategories"
-            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
-              ? "block pointer-events-auto"
-              : "hidden pointer-events-none"
-              }`}
-          >
-            <ChevronRightCircle size={16} className="text-[#FF0009]" />
-          </button>
-        </div>
+        ) : (
+          <div className="flex items-center justify-between w-full gap-2">
+            <button
+              onClick={handlePrev}
+              aria-label="Previous subcategories"
+              className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+                ? "block pointer-events-auto"
+                : "hidden pointer-events-none"
+                }`}
+            >
+              <ChevronLeftCircle size={16} className="text-[#FF0009]" />
+            </button>
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <Swiper
+                modules={[Navigation]}
+                slidesPerView={2}
+                spaceBetween={6}
+                watchOverflow={true}
+                onSwiper={(swiper) => {
+                  swiperRef.current = swiper;
+                  updateArrows(swiper);
+                }}
+                onSlideChange={updateArrows}
+                onReachBeginning={updateArrows}
+                onReachEnd={updateArrows}
+                onToEdge={updateArrows}
+                onFromEdge={updateArrows}
+                className="w-full"
+              >
+                {subCategories.map((sub, idx) => {
+                  const isActive = activeSubCategory === sub.name;
+                  return (
+                    <SwiperSlide key={sub.name} className="h-auto flex">
+                      <button
+                        onClick={() => handleSubCategoryChange(sub.name, idx)}
+                        className={`w-full cursor-pointer rounded-3xl text-[10px] sm:text-sm text-center p-2 font-medium transition-all duration-300 flex items-center justify-center leading-tight ${isActive
+                          ? "active-gradient-border-surface"
+                          : "bg-surface text-black"
+                          }`}
+                      >
+                        {sub.name}
+                      </button>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+            <button
+              onClick={handleNext}
+              aria-label="Next subcategories"
+              className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
+                ? "block pointer-events-auto"
+                : "hidden pointer-events-none"
+                }`}
+            >
+              <ChevronRightCircle size={16} className="text-[#FF0009]" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 min-w-0 mt-0 lg:mt-12 overflow-x-clip space-y-8 z-10">
         {/* Product Accordion Container */}
-        {currentSubCategoryData.products.length > 0 &&
+        {loading ? (
+          <div className="flex flex-col bg-surface rounded-[20px] p-4 lg:p-8 w-full">
+            {/* Open Item Skeleton */}
+            <div className="flex flex-col lg:flex-row justify-between border-b pb-6 lg:pb-9 pt-4 gap-6 animate-pulse">
+              <div className="flex flex-col gap-3 max-w-md w-full">
+                <div className="h-8 w-3/4 bg-neutral-200/90 rounded-lg" />
+                <div className="space-y-2 pt-2">
+                  <div className="h-4 w-full bg-neutral-200/70 rounded" />
+                  <div className="h-4 w-5/6 bg-neutral-200/70 rounded" />
+                  <div className="h-4 w-2/3 bg-neutral-200/70 rounded" />
+                </div>
+                <div className="h-9 w-28 rounded-full bg-neutral-200/80 mt-2" />
+              </div>
+              <div className="w-full lg:w-106 h-53 rounded-[20px] bg-neutral-200/80 shrink-0" />
+            </div>
+            {/* Closed Items Skeletons */}
+            {[...Array(2)].map((_, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center py-4.5 border-b last:border-b-0 animate-pulse"
+              >
+                <div className="h-7 w-48 bg-neutral-200/80 rounded" />
+                <div className="w-6 h-6 rounded-full bg-neutral-200/80" />
+              </div>
+            ))}
+          </div>
+        ) : currentSubCategoryData.products.length > 0 ? (
           <div className="flex flex-col bg-surface rounded-[20px] p-4 lg:p-8 w-full">
             {currentSubCategoryData.products.map((product, idx) => {
               const isOpen = openAccordionIndex === idx;
@@ -862,7 +906,11 @@ export default function MainCategories() {
               );
             })}
           </div>
-        }
+        ) : (
+          <div className="flex flex-col bg-surface rounded-[20px] p-8 text-center text-foreground/60 font-google-sans">
+            No products found in this category.
+          </div>
+        )}
       </div>
     </section>
   );
