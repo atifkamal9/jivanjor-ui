@@ -19,6 +19,18 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
   const [activeTab, setActiveTab] = useState("about-jivanjor");
 
   useEffect(() => {
+    let isManualScrolling = false;
+
+    const onScrollStart = () => {
+      isManualScrolling = true;
+    };
+    const onScrollEnd = () => {
+      isManualScrolling = false;
+    };
+
+    window.addEventListener("about-tab-scroll-start", onScrollStart);
+    window.addEventListener("about-tab-scroll-end", onScrollEnd);
+
     const sectionIds = [
       "about-jivanjor",
       "research-innovation",
@@ -34,6 +46,7 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      if (isManualScrolling) return;
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setActiveTab(entry.target.id);
@@ -52,6 +65,8 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
     });
 
     return () => {
+      window.removeEventListener("about-tab-scroll-start", onScrollStart);
+      window.removeEventListener("about-tab-scroll-end", onScrollEnd);
       sectionIds.forEach((id) => {
         const el = document.getElementById(id);
         if (el) observer.unobserve(el);

@@ -86,15 +86,70 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
     setActiveTab(id);
     const element = document.getElementById(id);
     if (element) {
-      const navbarOffset = 130; // height of sticky elements
-      const elementPosition =
-        element.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - navbarOffset;
+      const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
+      const navbar = document.getElementById("main-landing-header");
+      const navHeight = navbar ? navbar.offsetHeight : (isDesktop ? 88 : 64);
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      let targetY: number;
+      if (id === "research-innovation") {
+        // Desktop lab image has mt-12 (48px) inside the section.
+        // Scroll so the lab image aligns flush right beneath the sticky navbar, with no section above showing.
+        targetY = isDesktop ? elementPosition + 48 - navHeight : elementPosition - navHeight;
+      } else if (id === "about-jivanjor") {
+        targetY = Math.max(0, elementPosition - (isDesktop ? navHeight + 70 : navHeight + 20));
+      } else {
+        targetY = Math.max(0, elementPosition - (isDesktop ? navHeight + 70 : navHeight + 20));
+      }
+
+      // Lazy lead easing smooth scroll (replaces abrupt native scrolling with a gentle, momentum-eased glide)
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      if (Math.abs(distance) < 2) return;
+
+      window.dispatchEvent(new CustomEvent("about-tab-scroll-start"));
+
+      let startTime: number | null = null;
+      let animationFrameId: number;
+      const duration = 850;
+
+      // Lazy lead ease-in-out-cubic curve: soft launch, graceful glide, gentle deceleration
+      const easeInOutCubic = (t: number): number => {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      };
+
+      const cleanup = () => {
+        window.removeEventListener("wheel", onUserInteract);
+        window.removeEventListener("touchstart", onUserInteract);
+        cancelAnimationFrame(animationFrameId);
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent("about-tab-scroll-end"));
+        }, 80);
+      };
+
+      const onUserInteract = () => {
+        cleanup();
+      };
+
+      window.addEventListener("wheel", onUserInteract, { passive: true, once: true });
+      window.addEventListener("touchstart", onUserInteract, { passive: true, once: true });
+
+      const step = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+
+        window.scrollTo(0, startY + distance * ease);
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(step);
+        } else {
+          cleanup();
+        }
+      };
+
+      animationFrameId = requestAnimationFrame(step);
     }
   };
 
