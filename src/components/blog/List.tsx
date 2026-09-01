@@ -3,6 +3,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 import { BLOG_CATEGORY_FILTERS } from "@/lib/blog-categories";
 import { api } from "@/lib/api";
@@ -69,53 +74,34 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+  const prevActiveListRef = useRef(activeList);
 
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } =
-        scrollContainerRef.current;
-      setShowLeftArrow(scrollLeft > 1);
-      setShowRightArrow(
-        scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1,
-      );
-    }
+  const updateArrows = (swiper: SwiperType) => {
+    setShowLeftArrow(!swiper.isBeginning);
+    setShowRightArrow(!swiper.isEnd);
   };
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      const tabWidth = (scrollContainerRef.current.clientWidth - 8) / 2;
-      scrollContainerRef.current.scrollBy({
-        left: -(tabWidth + 8),
-        behavior: "smooth",
-      });
-    }
+  const handlePrev = () => {
+    swiperRef.current?.slidePrev();
   };
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      const tabWidth = (scrollContainerRef.current.clientWidth - 8) / 2;
-      scrollContainerRef.current.scrollBy({
-        left: tabWidth + 8,
-        behavior: "smooth",
-      });
-    }
+  const handleNext = () => {
+    swiperRef.current?.slideNext();
   };
 
-  useEffect(() => {
-    checkScroll();
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScroll);
-      window.addEventListener("resize", checkScroll);
-    }
-    return () => {
-      if (container) {
-        container.removeEventListener("scroll", checkScroll);
+  const handleListClick = (name: string, index: number) => {
+    setActiveList(name);
+    setCurrentPage(1);
+    prevActiveListRef.current = name;
+    if (swiperRef.current) {
+      const swiper = swiperRef.current;
+      const current = swiper.activeIndex;
+      if (index < current || index >= current + 2) {
+        swiper.slideTo(index);
       }
-      window.removeEventListener("resize", checkScroll);
-    };
-  }, []);
+    }
+  };
 
   const apiCategories = Array.from(new Set(apiPosts.map((p) => p.category))).filter(Boolean);
   const combinedCategoryNames = Array.from(
@@ -310,57 +296,61 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
 
       {/* Categories Panel (Mobile/Tablet) */}
       <div className="block lg:hidden space-y-4">
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              .scrollbar-none::-webkit-scrollbar {
-                display: none;
-              }
-            `,
-          }}
-        />
         <div className="flex items-center justify-between w-full gap-2">
           <button
-            onClick={scrollLeft}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+            onClick={handlePrev}
+            aria-label="Previous categories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
                 ? "block pointer-events-auto"
                 : "hidden pointer-events-none"
               }`}
           >
-            <ChevronLeftCircle size={24} className="text-[#FF0009]" />
+            <ChevronLeftCircle size={16} className="text-[#FF0009]" />
           </button>
-          <div
-            ref={scrollContainerRef}
-            className="flex-1 flex overflow-x-auto scroll-smooth scrollbar-none snap-x snap-mandatory gap-2"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {displayLists.map((list) => {
-              const isActive = activeList === list.name;
-              return (
-                <button
-                  key={list.name}
-                  onClick={() => {
-                    setActiveList(list.name);
-                    setCurrentPage(1);
-                  }}
-                  className={`${isActive
-                      ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
-                      : "bg-[#efefef] text-black"
-                    } cursor-pointer font-medium p-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start`}
-                >
-                  {list.name}
-                </button>
-              );
-            })}
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={6}
+              watchOverflow={true}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                updateArrows(swiper);
+              }}
+              onSlideChange={updateArrows}
+              onReachBeginning={updateArrows}
+              onReachEnd={updateArrows}
+              onToEdge={updateArrows}
+              onFromEdge={updateArrows}
+              className="w-full"
+            >
+              {displayLists.map((list, idx) => {
+                const isActive = activeList === list.name;
+                return (
+                  <SwiperSlide key={list.name} className="h-auto flex">
+                    <button
+                      onClick={() => handleListClick(list.name, idx)}
+                      className={`${isActive
+                          ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
+                          : "bg-[#efefef] text-black"
+                        } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all leading-tight`}
+                    >
+                      {list.name}
+                    </button>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
           <button
-            onClick={scrollRight}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
+            onClick={handleNext}
+            aria-label="Next categories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
                 ? "block pointer-events-auto"
                 : "hidden pointer-events-none"
               }`}
           >
-            <ChevronRightCircle size={24} className="text-[#FF0009]" />
+            <ChevronRightCircle size={16} className="text-[#FF0009]" />
           </button>
         </div>
       </div>

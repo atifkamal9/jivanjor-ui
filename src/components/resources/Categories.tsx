@@ -11,6 +11,11 @@ import {
   ChevronDown,
   Plus,
 } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
 
 function ResourceFileMeta({ fileUrl, fileSize }: { fileUrl?: string; fileSize?: string | number }) {
   const meta = useFileMetadata(fileUrl, fileSize);
@@ -460,7 +465,21 @@ export default function Categories() {
 
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+  const prevActiveSubCategoryRef = useRef(activeSubCategory);
+
+  const updateArrows = (swiper: SwiperType) => {
+    setShowLeftArrow(!swiper.isBeginning);
+    setShowRightArrow(!swiper.isEnd);
+  };
+
+  const handlePrev = () => {
+    swiperRef.current?.slidePrev();
+  };
+
+  const handleNext = () => {
+    swiperRef.current?.slideNext();
+  };
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -473,34 +492,7 @@ export default function Categories() {
   const currentSubCategoryData =
     subCategories.find((s) => s.name === activeSubCategory) || subCategories[0];
 
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } =
-        scrollContainerRef.current;
-      setShowLeftArrow(scrollLeft > 1);
-      setShowRightArrow(
-        scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1,
-      );
-    }
-  };
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: -scrollContainerRef.current.clientWidth / 2,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: scrollContainerRef.current.clientWidth / 2,
-        behavior: "smooth",
-      });
-    }
-  };
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -522,41 +514,24 @@ export default function Categories() {
     };
   }, []);
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      checkScroll();
-      const timer = setTimeout(checkScroll, 100);
 
-      container.addEventListener("scroll", checkScroll);
-      window.addEventListener("resize", checkScroll);
-
-      return () => {
-        clearTimeout(timer);
-        container.removeEventListener("scroll", checkScroll);
-        window.removeEventListener("resize", checkScroll);
-      };
-    }
-  }, [activeMainCategory]);
 
   useEffect(() => {
-    if (scrollContainerRef.current) {
-      const activeIndex = subCategories.findIndex(
-        (s) => s.name === activeSubCategory,
-      );
-      const activeElement = scrollContainerRef.current.children[
-        activeIndex
-      ] as HTMLElement;
-
-      if (activeElement) {
-        scrollContainerRef.current.scrollTo({
-          left: activeElement.offsetLeft - 16,
-          behavior: "smooth",
-        });
+    if (prevActiveSubCategoryRef.current !== activeSubCategory) {
+      prevActiveSubCategoryRef.current = activeSubCategory;
+      if (swiperRef.current) {
+        const activeIndex = subCategories.findIndex(
+          (s) => s.name === activeSubCategory,
+        );
+        if (activeIndex !== -1) {
+          const swiper = swiperRef.current;
+          const current = swiper.activeIndex;
+          if (activeIndex < current || activeIndex >= current + 2) {
+            swiper.slideTo(activeIndex);
+          }
+        }
       }
     }
-    const timer = setTimeout(checkScroll, 400);
-    return () => clearTimeout(timer);
   }, [activeSubCategory, subCategories]);
 
   if (loading) {
@@ -581,8 +556,16 @@ export default function Categories() {
     setDropdownOpen(false);
   };
 
-  const handleSubCategoryChange = (name: string) => {
+  const handleSubCategoryChange = (name: string, index?: number) => {
     setActiveSubCategory(name);
+    prevActiveSubCategoryRef.current = name;
+    if (swiperRef.current && typeof index === "number") {
+      const swiper = swiperRef.current;
+      const current = swiper.activeIndex;
+      if (index < current || index >= current + 2) {
+        swiper.slideTo(index);
+      }
+    }
     setOpenAccordionIndex(0);
   };
 
@@ -693,54 +676,61 @@ export default function Categories() {
         {/* Divider */}
         <div className="border-t w-full border-[#C4C4C4] mx-auto max-w-43" />
         {/* Subcategories Horizontal Tabs */}
-        <div className="flex items-center gap-2 w-full">
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-            .scrollbar-none::-webkit-scrollbar {
-              display: none;
-            }
-          `,
-            }}
-          />
+        <div className="flex items-center justify-between w-full gap-2">
           <button
-            onClick={scrollLeft}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showLeftArrow
-              ? "block pointer-events-auto"
-              : "hidden pointer-events-none"
+            onClick={handlePrev}
+            aria-label="Previous subcategories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none invisible"
               }`}
           >
-            <ChevronLeftCircle size={24} className="text-[#FF0009]" />
+            <ChevronLeftCircle size={16} className="text-[#FF0009]" />
           </button>
-          <div
-            ref={scrollContainerRef}
-            className="flex-1 flex gap-2 overflow-x-auto scroll-smooth scrollbar-none relative px-4 py-1.5"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {subCategories.map((sub) => {
-              const isActive = activeSubCategory === sub.name;
-              return (
-                <button
-                  key={sub.name}
-                  onClick={() => handleSubCategoryChange(sub.name)}
-                  className={`cursor-pointer rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center py-2 px-1.5 font-medium transition-all duration-300 truncate ${isActive
-                    ? "active-gradient-border-surface"
-                    : "bg-surface text-black"
-                    }`}
-                >
-                  {sub.name}
-                </button>
-              );
-            })}
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={6}
+              watchOverflow={true}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+                updateArrows(swiper);
+              }}
+              onSlideChange={updateArrows}
+              onReachBeginning={updateArrows}
+              onReachEnd={updateArrows}
+              onToEdge={updateArrows}
+              onFromEdge={updateArrows}
+              className="w-full"
+            >
+              {subCategories.map((sub, idx) => {
+                const isActive = activeSubCategory === sub.name;
+                return (
+                  <SwiperSlide key={sub.name} className="h-auto flex">
+                    <button
+                      onClick={() => handleSubCategoryChange(sub.name, idx)}
+                      className={`w-full cursor-pointer rounded-3xl text-[11px] sm:text-sm text-center py-2 px-2.5 font-medium transition-all duration-300 flex items-center justify-center leading-tight ${isActive
+                        ? "active-gradient-border-surface"
+                        : "bg-surface text-black"
+                        }`}
+                    >
+                      {sub.name}
+                    </button>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
           <button
-            onClick={scrollRight}
-            className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-opacity duration-200 ${showRightArrow
+            onClick={handleNext}
+            aria-label="Next subcategories"
+            className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
               ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+              : "opacity-0 pointer-events-none invisible"
               }`}
           >
-            <ChevronRightCircle size={24} className="text-[#FF0009]" />
+            <ChevronRightCircle size={16} className="text-[#FF0009]" />
           </button>
         </div>
       </div>

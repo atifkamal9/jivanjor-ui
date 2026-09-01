@@ -243,9 +243,9 @@ export default function ProductRange({ data }: ProductRangeProps) {
             <button
               onClick={handlePrev}
               aria-label="Previous categories"
-              className={`flex items-center justify-center cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+              className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
                 ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
+                : "opacity-0 pointer-events-none invisible"
                 }`}
             >
               <ChevronLeftCircle size={16} className="text-[#FF0009]" />
@@ -262,11 +262,10 @@ export default function ProductRange({ data }: ProductRangeProps) {
                 }}
                 onSlideChange={updateArrows}
                 onReachBeginning={updateArrows}
-                centerInsufficientSlides={true}
                 onReachEnd={updateArrows}
                 onToEdge={updateArrows}
                 onFromEdge={updateArrows}
-                className="flex items-center w-full"
+                className="w-full"
               >
                 {displayCategories.map((cat, idx) => {
                   const isActive = activeCategoryName === cat.name;
@@ -277,7 +276,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
                         className={`${isActive
                           ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
                           : "bg-surface text-foreground"
-                          } w-full cursor-pointer font-medium px-3 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all`}
+                          } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all leading-tight`}
                       >
                         {cat.name}
                       </button>
@@ -289,9 +288,9 @@ export default function ProductRange({ data }: ProductRangeProps) {
             <button
               onClick={handleNext}
               aria-label="Next categories"
-              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
+              className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
                 ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
+                : "opacity-0 pointer-events-none invisible"
                 }`}
             >
               <ChevronRightCircle size={16} className="text-[#FF0009]" />
