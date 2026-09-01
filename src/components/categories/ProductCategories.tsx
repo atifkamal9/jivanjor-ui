@@ -591,11 +591,16 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
 
         {/* Product Cards Swiper / Grid Area */}
         {loading ? (
-          <div className="relative px-4 sm:px-12 overflow-visible">
+          <div className="relative px-12 overflow-visible">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
               {[...Array(2)].map((_, idx) => (
-                <div key={idx} className="relative pt-21 xl:pt-12 mx-auto lg:mx-0 w-full">
-                  <div className="rounded-3xl px-10 py-6 bg-linear-to-br from-neutral-200/70 to-neutral-300/70 flex flex-col gap-4 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64 shadow-md border border-neutral-200/50 animate-pulse">
+                <div
+                  key={idx}
+                  className={`relative pt-21 xl:pt-12 mx-auto lg:mx-0 w-full flex justify-center lg:justify-start ${
+                    idx > 0 ? "hidden sm:flex" : "flex"
+                  }`}
+                >
+                  <div className="rounded-3xl px-10 py-6 bg-linear-to-br from-neutral-200/70 to-neutral-300/70 flex flex-col gap-4 w-full max-w-68 xl:max-w-108 min-h-78 xl:min-h-64 shadow-md border border-neutral-200/50 animate-pulse mx-auto lg:mx-0">
                     <div className="flex flex-col relative xl:flex-row gap-2 items-center xl:items-start">
                       {/* Floating Image Skeleton */}
                       <div className="absolute top-0 left-1/2 xl:left-1/5 -translate-x-1/2 -translate-y-1/2 xl:translate-y-[-36%] aspect-44/51 xl:aspect-69/80 w-40 h-48 xl:w-44 xl:h-52 rounded-2xl bg-neutral-300/80 z-10 shadow-sm" />
