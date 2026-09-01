@@ -22,6 +22,8 @@ import {
   PanelBottom,
   Laptop,
   Smartphone,
+  Code2,
+  Info,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -61,6 +63,11 @@ export default function AdminSettingsPage() {
   const [categoryHeroCover, setCategoryHeroCover] = useState("");
   const [categoryCardBg, setCategoryCardBg] = useState("");
   const [showWhatsappInHeader, setShowWhatsappInHeader] = useState(true);
+  const [scriptConfig, setScriptConfig] = useState({
+    headScripts: "",
+    bodyScripts: "",
+    footerScripts: "",
+  });
   const [socialLinks, setSocialLinks] = useState({
     facebook: "",
     instagram: "",
@@ -111,6 +118,20 @@ export default function AdminSettingsPage() {
       setFooterMobileLogo(res.footerMobileLogo || res.footerDesktopLogo || res.mobileLogo || res.desktopLogo || "");
       setCategoryHeroCover(res.categoryHeroCover || "");
       setCategoryCardBg(res.categoryCardBg || "");
+
+      if (res.scriptConfig && (res.scriptConfig.headScripts || res.scriptConfig.bodyScripts || res.scriptConfig.footerScripts)) {
+        setScriptConfig({
+          headScripts: res.scriptConfig.headScripts || "",
+          bodyScripts: res.scriptConfig.bodyScripts || "",
+          footerScripts: res.scriptConfig.footerScripts || "",
+        });
+      } else {
+        setScriptConfig({
+          headScripts: `<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`,
+          bodyScripts: "",
+          footerScripts: "",
+        });
+      }
 
       const whatsappSec = (res.contactPage?.sections || []).find((s: any) => s.title === "_whatsapp_config");
       const whatsappNumberVal = whatsappSec?.whatsappNumber !== undefined
@@ -200,6 +221,11 @@ export default function AdminSettingsPage() {
           watermarkImage: contactPage.watermarkImage?.trim() || undefined,
           sections: updatedSections,
         },
+        scriptConfig: {
+          headScripts: scriptConfig.headScripts.trim(),
+          bodyScripts: scriptConfig.bodyScripts.trim(),
+          footerScripts: scriptConfig.footerScripts.trim(),
+        },
       });
 
       if (updated) {
@@ -209,6 +235,14 @@ export default function AdminSettingsPage() {
         setFooterMobileLogo(updated.footerMobileLogo || updated.mobileLogo || "");
         setCategoryHeroCover(updated.categoryHeroCover || "");
         setCategoryCardBg(updated.categoryCardBg || "");
+
+        if (updated.scriptConfig) {
+          setScriptConfig({
+            headScripts: updated.scriptConfig.headScripts || "",
+            bodyScripts: updated.scriptConfig.bodyScripts || "",
+            footerScripts: updated.scriptConfig.footerScripts || "",
+          });
+        }
 
         const updatedWhatsappSec = (updated.contactPage?.sections || updatedSections).find((s: any) => s.title === "_whatsapp_config");
         const updatedWhatsappNum = updatedWhatsappSec?.whatsappNumber !== undefined
@@ -753,174 +787,281 @@ export default function AdminSettingsPage() {
                         key={secIdx}
                         className="p-4 rounded-xl border border-border/80 bg-surface/50 space-y-4 relative"
                       >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex-1">
-                          <label className="block text-[11px] font-bold text-foreground/60 uppercase mb-1">
-                            Section Title #{secIdx + 1}
-                          </label>
-                          <input
-                            type="text"
-                            value={section.title}
-                            onChange={(e) => {
-                              const updatedSecs = [...(contactPage.sections || [])];
-                              updatedSecs[secIdx].title = e.target.value;
-                              setContactPage({ ...contactPage, sections: updatedSecs });
-                            }}
-                            placeholder="e.g. Customer Support"
-                            className="w-full p-2 rounded-md bg-background border border-border text-sm font-bold text-foreground focus:outline-hidden focus:border-primary"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updatedSecs = (contactPage.sections || []).filter((_, i) => i !== secIdx);
-                            setContactPage({ ...contactPage, sections: updatedSecs });
-                          }}
-                          className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer self-end mb-0.5"
-                          title="Delete Section"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      {/* Detail Items List */}
-                      <div className="space-y-2 pt-2 border-t border-border/60">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[11px] font-bold text-foreground/50 uppercase">
-                            Detail Items
-                          </span>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex-1">
+                            <label className="block text-[11px] font-bold text-foreground/60 uppercase mb-1">
+                              Section Title #{secIdx + 1}
+                            </label>
+                            <input
+                              type="text"
+                              value={section.title}
+                              onChange={(e) => {
+                                const updatedSecs = [...(contactPage.sections || [])];
+                                updatedSecs[secIdx].title = e.target.value;
+                                setContactPage({ ...contactPage, sections: updatedSecs });
+                              }}
+                              placeholder="e.g. Customer Support"
+                              className="w-full p-2 rounded-md bg-background border border-border text-sm font-bold text-foreground focus:outline-hidden focus:border-primary"
+                            />
+                          </div>
                           <button
                             type="button"
                             onClick={() => {
-                              const updatedSecs = [...(contactPage.sections || [])];
-                              updatedSecs[secIdx].details = [
-                                ...(updatedSecs[secIdx].details || []),
-                                { label: "Label", value: "Value", icon: "/images/Phone-call.svg" },
-                              ];
+                              const updatedSecs = (contactPage.sections || []).filter((_, i) => i !== secIdx);
                               setContactPage({ ...contactPage, sections: updatedSecs });
                             }}
-                            className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                            className="p-2 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer self-end mb-0.5"
+                            title="Delete Section"
                           >
-                            <Plus className="h-3 w-3" />
-                            <span>Add Item</span>
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
 
-                        {section.details?.map((item, itemIdx) => (
-                          <div
-                            key={itemIdx}
-                            className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-xl bg-background border border-border/70 shadow-2xs"
-                          >
-                            {/* Icon Preview Box */}
-                            <div className="flex items-center gap-2 shrink-0">
-                              <div
-                                className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center shadow-inner overflow-hidden shrink-0"
-                                title="Icon Preview"
-                              >
-                                {renderAdminIconPreview(item.icon)}
-                              </div>
-                            </div>
-
-                            {/* Label Input */}
-                            <div className="flex-1 w-full sm:w-auto">
-                              <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
-                                Label
-                              </label>
-                              <input
-                                type="text"
-                                value={item.label}
-                                onChange={(e) => {
-                                  const updatedSecs = [...(contactPage.sections || [])];
-                                  updatedSecs[secIdx].details[itemIdx].label = e.target.value;
-                                  setContactPage({ ...contactPage, sections: updatedSecs });
-                                }}
-                                placeholder="Label (e.g. Phone)"
-                                className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-medium"
-                              />
-                            </div>
-
-                            {/* Value Input */}
-                            <div className="flex-2 w-full sm:w-auto">
-                              <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
-                                Value
-                              </label>
-                              <input
-                                type="text"
-                                value={item.value}
-                                onChange={(e) => {
-                                  const updatedSecs = [...(contactPage.sections || [])];
-                                  updatedSecs[secIdx].details[itemIdx].value = e.target.value;
-                                  setContactPage({ ...contactPage, sections: updatedSecs });
-                                }}
-                                placeholder="Value (e.g. 1800-XXX-XXX)"
-                                className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-medium"
-                              />
-                            </div>
-
-                            {/* Icon Path Input + Quick Presets */}
-                            <div className="flex-2 w-full sm:w-auto flex flex-col gap-1">
-                              <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
-                                Icon Path / Preset
-                              </label>
-                              <input
-                                type="text"
-                                value={item.icon}
-                                onChange={(e) => {
-                                  const updatedSecs = [...(contactPage.sections || [])];
-                                  updatedSecs[secIdx].details[itemIdx].icon = e.target.value;
-                                  setContactPage({ ...contactPage, sections: updatedSecs });
-                                }}
-                                placeholder="Icon path or keyword"
-                                className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-mono text-[11px]"
-                              />
-                              {/* Quick Presets */}
-                              <div className="flex items-center gap-1 text-[10px]">
-                                <span className="text-foreground/40 font-semibold">Presets:</span>
-                                {[
-                                  { name: "Phone", path: "/images/Phone-call.svg" },
-                                  { name: "Email", path: "/images/Mail-one.svg" },
-                                  { name: "Hours", path: "/images/Alarm-clock.svg" },
-                                  { name: "Pin", path: "/images/Pin.svg" },
-                                ].map((preset) => (
-                                  <button
-                                    key={preset.name}
-                                    type="button"
-                                    onClick={() => {
-                                      const updatedSecs = [...(contactPage.sections || [])];
-                                      updatedSecs[secIdx].details[itemIdx].icon = preset.path;
-                                      setContactPage({ ...contactPage, sections: updatedSecs });
-                                    }}
-                                    className={`px-1.5 py-0.5 rounded border text-[10px] font-medium transition-colors cursor-pointer ${item.icon === preset.path
-                                      ? "bg-primary text-white border-primary"
-                                      : "bg-surface text-foreground/70 border-border hover:bg-border/50"
-                                      }`}
-                                  >
-                                    {preset.name}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Delete Item Button */}
-                            <div className="shrink-0 self-center">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const updatedSecs = [...(contactPage.sections || [])];
-                                  updatedSecs[secIdx].details = updatedSecs[secIdx].details.filter((_, i) => i !== itemIdx);
-                                  setContactPage({ ...contactPage, sections: updatedSecs });
-                                }}
-                                className="p-2 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
-                                title="Remove Detail Item"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
+                        {/* Detail Items List */}
+                        <div className="space-y-2 pt-2 border-t border-border/60">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold text-foreground/50 uppercase">
+                              Detail Items
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updatedSecs = [...(contactPage.sections || [])];
+                                updatedSecs[secIdx].details = [
+                                  ...(updatedSecs[secIdx].details || []),
+                                  { label: "Label", value: "Value", icon: "/images/Phone-call.svg" },
+                                ];
+                                setContactPage({ ...contactPage, sections: updatedSecs });
+                              }}
+                              className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="h-3 w-3" />
+                              <span>Add Item</span>
+                            </button>
                           </div>
-                        ))}
+
+                          {section.details?.map((item, itemIdx) => (
+                            <div
+                              key={itemIdx}
+                              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-xl bg-background border border-border/70 shadow-2xs"
+                            >
+                              {/* Icon Preview Box */}
+                              <div className="flex items-center gap-2 shrink-0">
+                                <div
+                                  className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center shadow-inner overflow-hidden shrink-0"
+                                  title="Icon Preview"
+                                >
+                                  {renderAdminIconPreview(item.icon)}
+                                </div>
+                              </div>
+
+                              {/* Label Input */}
+                              <div className="flex-1 w-full sm:w-auto">
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
+                                  Label
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.label}
+                                  onChange={(e) => {
+                                    const updatedSecs = [...(contactPage.sections || [])];
+                                    updatedSecs[secIdx].details[itemIdx].label = e.target.value;
+                                    setContactPage({ ...contactPage, sections: updatedSecs });
+                                  }}
+                                  placeholder="Label (e.g. Phone)"
+                                  className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-medium"
+                                />
+                              </div>
+
+                              {/* Value Input */}
+                              <div className="flex-2 w-full sm:w-auto">
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
+                                  Value
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.value}
+                                  onChange={(e) => {
+                                    const updatedSecs = [...(contactPage.sections || [])];
+                                    updatedSecs[secIdx].details[itemIdx].value = e.target.value;
+                                    setContactPage({ ...contactPage, sections: updatedSecs });
+                                  }}
+                                  placeholder="Value (e.g. 1800-XXX-XXX)"
+                                  className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-medium"
+                                />
+                              </div>
+
+                              {/* Icon Path Input + Quick Presets */}
+                              <div className="flex-2 w-full sm:w-auto flex flex-col gap-1">
+                                <label className="block text-[10px] font-bold text-foreground/50 uppercase mb-0.5 sm:hidden">
+                                  Icon Path / Preset
+                                </label>
+                                <input
+                                  type="text"
+                                  value={item.icon}
+                                  onChange={(e) => {
+                                    const updatedSecs = [...(contactPage.sections || [])];
+                                    updatedSecs[secIdx].details[itemIdx].icon = e.target.value;
+                                    setContactPage({ ...contactPage, sections: updatedSecs });
+                                  }}
+                                  placeholder="Icon path or keyword"
+                                  className="w-full p-2 rounded-md bg-surface border border-border text-xs text-foreground focus:outline-hidden focus:border-primary font-mono text-[11px]"
+                                />
+                                {/* Quick Presets */}
+                                <div className="flex items-center gap-1 text-[10px]">
+                                  <span className="text-foreground/40 font-semibold">Presets:</span>
+                                  {[
+                                    { name: "Phone", path: "/images/Phone-call.svg" },
+                                    { name: "Email", path: "/images/Mail-one.svg" },
+                                    { name: "Hours", path: "/images/Alarm-clock.svg" },
+                                    { name: "Pin", path: "/images/Pin.svg" },
+                                  ].map((preset) => (
+                                    <button
+                                      key={preset.name}
+                                      type="button"
+                                      onClick={() => {
+                                        const updatedSecs = [...(contactPage.sections || [])];
+                                        updatedSecs[secIdx].details[itemIdx].icon = preset.path;
+                                        setContactPage({ ...contactPage, sections: updatedSecs });
+                                      }}
+                                      className={`px-1.5 py-0.5 rounded border text-[10px] font-medium transition-colors cursor-pointer ${item.icon === preset.path
+                                        ? "bg-primary text-white border-primary"
+                                        : "bg-surface text-foreground/70 border-border hover:bg-border/50"
+                                        }`}
+                                    >
+                                      {preset.name}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Delete Item Button */}
+                              <div className="shrink-0 self-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updatedSecs = [...(contactPage.sections || [])];
+                                    updatedSecs[secIdx].details = updatedSecs[secIdx].details.filter((_, i) => i !== itemIdx);
+                                    setContactPage({ ...contactPage, sections: updatedSecs });
+                                  }}
+                                  className="p-2 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                                  title="Remove Detail Item"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* Card: Script Configuration (Head, Body, Footer Scripts) */}
+              <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                      <Code2 className="h-5 w-5" />
                     </div>
-                  ))}
+                    <div>
+                      <h2 className="text-sm font-extrabold text-foreground">Script Configuration</h2>
+                      <p className="text-[11px] text-foreground/50 mt-0.5">
+                        Configure custom tracking scripts such as Google Analytics, Google Tag Manager (GTM), Meta Pixel, and third-party widgets.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* 1. Head Scripts */}
+                  <div className="space-y-2 flex flex-col">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-foreground/90">
+                        Head scripts
+                      </label>
+                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                        &lt;head&gt;
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                      Injected inside the &lt;head&gt; tag. Ideal for Google Analytics (gtag.js), GTM main script, or site verification tags.
+                    </p>
+                    <textarea
+                      rows={9}
+                      value={scriptConfig.headScripts}
+                      onChange={(e) =>
+                        setScriptConfig({ ...scriptConfig, headScripts: e.target.value })
+                      }
+                      placeholder="<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||..."
+                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                      spellCheck={false}
+                    />
+                  </div>
+
+                  {/* 2. Body Scripts */}
+                  <div className="space-y-2 flex flex-col">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-foreground/90">
+                        Body scripts
+                      </label>
+                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                        &lt;body&gt; (top)
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                      Injected immediately after opening &lt;body&gt;. Required for Google Tag Manager (noscript) iframe code.
+                    </p>
+                    <textarea
+                      rows={9}
+                      value={scriptConfig.bodyScripts}
+                      onChange={(e) =>
+                        setScriptConfig({ ...scriptConfig, bodyScripts: e.target.value })
+                      }
+                      placeholder="<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src=&quot;https://www.googletagmanager.com/ns.html?id=GTM-XXXX&quot;..."
+                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                      spellCheck={false}
+                    />
+                  </div>
+
+                  {/* 3. Footer Scripts */}
+                  <div className="space-y-2 flex flex-col">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-foreground/90">
+                        Footer scripts
+                      </label>
+                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                        &lt;/body&gt; (bottom)
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                      Injected right before closing &lt;/body&gt;. Ideal for live chat widgets, affiliate pixels, or conversion scripts.
+                    </p>
+                    <textarea
+                      rows={9}
+                      value={scriptConfig.footerScripts}
+                      onChange={(e) =>
+                        setScriptConfig({ ...scriptConfig, footerScripts: e.target.value })
+                      }
+                      placeholder="<!-- Additional tracking or live chat scripts -->\n<script>...</script>"
+                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                      spellCheck={false}
+                    />
+                  </div>
+                </div>
+
+                {/* Helpful Instructions Box */}
+                <div className="p-4 rounded-xl bg-primary/5 border border-primary/15 flex items-start gap-3 text-xs text-foreground/70">
+                  <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                  <div className="space-y-1 text-[11px]">
+                    <p className="font-bold text-foreground">
+                      Google Analytics &amp; GTM Installation Guidance
+                    </p>
+                    <p>
+                      Paste the snippet provided by Google Analytics or GTM directly into the appropriate field. Tags like <code>&lt;script&gt;</code>, <code>&lt;noscript&gt;</code>, and comments are automatically parsed and safely executed across all pages of your website.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

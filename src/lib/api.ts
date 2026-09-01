@@ -109,6 +109,13 @@ export interface ContactPageSettings {
   mainHeading?: string;
   watermarkImage?: string;
   sections?: ContactSection[];
+  scriptConfig?: ScriptConfig;
+}
+
+export interface ScriptConfig {
+  headScripts?: string;
+  bodyScripts?: string;
+  footerScripts?: string;
 }
 
 export interface SiteSettings {
@@ -141,6 +148,7 @@ export interface SiteSettings {
     ctaLink?: string;
   };
   contactPage?: ContactPageSettings;
+  scriptConfig?: ScriptConfig;
   updatedAt?: string;
 }
 
@@ -1141,7 +1149,16 @@ export const api = {
   getSettings: async (): Promise<SiteSettings> => {
     try {
       const res = await client.get("/settings");
-      return res.data?.data?.settings || {};
+      const settings = res.data?.data?.settings || {};
+      const scriptConfig = settings.scriptConfig || settings.contactPage?.scriptConfig || {
+        headScripts: "",
+        bodyScripts: "",
+        footerScripts: "",
+      };
+      return {
+        ...settings,
+        scriptConfig,
+      };
     } catch (err) {
       console.error("Failed to fetch site settings:", err);
       return {
@@ -1189,12 +1206,28 @@ export const api = {
             },
           ],
         },
+        scriptConfig: {
+          headScripts: "",
+          bodyScripts: "",
+          footerScripts: "",
+        },
       };
     }
   },
   updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
-    const res = await client.put("/settings", data);
-    return res.data?.data?.settings;
+    const payload = { ...data };
+    if (payload.scriptConfig) {
+      payload.contactPage = {
+        ...(payload.contactPage || {}),
+        scriptConfig: payload.scriptConfig,
+      };
+    }
+    const res = await client.put("/settings", payload);
+    const updated = res.data?.data?.settings;
+    if (updated) {
+      updated.scriptConfig = updated.scriptConfig || updated.contactPage?.scriptConfig || payload.scriptConfig;
+    }
+    return updated;
   },
 
   // USER MANAGEMENT & PERMISSIONS
