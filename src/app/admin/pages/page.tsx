@@ -2229,6 +2229,7 @@ export default function PagesPage() {
                               currentSlides.push({
                                 id: `slide-${Date.now()}`,
                                 type: "image",
+                                title: "",
                                 bgImage: "/images/hero.png",
                                 bgImagePhone: "/images/hero.png",
                                 videoUrl: "",
@@ -2454,6 +2455,24 @@ export default function PagesPage() {
                                   <label htmlFor={`heroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
                                     Enable Dark Gradient Overlay Background
                                   </label>
+                                </div>
+
+                                {/* Banner Heading / Title */}
+                                <div className="space-y-1.5 pt-3 border-t border-border/60">
+                                  <label className="block text-xs font-bold text-foreground/70 uppercase tracking-wider">
+                                    Banner Heading / Title
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={slide.title || ""}
+                                    onChange={(e) => {
+                                      const currentSlides = [...(formData.sections.hero.slides || [])];
+                                      currentSlides[sIdx] = { ...currentSlides[sIdx], title: e.target.value };
+                                      updateSectionField("hero", "slides", currentSlides);
+                                    }}
+                                    placeholder="e.g. Strong Adhesion for Precision Woodwork (falls back to Global Title if empty)"
+                                    className="w-full px-3.5 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                  />
                                 </div>
 
                                 {/* Per-banner Call-to-action Buttons */}

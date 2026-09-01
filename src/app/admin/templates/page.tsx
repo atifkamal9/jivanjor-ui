@@ -49,6 +49,7 @@ const defaultHomeSections = {
       {
         id: "slide-1",
         type: "image",
+        title: "Dependable Bonds for Indian Homes",
         bgImage: "/images/hero.png",
         bgImagePhone: "/images/hero.png",
         videoUrl: "",
@@ -58,6 +59,7 @@ const defaultHomeSections = {
       {
         id: "slide-2",
         type: "image",
+        title: "Strong Adhesion for Precision Woodwork",
         bgImage: "/images/hero (1).png",
         bgImagePhone: "/images/hero (1) mobile.png",
         videoUrl: "",
@@ -67,6 +69,7 @@ const defaultHomeSections = {
       {
         id: "slide-3",
         type: "video",
+        title: "Innovative Adhesives for Every Surface",
         bgImage: "/images/video-thumbnail.png",
         bgImagePhone: "/images/video-thumbnail.png",
         videoUrl: "/videos/hero-background.mp4",
@@ -1488,6 +1491,7 @@ export default function TemplatesPage() {
                               currentSlides.push({
                                 id: `slide-${Date.now()}`,
                                 type: "image",
+                                title: "",
                                 bgImage: "/images/hero.png",
                                 bgImagePhone: "/images/hero.png",
                                 videoUrl: "",
@@ -1709,6 +1713,24 @@ export default function TemplatesPage() {
                                   <label htmlFor={`tmplHeroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
                                     Enable Dark Gradient Overlay Background
                                   </label>
+                                </div>
+
+                                {/* Banner Heading / Title */}
+                                <div className="space-y-1.5 pt-3 border-t border-border/60">
+                                  <label className="block text-xs font-bold text-foreground/70 uppercase tracking-wider">
+                                    Banner Heading / Title
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={slide.title || ""}
+                                    onChange={(e) => {
+                                      const currentSlides = [...(homeSections.hero.slides || [])];
+                                      currentSlides[sIdx] = { ...currentSlides[sIdx], title: e.target.value };
+                                      updateSectionField("hero", "slides", currentSlides);
+                                    }}
+                                    placeholder="e.g. Strong Adhesion for Precision Woodwork (falls back to Global Title if empty)"
+                                    className="w-full px-3.5 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
+                                  />
                                 </div>
 
                                 {/* Per-banner Call-to-action Buttons */}

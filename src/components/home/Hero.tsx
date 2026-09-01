@@ -118,6 +118,7 @@ export default function Hero({ data }: HeroProps) {
         {
           id: "slide-1",
           type: "image",
+          title: "Dependable Bonds for Indian Homes",
           bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
           bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero.png",
           hasVideo: false,
@@ -134,6 +135,7 @@ export default function Hero({ data }: HeroProps) {
         {
           id: "slide-2",
           type: "image",
+          title: "Strong Adhesion for Precision Woodwork",
           bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
           bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
           hasVideo: false,
@@ -150,6 +152,7 @@ export default function Hero({ data }: HeroProps) {
         {
           id: "slide-3",
           type: "video",
+          title: "Innovative Adhesives for Every Surface",
           bgImage: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
           bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
           hasVideo: true,
@@ -193,12 +196,6 @@ export default function Hero({ data }: HeroProps) {
   const currentSlide = slides[activeIndex];
   const showPlayButton = currentSlide?.hasVideo;
 
-  const activeTitle = currentSlide?.title || data?.title || "Dependable Bonds for Indian Homes";
-  const activeCta1Text = currentSlide?.cta1?.text || data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
-  const activeCta1Link = currentSlide?.cta1?.link || data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section";
-  const activeCta2Text = currentSlide?.cta2?.text || data?.actionButtons?.secondary?.text || "About Jivanjor";
-  const activeCta2Link = currentSlide?.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
-
   return (
     <section className="relative w-full h-130 xd:h-142 2xl:h-164.5 overflow-hidden bg-black text-white">
       <Swiper
@@ -224,6 +221,11 @@ export default function Hero({ data }: HeroProps) {
         {slides.map((slide, idx) => {
           const isCurrentSlide = idx === activeIndex;
           const showVideo = isPlayingVideo && isCurrentSlide;
+          const slideTitle = slide.title || data?.title || "Dependable Bonds for Indian Homes";
+          const slideCta1Text = slide.cta1?.text || data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
+          const slideCta1Link = slide.cta1?.link || data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section";
+          const slideCta2Text = slide.cta2?.text || data?.actionButtons?.secondary?.text || "About Jivanjor";
+          const slideCta2Link = slide.cta2?.link || data?.actionButtons?.secondary?.actionPath || "/about";
 
           return (
             <SwiperSlide
@@ -305,42 +307,42 @@ export default function Hero({ data }: HeroProps) {
                   </div>
                 </>
               )}
+
+              {/* Content Wrapper for this slide */}
+              <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
+                <div className="relative mx-auto max-w-360 h-full w-full">
+                  <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
+                    {/* Title */}
+                    <Heading className="text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
+                      {slideTitle}
+                    </Heading>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
+                      {slideCta1Text && (
+                        <Link
+                          href={slideCta1Link}
+                          className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
+                        >
+                          {slideCta1Text}
+                        </Link>
+                      )}
+                      {slideCta2Text && (
+                        <Link
+                          href={slideCta2Link}
+                          className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
+                        >
+                          {slideCta2Text}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </SwiperSlide>
           );
         })}
       </Swiper>
-
-      {/* Content Wrapper - Static overlay over background slides */}
-      <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
-        <div className="relative mx-auto max-w-360 h-full w-full">
-          <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
-            {/* Title */}
-            <Heading className="text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
-              {activeTitle}
-            </Heading>
-
-            {/* Action Buttons */}
-            <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
-              {activeCta1Text && (
-                <Link
-                  href={activeCta1Link}
-                  className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
-                >
-                  {activeCta1Text}
-                </Link>
-              )}
-              {activeCta2Text && (
-                <Link
-                  href={activeCta2Link}
-                  className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
-                >
-                  {activeCta2Text}
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Custom Pagination (inside section, but outside Swiper so it's statically placed) */}
       {slides.length > 1 && (

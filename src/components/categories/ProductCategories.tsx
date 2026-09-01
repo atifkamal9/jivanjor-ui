@@ -451,8 +451,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
           onClick={handlePrev}
           aria-label="Previous categories"
           className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none invisible"
+            ? "block pointer-events-auto"
+            : "hidden pointer-events-none invisible"
             }`}
         >
           <ChevronLeftCircle size={16} className="text-[#FF0009]" />
@@ -496,8 +496,8 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
           onClick={handleNext}
           aria-label="Next categories"
           className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none invisible"
+            ? "block pointer-events-auto"
+            : "hidden pointer-events-none invisible"
             }`}
         >
           <ChevronRightCircle size={16} className="text-[#FF0009]" />
