@@ -1,8 +1,13 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ProductCarousel from "./ProductCarousel";
 import { ChevronLeftCircle, ChevronRightCircle } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import { Navigation } from "swiper/modules";
+import "swiper/css/navigation";
+import "swiper/css";
 import { Heading } from "@/components/ui";
 import { api, Product, Category } from "@/lib/api";
 
@@ -37,21 +42,26 @@ export default function ProductRange({ data }: ProductRangeProps) {
     { id: "cat-5", name: "ECO", selectedProductIds: [] },
   ];
 
-  const rawCategories: ProductRangeCategory[] =
-    data?.categories && data.categories.length > 0
+  const rawCategories: ProductRangeCategory[] = useMemo(() => {
+    return data?.categories && data.categories.length > 0
       ? data.categories.slice(0, 8)
       : defaultCategories;
+  }, [data?.categories]);
 
-  const hasAll = rawCategories.some(
-    (c) => (c.categoryId || "").toUpperCase() === "ALL" || c.name.trim().toUpperCase() === "ALL"
-  );
+  const hasAll = useMemo(() => {
+    return rawCategories.some(
+      (c) => (c.categoryId || "").toUpperCase() === "ALL" || c.name.trim().toUpperCase() === "ALL"
+    );
+  }, [rawCategories]);
 
-  const displayCategories: ProductRangeCategory[] = hasAll
-    ? rawCategories
-    : [
-      { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
-      ...rawCategories.slice(0, 7),
-    ];
+  const displayCategories: ProductRangeCategory[] = useMemo(() => {
+    return hasAll
+      ? rawCategories
+      : [
+        { id: "cat-all", categoryId: "ALL", name: "ALL", selectedProductIds: [] },
+        ...rawCategories.slice(0, 7),
+      ];
+  }, [hasAll, rawCategories]);
 
   const [activeCategoryName, setActiveCategoryName] = useState<string>(
     displayCategories[0]?.name || "ALL"
@@ -61,7 +71,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
   const [dbCategories, setDbCategories] = useState<Category[]>([]);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -155,70 +165,48 @@ export default function ProductRange({ data }: ProductRangeProps) {
     }
   }
 
-  const checkScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setShowLeftArrow(scrollLeft > 1);
-      setShowRightArrow(
-        scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 1
-      );
-    }
+  const prevActiveCategoryRef = useRef(activeCategoryName);
+
+  const updateArrows = (swiper: SwiperType) => {
+    setShowLeftArrow(!swiper.isBeginning);
+    setShowRightArrow(!swiper.isEnd);
   };
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      const tabWidth = (scrollContainerRef.current.clientWidth - 8) / 2;
-      scrollContainerRef.current.scrollBy({
-        left: -(tabWidth + 8),
-        behavior: "smooth",
-      });
-    }
+  const handlePrev = () => {
+    swiperRef.current?.slidePrev();
   };
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      const tabWidth = (scrollContainerRef.current.clientWidth - 8) / 2;
-      scrollContainerRef.current.scrollBy({
-        left: tabWidth + 8,
-        behavior: "smooth",
-      });
-    }
+  const handleNext = () => {
+    swiperRef.current?.slideNext();
   };
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      checkScroll();
-      const timer = setTimeout(checkScroll, 100);
-
-      container.addEventListener("scroll", checkScroll);
-      window.addEventListener("resize", checkScroll);
-
-      return () => {
-        clearTimeout(timer);
-        container.removeEventListener("scroll", checkScroll);
-        window.removeEventListener("resize", checkScroll);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const activeIndex = displayCategories.findIndex((c) => c.name === activeCategoryName);
-      const activeElement = scrollContainerRef.current.children[
-        activeIndex
-      ] as HTMLElement;
-
-      if (activeElement) {
-        scrollContainerRef.current.scrollTo({
-          left: activeElement.offsetLeft,
-          behavior: "smooth",
-        });
+  const handleCategoryClick = (catName: string, index: number) => {
+    setActiveCategoryName(catName);
+    prevActiveCategoryRef.current = catName;
+    if (swiperRef.current) {
+      const swiper = swiperRef.current;
+      const current = swiper.activeIndex;
+      if (index < current || index >= current + 2) {
+        swiper.slideTo(index);
       }
     }
-    const timer = setTimeout(checkScroll, 400);
-    return () => clearTimeout(timer);
-  }, [activeCategoryName]);
+  };
+
+  useEffect(() => {
+    if (prevActiveCategoryRef.current !== activeCategoryName) {
+      prevActiveCategoryRef.current = activeCategoryName;
+      if (swiperRef.current) {
+        const activeIndex = displayCategories.findIndex((c) => c.name === activeCategoryName);
+        if (activeIndex !== -1) {
+          const swiper = swiperRef.current;
+          const current = swiper.activeIndex;
+          if (activeIndex < current || activeIndex >= current + 2) {
+            swiper.slideTo(activeIndex);
+          }
+        }
+      }
+    }
+  }, [activeCategoryName, displayCategories]);
 
   return (
     <section id="product-section" className="relative overflow-hidden">
@@ -252,53 +240,61 @@ export default function ProductRange({ data }: ProductRangeProps) {
           </div>
           {/* Mobile categories tabs */}
           <div className="flex md:hidden items-center justify-between w-full mt-4 gap-2">
-            <style
-              dangerouslySetInnerHTML={{
-                __html: `
-                  .scrollbar-none::-webkit-scrollbar {
-                    display: none;
-                  }
-                `,
-              }}
-            />
             <button
-              onClick={scrollLeft}
-              className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
+              onClick={handlePrev}
+              aria-label="Previous categories"
+              className={`flex items-center justify-center cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
                 }`}
             >
-              <ChevronLeftCircle size={24} className="text-[#FF0009]" />
+              <ChevronLeftCircle size={16} className="text-[#FF0009]" />
             </button>
-            <div
-              ref={scrollContainerRef}
-              className="flex-1 flex overflow-x-auto scroll-smooth scrollbar-none snap-x snap-mandatory gap-2"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {displayCategories.map((cat) => {
-                const isActive = activeCategoryName === cat.name;
-                return (
-                  <button
-                    key={cat.id || cat.name}
-                    onClick={() => setActiveCategoryName(cat.name)}
-                    className={`${isActive
-                      ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
-                      : "bg-surface text-foreground"
-                      } cursor-pointer font-medium px-3 py-2 rounded-3xl text-xs sm:text-sm shrink-0 w-[calc(50%-4px)] text-center truncate snap-start transition-all`}
-                  >
-                    {cat.name}
-                  </button>
-                );
-              })}
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <Swiper
+                modules={[Navigation]}
+                slidesPerView={2}
+                spaceBetween={6}
+                watchOverflow={true}
+                onSwiper={(swiper) => {
+                  swiperRef.current = swiper;
+                  updateArrows(swiper);
+                }}
+                onSlideChange={updateArrows}
+                onReachBeginning={updateArrows}
+                centerInsufficientSlides={true}
+                onReachEnd={updateArrows}
+                onToEdge={updateArrows}
+                onFromEdge={updateArrows}
+                className="flex items-center w-full"
+              >
+                {displayCategories.map((cat, idx) => {
+                  const isActive = activeCategoryName === cat.name;
+                  return (
+                    <SwiperSlide key={cat.id || cat.name} className="h-auto flex">
+                      <button
+                        onClick={() => handleCategoryClick(cat.name, idx)}
+                        className={`${isActive
+                          ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
+                          : "bg-surface text-foreground"
+                          } w-full cursor-pointer font-medium px-3 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all`}
+                      >
+                        {cat.name}
+                      </button>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
             </div>
             <button
-              onClick={scrollRight}
+              onClick={handleNext}
+              aria-label="Next categories"
               className={`cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
                 }`}
             >
-              <ChevronRightCircle size={24} className="text-[#FF0009]" />
+              <ChevronRightCircle size={16} className="text-[#FF0009]" />
             </button>
           </div>
         </div>

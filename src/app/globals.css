@@ -256,3 +256,7 @@ div {
   margin-bottom: 1rem;
   color: #444444;
 }
+
+.swiper-wrapper {
+  align-items: center;
+}

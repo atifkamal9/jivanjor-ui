@@ -13,7 +13,7 @@ export default async function Categories() {
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
-      <Suspense fallback={<div className="min-h-[350px]" />}>
+      <Suspense fallback={<div className="min-h-screen" />}>
         <Hero />
         <MainCategories />
       </Suspense>
