@@ -234,6 +234,7 @@ const defaultAboutSections = {
   innovation: {
     title: "Built on Innovation That Drives Performance",
     bgImage: "/images/about/about-innovation-bg.png",
+    mobileBgImage: "",
     items: [
       {
         title: "Equipped R&D",
@@ -4186,13 +4187,26 @@ export default function PagesPage() {
                           className="w-full px-4 py-3 rounded-xl border border-border bg-surface/50 text-sm outline-none focus:border-primary"
                         />
                       </div>
-                      <div className="md:col-span-2 space-y-1">
-                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Background Lab Image</span>
+                      <div className="space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Desktop Background Lab Image (1440x600)</span>
                         <ImageUpload
                           value={formData.sections.innovation.bgImage || ""}
                           onChange={(url) => updateSectionField("innovation", "bgImage", url)}
                           folder="templates"
                         />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="block text-xs font-bold text-foreground/50 uppercase tracking-wider">Mobile Background Lab Image (800x600)</span>
+                        <ImageUpload
+                          value={formData.sections.innovation.mobileBgImage || formData.sections.innovation.mobileImage || ""}
+                          onChange={(url) => {
+                            updateSectionField("innovation", "mobileBgImage", url);
+                            updateSectionField("innovation", "mobileImage", url);
+                          }}
+                          folder="templates"
+                          aspect="square"
+                        />
+                        <span className="text-[10px] text-foreground/40 font-medium">Recommended: vertical/square ratio or crop focused on the right frame</span>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-foreground/50 uppercase tracking-wider mb-2">

@@ -22,6 +22,8 @@ interface InnovationProps {
 export default function Innovation({ data }: InnovationProps) {
   const title = data?.title || "Built on Innovation That Drives Performance";
   const bgImage = data?.bgImage || "/images/about/about-innovation-bg.png";
+  const mobileImage = data?.mobileBgImage || data?.mobileImage || bgImage;
+  const hasDedicatedMobileImage = Boolean(data?.mobileBgImage || data?.mobileImage);
   const defaultCards = [
     {
       title: "Equipped R&D",
@@ -60,17 +62,14 @@ export default function Innovation({ data }: InnovationProps) {
       </div>
 
       <div className="flex flex-col items-center lg:items-start bg-surface md:bg-transparent relative w-full z-10 pb-4 md:pb-0">
-        <div className="relative md:hidden min-h-116 min-w-100 w-full h-full">
+        <div className="relative md:hidden min-h-116 w-full h-full">
           <Image
-            src={bgImage}
+            src={mobileImage}
             alt="R&D Lab background"
             fill
-            className="object-cover object-center"
+            className={`object-cover ${hasDedicatedMobileImage ? "object-center" : "object-right"}`}
             priority
           />
-          {/* Gradients to darken and style as shown in Figma */}
-          {/* <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/30 to-black/15 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-linear-to-br from-[#772571]/20 to-black/40 mix-blend-color-burn" /> */}
         </div>
         <div className="max-w-360 mx-auto w-full px-5 lg:px-8 hd:px-12 3xl:px-8">
           {/* Title */}

@@ -111,12 +111,12 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
   const displayLists: BlogCategory[] = categories && categories.length > 0
     ? categories
     : combinedCategoryNames.map((name) => {
-        const found = BLOG_CATEGORY_FILTERS.find((f) => f.name === name);
-        return {
-          name,
-          icon: found ? found.icon : "/images/blog/image 47.svg",
-        };
-      });
+      const found = BLOG_CATEGORY_FILTERS.find((f) => f.name === name);
+      return {
+        name,
+        icon: found ? found.icon : "/images/blog/image 47.svg",
+      };
+    });
 
   const Blogs: BlogPost[] = [
     // Category: Application Tips
@@ -301,8 +301,8 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
             onClick={handlePrev}
             aria-label="Previous categories"
             className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
               }`}
           >
             <ChevronLeftCircle size={16} className="text-[#FF0009]" />
@@ -331,9 +331,9 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
                     <button
                       onClick={() => handleListClick(list.name, idx)}
                       className={`${isActive
-                          ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
-                          : "bg-[#efefef] text-black"
-                        } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all leading-tight`}
+                        ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
+                        : "bg-[#efefef] text-black"
+                        } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[10px] sm:text-sm text-center flex items-center justify-center transition-all leading-tight`}
                     >
                       {list.name}
                     </button>
@@ -346,8 +346,8 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
             onClick={handleNext}
             aria-label="Next categories"
             className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
-                ? "block pointer-events-auto"
-                : "hidden pointer-events-none"
+              ? "block pointer-events-auto"
+              : "hidden pointer-events-none"
               }`}
           >
             <ChevronRightCircle size={16} className="text-[#FF0009]" />
@@ -420,8 +420,8 @@ export default function List({ categories, posts, initialCategory }: BlogListPro
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`px-3 py-1 transition-colors cursor-pointer ${currentPage === page
-                        ? "font-bold underline decoration-solid underline-offset-[6px] text-black"
-                        : "hover:text-[#ff0009] text-[#222]"
+                      ? "font-bold underline decoration-solid underline-offset-[6px] text-black"
+                      : "hover:text-[#ff0009] text-[#222]"
                       }`}
                   >
                     {page}

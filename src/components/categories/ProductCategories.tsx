@@ -483,7 +483,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
                     className={`${isActive
                       ? "bg-linear-to-br from-[#FF0009] to-[#772571] text-white"
                       : "bg-surface text-black"
-                      } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[11px] sm:text-sm text-center flex items-center justify-center transition-all leading-tight`}
+                      } w-full cursor-pointer font-medium px-2.5 py-2 rounded-3xl text-[10px] sm:text-sm text-nowrap text-center flex items-center justify-center transition-all leading-tight`}
                   >
                     {cat.name}
                   </button>

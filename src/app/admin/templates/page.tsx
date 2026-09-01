@@ -228,6 +228,7 @@ const defaultAboutSections = {
   innovation: {
     title: "Built on Innovation That Drives Performance",
     bgImage: "/images/about/about-innovation-bg.png",
+    mobileBgImage: "",
     items: [
       {
         title: "Equipped R&D",
