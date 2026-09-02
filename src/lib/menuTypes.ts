@@ -64,11 +64,11 @@ export const DEFAULT_HEADER_MENU: MenuItem[] = [
     order: 1,
     url: null,
     subItems: [
-      { id: 'sub-about-1', title: 'About Jivanjor', type: 'page', url: '/about', order: 1 },
-      { id: 'sub-about-2', title: 'Research and Innovation', type: 'page', url: '/about/research-and-innovation', order: 2 },
-      { id: 'sub-about-3', title: 'Quality & Performance Promise', type: 'page', url: '/about/quality-and-performance-promise', order: 3 },
-      { id: 'sub-about-4', title: 'TVC', type: 'page', url: '/about/tvc', order: 4 },
-      { id: 'sub-about-5', title: 'Market Presence', type: 'page', url: '/about/market-presence', order: 5 },
+      { id: 'sub-about-1', title: 'About Jivanjor', type: 'page', url: '/about#about-jivanjor', order: 1 },
+      { id: 'sub-about-2', title: 'Research and Innovation', type: 'page', url: '/about#research-innovation', order: 2 },
+      { id: 'sub-about-3', title: 'Quality & Performance Promise', type: 'page', url: '/about#quality-sustainability', order: 3 },
+      { id: 'sub-about-4', title: 'TVC', type: 'page', url: '/about#tvcs', order: 4 },
+      { id: 'sub-about-5', title: 'Market Presence', type: 'page', url: '/about#our-presence', order: 5 },
     ],
   },
   {
@@ -153,11 +153,11 @@ export const DEFAULT_FOOTER_MENU: FooterSectionItem[] = [
     title: 'About Jivanjor',
     order: 2,
     subItems: [
-      { id: 'fsub-about-1', title: 'About Jivanjor', url: '/about', target: '_self', order: 1 },
-      { id: 'fsub-about-2', title: 'Research & Innovation', url: '/about/research-and-innovation', target: '_self', order: 2 },
-      { id: 'fsub-about-3', title: 'Quality & Performance Promise', url: '/about/quality-and-performance-promise', target: '_self', order: 3 },
-      { id: 'fsub-about-4', title: 'TVCs', url: '/about/tvc', target: '_self', order: 4 },
-      { id: 'fsub-about-5', title: 'Market Presence', url: '/about/market-presence', target: '_self', order: 5 },
+      { id: 'fsub-about-1', title: 'About Jivanjor', url: '/about#about-jivanjor', target: '_self', order: 1 },
+      { id: 'fsub-about-2', title: 'Research & Innovation', url: '/about#research-innovation', target: '_self', order: 2 },
+      { id: 'fsub-about-3', title: 'Quality & Performance Promise', url: '/about#quality-sustainability', target: '_self', order: 3 },
+      { id: 'fsub-about-4', title: 'TVCs', url: '/about#tvcs', target: '_self', order: 4 },
+      { id: 'fsub-about-5', title: 'Market Presence', url: '/about#our-presence', target: '_self', order: 5 },
     ],
   },
   {
@@ -197,7 +197,7 @@ export function normalizeSubItemUrl(
       return slugifiedTitle === "applications" ? "/applications" : `/applications/${slugifiedTitle}`;
     }
     if (isAboutParent) {
-      return slugifiedTitle === "about" ? "/about" : `/about/${slugifiedTitle}`;
+      return slugifiedTitle === "about" ? "/about" : `/about#${slugifiedTitle}`;
     }
     return `/${slugifiedTitle}`;
   }
@@ -208,7 +208,8 @@ export function normalizeSubItemUrl(
     url.startsWith("mailto:") ||
     url.startsWith("#") ||
     url.startsWith("?") ||
-    url.includes("?")
+    url.includes("?") ||
+    url.includes("#")
   ) {
     return url;
   }

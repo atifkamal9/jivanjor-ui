@@ -234,6 +234,30 @@ export default function MobileNav({
                             .filter((sub) => sub.hideInMenu !== true)
                             .map((sub) => {
                           const normalizedUrl = normalizeSubItemUrl(sub.url, sub.title, item);
+                          const handleSubClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+                            if (onClose) onClose();
+                            if (sub.target === "_blank") return;
+
+                            const isAboutTarget =
+                              normalizedUrl.includes("/about#") ||
+                              normalizedUrl.startsWith("#") ||
+                              (normalizedUrl.startsWith("/about/") && !normalizedUrl.includes("?"));
+                            const isCurrentlyOnAbout =
+                              typeof window !== "undefined" &&
+                              window.location.pathname.startsWith("/about");
+
+                            if (isCurrentlyOnAbout && isAboutTarget) {
+                              const hashOrSlug = normalizedUrl.includes("#")
+                                ? normalizedUrl.split("#")[1]
+                                : normalizedUrl.replace("/about/", "");
+                              e.preventDefault();
+                              window.history.pushState(null, "", normalizedUrl.includes("#") ? normalizedUrl : `/about#${hashOrSlug}`);
+                              window.dispatchEvent(
+                                new CustomEvent("about-smooth-scroll", { detail: { id: hashOrSlug } })
+                              );
+                            }
+                          };
+
                           if (sub.type === "external_link") {
                             return (
                               <a
@@ -241,7 +265,7 @@ export default function MobileNav({
                                 href={normalizedUrl}
                                 target={sub.target || "_blank"}
                                 rel="noopener noreferrer"
-                                onClick={onClose}
+                                onClick={handleSubClick}
                                 className="block text-base hover:text-primary cursor-pointer py-1"
                               >
                                 {sub.title}
@@ -253,7 +277,7 @@ export default function MobileNav({
                             <Link
                               key={sub.id || sub.title}
                               href={normalizedUrl}
-                              onClick={onClose}
+                              onClick={handleSubClick}
                               className={`block text-base cursor-pointer py-1 ${isActive ? "text-[#FF0009] font-bold" : "hover:text-primary"
                                 }`}
                             >

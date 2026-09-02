@@ -450,6 +450,34 @@ export default function Navbar() {
     };
   }, []);
 
+  const handleNavSubItemClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+    target?: string
+  ) => {
+    setActiveMenu(null);
+    if (target === "_blank") return;
+
+    const isAboutTarget =
+      url.includes("/about#") ||
+      url.startsWith("#") ||
+      (url.startsWith("/about/") && !url.includes("?"));
+    const isCurrentlyOnAbout =
+      typeof window !== "undefined" &&
+      window.location.pathname.startsWith("/about");
+
+    if (isCurrentlyOnAbout && isAboutTarget) {
+      const hashOrSlug = url.includes("#")
+        ? url.split("#")[1]
+        : url.replace("/about/", "");
+      e.preventDefault();
+      window.history.pushState(null, "", url.includes("#") ? url : `/about#${hashOrSlug}`);
+      window.dispatchEvent(
+        new CustomEvent("about-smooth-scroll", { detail: { id: hashOrSlug } })
+      );
+    }
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <header
@@ -745,7 +773,7 @@ export default function Navbar() {
                               href={normalizedUrl}
                               target={sub.target || "_blank"}
                               rel="noopener noreferrer"
-                              onClick={() => setActiveMenu(null)}
+                              onClick={(e) => handleNavSubItemClick(e, normalizedUrl, sub.target)}
                               onMouseEnter={() => {
                                 if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                                 setHoveredGenericSubItem(sub.description?.trim() ? sub.description.trim() : null);
@@ -761,7 +789,7 @@ export default function Navbar() {
                           <Link
                             key={sub.id || sub.title}
                             href={normalizedUrl}
-                            onClick={() => setActiveMenu(null)}
+                            onClick={(e) => handleNavSubItemClick(e, normalizedUrl, sub.target)}
                             onMouseEnter={() => {
                               if (isKnowledgeNav) setHoveredKnowledgeItem(sub.title);
                               setHoveredGenericSubItem(sub.description?.trim() ? sub.description.trim() : null);

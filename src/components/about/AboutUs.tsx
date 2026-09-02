@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Hero from "./Hero";
-import Tabs from "./Tabs";
+import Tabs, { scrollToAboutSection, mapToAboutSectionId } from "./Tabs";
 import Promise from "./Promise";
 import Innovation from "./Innovation";
 import Responsibility from "./Responsibility";
@@ -30,6 +30,38 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
 
     window.addEventListener("about-tab-scroll-start", onScrollStart);
     window.addEventListener("about-tab-scroll-end", onScrollEnd);
+
+    // 1. Check initial hash on load (e.g. /about#research-innovation)
+    const initialHash = window.location.hash;
+    const mappedInitial = mapToAboutSectionId(initialHash);
+    let initialTimer: NodeJS.Timeout | null = null;
+    if (mappedInitial) {
+      setActiveTab(mappedInitial);
+      // Brief timeout to ensure layout/images are measured properly
+      initialTimer = setTimeout(() => {
+        scrollToAboutSection(mappedInitial, setActiveTab);
+      }, 150);
+    }
+
+    // 2. Listen to hashchange events (e.g. back/forward button or anchor tag clicks)
+    const onHashChange = () => {
+      const mapped = mapToAboutSectionId(window.location.hash);
+      if (mapped) {
+        scrollToAboutSection(mapped, setActiveTab);
+      }
+    };
+    window.addEventListener("hashchange", onHashChange);
+
+    // 3. Listen to custom smooth scroll events (e.g. dispatched from Mega Menu or Footer)
+    const onCustomScroll = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const sectionId = customEvent.detail?.id || customEvent.detail;
+      const mapped = mapToAboutSectionId(sectionId);
+      if (mapped) {
+        scrollToAboutSection(mapped, setActiveTab);
+      }
+    };
+    window.addEventListener("about-smooth-scroll", onCustomScroll);
 
     const sectionIds = [
       "about-jivanjor",
@@ -65,8 +97,11 @@ export default function AboutUs({ data = {}, subpageTitle }: AboutUsProps) {
     });
 
     return () => {
+      if (initialTimer) clearTimeout(initialTimer);
       window.removeEventListener("about-tab-scroll-start", onScrollStart);
       window.removeEventListener("about-tab-scroll-end", onScrollEnd);
+      window.removeEventListener("hashchange", onHashChange);
+      window.removeEventListener("about-smooth-scroll", onCustomScroll);
       sectionIds.forEach((id) => {
         const el = document.getElementById(id);
         if (el) observer.unobserve(el);
