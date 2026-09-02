@@ -1150,14 +1150,41 @@ export const api = {
     try {
       const res = await client.get("/settings");
       const settings = res.data?.data?.settings || {};
-      const scriptConfig = settings.scriptConfig || settings.contactPage?.scriptConfig || {
-        headScripts: "",
-        bodyScripts: "",
-        footerScripts: "",
-      };
+
+      const DEFAULT_HEAD = `<meta name="google-site-verification" content="7nyrS05tsfB0z8AuZOUzjOymZdinnDqL1HXbWNxi-Mk" />\n<meta name="msvalidate.01" content="BBDC037359A5048E914423506D41E929" />\n<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`;
+      const DEFAULT_BODY = `<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-JS98QGT5QS" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+
+      // Check if _script_config is stored in contactPage.sections
+      const scriptSec = (settings.contactPage?.sections || []).find(
+        (s: any) => s.title === "_script_config"
+      );
+
+      let headScripts = "";
+      let bodyScripts = "";
+      let footerScripts = "";
+
+      if (scriptSec) {
+        headScripts = scriptSec.headScripts !== undefined ? scriptSec.headScripts : "";
+        bodyScripts = scriptSec.bodyScripts !== undefined ? scriptSec.bodyScripts : "";
+        footerScripts = scriptSec.footerScripts !== undefined ? scriptSec.footerScripts : "";
+      } else if (settings.scriptConfig?.headScripts || settings.contactPage?.scriptConfig?.headScripts) {
+        const sc = settings.scriptConfig || settings.contactPage?.scriptConfig;
+        headScripts = sc.headScripts || "";
+        bodyScripts = sc.bodyScripts || "";
+        footerScripts = sc.footerScripts || "";
+      } else {
+        headScripts = DEFAULT_HEAD;
+        bodyScripts = DEFAULT_BODY;
+        footerScripts = "";
+      }
+
       return {
         ...settings,
-        scriptConfig,
+        scriptConfig: {
+          headScripts,
+          bodyScripts,
+          footerScripts,
+        },
       };
     } catch (err) {
       console.error("Failed to fetch site settings:", err);
@@ -1207,8 +1234,8 @@ export const api = {
           ],
         },
         scriptConfig: {
-          headScripts: "",
-          bodyScripts: "",
+          headScripts: `<meta name="google-site-verification" content="7nyrS05tsfB0z8AuZOUzjOymZdinnDqL1HXbWNxi-Mk" />\n<meta name="msvalidate.01" content="BBDC037359A5048E914423506D41E929" />\n<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`,
+          bodyScripts: `<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-JS98QGT5QS" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`,
           footerScripts: "",
         },
       };
@@ -1216,16 +1243,42 @@ export const api = {
   },
   updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
     const payload = { ...data };
+
     if (payload.scriptConfig) {
+      const existingSections = (payload.contactPage?.sections || []).filter(
+        (s: any) => s.title !== "_script_config"
+      );
+      const scriptSection = {
+        title: "_script_config",
+        headScripts: payload.scriptConfig.headScripts !== undefined ? payload.scriptConfig.headScripts : "",
+        bodyScripts: payload.scriptConfig.bodyScripts !== undefined ? payload.scriptConfig.bodyScripts : "",
+        footerScripts: payload.scriptConfig.footerScripts !== undefined ? payload.scriptConfig.footerScripts : "",
+        details: [],
+      };
+
       payload.contactPage = {
         ...(payload.contactPage || {}),
         scriptConfig: payload.scriptConfig,
+        sections: [...existingSections, scriptSection],
       };
     }
+
     const res = await client.put("/settings", payload);
     const updated = res.data?.data?.settings;
+
     if (updated) {
-      updated.scriptConfig = updated.scriptConfig || updated.contactPage?.scriptConfig || payload.scriptConfig;
+      const scriptSec = (updated.contactPage?.sections || []).find(
+        (s: any) => s.title === "_script_config"
+      );
+      if (scriptSec) {
+        updated.scriptConfig = {
+          headScripts: scriptSec.headScripts || "",
+          bodyScripts: scriptSec.bodyScripts || "",
+          footerScripts: scriptSec.footerScripts || "",
+        };
+      } else {
+        updated.scriptConfig = updated.scriptConfig || updated.contactPage?.scriptConfig || payload.scriptConfig;
+      }
     }
     return updated;
   },

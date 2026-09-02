@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, SiteSettings, ContactPageSettings, ContactSection, ContactDetailItem } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
+import { DEFAULT_HEAD_SCRIPTS, DEFAULT_BODY_SCRIPTS } from "@/components/common/SsrHeadRenderer";
 import {
   Sliders,
   CheckCircle2,
@@ -64,8 +65,8 @@ export default function AdminSettingsPage() {
   const [categoryCardBg, setCategoryCardBg] = useState("");
   const [showWhatsappInHeader, setShowWhatsappInHeader] = useState(true);
   const [scriptConfig, setScriptConfig] = useState({
-    headScripts: "",
-    bodyScripts: "",
+    headScripts: DEFAULT_HEAD_SCRIPTS,
+    bodyScripts: DEFAULT_BODY_SCRIPTS,
     footerScripts: "",
   });
   const [socialLinks, setSocialLinks] = useState({
@@ -119,19 +120,12 @@ export default function AdminSettingsPage() {
       setCategoryHeroCover(res.categoryHeroCover || "");
       setCategoryCardBg(res.categoryCardBg || "");
 
-      if (res.scriptConfig && (res.scriptConfig.headScripts || res.scriptConfig.bodyScripts || res.scriptConfig.footerScripts)) {
-        setScriptConfig({
-          headScripts: res.scriptConfig.headScripts || "",
-          bodyScripts: res.scriptConfig.bodyScripts || "",
-          footerScripts: res.scriptConfig.footerScripts || "",
-        });
-      } else {
-        setScriptConfig({
-          headScripts: `<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`,
-          bodyScripts: "",
-          footerScripts: "",
-        });
-      }
+      // Load exact script configuration from server
+      setScriptConfig({
+        headScripts: res.scriptConfig?.headScripts !== undefined ? res.scriptConfig.headScripts : DEFAULT_HEAD_SCRIPTS,
+        bodyScripts: res.scriptConfig?.bodyScripts !== undefined ? res.scriptConfig.bodyScripts : DEFAULT_BODY_SCRIPTS,
+        footerScripts: res.scriptConfig?.footerScripts || "",
+      });
 
       const whatsappSec = (res.contactPage?.sections || []).find((s: any) => s.title === "_whatsapp_config");
       const whatsappNumberVal = whatsappSec?.whatsappNumber !== undefined
@@ -144,8 +138,8 @@ export default function AdminSettingsPage() {
 
       setSocialLinks({
         facebook: res.socialLinks?.facebook || "",
-        instagram: res.socialLinks?.instagram || "",
-        youtube: res.socialLinks?.youtube || "",
+        instagram: socialLinks.instagram || res.socialLinks?.instagram || "",
+        youtube: socialLinks.youtube || res.socialLinks?.youtube || "",
         whatsappNumber: whatsappNumberVal,
       });
       setShowWhatsappInHeader(showWhatsappVal);
@@ -156,12 +150,15 @@ export default function AdminSettingsPage() {
         ctaLink: res.rightChoiceBanner?.ctaLink || "",
       });
       if (res.contactPage) {
+        const visibleSections = (res.contactPage.sections || []).filter(
+          (s: any) => s.title !== "_whatsapp_config" && s.title !== "_script_config"
+        );
         setContactPage({
           heroImage: res.contactPage.heroImage || "/images/image 24.png",
           heroTitle: res.contactPage.heroTitle || "Contact Us",
           mainHeading: res.contactPage.mainHeading || "We are always happy to assist you.",
           watermarkImage: res.contactPage.watermarkImage || "/images/watermark-contact.svg",
-          sections: res.contactPage.sections || [],
+          sections: visibleSections,
         });
       }
     } catch (err) {
@@ -181,14 +178,23 @@ export default function AdminSettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const userSections = (contactPage.sections || []).filter((s: any) => s.title !== "_whatsapp_config");
+      const userSections = (contactPage.sections || []).filter(
+        (s: any) => s.title !== "_whatsapp_config" && s.title !== "_script_config"
+      );
       const whatsappMetaSection = {
         title: "_whatsapp_config",
         whatsappNumber: socialLinks.whatsappNumber.trim(),
         showWhatsappInHeader: showWhatsappInHeader,
         details: [],
       };
-      const updatedSections = [...userSections, whatsappMetaSection];
+      const scriptMetaSection = {
+        title: "_script_config",
+        headScripts: scriptConfig.headScripts,
+        bodyScripts: scriptConfig.bodyScripts,
+        footerScripts: scriptConfig.footerScripts,
+        details: [],
+      };
+      const updatedSections = [...userSections, whatsappMetaSection, scriptMetaSection];
 
       const updated = await api.updateSettings({
         headerDesktopLogo: headerDesktopLogo.trim() || undefined,
@@ -222,9 +228,9 @@ export default function AdminSettingsPage() {
           sections: updatedSections,
         },
         scriptConfig: {
-          headScripts: scriptConfig.headScripts.trim(),
-          bodyScripts: scriptConfig.bodyScripts.trim(),
-          footerScripts: scriptConfig.footerScripts.trim(),
+          headScripts: scriptConfig.headScripts,
+          bodyScripts: scriptConfig.bodyScripts,
+          footerScripts: scriptConfig.footerScripts,
         },
       });
 
@@ -244,7 +250,7 @@ export default function AdminSettingsPage() {
           });
         }
 
-        const updatedWhatsappSec = (updated.contactPage?.sections || updatedSections).find((s: any) => s.title === "_whatsapp_config");
+        const updatedWhatsappSec = (updated.contactPage?.sections || updatedSections).find((s: any) => s.title === "_whatsapp_config") as any;
         const updatedWhatsappNum = updatedWhatsappSec?.whatsappNumber !== undefined
           ? updatedWhatsappSec.whatsappNumber
           : (updated.socialLinks?.whatsappNumber || updated.whatsappNumber || socialLinks.whatsappNumber);
@@ -267,12 +273,15 @@ export default function AdminSettingsPage() {
           ctaLink: updated.rightChoiceBanner?.ctaLink || "",
         });
         if (updated.contactPage) {
+          const visibleSections = (updated.contactPage.sections || []).filter(
+            (s: any) => s.title !== "_whatsapp_config" && s.title !== "_script_config"
+          );
           setContactPage({
             heroImage: updated.contactPage.heroImage || "/images/image 24.png",
             heroTitle: updated.contactPage.heroTitle || "Contact Us",
             mainHeading: updated.contactPage.mainHeading || "We are always happy to assist you.",
             watermarkImage: updated.contactPage.watermarkImage || "/images/watermark-contact.svg",
-            sections: updated.contactPage.sections || [],
+            sections: visibleSections,
           });
         }
       }
@@ -957,18 +966,19 @@ export default function AdminSettingsPage() {
                     ))}
                 </div>
               </div>
+            </div>
 
-              {/* Card: Script Configuration (Head, Body, Footer Scripts) */}
-              <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
+            {/* Card: Script Configuration (Head, Body, Footer Scripts) */}
+            <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
                       <Code2 className="h-5 w-5" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-extrabold text-foreground">Script Configuration</h2>
+                      <h2 className="text-sm font-extrabold text-foreground">Script &amp; Meta Tags Configuration (SSR)</h2>
                       <p className="text-[11px] text-foreground/50 mt-0.5">
-                        Configure custom tracking scripts such as Google Analytics, Google Tag Manager (GTM), Meta Pixel, and third-party widgets.
+                        Configure site verification meta tags (Google, Bing, etc.) and custom tracking scripts (Google Analytics, GTM, Meta Pixel).
                       </p>
                     </div>
                   </div>
@@ -979,14 +989,14 @@ export default function AdminSettingsPage() {
                   <div className="space-y-2 flex flex-col">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-bold text-foreground/90">
-                        Head scripts
+                        Head meta tags &amp; scripts
                       </label>
                       <span className="text-[10px] text-foreground/40 font-mono font-medium">
-                        &lt;head&gt;
+                        &lt;head&gt; (SSR)
                       </span>
                     </div>
                     <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
-                      Injected inside the &lt;head&gt; tag. Ideal for Google Analytics (gtag.js), GTM main script, or site verification tags.
+                      Server-side rendered directly in &lt;head&gt;. Ideal for Google &amp; Bing site verification tags, Google Analytics (gtag.js), GTM, and custom meta tags.
                     </p>
                     <textarea
                       rows={9}
@@ -994,7 +1004,7 @@ export default function AdminSettingsPage() {
                       onChange={(e) =>
                         setScriptConfig({ ...scriptConfig, headScripts: e.target.value })
                       }
-                      placeholder="<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||..."
+                      placeholder="<!-- Google Tag Manager -->\n<meta name=&quot;google-site-verification&quot; content=&quot;...&quot; />\n<script>(function(w,d,s,l,i){w[l]=w[l]||..."
                       className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
                       spellCheck={false}
                     />
@@ -1056,15 +1066,14 @@ export default function AdminSettingsPage() {
                   <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div className="space-y-1 text-[11px]">
                     <p className="font-bold text-foreground">
-                      Google Analytics &amp; GTM Installation Guidance
+                      Site Verification &amp; Head Tags (SSR) Guidance
                     </p>
                     <p>
-                      Paste the snippet provided by Google Analytics or GTM directly into the appropriate field. Tags like <code>&lt;script&gt;</code>, <code>&lt;noscript&gt;</code>, and comments are automatically parsed and safely executed across all pages of your website.
+                      Any <code>&lt;meta&gt;</code> tags (e.g. Google Search Console <code>google-site-verification</code>, Bing <code>msvalidate.01</code>, Pinterest, Facebook verification) and <code>&lt;script&gt;</code> tags pasted here are automatically parsed and rendered server-side (SSR) directly inside the <code>&lt;head&gt;</code> tag on every page. Search engines and verification crawlers can immediately verify them without modifying the frontend codebase.
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
           </form>
         )}
       </div>
