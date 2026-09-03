@@ -790,7 +790,7 @@ export default function AdminSettingsPage() {
 
                 <div className="space-y-4">
                   {(contactPage.sections || [])
-                    .filter((section) => section.title !== "_whatsapp_config")
+                    .filter((section) => !section.title?.startsWith("_"))
                     .map((section, secIdx) => (
                       <div
                         key={secIdx}
@@ -970,110 +970,110 @@ export default function AdminSettingsPage() {
 
             {/* Card: Script Configuration (Head, Body, Footer Scripts) */}
             <div className="bg-background border border-border rounded-2xl p-6 shadow-xs space-y-6 lg:col-span-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-                      <Code2 className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-extrabold text-foreground">Script &amp; Meta Tags Configuration (SSR)</h2>
-                      <p className="text-[11px] text-foreground/50 mt-0.5">
-                        Configure site verification meta tags (Google, Bing, etc.) and custom tracking scripts (Google Analytics, GTM, Meta Pixel).
-                      </p>
-                    </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                    <Code2 className="h-5 w-5" />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* 1. Head Scripts */}
-                  <div className="space-y-2 flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-foreground/90">
-                        Head meta tags &amp; scripts
-                      </label>
-                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
-                        &lt;head&gt; (SSR)
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
-                      Server-side rendered directly in &lt;head&gt;. Ideal for Google &amp; Bing site verification tags, Google Analytics (gtag.js), GTM, and custom meta tags.
-                    </p>
-                    <textarea
-                      rows={9}
-                      value={scriptConfig.headScripts}
-                      onChange={(e) =>
-                        setScriptConfig({ ...scriptConfig, headScripts: e.target.value })
-                      }
-                      placeholder="<!-- Google Tag Manager -->\n<meta name=&quot;google-site-verification&quot; content=&quot;...&quot; />\n<script>(function(w,d,s,l,i){w[l]=w[l]||..."
-                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
-                      spellCheck={false}
-                    />
-                  </div>
-
-                  {/* 2. Body Scripts */}
-                  <div className="space-y-2 flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-foreground/90">
-                        Body scripts
-                      </label>
-                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
-                        &lt;body&gt; (top)
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
-                      Injected immediately after opening &lt;body&gt;. Required for Google Tag Manager (noscript) iframe code.
-                    </p>
-                    <textarea
-                      rows={9}
-                      value={scriptConfig.bodyScripts}
-                      onChange={(e) =>
-                        setScriptConfig({ ...scriptConfig, bodyScripts: e.target.value })
-                      }
-                      placeholder="<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src=&quot;https://www.googletagmanager.com/ns.html?id=GTM-XXXX&quot;..."
-                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
-                      spellCheck={false}
-                    />
-                  </div>
-
-                  {/* 3. Footer Scripts */}
-                  <div className="space-y-2 flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-foreground/90">
-                        Footer scripts
-                      </label>
-                      <span className="text-[10px] text-foreground/40 font-mono font-medium">
-                        &lt;/body&gt; (bottom)
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
-                      Injected right before closing &lt;/body&gt;. Ideal for live chat widgets, affiliate pixels, or conversion scripts.
-                    </p>
-                    <textarea
-                      rows={9}
-                      value={scriptConfig.footerScripts}
-                      onChange={(e) =>
-                        setScriptConfig({ ...scriptConfig, footerScripts: e.target.value })
-                      }
-                      placeholder="<!-- Additional tracking or live chat scripts -->\n<script>...</script>"
-                      className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
-                      spellCheck={false}
-                    />
-                  </div>
-                </div>
-
-                {/* Helpful Instructions Box */}
-                <div className="p-4 rounded-xl bg-primary/5 border border-primary/15 flex items-start gap-3 text-xs text-foreground/70">
-                  <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                  <div className="space-y-1 text-[11px]">
-                    <p className="font-bold text-foreground">
-                      Site Verification &amp; Head Tags (SSR) Guidance
-                    </p>
-                    <p>
-                      Any <code>&lt;meta&gt;</code> tags (e.g. Google Search Console <code>google-site-verification</code>, Bing <code>msvalidate.01</code>, Pinterest, Facebook verification) and <code>&lt;script&gt;</code> tags pasted here are automatically parsed and rendered server-side (SSR) directly inside the <code>&lt;head&gt;</code> tag on every page. Search engines and verification crawlers can immediately verify them without modifying the frontend codebase.
+                  <div>
+                    <h2 className="text-sm font-extrabold text-foreground">Script &amp; Meta Tags Configuration (SSR)</h2>
+                    <p className="text-[11px] text-foreground/50 mt-0.5">
+                      Configure site verification meta tags (Google, Bing, etc.) and custom tracking scripts (Google Analytics, GTM, Meta Pixel).
                     </p>
                   </div>
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* 1. Head Scripts */}
+                <div className="space-y-2 flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground/90">
+                      Head meta tags &amp; scripts
+                    </label>
+                    <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                      &lt;head&gt; (SSR)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                    Server-side rendered directly in &lt;head&gt;. Ideal for Google &amp; Bing site verification tags, Google Analytics (gtag.js), GTM, and custom meta tags.
+                  </p>
+                  <textarea
+                    rows={9}
+                    value={scriptConfig.headScripts}
+                    onChange={(e) =>
+                      setScriptConfig({ ...scriptConfig, headScripts: e.target.value })
+                    }
+                    placeholder="<!-- Google Tag Manager -->\n<meta name=&quot;google-site-verification&quot; content=&quot;...&quot; />\n<script>(function(w,d,s,l,i){w[l]=w[l]||..."
+                    className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                    spellCheck={false}
+                  />
+                </div>
+
+                {/* 2. Body Scripts */}
+                <div className="space-y-2 flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground/90">
+                      Body scripts
+                    </label>
+                    <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                      &lt;body&gt; (top)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                    Injected immediately after opening &lt;body&gt;. Required for Google Tag Manager (noscript) iframe code.
+                  </p>
+                  <textarea
+                    rows={9}
+                    value={scriptConfig.bodyScripts}
+                    onChange={(e) =>
+                      setScriptConfig({ ...scriptConfig, bodyScripts: e.target.value })
+                    }
+                    placeholder="<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src=&quot;https://www.googletagmanager.com/ns.html?id=GTM-XXXX&quot;..."
+                    className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                    spellCheck={false}
+                  />
+                </div>
+
+                {/* 3. Footer Scripts */}
+                <div className="space-y-2 flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-foreground/90">
+                      Footer scripts
+                    </label>
+                    <span className="text-[10px] text-foreground/40 font-mono font-medium">
+                      &lt;/body&gt; (bottom)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-foreground/50 leading-relaxed min-h-[32px]">
+                    Injected right before closing &lt;/body&gt;. Ideal for live chat widgets, affiliate pixels, or conversion scripts.
+                  </p>
+                  <textarea
+                    rows={9}
+                    value={scriptConfig.footerScripts}
+                    onChange={(e) =>
+                      setScriptConfig({ ...scriptConfig, footerScripts: e.target.value })
+                    }
+                    placeholder="<!-- Additional tracking or live chat scripts -->\n<script>...</script>"
+                    className="w-full p-3 rounded-xl bg-surface border border-border text-xs text-foreground font-mono leading-relaxed focus:outline-hidden focus:border-primary resize-y transition-colors"
+                    spellCheck={false}
+                  />
+                </div>
+              </div>
+
+              {/* Helpful Instructions Box */}
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/15 flex items-start gap-3 text-xs text-foreground/70">
+                <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                <div className="space-y-1 text-[11px]">
+                  <p className="font-bold text-foreground">
+                    Site Verification &amp; Head Tags (SSR) Guidance
+                  </p>
+                  <p>
+                    Any <code>&lt;meta&gt;</code> tags (e.g. Google Search Console <code>google-site-verification</code>, Bing <code>msvalidate.01</code>, Pinterest, Facebook verification) and <code>&lt;script&gt;</code> tags pasted here are automatically parsed and rendered server-side (SSR) directly inside the <code>&lt;head&gt;</code> tag on every page. Search engines and verification crawlers can immediately verify them without modifying the frontend codebase.
+                  </p>
+                </div>
+              </div>
+            </div>
           </form>
         )}
       </div>

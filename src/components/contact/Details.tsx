@@ -51,7 +51,11 @@ export default function Details({
   sections = defaultSections,
 }: DetailsProps) {
   const rawSections = sections && sections.length > 0 ? sections : defaultSections;
-  const displaySections = rawSections.filter((s) => s.title !== "_whatsapp_config");
+  const filteredSections = rawSections.filter(
+    (s) => s.title && !s.title.startsWith("_")
+  );
+  const displaySections =
+    filteredSections.length > 0 ? filteredSections : defaultSections;
 
   const renderIcon = (iconStr: string, label: string) => {
     if (!iconStr) {
