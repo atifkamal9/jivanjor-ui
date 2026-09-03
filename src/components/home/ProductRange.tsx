@@ -219,7 +219,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
           alt="watermark"
         />
       </div>
-      <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2 lg:px-8 hd:px-12 3xl:px-8 w-full">
+      <div className="flex flex-col items-center justify-center text-center relative mx-auto mt-8 mb-12 md:my-12 max-w-6xl px-2.5 lg:px-8 hd:px-12 3xl:px-8 w-full">
         <Image src="/images/badge.png" width={40} height={40} alt="badge" />
         <div className="max-w-full mx-auto my-6">
           <Heading className="font-normal leading-normal max-w-full md:max-w-137 xd:max-w-150 mx-auto">{title}</Heading>
@@ -245,7 +245,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
               aria-label="Previous categories"
               className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showLeftArrow
                 ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none invisible"
+                : "opacity-0 pointer-events-none"
                 }`}
             >
               <ChevronLeftCircle size={16} className="text-[#FF0009]" />
@@ -290,7 +290,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
               aria-label="Next categories"
               className={`flex items-center justify-center w-6 h-6 cursor-pointer focus:outline-none hover:scale-105 active:scale-95 shrink-0 transition-all duration-200 ${showRightArrow
                 ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none invisible"
+                : "opacity-0 pointer-events-none"
                 }`}
             >
               <ChevronRightCircle size={16} className="text-[#FF0009]" />
