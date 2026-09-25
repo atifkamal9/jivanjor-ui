@@ -625,7 +625,7 @@ function mapSeoFromBackend(seo: any): SeoMetadata {
   };
 }
 
-function mapTemplateFromBackend(temp: any): PageTemplate {
+export function mapTemplateFromBackend(temp: any): PageTemplate {
   let sectionsArray: PageTemplateSection[] = [];
   if (Array.isArray(temp.sections)) {
     sectionsArray = temp.sections;

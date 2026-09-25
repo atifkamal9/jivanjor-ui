@@ -1,5 +1,6 @@
 import { PartnerLayout } from "@/components/partner";
 import { api } from "@/lib/api";
+import { getServerActiveTemplateForPage } from "@/lib/server-api";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PartnerPage() {
   let template = undefined;
   try {
-    template = await api.getActiveTemplateForPage("partner");
+    template = await getServerActiveTemplateForPage("partner");
   } catch (err) {
     console.error("Failed to load active partner template from server:", err);
   }

@@ -3,7 +3,9 @@ import { Geist, Geist_Mono, Google_Sans, Amethysta } from "next/font/google";
 import "./globals.css";
 
 import { Footer, Navbar } from "@/components/layouts";
-import { api } from "@/lib/api";
+{/*import { api } from "@/lib/api";*/}
+
+import { getServerSettings } from "@/lib/server-api";
 import SsrHeadRenderer, { SsrHtmlRenderer, DEFAULT_HEAD_SCRIPTS } from "@/components/common/SsrHeadRenderer";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +42,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await api.getSettings().catch(() => null);
+ {/* const settings = await api.getSettings().catch(() => null);*/}
+const settings = await getServerSettings().catch((error) => {
+  console.error("[RootLayout] Settings fetch failed:", error);
+  return null;
+});
   const headScripts = settings?.scriptConfig?.headScripts?.trim()
     ? settings.scriptConfig.headScripts
     : DEFAULT_HEAD_SCRIPTS;
