@@ -8,13 +8,14 @@ import {
   Testimonial,
 } from "@/components/home";
 import { api } from "@/lib/api";
+import { getServerActiveTemplateForPage } from "@/lib/server-api";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   let template = undefined;
   try {
-    template = await api.getActiveTemplateForPage("home");
+    template = await getServerActiveTemplateForPage("home");
   } catch (err) {
     console.error("Failed to load active homepage template from server:", err);
   }
