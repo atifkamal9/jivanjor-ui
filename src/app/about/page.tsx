@@ -1,5 +1,6 @@
 import AboutUs from "@/components/about/AboutUs";
 import { api } from "@/lib/api";
+import { getServerActiveTemplateForPage } from "@/lib/server-api";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AboutPage() {
   let template = undefined;
   try {
-    template = await api.getActiveTemplateForPage("about");
+    template = await getServerActiveTemplateForPage("about");
   } catch (err) {
     console.error("Failed to load active about template from server:", err);
   }

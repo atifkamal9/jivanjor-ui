@@ -1,11 +1,16 @@
 import Image from "next/image";
 import { ContactForm, Details, Hero } from "@/components/contact";
-import { api } from "@/lib/api";
+import { getServerSettings } from "@/lib/server-api";
+{/*import { api } from "@/lib/api";*/}
 
 export const revalidate = 0;
 
 export default async function ContactPage() {
-  const settings = await api.getSettings().catch(() => null);
+  {/*const settings = await api.getSettings().catch(() => null);*/}
+const settings = await getServerSettings().catch((error) => {
+  console.error("[ContactPage] Settings fetch failed:", error);
+  return null;
+});
   const contactConfig = settings?.contactPage;
 
   return (
