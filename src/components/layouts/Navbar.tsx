@@ -407,10 +407,10 @@ export default function Navbar() {
         products: subCats.map((sub) => ({
           name: sub.name,
           slug: sub.slug,
-          image: sub.heroImage || "/images/Watershield.png",
+          image: sub.icon || sub.image || sub.heroImage || "/images/Watershield.png",
           bgColor: "bg-[#0083CB]"
         })),
-        categoryImage: cat.heroImage || cat.icon || undefined
+        categoryImage: cat.heroImage || cat.icon || cat.image || undefined
       };
     });
   })();

@@ -532,7 +532,7 @@ function parseExcel(
             const description = getRowValue(row, ["description", "desc", "details"]);
             const tagline = getRowValue(row, ["tagline", "sub_title", "subtitle"]);
             const parentName = getRowValue(row, ["parent_category_name", "parent_category", "parent", "parent_name", "parentcategoryname", "parentcategory"]);
-            const icon = getRowValue(row, ["icon", "icon_name", "iconname"]);
+            const icon = getRowValue(row, ["icon", "icon_name", "iconname", "image", "thumbnail", "featured_image", "category_image"]);
 
             const categoryTitle = cleanVal(getRowValue(row, ["categoryTitle", "category_title"]));
             const categoryDescription = cleanVal(getRowValue(row, ["categoryDescription", "category_description"]));
@@ -979,7 +979,7 @@ export default function BulkUploadModal({
                           { col: "parent_category_name", req: false, note: "Parent category name (leave blank for top-level main category, fill for sub-category)" },
                           { col: "description", req: false, note: "Overview description of the category/sub-category" },
                           { col: "slug", req: false, note: "URL slug (auto-generated from name if blank)" },
-                          { col: "icon", req: false, note: "Lucide icon key or name e.g. Droplets, Layers" },
+                          { col: "icon", req: false, note: "Featured category thumbnail image URL or icon key (e.g. /images/Watershield.png)" },
                           { col: "categoryTitle", req: false, note: "Hero section header title" },
                           { col: "categoryDescription", req: false, note: "Hero section sub-description" },
                           { col: "resourcesTitle", req: false, note: "Resources section header title" },

@@ -6,6 +6,7 @@ import { api, Category } from "@/lib/api";
 import { getUserRole } from "@/lib/auth";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BulkUploadModal, { ParsedRow } from "@/components/admin/BulkUploadModal";
+import Image from "next/image";
 import {
   Plus,
   Search,
@@ -25,6 +26,7 @@ import {
   ArrowUp,
   ArrowDown,
   GripVertical,
+  Image as ImageIcon,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -272,7 +274,7 @@ export default function CategoriesPage() {
       parent_category: category.parent_category || "",
       description: category.description,
       tagline: category.tagline || "",
-      icon: category.icon || "",
+      icon: category.icon || category.image || "",
       categoryTitle: category.categoryTitle || "",
       categoryDescription: category.categoryDescription || "",
       resourcesTitle: category.resourcesTitle || "",
@@ -561,8 +563,18 @@ export default function CategoriesPage() {
                                   )}
                                 </button>
 
-                                <div className="h-9 w-9 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-                                  <FolderTree className="h-5 w-5" />
+                                <div className="h-10 w-10 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 overflow-hidden border border-gray-100 dark:border-zinc-800 shadow-2xs">
+                                  {mainCat.icon || mainCat.image ? (
+                                    <Image
+                                      src={mainCat.icon || mainCat.image || ""}
+                                      alt={mainCat.name}
+                                      width={40}
+                                      height={40}
+                                      className="object-contain w-full h-full p-1"
+                                    />
+                                  ) : (
+                                    <FolderTree className="h-5 w-5" />
+                                  )}
                                 </div>
                                 <div>
                                   <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
@@ -677,6 +689,19 @@ export default function CategoriesPage() {
                                       <GripVertical className="h-4 w-4" />
                                     </div>
                                     <span className="text-gray-300 dark:text-zinc-700 font-light select-none mr-1">└──</span>
+                                    <div className="h-8 w-8 rounded-lg bg-gray-50 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 flex items-center justify-center shrink-0 overflow-hidden border border-gray-100 dark:border-zinc-800 shadow-2xs">
+                                      {sub.icon || sub.image ? (
+                                        <Image
+                                          src={sub.icon || sub.image || ""}
+                                          alt={sub.name}
+                                          width={32}
+                                          height={32}
+                                          className="object-contain w-full h-full p-0.5"
+                                        />
+                                      ) : (
+                                        <ImageIcon className="h-4 w-4 text-gray-400 dark:text-zinc-500" />
+                                      )}
+                                    </div>
                                     <div>
                                       <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                         <span>{sub.name}</span>
@@ -934,6 +959,19 @@ export default function CategoriesPage() {
                         placeholder="e.g. Super Premium Adhesives by Jivanjor"
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                       />
+                    </div>
+
+                    <div>
+                      <ImageUpload
+                        label="Featured Category Image / Thumbnail"
+                        value={formData.icon}
+                        onChange={(url) => setFormData((prev) => ({ ...prev, icon: url }))}
+                        folder="categories"
+                        aspect="square"
+                      />
+                      <p className="text-[11px] text-gray-400 dark:text-zinc-500 mt-1">
+                        Featured thumbnail icon for this category (displayed as the category card icon on category listing pages, sidebar selectors, and navigation menus).
+                      </p>
                     </div>
 
                     <div>

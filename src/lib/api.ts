@@ -62,7 +62,8 @@ export interface Category {
   parent_category: string; // id or empty string
   description: string;
   tagline?: string;
-  icon?: string; // Pre-stored platform icon key (e.g. Lucide icon name)
+  icon?: string; // Pre-stored platform icon key (e.g. Lucide icon name) or image thumbnail URL
+  image?: string; // Featured category image / thumbnail URL
   categoryTitle?: string;
   categoryDescription?: string;
   resourcesTitle?: string;
@@ -282,6 +283,8 @@ function mapCategoryFromBackend(cat: any): Category {
   let rightChoiceCtaLink = "";
   let hideInMenu = Boolean(cat.hideInMenu || cat.hiddenInMenu || false);
 
+  let catImage = cat.icon || "";
+
   if (description.startsWith("{") && description.endsWith("}")) {
     try {
       const parsed = JSON.parse(description);
@@ -302,6 +305,9 @@ function mapCategoryFromBackend(cat: any): Category {
       rightChoiceSubtitle = parsed.rightChoiceSubtitle || parsed.rightChoice?.subtitle || "";
       rightChoiceCtaText = parsed.rightChoiceCtaText || parsed.rightChoice?.ctaText || "";
       rightChoiceCtaLink = parsed.rightChoiceCtaLink || parsed.rightChoice?.ctaLink || "";
+      if (parsed.image || parsed.icon) {
+        catImage = catImage || parsed.image || parsed.icon || "";
+      }
       if (parsed.hideInMenu !== undefined || parsed.hiddenInMenu !== undefined) {
         hideInMenu = Boolean(parsed.hideInMenu || parsed.hiddenInMenu);
       }
@@ -342,7 +348,8 @@ function mapCategoryFromBackend(cat: any): Category {
       ctaText: rightChoiceCtaText,
       ctaLink: rightChoiceCtaLink,
     } : undefined,
-    icon: cat.icon || "",
+    icon: catImage || "",
+    image: catImage || "",
     hideInMenu: !isVisible,
     isVisible,
     displayOrder: cat.displayOrder ?? cat.display_order ?? 0,
@@ -766,6 +773,7 @@ export const api = {
   saveCategory: async (
     category: Omit<Category, "id"> & { id?: string },
   ): Promise<Category> => {
+    const finalIcon = category.icon || category.image || "";
     const serializedDescription = JSON.stringify({
       description: category.description || "",
       categoryTitle: category.categoryTitle || "",
@@ -773,6 +781,8 @@ export const api = {
       resourcesTitle: category.resourcesTitle || category.researchTitle || "",
       resourcesDescription: category.resourcesDescription || category.researchDescription || "",
       heroImage: category.heroImage || "",
+      icon: finalIcon,
+      image: finalIcon,
       researchTitle: category.researchTitle || category.resourcesTitle || "",
       researchDescription: category.researchDescription || category.resourcesDescription || "",
       researchCtaText: category.researchCtaText || "",
@@ -794,7 +804,8 @@ export const api = {
       parentId: category.parent_category || null,
       description: serializedDescription,
       tagline: category.tagline || null,
-      icon: category.icon || null,
+      icon: finalIcon || null,
+      image: finalIcon || null,
       isVisible: isVisibleVal,
       hideInMenu: !isVisibleVal,
     };

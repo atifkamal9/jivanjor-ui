@@ -405,7 +405,7 @@ function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCate
         name: sub.name,
         title: `${sub.name} Adhesives`,
         description: sub.description || `Explore ${sub.name} Jivanjor adhesives and technical resources.`,
-        icon: subProds[0]?.image || "/images/Watershield.png",
+        icon: sub.icon || sub.image || subProds[0]?.image || "/images/Watershield.png",
         products: productsList
       });
     }
