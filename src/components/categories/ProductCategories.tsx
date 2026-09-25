@@ -387,10 +387,11 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       });
       return {
         name: sub.name,
+        slug: sub.slug,
         tagline: sub.tagline || "",
         title: sub.name || "Adhesives by Jivanjor",
         description: sub.description || `Explore our high quality ${sub.name} solutions.`,
-        icon: subProducts[0]?.image || "/images/Watershield.png",
+        icon: sub.icon || sub.image || subProducts[0]?.image || "/images/Watershield.png",
         products: subProducts.map((p) => {
           let featuresList = ["Best-in-Class Coverage", "Superior Bond Strength", "High Performance"];
           if (p?.overviewBullets && p.overviewBullets.length > 0) {
