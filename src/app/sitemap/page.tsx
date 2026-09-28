@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import {
   getLocalSitemapConfig,
-  syncSitemapConfigWithApi,
   SitemapConfig,
   SitemapSection,
 } from "@/lib/sitemap-storage";
@@ -15,19 +14,9 @@ export default function SitemapPage() {
   const [config, setConfig] = useState<SitemapConfig>(() =>
     getLocalSitemapConfig()
   );
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    syncSitemapConfigWithApi().then((updated) => {
-      if (isMounted) {
-        setConfig(updated);
-        setIsLoading(false);
-      }
-    });
-    return () => {
-      isMounted = false;
-    };
+    setConfig(getLocalSitemapConfig());
   }, []);
 
   const visibleSections = useMemo(() => {

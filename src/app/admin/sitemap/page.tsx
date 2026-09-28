@@ -7,7 +7,6 @@ import {
   getLocalSitemapConfig,
   saveLocalSitemapConfig,
   resetLocalSitemapConfig,
-  syncSitemapConfigWithApi,
   SitemapConfig,
   SitemapSection,
   SitemapLink,
@@ -18,7 +17,6 @@ import {
   Trash2,
   Save,
   RotateCcw,
-  RefreshCw,
   Eye,
   EyeOff,
   MoveUp,
@@ -36,7 +34,6 @@ export default function AdminSitemapManagerPage() {
     getLocalSitemapConfig()
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [activeSectionFilter, setActiveSectionFilter] = useState<string>("all");
   const [searchFilter, setSearchFilter] = useState("");
@@ -52,10 +49,7 @@ export default function AdminSitemapManagerPage() {
   }>({});
 
   useEffect(() => {
-    // Initial sync with live API data
-    syncSitemapConfigWithApi().then((synced) => {
-      setConfig(synced);
-    });
+    setConfig(getLocalSitemapConfig());
   }, []);
 
   const showToast = (msg: string) => {
@@ -70,14 +64,6 @@ export default function AdminSitemapManagerPage() {
       setIsSaving(false);
       showToast("Sitemap configuration saved successfully!");
     }, 400);
-  };
-
-  const handleSyncApi = async () => {
-    setIsSyncing(true);
-    const synced = await syncSitemapConfigWithApi(config);
-    setConfig(synced);
-    setIsSyncing(false);
-    showToast("Dynamic routes successfully synced from backend API!");
   };
 
   const handleReset = () => {
@@ -401,17 +387,6 @@ export default function AdminSitemapManagerPage() {
         {/* Action Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-surface/60 border border-border rounded-2xl">
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleSyncApi}
-              disabled={isSyncing}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-background border border-border text-foreground font-semibold text-xs hover:border-primary/40 hover:text-primary transition-all cursor-pointer"
-            >
-              <RefreshCw
-                className={`w-4 h-4 ${isSyncing ? "animate-spin text-primary" : ""}`}
-              />
-              <span>{isSyncing ? "Syncing API..." : "Sync Dynamic API Routes"}</span>
-            </button>
-
             <button
               onClick={() => setShowAddSectionForm(!showAddSectionForm)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20 font-semibold text-xs hover:bg-primary/20 transition-all cursor-pointer"
