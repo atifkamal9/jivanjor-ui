@@ -1,0 +1,22 @@
+User-agent: Googlebot
+Disallow: 
+User-agent: Googlebot-Image
+Disallow: 
+User-agent: Bingbot
+Disallow: 
+User-agent: Yandex
+Disallow: 
+User-agent: Baiduspider
+Disallow: 
+User-agent: Yeti
+Disallow: 
+User-agent: Applebot
+Disallow: 
+User-agent: DuckDuckBot
+Disallow: 
+User-agent: Slurp
+Disallow: 
+User-agent: *
+Disallow: 
+Disallow: /admin/
+Sitemap: https://jivanjor.com/sitemap.xml
