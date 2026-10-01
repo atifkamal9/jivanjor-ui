@@ -2,8 +2,27 @@
 
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { api, SeoMetadata, Product, Category, BlogPost, UseCase, Issue } from "@/lib/api";
-import { Plus, Search, Edit2, Trash2, X, Globe, Link2, Sparkles, ArrowLeft } from "lucide-react";
+import {
+  api,
+  SeoMetadata,
+  Product,
+  Category,
+  BlogPost,
+  UseCase,
+  Issue,
+  Page,
+} from "@/lib/api";
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
+  X,
+  Globe,
+  Link2,
+  Sparkles,
+  ArrowLeft,
+} from "lucide-react";
 
 export default function SeoMetadataPage() {
   const [seos, setSeos] = useState<SeoMetadata[]>([]);
@@ -12,6 +31,7 @@ export default function SeoMetadataPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +49,6 @@ export default function SeoMetadataPage() {
   });
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,13 +58,22 @@ export default function SeoMetadataPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [seosList, prodsList, catsList, blogsList, casesList, issuesList] = await Promise.all([
+      const [
+        seosList,
+        prodsList,
+        catsList,
+        blogsList,
+        casesList,
+        issuesList,
+        pagesList,
+      ] = await Promise.all([
         api.getSeoMetadata(),
-        api.getProducts(),
-        api.getCategories(),
-        api.getBlogPosts(),
-        api.getUseCases(),
-        api.getIssues()
+        api.getProducts().catch(() => []),
+        api.getCategories().catch(() => []),
+        api.getBlogPosts().catch(() => []),
+        api.getUseCases().catch(() => []),
+        api.getIssues().catch(() => []),
+        api.getPages().catch(() => []),
       ]);
       setSeos(seosList);
       setProducts(prodsList);
@@ -53,6 +81,7 @@ export default function SeoMetadataPage() {
       setBlogs(blogsList);
       setUseCases(casesList);
       setIssues(issuesList);
+      setPages(pagesList);
     } catch (err) {
       console.error("Failed to load SEO and dependencies", err);
     } finally {
@@ -86,17 +115,97 @@ export default function SeoMetadataPage() {
 
   const handlePageTypeChange = (type: string) => {
     let defaultId = "";
-    if (type === "home") defaultId = "home";
-    else if (type === "product") defaultId = products[0]?.id || "";
-    else if (type === "category") defaultId = categories[0]?.id || "";
-    else if (type === "blog") defaultId = blogs[0]?.id || "";
-    else if (type === "use-case") defaultId = useCases[0]?.id || "";
-    else if (type === "issue") defaultId = issues[0]?.id || "";
-
     let canonical = "https://jivanjor.com";
-    if (type === "product" && products[0]) canonical = `https://jivanjor.com/products/${products[0].slug}`;
-    else if (type === "category" && categories[0]) canonical = `https://jivanjor.com/categories/${categories[0].slug}`;
-    else if (type === "blog" && blogs[0]) canonical = `https://jivanjor.com/blog/${blogs[0].slug}`;
+
+    switch (type) {
+      case "home":
+        defaultId = "home";
+        canonical = "https://jivanjor.com";
+        break;
+      case "about":
+        defaultId = "about";
+        canonical = "https://jivanjor.com/about";
+        break;
+      case "contact":
+        defaultId = "contact";
+        canonical = "https://jivanjor.com/contact";
+        break;
+      case "partner":
+        defaultId = "partner";
+        canonical = "https://jivanjor.com/partner";
+        break;
+      case "contractor":
+        defaultId = "contractor";
+        canonical = "https://jivanjor.com/contractor";
+        break;
+      case "products-hub":
+        defaultId = "products";
+        canonical = "https://jivanjor.com/products";
+        break;
+      case "categories-hub":
+        defaultId = "categories";
+        canonical = "https://jivanjor.com/categories";
+        break;
+      case "applications-hub":
+        defaultId = "applications";
+        canonical = "https://jivanjor.com/applications";
+        break;
+      case "blog-hub":
+        defaultId = "blog";
+        canonical = "https://jivanjor.com/blog";
+        break;
+      case "resources":
+        defaultId = "resources";
+        canonical = "https://jivanjor.com/resources";
+        break;
+      case "sitemap":
+        defaultId = "sitemap";
+        canonical = "https://jivanjor.com/sitemap";
+        break;
+      case "privacy":
+        defaultId = "privacy";
+        canonical = "https://jivanjor.com/privacy";
+        break;
+      case "product":
+        defaultId = products[0]?.id || "";
+        canonical = products[0]
+          ? `https://jivanjor.com/products?product=${products[0].slug}`
+          : "https://jivanjor.com/products";
+        break;
+      case "category":
+        defaultId = categories[0]?.id || "";
+        canonical = categories[0]
+          ? `https://jivanjor.com/categories/${categories[0].slug}`
+          : "https://jivanjor.com/categories";
+        break;
+      case "use-case":
+        defaultId = useCases[0]?.id || "";
+        canonical = useCases[0]
+          ? `https://jivanjor.com/applications?article=${useCases[0].slug}`
+          : "https://jivanjor.com/applications";
+        break;
+      case "blog":
+        defaultId = blogs[0]?.id || "";
+        canonical = blogs[0]
+          ? `https://jivanjor.com/blog/${blogs[0].slug}`
+          : "https://jivanjor.com/blog";
+        break;
+      case "page":
+        defaultId = pages[0]?.id || "";
+        canonical = pages[0]
+          ? `https://jivanjor.com/${pages[0].slug}`
+          : "https://jivanjor.com";
+        break;
+      case "issue":
+        defaultId = issues[0]?.id || "";
+        canonical = issues[0]
+          ? `https://jivanjor.com/troubleshooting/${issues[0].slug}`
+          : "https://jivanjor.com";
+        break;
+      default:
+        defaultId = type;
+        canonical = `https://jivanjor.com/${type}`;
+    }
 
     setFormData((prev) => ({
       ...prev,
@@ -107,27 +216,83 @@ export default function SeoMetadataPage() {
   };
 
   const handlePageIdChange = (id: string) => {
-    let slug = "";
-    if (formData.page_type === "product") slug = `products/${products.find(p => p.id === id)?.slug || ""}`;
-    else if (formData.page_type === "category") slug = `categories/${categories.find(c => c.id === id)?.slug || ""}`;
-    else if (formData.page_type === "blog") slug = `blog/${blogs.find(b => b.id === id)?.slug || ""}`;
-    else if (formData.page_type === "use-case") slug = `use-cases/${useCases.find(u => u.id === id)?.slug || ""}`;
-    else if (formData.page_type === "issue") slug = `troubleshooting/${issues.find(i => i.id === id)?.slug || ""}`;
+    let canonical = "https://jivanjor.com";
+
+    if (formData.page_type === "product") {
+      const p = products.find((x) => x.id === id);
+      canonical = p
+        ? `https://jivanjor.com/products?product=${p.slug}`
+        : "https://jivanjor.com/products";
+    } else if (formData.page_type === "category") {
+      const c = categories.find((x) => x.id === id);
+      canonical = c
+        ? `https://jivanjor.com/categories/${c.slug}`
+        : "https://jivanjor.com/categories";
+    } else if (formData.page_type === "use-case") {
+      const u = useCases.find((x) => x.id === id);
+      canonical = u
+        ? `https://jivanjor.com/applications?article=${u.slug}`
+        : "https://jivanjor.com/applications";
+    } else if (formData.page_type === "blog") {
+      const b = blogs.find((x) => x.id === id);
+      canonical = b
+        ? `https://jivanjor.com/blog/${b.slug}`
+        : "https://jivanjor.com/blog";
+    } else if (formData.page_type === "page") {
+      const pg = pages.find((x) => x.id === id);
+      canonical = pg ? `https://jivanjor.com/${pg.slug}` : "https://jivanjor.com";
+    } else if (formData.page_type === "issue") {
+      const i = issues.find((x) => x.id === id);
+      canonical = i
+        ? `https://jivanjor.com/troubleshooting/${i.slug}`
+        : "https://jivanjor.com";
+    }
 
     setFormData((prev) => ({
       ...prev,
       page_id: id,
-      canonical_url: slug ? `https://jivanjor.com/${slug}` : "https://jivanjor.com",
+      canonical_url: canonical,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Map static types to backend format
+      const isStaticPage = [
+        "home",
+        "about",
+        "contact",
+        "partner",
+        "contractor",
+        "products-hub",
+        "categories-hub",
+        "applications-hub",
+        "blog-hub",
+        "resources",
+        "sitemap",
+        "privacy",
+        "page",
+      ].includes(formData.page_type);
+
+      const resolvedPageType = isStaticPage
+        ? "STATIC"
+        : formData.page_type.toUpperCase().replace("-", "_");
+
+      const resolvedPageId =
+        formData.page_type === "home"
+          ? null
+          : formData.page_id || formData.page_type;
+
       await api.saveSeoMetadata({
         id: editingId || undefined,
-        ...formData,
+        page_type: resolvedPageType.toLowerCase(),
+        page_id: resolvedPageId || "",
+        meta_title: formData.meta_title,
+        meta_description: formData.meta_description,
+        canonical_url: formData.canonical_url,
       });
+
       setIsModalOpen(false);
       await loadData();
     } catch (err) {
@@ -147,22 +312,62 @@ export default function SeoMetadataPage() {
 
   // Helper to resolve linked record label
   const getLinkedRecordLabel = (seo: SeoMetadata) => {
-    if (seo.page_type === "home") return "Global Home Page";
-    if (seo.page_type === "product") return `Product: ${products.find((p) => p.id === seo.page_id)?.name || seo.page_id}`;
-    if (seo.page_type === "category") return `Category: ${categories.find((c) => c.id === seo.page_id)?.name || seo.page_id}`;
-    if (seo.page_type === "blog") return `Blog: ${blogs.find((b) => b.id === seo.page_id)?.title || seo.page_id}`;
-    if (seo.page_type === "use-case") return `Use Case: ${useCases.find((u) => u.id === seo.page_id)?.title || seo.page_id}`;
-    if (seo.page_type === "issue") return `Issue: ${issues.find((i) => i.id === seo.page_id)?.issue_title || seo.page_id}`;
-    return seo.page_id;
+    const sType = (seo.page_type || "").toLowerCase();
+    const sId = (seo.page_id || "").toLowerCase();
+
+    if (sType === "home" || (sType === "static" && (!sId || sId === "home"))) {
+      return "Global Home Page (/)";
+    }
+    if (sType === "static" || sType.includes("hub")) {
+      if (sId === "about") return "About Us (/about)";
+      if (sId === "contact") return "Contact Page (/contact)";
+      if (sId === "partner") return "Become a Dealer (/partner)";
+      if (sId === "contractor") return "Contractor Connect (/contractor)";
+      if (sId === "products" || sId === "products-hub") return "Products Catalog (/products)";
+      if (sId === "categories" || sId === "categories-hub") return "Categories Directory (/categories)";
+      if (sId === "applications" || sId === "applications-hub") return "Applications Hub (/applications)";
+      if (sId === "blog" || sId === "blog-hub") return "Blog Knowledge Hub (/blog)";
+      if (sId === "resources") return "Technical Resources (/resources)";
+      if (sId === "sitemap") return "HTML Sitemap (/sitemap)";
+      if (sId === "privacy") return "Privacy Policy (/privacy)";
+
+      const matchedPage = pages.find((p) => p.id === seo.page_id || p.slug === seo.page_id);
+      if (matchedPage) return `CMS Page: ${matchedPage.title} (/${matchedPage.slug})`;
+      return `Static Page: ${seo.page_id}`;
+    }
+
+    if (sType === "product") {
+      const p = products.find((x) => x.id === seo.page_id || x.slug === seo.page_id);
+      return `Product: ${p?.name || seo.page_id}`;
+    }
+    if (sType === "category") {
+      const c = categories.find((x) => x.id === seo.page_id || x.slug === seo.page_id);
+      return `Category: ${c?.name || seo.page_id}`;
+    }
+    if (sType === "blog") {
+      const b = blogs.find((x) => x.id === seo.page_id || x.slug === seo.page_id);
+      return `Blog: ${b?.title || seo.page_id}`;
+    }
+    if (sType === "use-case" || sType === "use_case") {
+      const u = useCases.find((x) => x.id === seo.page_id || x.slug === seo.page_id);
+      return `Application Guide: ${u?.title || seo.page_id}`;
+    }
+    if (sType === "issue") {
+      const i = issues.find((x) => x.id === seo.page_id || x.slug === seo.page_id);
+      return `Troubleshooting: ${i?.issue_title || seo.page_id}`;
+    }
+
+    return `${seo.page_type}: ${seo.page_id}`;
   };
 
   // Filter SEO configs
   const filteredSeos = seos.filter((s) => {
     const label = getLinkedRecordLabel(s).toLowerCase();
-    const matchesSearch = s.meta_title.toLowerCase().includes(search.toLowerCase()) || 
-                          s.meta_description.toLowerCase().includes(search.toLowerCase()) ||
-                          s.page_type.toLowerCase().includes(search.toLowerCase()) ||
-                          label.includes(search.toLowerCase());
+    const matchesSearch =
+      s.meta_title.toLowerCase().includes(search.toLowerCase()) ||
+      s.meta_description.toLowerCase().includes(search.toLowerCase()) ||
+      s.page_type.toLowerCase().includes(search.toLowerCase()) ||
+      label.includes(search.toLowerCase());
     return matchesSearch;
   });
 
@@ -171,6 +376,15 @@ export default function SeoMetadataPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentSeos = filteredSeos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const hasMappedDropdown = [
+    "product",
+    "category",
+    "use-case",
+    "blog",
+    "page",
+    "issue",
+  ].includes(formData.page_type);
 
   return (
     <AdminLayout>
@@ -182,7 +396,7 @@ export default function SeoMetadataPage() {
                 SEO Optimizer
               </h1>
               <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-                Manage metadata, descriptions, canonical URLs, and index flags across routing endpoints
+                Manage metadata, descriptions, canonical URLs, and index flags across all routing endpoints
               </p>
             </div>
             <button
@@ -190,7 +404,7 @@ export default function SeoMetadataPage() {
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg self-start sm:self-auto"
             >
               <Plus className="h-5 w-5" />
-              <span>Configure SEO Page</span>
+              <span>Configure Page SEO</span>
             </button>
           </div>
 
@@ -202,7 +416,10 @@ export default function SeoMetadataPage() {
                 type="text"
                 placeholder="Search page configurations..."
                 value={search}
-                onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1);
+                }}
                 className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white focus:ring-2 focus:ring-red-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
               />
             </div>
@@ -214,17 +431,30 @@ export default function SeoMetadataPage() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50">
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Target Page & Type</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Meta Title</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Meta Description</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">Canonical Link</th>
-                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">Actions</th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                      Target Page & Type
+                    </th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                      Meta Title
+                    </th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                      Meta Description
+                    </th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+                      Canonical Link
+                    </th>
+                    <th className="p-5 text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5">
+                      <td
+                        colSpan={5}
+                        className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500 bg-surface/5"
+                      >
                         <div className="flex flex-col items-center gap-3">
                           <div className="h-6 w-6 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
                           <span>Retrieving SEO metadata from database...</span>
@@ -233,14 +463,19 @@ export default function SeoMetadataPage() {
                     </tr>
                   ) : currentSeos.length > 0 ? (
                     currentSeos.map((seo) => (
-                      <tr key={seo.id} className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20 transition-colors">
+                      <tr
+                        key={seo.id}
+                        className="hover:bg-gray-50/30 dark:hover:bg-zinc-800/20 transition-colors"
+                      >
                         <td className="p-5">
                           <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 flex items-center justify-center">
                               <Globe className="h-5 w-5" />
                             </div>
                             <div>
-                              <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 truncate max-w-xs">{getLinkedRecordLabel(seo)}</p>
+                              <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 truncate max-w-xs">
+                                {getLinkedRecordLabel(seo)}
+                              </p>
                               <span className="inline-block text-[9px] font-black uppercase tracking-wider bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 px-2 py-0.5 rounded">
                                 {seo.page_type}
                               </span>
@@ -254,7 +489,12 @@ export default function SeoMetadataPage() {
                           {seo.meta_description}
                         </td>
                         <td className="p-5 text-xs text-blue-600 dark:text-blue-400 font-bold max-w-xs truncate">
-                          <a href={seo.canonical_url} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1">
+                          <a
+                            href={seo.canonical_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:underline flex items-center gap-1"
+                          >
                             <Link2 className="h-3 w-3 shrink-0" />
                             <span>{seo.canonical_url}</span>
                           </a>
@@ -281,7 +521,10 @@ export default function SeoMetadataPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500">
+                      <td
+                        colSpan={5}
+                        className="p-10 text-center text-sm font-semibold text-gray-400 dark:text-zinc-500"
+                      >
                         No optimizations set up under filters.
                       </td>
                     </tr>
@@ -331,7 +574,11 @@ export default function SeoMetadataPage() {
             <div>
               <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                 <Globe className="h-6 w-6 text-red-600" />
-                <span>{editingId ? "Modify Metadata Configurations" : "Configure Page Metadata"}</span>
+                <span>
+                  {editingId
+                    ? "Modify Metadata Configurations"
+                    : "Configure Page Metadata"}
+                </span>
               </h1>
               <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
                 Establish custom title tags, crawler descriptions, and canonical URL settings for this dynamic page
@@ -351,17 +598,34 @@ export default function SeoMetadataPage() {
                     onChange={(e) => handlePageTypeChange(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                   >
-                    <option value="home">Home Page</option>
-                    <option value="product">Product Page</option>
-                    <option value="category">Category Page</option>
-                    <option value="blog">Blog Hub Page</option>
-                    <option value="use-case">Use Case Page</option>
-                    <option value="issue">Troubleshooting Page</option>
+                    <optgroup label="Main & Hub Pages">
+                      <option value="home">Home Page (/)</option>
+                      <option value="about">About Us (/about)</option>
+                      <option value="contact">Contact Page (/contact)</option>
+                      <option value="partner">Become a Dealer (/partner)</option>
+                      <option value="contractor">Contractor Connect (/contractor)</option>
+                      <option value="products-hub">Products Catalog (/products)</option>
+                      <option value="categories-hub">Categories Directory (/categories)</option>
+                      <option value="applications-hub">Applications Hub (/applications)</option>
+                      <option value="blog-hub">Blog Knowledge Hub (/blog)</option>
+                      <option value="resources">Technical Resources (/resources)</option>
+                      <option value="sitemap">HTML Sitemap (/sitemap)</option>
+                      <option value="privacy">Privacy Policy (/privacy)</option>
+                    </optgroup>
+
+                    <optgroup label="Dynamic Records">
+                      <option value="product">Individual Product</option>
+                      <option value="category">Individual Category</option>
+                      <option value="use-case">Application Guide</option>
+                      <option value="blog">Individual Blog Post</option>
+                      <option value="page">CMS Custom Page</option>
+                      <option value="issue">Troubleshooting Issue</option>
+                    </optgroup>
                   </select>
                 </div>
 
                 {/* Dynamic Page Link Identifier Selector */}
-                {formData.page_type !== "home" && (
+                {hasMappedDropdown && (
                   <div>
                     <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
                       Mapped Catalog Record
@@ -372,15 +636,41 @@ export default function SeoMetadataPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                     >
                       {formData.page_type === "product" &&
-                        products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                        products.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.name}
+                          </option>
+                        ))}
                       {formData.page_type === "category" &&
-                        categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                      {formData.page_type === "blog" &&
-                        blogs.map((b) => <option key={b.id} value={b.id}>{b.title}</option>)}
+                        categories.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
                       {formData.page_type === "use-case" &&
-                        useCases.map((u) => <option key={u.id} value={u.id}>{u.title}</option>)}
+                        useCases.map((u) => (
+                          <option key={u.id} value={u.id}>
+                            {u.title}
+                          </option>
+                        ))}
+                      {formData.page_type === "blog" &&
+                        blogs.map((b) => (
+                          <option key={b.id} value={b.id}>
+                            {b.title}
+                          </option>
+                        ))}
+                      {formData.page_type === "page" &&
+                        pages.map((pg) => (
+                          <option key={pg.id} value={pg.id}>
+                            {pg.title} (/{pg.slug})
+                          </option>
+                        ))}
                       {formData.page_type === "issue" &&
-                        issues.map((i) => <option key={i.id} value={i.id}>{i.issue_title}</option>)}
+                        issues.map((i) => (
+                          <option key={i.id} value={i.id}>
+                            {i.issue_title}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 )}
@@ -395,7 +685,12 @@ export default function SeoMetadataPage() {
                   required
                   maxLength={65}
                   value={formData.meta_title}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, meta_title: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_title: e.target.value,
+                    }))
+                  }
                   placeholder="e.g. Jivanjor WaterShield 2-in-1 Adhesives"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                 />
@@ -413,7 +708,12 @@ export default function SeoMetadataPage() {
                   rows={3}
                   maxLength={165}
                   value={formData.meta_description}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, meta_description: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      meta_description: e.target.value,
+                    }))
+                  }
                   placeholder="Write search crawler summary..."
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500 resize-none"
                 />
@@ -432,7 +732,12 @@ export default function SeoMetadataPage() {
                     type="url"
                     required
                     value={formData.canonical_url}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, canonical_url: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        canonical_url: e.target.value,
+                      }))
+                    }
                     placeholder="https://jivanjor.com/..."
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100 dark:focus:border-red-500"
                   />

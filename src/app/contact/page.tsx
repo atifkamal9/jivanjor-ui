@@ -1,20 +1,40 @@
 import Image from "next/image";
 import { ContactForm, Details, Hero } from "@/components/contact";
 import { getServerSettings } from "@/lib/server-api";
-{/*import { api } from "@/lib/api";*/}
+import JsonLdScript from "@/components/seo/JsonLdScript";
+import { getResolvedSeoAndSchema } from "@/lib/seo-helper";
+import { Metadata } from "next";
 
 export const revalidate = 0;
 
+const CONTACT_FALLBACK = {
+  pageSchemaType: "ContactPage" as const,
+  title: "Contact Jivanjor",
+  description:
+    "Get in touch with Jivanjor customer support and corporate offices across India.",
+  canonical: "https://jivanjor.com/contact",
+  breadcrumbs: [
+    { name: "Home", url: "https://jivanjor.com/" },
+    { name: "Contact Jivanjor", url: "https://jivanjor.com/contact" },
+  ],
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { metadata } = await getResolvedSeoAndSchema("static", "contact", CONTACT_FALLBACK);
+  return metadata;
+}
+
 export default async function ContactPage() {
-  {/*const settings = await api.getSettings().catch(() => null);*/}
-const settings = await getServerSettings().catch((error) => {
-  console.error("[ContactPage] Settings fetch failed:", error);
-  return null;
-});
+  const settings = await getServerSettings().catch((error) => {
+    console.error("[ContactPage] Settings fetch failed:", error);
+    return null;
+  });
   const contactConfig = settings?.contactPage;
+  const { schemaConfig } = await getResolvedSeoAndSchema("static", "contact", CONTACT_FALLBACK);
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip lg:mb-33">
+      <JsonLdScript config={schemaConfig} />
       <Hero
         heroImage={contactConfig?.heroImage}
         heroTitle={contactConfig?.heroTitle}

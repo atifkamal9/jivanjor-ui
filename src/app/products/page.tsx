@@ -1,84 +1,188 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { api, Product, Category } from "@/lib/api";
-import Hero from "@/components/products/Hero";
-import ProductInfo from "@/components/products/ProductInfo";
+import ProductClientView from "@/components/products/ProductClientView";
 import ProductSkeleton from "@/components/products/ProductSkeleton";
-import { RightChoice } from "@/components/categories";
+import JsonLdScript from "@/components/seo/JsonLdScript";
+import { getResolvedSeoAndSchema, FallbackSeoData } from "@/lib/seo-helper";
+import { Metadata } from "next";
 
-function ProductPageContent() {
-  const searchParams = useSearchParams();
-  const productSlug = searchParams.get("product");
+export const dynamic = "force-dynamic";
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [category, setCategory] = useState<Category | null>(null);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProductsPageProps {
+  searchParams: Promise<{ product?: string }>;
+}
 
-  useEffect(() => {
-    async function loadProductData() {
-      try {
-        setLoading(true);
-        const [prods, cats] = await Promise.all([
-          api.getProducts(),
-          api.getCategories(),
-        ]);
+const PRODUCTS_HUB_FALLBACK: FallbackSeoData = {
+  pageSchemaType: "CollectionPage",
+  title: "Jivanjor Woodworking Adhesive Products | Jivanjor",
+  description:
+    "Explore the complete range of Jivanjor woodworking adhesives, waterproofing solutions, and specialized bonding products.",
+  canonical: "https://jivanjor.com/products",
+  breadcrumbs: [
+    { name: "Home", url: "https://jivanjor.com/" },
+    { name: "Products", url: "https://jivanjor.com/products" },
+  ],
+  itemList: [
+    {
+      name: "Champion Super",
+      url: "https://jivanjor.com/products?product=champion-super",
+    },
+    {
+      name: "Aquabond",
+      url: "https://jivanjor.com/products?product=aquabond",
+    },
+    {
+      name: "Foambond",
+      url: "https://jivanjor.com/products?product=foambond",
+    },
+    {
+      name: "Watershield",
+      url: "https://jivanjor.com/products?product=watershield",
+    },
+  ],
+};
 
-        const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
-        const visibleCatIds = new Set(visibleCats.map((c) => c.id));
-        const visibleProds = prods.filter((p) => p.isVisible !== false && visibleCatIds.has(p.category_id));
+export async function generateMetadata({
+  searchParams,
+}: ProductsPageProps): Promise<Metadata> {
+  const { product: productSlug } = (await searchParams) || {};
 
-        setAllProducts(visibleProds);
+  if (productSlug) {
+    try {
+      const prods = await api.getProducts().catch(() => []);
+      const matched = prods.find(
+        (p) =>
+          p.slug === productSlug ||
+          p.name.toLowerCase().replace(/\s+/g, "-") === productSlug
+      );
 
-        let selected: Product | null = null;
-        if (productSlug) {
-          selected =
-            visibleProds.find(
-              (p) =>
-                p.slug === productSlug ||
-                p.name.toLowerCase().replace(/\s+/g, "-") === productSlug
-            ) || null;
-        }
-
-        // Fallback to first product if none selected
-        if (!selected && visibleProds.length > 0) {
-          selected = visibleProds[0];
-        }
-
-        setProduct(selected);
-
-        if (selected) {
-          const catMatch = visibleCats.find((c) => c.id === selected.category_id);
-          setCategory(catMatch || null);
-        }
-      } catch (err) {
-        console.error("Failed to load product details:", err);
-      } finally {
-        setLoading(false);
+      if (matched) {
+        const canonical = `https://jivanjor.com/products?product=${matched.slug}`;
+        const fallback: FallbackSeoData = {
+          pageSchemaType: "WebPage",
+          title: `${matched.name} | Jivanjor`,
+          description:
+            matched.description ||
+            `Explore ${matched.name} premium wood adhesive by Jivanjor.`,
+          canonical,
+          breadcrumbs: [
+            { name: "Home", url: "https://jivanjor.com/" },
+            { name: "Products", url: "https://jivanjor.com/products" },
+            { name: matched.name, url: canonical },
+          ],
+        };
+        const { metadata } = await getResolvedSeoAndSchema("product", matched.id, fallback);
+        return metadata;
       }
+    } catch (e) {
+      console.error("Failed to generate metadata for product:", e);
     }
-    loadProductData();
-  }, [productSlug]);
+  }
 
-  if (loading) {
-    return <ProductSkeleton />;
+  const { metadata } = await getResolvedSeoAndSchema("static", "products", PRODUCTS_HUB_FALLBACK);
+  return metadata;
+}
+
+export default async function Products({ searchParams }: ProductsPageProps) {
+  const { product: productSlug } = (await searchParams) || {};
+
+  let prods: Product[] = [];
+  let cats: Category[] = [];
+
+  try {
+    const [pList, cList] = await Promise.all([
+      api.getProducts().catch(() => []),
+      api.getCategories().catch(() => []),
+    ]);
+    prods = pList;
+    cats = cList;
+  } catch (err) {
+    console.error("Failed to fetch products on server:", err);
+  }
+
+  const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+  const visibleCatIds = new Set(visibleCats.map((c) => c.id));
+  const visibleProds = prods.filter(
+    (p) => p.isVisible !== false && visibleCatIds.has(p.category_id)
+  );
+
+  let selectedProduct: Product | null = null;
+  if (productSlug) {
+    selectedProduct =
+      visibleProds.find(
+        (p) =>
+          p.slug === productSlug ||
+          p.name.toLowerCase().replace(/\s+/g, "-") === productSlug
+      ) || null;
+  }
+
+  let selectedCategory: Category | null = null;
+  if (selectedProduct) {
+    selectedCategory =
+      visibleCats.find((c) => c.id === selectedProduct?.category_id) || null;
+  }
+
+  let schemaConfig;
+
+  if (selectedProduct) {
+    const canonical = `https://jivanjor.com/products?product=${selectedProduct.slug}`;
+    const productImageUrl = selectedProduct.image
+      ? selectedProduct.image.startsWith("http")
+        ? selectedProduct.image
+        : `https://jivanjor.com${selectedProduct.image.startsWith("/") ? "" : "/"}${selectedProduct.image}`
+      : undefined;
+
+    const fallback: FallbackSeoData = {
+      pageSchemaType: "WebPage",
+      canonical,
+      title: `${selectedProduct.name} | Jivanjor`,
+      description:
+        selectedProduct.description ||
+        `Explore ${selectedProduct.name} premium wood adhesive by Jivanjor.`,
+      breadcrumbs: [
+        { name: "Home", url: "https://jivanjor.com/" },
+        { name: "Products", url: "https://jivanjor.com/products" },
+        { name: selectedProduct.name, url: canonical },
+      ],
+      product: {
+        name: selectedProduct.name,
+        description: selectedProduct.description || undefined,
+        imageUrl: productImageUrl,
+        url: canonical,
+        category: selectedCategory?.name || "Woodworking Adhesive",
+      },
+    };
+
+    const res = await getResolvedSeoAndSchema("product", selectedProduct.id, fallback);
+    schemaConfig = res.schemaConfig;
+  } else {
+    const dynamicItemList =
+      visibleProds.length > 0
+        ? visibleProds.map((p) => ({
+            name: p.name,
+            url: `https://jivanjor.com/products?product=${p.slug}`,
+          }))
+        : PRODUCTS_HUB_FALLBACK.itemList;
+
+    const fallback: FallbackSeoData = {
+      ...PRODUCTS_HUB_FALLBACK,
+      itemList: dynamicItemList,
+    };
+
+    const res = await getResolvedSeoAndSchema("static", "products", fallback);
+    schemaConfig = res.schemaConfig;
   }
 
   return (
-    <div className="font-google-sans min-h-screen bg-background text-foreground">
-      <Hero product={product} category={category} />
-      <ProductInfo product={product} allProducts={allProducts} />
-      <RightChoice data={product?.rightChoice} />
-    </div>
-  );
-}
-
-export default function Products() {
-  return (
-    <Suspense fallback={<ProductSkeleton />}>
-      <ProductPageContent />
-    </Suspense>
+    <>
+      <JsonLdScript config={schemaConfig} />
+      <Suspense fallback={<ProductSkeleton />}>
+        <ProductClientView
+          initialProduct={selectedProduct}
+          initialCategory={selectedCategory}
+          initialAllProducts={visibleProds}
+        />
+      </Suspense>
+    </>
   );
 }

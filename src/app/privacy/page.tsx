@@ -1,42 +1,26 @@
 import { Content, Hero } from "@/components/privacy";
 import { api } from "@/lib/api";
 import { Metadata } from "next";
+import JsonLdScript from "@/components/seo/JsonLdScript";
+import { getResolvedSeoAndSchema, FallbackSeoData } from "@/lib/seo-helper";
 
 export const dynamic = "force-dynamic";
 
+const PRIVACY_FALLBACK: FallbackSeoData = {
+  pageSchemaType: "WebPage",
+  title: "Jivanjor Privacy Policy | Jivanjor",
+  description:
+    "Read Jivanjor's privacy policy and data protection practices.",
+  canonical: "https://jivanjor.com/privacy",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
-  let matchedSeo = undefined;
-  try {
-    const [seos, pages] = await Promise.all([
-      api.getSeoMetadata(),
-      api.getPages()
-    ]);
-    const privacyPage = pages.find(p => p.slug === "privacy");
-    matchedSeo = seos.find((s) =>
-      s.page_type === "static" &&
-      (s.page_id === "PRIVACY_PAGE" || s.page_id === "privacy" || (privacyPage && s.page_id === privacyPage.id))
-    );
-  } catch (err) {
-    console.error("Failed to load SEO metadata for privacy page:", err);
-  }
-
-  const title = matchedSeo?.meta_title || "Privacy Policy | Jivanjor";
-  const description = matchedSeo?.meta_description || "Read Jivanjor's privacy policy and data protection practices.";
-  const canonical = matchedSeo?.canonical_url || "https://jivanjor.vercel.app/privacy";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical,
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonical,
-      images: matchedSeo?.image ? [{ url: matchedSeo.image }] : undefined,
-    }
-  };
+  const { metadata } = await getResolvedSeoAndSchema(
+    "static",
+    "privacy",
+    PRIVACY_FALLBACK
+  );
+  return metadata;
 }
 
 export default async function PrivacyPage() {
@@ -48,9 +32,15 @@ export default async function PrivacyPage() {
   }
 
   const sections = template?.rawSections || {};
+  const { schemaConfig } = await getResolvedSeoAndSchema(
+    "static",
+    "privacy",
+    PRIVACY_FALLBACK
+  );
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">
+      <JsonLdScript config={schemaConfig} />
       <Hero data={sections.hero} />
       <Content data={sections.content} />
     </main>

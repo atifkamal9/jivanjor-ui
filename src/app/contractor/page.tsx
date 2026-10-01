@@ -1,43 +1,26 @@
 import { ContractorLayout } from "@/components/contractor";
-import { api } from "@/lib/api";
 import { getServerActiveTemplateForPage } from "@/lib/server-api";
 import { Metadata } from "next";
+import JsonLdScript from "@/components/seo/JsonLdScript";
+import { getResolvedSeoAndSchema } from "@/lib/seo-helper";
 
 export const dynamic = "force-dynamic";
 
+const CONTRACTOR_FALLBACK = {
+  pageSchemaType: "WebPage" as const,
+  title: "Jivanjor Contractor Connect | Jivanjor",
+  description:
+    "Build your business with India's trusted adhesive partner. Download Jivanjor Achievers Club App.",
+  canonical: "https://jivanjor.com/contractor",
+  breadcrumbs: [
+    { name: "Home", url: "https://jivanjor.com/" },
+    { name: "Jivanjor Contractor Connect", url: "https://jivanjor.com/contractor" },
+  ],
+};
+
 export async function generateMetadata(): Promise<Metadata> {
-  let matchedSeo = undefined;
-  try {
-    const [seos, pages] = await Promise.all([
-      api.getSeoMetadata(),
-      api.getPages()
-    ]);
-    const contractorPage = pages.find(p => p.slug === "contractor");
-    matchedSeo = seos.find((s) =>
-      s.page_type === "static" &&
-      (s.page_id === "CONTRACTOR_PAGE" || s.page_id === "contractor" || (contractorPage && s.page_id === contractorPage.id))
-    );
-  } catch (err) {
-    console.error("Failed to load SEO metadata for contractor page:", err);
-  }
-
-  const title = matchedSeo?.meta_title || "Contractor Connect | Jivanjor";
-  const description = matchedSeo?.meta_description || "Build your business with India's trusted adhesive partner. Download Jivanjor Achievers Club App.";
-  const canonical = matchedSeo?.canonical_url || "https://jivanjor.vercel.app/contractor";
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical,
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonical,
-      images: matchedSeo?.image ? [{ url: matchedSeo.image }] : undefined,
-    }
-  };
+  const { metadata } = await getResolvedSeoAndSchema("static", "contractor", CONTRACTOR_FALLBACK);
+  return metadata;
 }
 
 export default async function ContractorPage() {
@@ -49,6 +32,12 @@ export default async function ContractorPage() {
   }
 
   const sections = template?.rawSections || {};
+  const { schemaConfig } = await getResolvedSeoAndSchema("static", "contractor", CONTRACTOR_FALLBACK);
 
-  return <ContractorLayout data={sections} />;
+  return (
+    <>
+      <JsonLdScript config={schemaConfig} />
+      <ContractorLayout data={sections} />
+    </>
+  );
 }
