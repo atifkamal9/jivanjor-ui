@@ -36,7 +36,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { metadata } = await getResolvedSeoAndSchema(
       "category",
       cat?.id || slug,
-      fallback
+      fallback,
+      [cat?.id, cat?.slug, cat?.name, slug]
     );
     return metadata;
   } catch (err) {
@@ -139,7 +140,8 @@ export default async function Categories({ params }: PageProps) {
   const { schemaConfig } = await getResolvedSeoAndSchema(
     "category",
     categoryData?.id || slug,
-    fallback
+    fallback,
+    [categoryData?.id, categoryData?.slug, categoryData?.name, slug]
   );
 
   return (

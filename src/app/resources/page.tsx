@@ -22,7 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const { metadata } = await getResolvedSeoAndSchema(
     "static",
     "resources",
-    RESOURCES_FALLBACK
+    RESOURCES_FALLBACK,
+    ["resources", "technical-resources", "resources-hub", "resources_page"]
   );
   return metadata;
 }
@@ -31,7 +32,8 @@ export default async function Resources() {
   const { schemaConfig } = await getResolvedSeoAndSchema(
     "static",
     "resources",
-    RESOURCES_FALLBACK
+    RESOURCES_FALLBACK,
+    ["resources", "technical-resources", "resources-hub", "resources_page"]
   );
 
   return (

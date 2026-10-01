@@ -12,7 +12,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "jivanjor.com",
+      },
+      {
+        protocol: "https",
         hostname: "uat.jivanjor.com",
+      },
+      {
+        protocol: "https",
+        hostname: "jivanjor.vercel.app",
       },
       {
         protocol: "https",

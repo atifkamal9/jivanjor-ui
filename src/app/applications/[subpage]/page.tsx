@@ -2,6 +2,8 @@ import { ApplicationsLayout } from "@/components/applications";
 import { api } from "@/lib/api";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import JsonLdScript from "@/components/seo/JsonLdScript";
+import { getResolvedSeoAndSchema, FallbackSeoData } from "@/lib/seo-helper";
 
 export const dynamic = "force-dynamic";
 
@@ -11,39 +13,33 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { subpage } = await params;
+  const pageTitle = subpage
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+  const canonical = `https://jivanjor.com/applications/${subpage}`;
 
-  let matchedSeo = undefined;
-  try {
-    const [seos, pages] = await Promise.all([
-      api.getSeoMetadata(),
-      api.getPages()
-    ]);
-    const matchedPage = pages.find(p => p.slug === subpage);
-    matchedSeo = seos.find((s) =>
-      s.page_type === "static" &&
-      (s.page_id === subpage || (matchedPage && s.page_id === matchedPage.id))
-    );
-  } catch (err) {
-    console.error("Failed to load SEO metadata for applications subpage:", err);
-  }
-
-  const title = matchedSeo?.meta_title || `${subpage.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} | Jivanjor`;
-  const description = matchedSeo?.meta_description || "Discover specialised Jivanjor woodworking adhesives, applications guides, related products, and FAQs.";
-  const canonical = matchedSeo?.canonical_url || `https://jivanjor.com/applications/${subpage}`;
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical,
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonical,
-      images: matchedSeo?.image ? [{ url: matchedSeo.image }] : undefined,
-    }
+  const fallback: FallbackSeoData = {
+    pageSchemaType: "WebPage",
+    title: `${pageTitle} | Jivanjor`,
+    description:
+      "Discover specialised Jivanjor woodworking adhesives, applications guides, related products, and FAQs.",
+    canonical,
+    breadcrumbs: [
+      { name: "Home", url: "https://jivanjor.com/" },
+      { name: "Applications", url: "https://jivanjor.com/applications" },
+      { name: pageTitle, url: canonical },
+    ],
   };
+
+  const { metadata } = await getResolvedSeoAndSchema(
+    "static",
+    subpage,
+    fallback,
+    [subpage, `applications_${subpage}`, `applications-${subpage}`]
+  );
+
+  return metadata;
 }
 
 export default async function ApplicationsSubpage({ params }: PageProps) {
@@ -67,13 +63,44 @@ export default async function ApplicationsSubpage({ params }: PageProps) {
   }
 
   const sections = template?.rawSections || template?.sections || {};
+  const formattedTitle =
+    matchedPage?.title ||
+    subpage
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  const canonical = `https://jivanjor.com/applications/${subpage}`;
+
+  const fallback: FallbackSeoData = {
+    pageSchemaType: "WebPage",
+    title: `${formattedTitle} | Jivanjor`,
+    description:
+      matchedPage?.description ||
+      "Discover specialised Jivanjor woodworking adhesives, applications guides, related products, and FAQs.",
+    canonical,
+    breadcrumbs: [
+      { name: "Home", url: "https://jivanjor.com/" },
+      { name: "Applications", url: "https://jivanjor.com/applications" },
+      { name: formattedTitle, url: canonical },
+    ],
+  };
+
+  const { schemaConfig } = await getResolvedSeoAndSchema(
+    "static",
+    subpage,
+    fallback,
+    [subpage, `applications_${subpage}`, `applications-${subpage}`]
+  );
 
   return (
-    <ApplicationsLayout
-      data={sections}
-      pageSlug={subpage}
-      pageTitle={matchedPage?.title}
-      pageDescription={matchedPage?.description}
-    />
+    <>
+      <JsonLdScript config={schemaConfig} />
+      <ApplicationsLayout
+        data={sections}
+        pageSlug={subpage}
+        pageTitle={matchedPage?.title}
+        pageDescription={matchedPage?.description}
+      />
+    </>
   );
 }

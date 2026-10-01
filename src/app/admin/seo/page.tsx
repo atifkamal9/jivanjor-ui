@@ -89,14 +89,29 @@ export default function SeoMetadataPage() {
     }
   };
 
+  const getOriginBase = () => {
+    if (typeof window !== "undefined" && window.location.origin) {
+      const origin = window.location.origin;
+      if (
+        origin.includes("uat.jivanjor.com") ||
+        origin.includes("vercel.app") ||
+        origin.includes("localhost")
+      ) {
+        return origin;
+      }
+    }
+    return "https://jivanjor.com";
+  };
+
   const handleOpenAdd = () => {
+    const base = getOriginBase();
     setEditingId(null);
     setFormData({
       page_type: "home",
       page_id: "home",
       meta_title: "",
       meta_description: "",
-      canonical_url: "https://jivanjor.com",
+      canonical_url: base,
     });
     setIsModalOpen(true);
   };
@@ -114,97 +129,98 @@ export default function SeoMetadataPage() {
   };
 
   const handlePageTypeChange = (type: string) => {
+    const base = getOriginBase();
     let defaultId = "";
-    let canonical = "https://jivanjor.com";
+    let canonical = base;
 
     switch (type) {
       case "home":
         defaultId = "home";
-        canonical = "https://jivanjor.com";
+        canonical = base;
         break;
       case "about":
         defaultId = "about";
-        canonical = "https://jivanjor.com/about";
+        canonical = `${base}/about`;
         break;
       case "contact":
         defaultId = "contact";
-        canonical = "https://jivanjor.com/contact";
+        canonical = `${base}/contact`;
         break;
       case "partner":
         defaultId = "partner";
-        canonical = "https://jivanjor.com/partner";
+        canonical = `${base}/partner`;
         break;
       case "contractor":
         defaultId = "contractor";
-        canonical = "https://jivanjor.com/contractor";
+        canonical = `${base}/contractor`;
         break;
       case "products-hub":
         defaultId = "products";
-        canonical = "https://jivanjor.com/products";
+        canonical = `${base}/products`;
         break;
       case "categories-hub":
         defaultId = "categories";
-        canonical = "https://jivanjor.com/categories";
+        canonical = `${base}/categories`;
         break;
       case "applications-hub":
         defaultId = "applications";
-        canonical = "https://jivanjor.com/applications";
+        canonical = `${base}/applications`;
         break;
       case "blog-hub":
         defaultId = "blog";
-        canonical = "https://jivanjor.com/blog";
+        canonical = `${base}/blog`;
         break;
       case "resources":
         defaultId = "resources";
-        canonical = "https://jivanjor.com/resources";
+        canonical = `${base}/resources`;
         break;
       case "sitemap":
         defaultId = "sitemap";
-        canonical = "https://jivanjor.com/sitemap";
+        canonical = `${base}/sitemap`;
         break;
       case "privacy":
         defaultId = "privacy";
-        canonical = "https://jivanjor.com/privacy";
+        canonical = `${base}/privacy`;
         break;
       case "product":
         defaultId = products[0]?.id || "";
         canonical = products[0]
-          ? `https://jivanjor.com/products?product=${products[0].slug}`
-          : "https://jivanjor.com/products";
+          ? `${base}/products?product=${products[0].slug}`
+          : `${base}/products`;
         break;
       case "category":
         defaultId = categories[0]?.id || "";
         canonical = categories[0]
-          ? `https://jivanjor.com/categories/${categories[0].slug}`
-          : "https://jivanjor.com/categories";
+          ? `${base}/categories/${categories[0].slug}`
+          : `${base}/categories`;
         break;
       case "use-case":
         defaultId = useCases[0]?.id || "";
         canonical = useCases[0]
-          ? `https://jivanjor.com/applications?article=${useCases[0].slug}`
-          : "https://jivanjor.com/applications";
+          ? `${base}/applications?article=${useCases[0].slug}`
+          : `${base}/applications`;
         break;
       case "blog":
         defaultId = blogs[0]?.id || "";
         canonical = blogs[0]
-          ? `https://jivanjor.com/blog/${blogs[0].slug}`
-          : "https://jivanjor.com/blog";
+          ? `${base}/blog/${blogs[0].slug}`
+          : `${base}/blog`;
         break;
       case "page":
         defaultId = pages[0]?.id || "";
         canonical = pages[0]
-          ? `https://jivanjor.com/${pages[0].slug}`
-          : "https://jivanjor.com";
+          ? `${base}/${pages[0].slug}`
+          : base;
         break;
       case "issue":
         defaultId = issues[0]?.id || "";
         canonical = issues[0]
-          ? `https://jivanjor.com/troubleshooting/${issues[0].slug}`
-          : "https://jivanjor.com";
+          ? `${base}/troubleshooting/${issues[0].slug}`
+          : base;
         break;
       default:
         defaultId = type;
-        canonical = `https://jivanjor.com/${type}`;
+        canonical = `${base}/${type}`;
     }
 
     setFormData((prev) => ({
@@ -216,36 +232,37 @@ export default function SeoMetadataPage() {
   };
 
   const handlePageIdChange = (id: string) => {
-    let canonical = "https://jivanjor.com";
+    const base = getOriginBase();
+    let canonical = base;
 
     if (formData.page_type === "product") {
       const p = products.find((x) => x.id === id);
       canonical = p
-        ? `https://jivanjor.com/products?product=${p.slug}`
-        : "https://jivanjor.com/products";
+        ? `${base}/products?product=${p.slug}`
+        : `${base}/products`;
     } else if (formData.page_type === "category") {
       const c = categories.find((x) => x.id === id);
       canonical = c
-        ? `https://jivanjor.com/categories/${c.slug}`
-        : "https://jivanjor.com/categories";
+        ? `${base}/categories/${c.slug}`
+        : `${base}/categories`;
     } else if (formData.page_type === "use-case") {
       const u = useCases.find((x) => x.id === id);
       canonical = u
-        ? `https://jivanjor.com/applications?article=${u.slug}`
-        : "https://jivanjor.com/applications";
+        ? `${base}/applications?article=${u.slug}`
+        : `${base}/applications`;
     } else if (formData.page_type === "blog") {
       const b = blogs.find((x) => x.id === id);
       canonical = b
-        ? `https://jivanjor.com/blog/${b.slug}`
-        : "https://jivanjor.com/blog";
+        ? `${base}/blog/${b.slug}`
+        : `${base}/blog`;
     } else if (formData.page_type === "page") {
       const pg = pages.find((x) => x.id === id);
-      canonical = pg ? `https://jivanjor.com/${pg.slug}` : "https://jivanjor.com";
+      canonical = pg ? `${base}/${pg.slug}` : base;
     } else if (formData.page_type === "issue") {
       const i = issues.find((x) => x.id === id);
       canonical = i
-        ? `https://jivanjor.com/troubleshooting/${i.slug}`
-        : "https://jivanjor.com";
+        ? `${base}/troubleshooting/${i.slug}`
+        : base;
     }
 
     setFormData((prev) => ({

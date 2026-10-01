@@ -42,7 +42,12 @@ const CATEGORIES_HUB_FALLBACK: FallbackSeoData = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { metadata } = await getResolvedSeoAndSchema("static", "categories", CATEGORIES_HUB_FALLBACK);
+  const { metadata } = await getResolvedSeoAndSchema(
+    "static",
+    "categories",
+    CATEGORIES_HUB_FALLBACK,
+    ["categories", "categories-hub"]
+  );
   return metadata;
 }
 
@@ -75,7 +80,12 @@ export default async function Categories() {
     itemList: dynamicItemList,
   };
 
-  const { schemaConfig } = await getResolvedSeoAndSchema("static", "categories", fallback);
+  const { schemaConfig } = await getResolvedSeoAndSchema(
+    "static",
+    "categories",
+    fallback,
+    ["categories", "categories-hub"]
+  );
 
   return (
     <main className="min-h-screen relative bg-background font-google-sans overflow-x-clip">

@@ -88,7 +88,8 @@ export async function generateMetadata({
     const { metadata } = await getResolvedSeoAndSchema(
       "use_case",
       articleSlug,
-      fallback
+      fallback,
+      [articleSlug, guideTitle, matched?.slug]
     );
     return metadata;
   }
@@ -96,7 +97,8 @@ export async function generateMetadata({
   const { metadata } = await getResolvedSeoAndSchema(
     "static",
     "applications",
-    APPLICATIONS_HUB_FALLBACK
+    APPLICATIONS_HUB_FALLBACK,
+    ["applications", "applications-hub"]
   );
   return metadata;
 }
@@ -146,7 +148,12 @@ export default async function ApplicationsPage({
       ],
     };
 
-    const res = await getResolvedSeoAndSchema("use_case", articleSlug, fallback);
+    const res = await getResolvedSeoAndSchema(
+      "use_case",
+      articleSlug,
+      fallback,
+      [articleSlug, guideName, matched?.slug]
+    );
     schemaConfig = res.schemaConfig;
   } else {
     const fallback: FallbackSeoData = {
@@ -154,7 +161,12 @@ export default async function ApplicationsPage({
       description: matchedPage?.description || APPLICATIONS_HUB_FALLBACK.description,
     };
 
-    const res = await getResolvedSeoAndSchema("static", "applications", fallback);
+    const res = await getResolvedSeoAndSchema(
+      "static",
+      "applications",
+      fallback,
+      ["applications", "applications-hub"]
+    );
     schemaConfig = res.schemaConfig;
   }
 

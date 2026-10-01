@@ -52,34 +52,45 @@ export async function generateMetadata({
       const prods = await api.getProducts().catch(() => []);
       const matched = prods.find(
         (p) =>
-          p.slug === productSlug ||
-          p.name.toLowerCase().replace(/\s+/g, "-") === productSlug
+          p.slug?.toLowerCase() === productSlug.toLowerCase() ||
+          p.name.toLowerCase().replace(/\s+/g, "-") === productSlug.toLowerCase() ||
+          p.id === productSlug
       );
 
-      if (matched) {
-        const canonical = `https://jivanjor.com/products?product=${matched.slug}`;
-        const fallback: FallbackSeoData = {
-          pageSchemaType: "WebPage",
-          title: `${matched.name} | Jivanjor`,
-          description:
-            matched.description ||
-            `Explore ${matched.name} premium wood adhesive by Jivanjor.`,
-          canonical,
-          breadcrumbs: [
-            { name: "Home", url: "https://jivanjor.com/" },
-            { name: "Products", url: "https://jivanjor.com/products" },
-            { name: matched.name, url: canonical },
-          ],
-        };
-        const { metadata } = await getResolvedSeoAndSchema("product", matched.id, fallback);
-        return metadata;
-      }
+      const resolvedSlug = matched?.slug || productSlug;
+      const productName = matched?.name || resolvedSlug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      const canonical = `https://jivanjor.com/products?product=${resolvedSlug}`;
+      const fallback: FallbackSeoData = {
+        pageSchemaType: "WebPage",
+        title: `${productName} | Jivanjor`,
+        description:
+          matched?.description ||
+          `Explore ${productName} premium wood adhesive by Jivanjor.`,
+        canonical,
+        breadcrumbs: [
+          { name: "Home", url: "https://jivanjor.com/" },
+          { name: "Products", url: "https://jivanjor.com/products" },
+          { name: productName, url: canonical },
+        ],
+      };
+      const { metadata } = await getResolvedSeoAndSchema(
+        "product",
+        matched?.id || productSlug,
+        fallback,
+        [matched?.id, matched?.slug, matched?.name, productSlug]
+      );
+      return metadata;
     } catch (e) {
       console.error("Failed to generate metadata for product:", e);
     }
   }
 
-  const { metadata } = await getResolvedSeoAndSchema("static", "products", PRODUCTS_HUB_FALLBACK);
+  const { metadata } = await getResolvedSeoAndSchema(
+    "static",
+    "products",
+    PRODUCTS_HUB_FALLBACK,
+    ["products", "products-hub"]
+  );
   return metadata;
 }
 
@@ -153,7 +164,12 @@ export default async function Products({ searchParams }: ProductsPageProps) {
       },
     };
 
-    const res = await getResolvedSeoAndSchema("product", selectedProduct.id, fallback);
+    const res = await getResolvedSeoAndSchema(
+      "product",
+      selectedProduct.id,
+      fallback,
+      [selectedProduct.id, selectedProduct.slug, selectedProduct.name, productSlug]
+    );
     schemaConfig = res.schemaConfig;
   } else {
     const dynamicItemList =
@@ -169,7 +185,12 @@ export default async function Products({ searchParams }: ProductsPageProps) {
       itemList: dynamicItemList,
     };
 
-    const res = await getResolvedSeoAndSchema("static", "products", fallback);
+    const res = await getResolvedSeoAndSchema(
+      "static",
+      "products",
+      fallback,
+      ["products", "products-hub"]
+    );
     schemaConfig = res.schemaConfig;
   }
 
