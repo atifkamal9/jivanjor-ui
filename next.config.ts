@@ -24,6 +24,18 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  async rewrites() {
+    const backendUrl =
+      process.env.API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "https://jivanjor-server.onrender.com/api";
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendUrl.replace(/\/+$/, "")}/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

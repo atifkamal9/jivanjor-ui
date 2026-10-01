@@ -238,11 +238,13 @@ export interface PageTemplate {
 
 // Set up Axios Client
 export const API_BASE =
+  process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   "https://jivanjor-server.onrender.com/api";
 
 const client = axios.create({
   baseURL: API_BASE,
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },

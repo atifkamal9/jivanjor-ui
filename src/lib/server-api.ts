@@ -1,28 +1,11 @@
-import { headers } from "next/headers";
 import { mapTemplateFromBackend } from "@/lib/api";
 
 export async function getServerApiBase() {
-  const h = await headers();
-
-  const host =
-    h.get("x-forwarded-host") ||
-    h.get("host");
-
-  const protocol = "https";
-
-  if (!host) {
-    throw new Error("Unable to determine request host");
-  }
-
-console.log(
-  "[server-api]",
-  "host:", host,
-  "x-forwarded-host:", h.get("x-forwarded-host"),
-  "normal-host:", h.get("host"),
-  "protocol:", protocol,
-  "baseUrl:", `${protocol}://${host}/api`
-);
-  return `${protocol}://${host}/api`;
+  const backendUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://jivanjor-server.onrender.com/api";
+  return backendUrl.replace(/\/+$/, "");
 }
 
 export async function getServerSettings() {

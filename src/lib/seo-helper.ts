@@ -21,7 +21,10 @@ export async function fetchMatchedSeo(
   pageIdentifier?: string | null
 ): Promise<SeoMetadata | undefined> {
   try {
-    const seoList = await api.getSeoMetadata().catch(() => []);
+    const seoList = await api.getSeoMetadata().catch((err) => {
+      console.warn(`[fetchMatchedSeo] Failed to fetch SEO metadata:`, err?.message || err);
+      return [];
+    });
     if (!seoList || seoList.length === 0) return undefined;
 
     const normType = pageType.toLowerCase().replace("_", "-");
