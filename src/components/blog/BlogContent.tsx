@@ -19,6 +19,8 @@ export interface BlogContentProps {
     title?: string;
     content?: string;
     image?: string;
+    headerImage?: string;
+    header_image?: string;
     author?: string;
     author_description?: string;
     authorDescription?: string;
@@ -211,7 +213,12 @@ export default function BlogContent({
       <section className="max-w-360 mx-auto px-5 lg:px-8 hd:px-12 3xl:px-8 mb-6">
         <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
-            src={articleData.image || "/images/blog/Rectangle 125.png"}
+            src={
+              articleData.headerImage ||
+              articleData.header_image ||
+              articleData.image ||
+              "/images/blog/Rectangle 125.png"
+            }
             alt={articleData.title || "Blog Post"}
             fill
             priority
@@ -222,7 +229,12 @@ export default function BlogContent({
         </div>
         <div className="relative w-full h-47 sm:hidden rounded-[20px] overflow-hidden bg-surface shadow-md">
           <Image
-            src={articleData.image || "/images/blog/Rectangle 125 (1).png"}
+            src={
+              articleData.headerImage ||
+              articleData.header_image ||
+              articleData.image ||
+              "/images/blog/Rectangle 125 (1).png"
+            }
             alt={articleData.title || "Blog Post"}
             fill
             priority

@@ -188,6 +188,8 @@ export interface BlogPost {
   updated_at?: string;
   updatedAt?: string;
   image?: string;
+  headerImage?: string;
+  header_image?: string;
   tldr?: string;
 }
 
@@ -607,6 +609,8 @@ function mapBlogPostFromBackend(post: any): BlogPost {
     updated_at,
     updatedAt: updated_at,
     image: post.image || "/images/Rectangle 4.png",
+    headerImage: post.headerImage || post.header_image || "",
+    header_image: post.header_image || post.headerImage || "",
     tldr: post.tldr || "",
   };
 }
@@ -962,6 +966,8 @@ export const api = {
         ? new Date(blogPost.publish_date).toISOString()
         : new Date().toISOString(),
       image: blogPost.image || null,
+      headerImage: blogPost.header_image || blogPost.headerImage || null,
+      header_image: blogPost.header_image || blogPost.headerImage || null,
       tldr: blogPost.tldr || null,
     };
     if (blogPost.id) {

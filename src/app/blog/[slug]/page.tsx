@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${postTitle} | Jivanjor Blog`,
       description,
       canonical,
-      image: post?.image,
+      image: post?.header_image || post?.headerImage || post?.image,
       breadcrumbs: [
         { name: "Home", url: "https://jivanjor.com/" },
         { name: "Blog", url: "https://jivanjor.com/blog" },
@@ -89,7 +89,7 @@ export default async function BlogPostPage({ params }: Props) {
     title: `${postTitle} | Jivanjor Blog`,
     description,
     canonical,
-    image: post?.image,
+    image: post?.header_image || post?.headerImage || post?.image,
     breadcrumbs: [
       { name: "Home", url: "https://jivanjor.com/" },
       { name: "Blog", url: "https://jivanjor.com/blog" },

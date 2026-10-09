@@ -46,6 +46,7 @@ export default function BlogPage() {
     author_avatar: "",
     publish_date: "",
     image: "",
+    header_image: "",
     tldr: "",
   });
 
@@ -164,6 +165,7 @@ export default function BlogPage() {
       author_avatar: authorsList[0]?.avatar || FALLBACK_AUTHOR.avatar,
       publish_date: new Date().toISOString().split("T")[0],
       image: "",
+      header_image: "",
       tldr: "",
     });
     resetSeo();
@@ -185,6 +187,7 @@ export default function BlogPage() {
       author_avatar: blog.author_avatar || blog.authorAvatar || "",
       publish_date: blog.publish_date,
       image: blog.image || "",
+      header_image: blog.header_image || blog.headerImage || "",
       tldr: blog.tldr || "",
     });
     resetSeo();
@@ -233,6 +236,8 @@ export default function BlogPage() {
         author_avatar: formData.author_avatar,
         publish_date: formData.publish_date,
         image: formData.image || undefined,
+        header_image: formData.header_image || undefined,
+        headerImage: formData.header_image || undefined,
         tldr: formData.tldr || undefined,
       });
 
@@ -488,7 +493,7 @@ export default function BlogPage() {
           )}
         </div>
       ) : (
-        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] max-w-5xl">
+        <div className="space-y-6 animate-[fadeIn_0.2s_ease-out] max-w-6xl">
           {/* Header Workspace Title Bar */}
           <div className="flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-5 gap-4">
             <div className="flex items-center gap-3">
@@ -674,13 +679,20 @@ export default function BlogPage() {
                           </div>
                         </div>
 
-                        <div className="lg:col-span-5 xl:col-span-4 space-y-4 flex flex-col justify-between">
+                        <div className="lg:col-span-5 xl:col-span-4 space-y-4 flex flex-col justify-start">
                           <ImageUpload
-                            label="Hero Banner Image"
+                            label="Hero Banner Image (Thumbnail / Card)"
                             value={formData.image}
                             onChange={(url) => setFormData((prev) => ({ ...prev, image: url }))}
                             folder="blog"
                             aspect="square"
+                          />
+                          <ImageUpload
+                            label="Header Image (1377 x 421 px)"
+                            value={formData.header_image}
+                            onChange={(url) => setFormData((prev) => ({ ...prev, header_image: url }))}
+                            folder="blog"
+                            aspect="banner"
                           />
                         </div>
                       </div>
@@ -712,13 +724,29 @@ export default function BlogPage() {
                           <span>Category: {formData.category}</span>
                         </div>
 
-                        {formData.image && (
-                          <img
-                            src={formData.image}
-                            alt={formData.title}
-                            className="w-full max-h-80 object-cover rounded-2xl mb-6 border border-gray-200 dark:border-zinc-800"
-                          />
-                        )}
+                        {formData.header_image ? (
+                          <div className="mb-6">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider block mb-1">
+                              Header Banner (1377 x 421 px)
+                            </span>
+                            <img
+                              src={formData.header_image}
+                              alt={formData.title || "Header banner"}
+                              className="w-full max-h-80 object-cover rounded-2xl border border-gray-200 dark:border-zinc-800"
+                            />
+                          </div>
+                        ) : formData.image ? (
+                          <div className="mb-6">
+                            <span className="text-[10px] font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider block mb-1">
+                              Hero Banner (Fallback)
+                            </span>
+                            <img
+                              src={formData.image}
+                              alt={formData.title}
+                              className="w-full max-h-80 object-cover rounded-2xl border border-gray-200 dark:border-zinc-800"
+                            />
+                          </div>
+                        ) : null}
 
                         {formData.tldr && (
                           <div className="bg-red-50/40 dark:bg-red-950/15 border-l-4 border-red-600 p-4 mb-6 rounded-r-xl font-sans">
