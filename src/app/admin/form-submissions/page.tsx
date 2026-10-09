@@ -43,11 +43,13 @@ export default function FormSubmissionsAdminPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [totalSubmissionsCount, setTotalSubmissionsCount] = useState(0);
 
-  // Selection state for batch actions
+  // Selection state for batch actions & multi-page selection
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isAllMatchingSelected, setIsAllMatchingSelected] = useState(false);
   const [batchReason, setBatchReason] = useState("");
   const [isBatchRetrying, setIsBatchRetrying] = useState(false);
 
@@ -57,63 +59,120 @@ export default function FormSubmissionsAdminPage() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [retryReason, setRetryReason] = useState("");
 
-  // Export State & Logic
+  // Export Modal & Logic
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [exportScope, setExportScope] = useState<"page" | "all" | "selected">("all");
+  const [exportFormat, setExportFormat] = useState<"excel" | "csv">("excel");
   const [exporting, setExporting] = useState(false);
-  const [exportMenuOpen, setExportMenuOpen] = useState(false);
 
-  const formatSubmissionsForExport = (data: FormSubmissionRecord[]) => {
-    return data.map((sub) => ({
-      "Entry ID": sub.crmExternalKey || sub.id,
-      "Submitted At": new Date(sub.submittedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-      "Form Type": sub.formType,
-      "Full Name": sub.fullName || "",
-      "Mobile (Raw)": sub.mobileRaw || "",
-      "Mobile (Normalized)": sub.mobileNormalized || "",
-      "Email": sub.email || "",
-      "Location / Area": sub.location || "",
-      "City": sub.city || "",
-      "State": sub.state || "",
-      "Pin Code": sub.pinCode || "",
-      "Query Type": sub.queryType || sub.interestedIn || "",
-      "Interested In": sub.interestedIn || "",
-      "Line of Business": sub.lineOfBusiness || "",
-      "User Message": sub.message || "",
-      "Consent Version": sub.consentTextVersion || "",
-      "Zoho Sync Status": sub.zohoSyncStatus,
-      "Zoho Contact ID": sub.zohoContactId || "",
-      "Zoho Contact Action": sub.zohoContactAction || "",
-      "Zoho Enquiry ID": sub.zohoEnquiryId || "",
-      "Zoho Enquiry Action": sub.zohoEnquiryAction || "",
-      "Sync Attempts": sub.zohoSyncAttempts || 0,
-      "Last Error Message": sub.zohoLastErrorMessage || "",
-      "UTM Source": sub.utmSource || "",
-      "UTM Medium": sub.utmMedium || "",
-      "UTM Campaign": sub.utmCampaign || "",
-      "Source URL": sub.sourceUrl || "",
-    }));
+  const openExportModal = (preferredScope?: "page" | "all" | "selected") => {
+    if (preferredScope) {
+      setExportScope(preferredScope);
+    } else if (selectedIds.length > 0 || isAllMatchingSelected) {
+      setExportScope("selected");
+    } else {
+      setExportScope("all");
+    }
+    setIsExportModalOpen(true);
   };
 
-  const handleExport = async (format: "csv" | "excel", scope: "filtered" | "selected") => {
+  const formatSubmissionsForExport = (data: FormSubmissionRecord[]) => {
+    return data.map((sub) => {
+      let formattedDate = "";
+      try {
+        if (sub.submittedAt) {
+          const d = new Date(sub.submittedAt);
+          if (!isNaN(d.getTime())) {
+            formattedDate = d.toLocaleString("en-IN", {
+              timeZone: "Asia/Kolkata",
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            });
+          }
+        }
+      } catch {
+        formattedDate = sub.submittedAt || "";
+      }
+
+      return {
+        "Entry ID": sub.crmExternalKey || sub.id,
+        "Submitted At (IST)": formattedDate,
+        "Form Type": sub.formType,
+        "Full Name": sub.fullName || "",
+        "Firm / Business Name": sub.firmName || "",
+        "Mobile (Raw)": sub.mobileRaw || "",
+        "Mobile (Normalized)": sub.mobileNormalized || "",
+        "Email": sub.email || "",
+        "Location / Area": sub.location || "",
+        "City": sub.city || "",
+        "State": sub.state || "",
+        "Pin Code": sub.pinCode || "",
+        "Query Type": sub.queryType || sub.interestedIn || "",
+        "Interested In": sub.interestedIn || "",
+        "Line of Business": sub.lineOfBusiness || "",
+        "User Message": sub.message || "",
+        "Consent Given": sub.consentGiven ? "Yes" : "No",
+        "Consent Version": sub.consentTextVersion || "",
+        "Zoho Sync Status": sub.zohoSyncStatus,
+        "Zoho Contact ID": sub.zohoContactId || "",
+        "Zoho Contact Action": sub.zohoContactAction || "",
+        "Zoho Enquiry ID": sub.zohoEnquiryId || "",
+        "Zoho Enquiry Action": sub.zohoEnquiryAction || "",
+        "Sync Attempts": sub.zohoSyncAttempts || 0,
+        "Last Error Code": sub.zohoLastErrorCode || "",
+        "Last Error Message": sub.zohoLastErrorMessage || "",
+        "Last Sync Attempt (IST)": sub.zohoLastAttemptAt
+          ? new Date(sub.zohoLastAttemptAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+          : "",
+        "Zoho Synced At (IST)": sub.zohoSyncedAt
+          ? new Date(sub.zohoSyncedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+          : "",
+        "Source URL": sub.sourceUrl || "",
+        "Referrer URL": sub.referrerUrl || "",
+        "UTM Source": sub.utmSource || "",
+        "UTM Medium": sub.utmMedium || "",
+        "UTM Campaign": sub.utmCampaign || "",
+        "UTM Content": sub.utmContent || "",
+        "UTM Term": sub.utmTerm || "",
+        "GCLID": sub.gclid || "",
+        "FBCLID": sub.fbclid || "",
+      };
+    });
+  };
+
+  const executeExport = async (format: "csv" | "excel", scope: "page" | "all" | "selected") => {
     try {
       setExporting(true);
-      setExportMenuOpen(false);
 
       let recordsToExport: FormSubmissionRecord[] = [];
 
-      if (scope === "selected") {
+      if (scope === "page") {
+        recordsToExport = submissions;
+      } else if (scope === "selected" && !isAllMatchingSelected) {
         if (selectedIds.length === 0) {
           showToast("error", "Please select at least one submission to export.");
           return;
         }
-        recordsToExport = submissions.filter((s) => selectedIds.includes(s.id));
+        // Fetch full records for all selected IDs
+        const res = await api.getFormSubmissions({
+          page: 1,
+          limit: selectedIds.length,
+          ids: selectedIds,
+        });
+        recordsToExport = res.data || [];
       } else {
         // Fetch all matching records for the current filter parameters
         const res = await api.getFormSubmissions({
           page: 1,
-          limit: 10000,
-          search,
-          status: statusFilter,
-          formType: formTypeFilter,
+          limit: 50000,
+          search: search || undefined,
+          status: statusFilter !== "ALL" ? statusFilter : undefined,
+          formType: formTypeFilter !== "ALL" ? formTypeFilter : undefined,
           startDate: startDate || undefined,
           endDate: endDate || undefined,
         });
@@ -126,7 +185,6 @@ export default function FormSubmissionsAdminPage() {
       }
 
       const formattedData = formatSubmissionsForExport(recordsToExport);
-
       const worksheet = XLSX.utils.json_to_sheet(formattedData);
 
       // Auto-adjust column widths
@@ -136,7 +194,7 @@ export default function FormSubmissionsAdminPage() {
             key.length,
             ...formattedData.slice(0, 100).map((row) => String((row as any)[key] || "").length)
           );
-          return { wch: Math.min(Math.max(maxLen + 2, 12), 40) };
+          return { wch: Math.min(Math.max(maxLen + 2, 12), 45) };
         });
         worksheet["!cols"] = colWidths;
       }
@@ -145,7 +203,8 @@ export default function FormSubmissionsAdminPage() {
       XLSX.utils.book_append_sheet(workbook, worksheet, "Form Submissions");
 
       const dateStr = new Date().toISOString().slice(0, 10);
-      const filename = `form_submissions_${scope === "selected" ? "selected_" : ""}${dateStr}.${format === "excel" ? "xlsx" : "csv"}`;
+      const prefix = scope === "selected" ? "selected_" : scope === "page" ? `page_${page}_` : "all_";
+      const filename = `form_submissions_${prefix}${dateStr}.${format === "excel" ? "xlsx" : "csv"}`;
 
       XLSX.writeFile(
         workbook,
@@ -154,6 +213,7 @@ export default function FormSubmissionsAdminPage() {
       );
 
       showToast("success", `Successfully exported ${recordsToExport.length} submission(s) to ${filename}`);
+      setIsExportModalOpen(false);
     } catch (err: any) {
       console.error("Export failed:", err);
       showToast("error", err.message || "Failed to export submissions");
@@ -195,10 +255,10 @@ export default function FormSubmissionsAdminPage() {
       setLoading(true);
       const res = await api.getFormSubmissions({
         page,
-        limit: 10,
-        search,
-        status: statusFilter,
-        formType: formTypeFilter,
+        limit,
+        search: search || undefined,
+        status: statusFilter !== "ALL" ? statusFilter : undefined,
+        formType: formTypeFilter !== "ALL" ? formTypeFilter : undefined,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
       });
@@ -211,7 +271,7 @@ export default function FormSubmissionsAdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, statusFilter, formTypeFilter, startDate, endDate]);
+  }, [page, limit, search, statusFilter, formTypeFilter, startDate, endDate]);
 
   useEffect(() => {
     loadHealth();
@@ -253,12 +313,34 @@ export default function FormSubmissionsAdminPage() {
 
   // Batch Re-queue / Retry
   const handleBatchRetry = async () => {
-    if (selectedIds.length === 0) return;
+    if (selectedIds.length === 0 && !isAllMatchingSelected) return;
     try {
       setIsBatchRetrying(true);
-      const res = await api.batchRetryFormSubmissions(selectedIds, batchReason || "Batch admin UI retry");
-      showToast("success", res.data?.message || `Queued ${selectedIds.length} items for retry.`);
-      setSelectedIds([]);
+      let targetIds = selectedIds;
+      if (isAllMatchingSelected) {
+        // Fetch all matching non-synced submission IDs
+        const res = await api.getFormSubmissions({
+          page: 1,
+          limit: 50000,
+          search: search || undefined,
+          status: statusFilter !== "ALL" ? statusFilter : undefined,
+          formType: formTypeFilter !== "ALL" ? formTypeFilter : undefined,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
+        });
+        targetIds = (res.data || [])
+          .filter((s) => s.zohoSyncStatus !== "SYNCED" && s.zohoSyncStatus !== "PROCESSING")
+          .map((s) => s.id);
+      }
+
+      if (targetIds.length === 0) {
+        showToast("error", "No eligible submissions found for retry.");
+        return;
+      }
+
+      const res = await api.batchRetryFormSubmissions(targetIds, batchReason || "Batch admin UI retry");
+      showToast("success", res.data?.message || `Queued ${targetIds.length} items for retry.`);
+      clearSelection();
       setBatchReason("");
       loadSubmissions();
       loadHealth();
@@ -269,18 +351,48 @@ export default function FormSubmissionsAdminPage() {
     }
   };
 
+  const isAllPageSelected =
+    submissions.length > 0 && submissions.every((s) => selectedIds.includes(s.id));
+
   const toggleSelectAll = () => {
-    if (selectedIds.length === submissions.length) {
+    if (isAllMatchingSelected || isAllPageSelected) {
       setSelectedIds([]);
+      setIsAllMatchingSelected(false);
     } else {
-      setSelectedIds(submissions.map((s) => s.id));
+      const pageIds = submissions.map((s) => s.id);
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...pageIds])));
+      setIsAllMatchingSelected(false);
     }
   };
 
+  const selectAllMatching = () => {
+    setIsAllMatchingSelected(true);
+  };
+
+  const clearSelection = () => {
+    setSelectedIds([]);
+    setIsAllMatchingSelected(false);
+  };
+
   const toggleSelect = (id: string) => {
+    setIsAllMatchingSelected(false);
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+  };
+
+  const hasActiveFilters = Boolean(
+    search || statusFilter !== "ALL" || formTypeFilter !== "ALL" || startDate || endDate
+  );
+
+  const handleClearFilters = () => {
+    setSearch("");
+    setStatusFilter("ALL");
+    setFormTypeFilter("ALL");
+    setStartDate("");
+    setEndDate("");
+    setPage(1);
+    clearSelection();
   };
 
   // Status Badge Component
@@ -391,65 +503,16 @@ export default function FormSubmissionsAdminPage() {
           </div>
 
           <div className="flex items-center gap-2 relative">
-            {/* Export Dropdown Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setExportMenuOpen((prev) => !prev)}
-                disabled={exporting || loading}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all shadow-xs cursor-pointer disabled:opacity-50"
-              >
-                <Download className={`w-4 h-4 ${exporting ? "animate-bounce" : ""}`} />
-                <span>{exporting ? "Exporting..." : "Export"}</span>
-                <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-80" />
-              </button>
-
-              {exportMenuOpen && (
-                <div
-                  className="absolute right-0 mt-2 w-60 bg-background border border-border rounded-2xl shadow-2xl z-40 p-2 space-y-1 animate-[fadeIn_0.1s_ease-out]"
-                >
-                  <div className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-foreground/50">
-                    Export All Matching ({totalSubmissionsCount})
-                  </div>
-                  <button
-                    onClick={() => handleExport("excel", "filtered")}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
-                  >
-                    <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <span>Export to Excel (.xlsx)</span>
-                  </button>
-                  <button
-                    onClick={() => handleExport("csv", "filtered")}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
-                  >
-                    <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                    <span>Export to CSV (.csv)</span>
-                  </button>
-
-                  {selectedIds.length > 0 && (
-                    <>
-                      <div className="border-t border-border my-1" />
-                      <div className="px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-primary">
-                        Export Selected ({selectedIds.length})
-                      </div>
-                      <button
-                        onClick={() => handleExport("excel", "selected")}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
-                      >
-                        <FileSpreadsheet className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                        <span>Selected to Excel (.xlsx)</span>
-                      </button>
-                      <button
-                        onClick={() => handleExport("csv", "selected")}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground hover:bg-surface transition-all cursor-pointer"
-                      >
-                        <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                        <span>Selected to CSV (.csv)</span>
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+            {/* Export Button */}
+            <button
+              onClick={() => openExportModal()}
+              disabled={exporting || loading}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all shadow-xs cursor-pointer disabled:opacity-50"
+              title="Open Export Options"
+            >
+              <Download className={`w-4 h-4 ${exporting ? "animate-bounce" : ""}`} />
+              <span>{exporting ? "Exporting..." : "Export"}</span>
+            </button>
 
             <button
               onClick={() => {
@@ -542,112 +605,132 @@ export default function FormSubmissionsAdminPage() {
 
         {/* Filters & Actions Control Bar */}
         <div className="p-4 rounded-2xl bg-background border border-border shadow-xs space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {/* Search Input */}
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-2 text-foreground/40" />
-              <input
-                type="text"
-                placeholder="Search Entry ID, Name, Mobile, City..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full pl-9 pr-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 flex-1">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-2.5 text-foreground/40" />
+                <input
+                  type="text"
+                  placeholder="Search Entry ID, Name, Mobile, City..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="w-full pl-9 pr-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+
+              {/* Status Filter */}
+              <div className="relative">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                >
+                  <option value="ALL">All Sync Statuses</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="PROCESSING">Syncing (Processing)</option>
+                  <option value="RETRY_SCHEDULED">Retry Scheduled</option>
+                  <option value="SYNCED">Synced</option>
+                  <option value="FAILED">Failed</option>
+                  <option value="MANUAL_REVIEW">Needs Review</option>
+                </select>
+              </div>
+
+              {/* Form Type Filter */}
+              <div className="relative">
+                <select
+                  value={formTypeFilter}
+                  onChange={(e) => {
+                    setFormTypeFilter(e.target.value);
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                >
+                  <option value="ALL">All Website Forms</option>
+                  <option value="CONTACT">Contact Us (/contact)</option>
+                  <option value="DEALER">Become a Dealer (/partner)</option>
+                  <option value="CONTRACTOR">Contractor Connect (/contractor)</option>
+                </select>
+              </div>
+
+              {/* Date Range Start */}
+              <div>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  title="Start Date"
+                />
+              </div>
+
+              {/* Date Range End */}
+              <div>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  title="End Date"
+                />
+              </div>
             </div>
 
-            {/* Status Filter */}
-            <div className="relative">
-              <select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+            {/* Reset Filters button if any active */}
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-foreground/70 hover:text-foreground hover:bg-surface/80 transition-all cursor-pointer shrink-0 self-start lg:self-center"
+                title="Reset all search & date filters"
               >
-                <option value="ALL">All Sync Statuses</option>
-                <option value="PENDING">Pending</option>
-                <option value="PROCESSING">Syncing (Processing)</option>
-                <option value="RETRY_SCHEDULED">Retry Scheduled</option>
-                <option value="SYNCED">Synced</option>
-                <option value="FAILED">Failed</option>
-                <option value="MANUAL_REVIEW">Needs Review</option>
-              </select>
-            </div>
-
-            {/* Form Type Filter */}
-            <div className="relative">
-              <select
-                value={formTypeFilter}
-                onChange={(e) => {
-                  setFormTypeFilter(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
-              >
-                <option value="ALL">All Website Forms</option>
-                <option value="CONTACT">Contact Us (/contact)</option>
-                <option value="DEALER">Become a Dealer (/partner)</option>
-                <option value="CONTRACTOR">Contractor Connect (/contractor)</option>
-              </select>
-            </div>
-
-            {/* Date Range Start */}
-            <div>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
-                title="Start Date"
-              />
-            </div>
-
-            {/* Date Range End */}
-            <div>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => {
-                  setEndDate(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20"
-                title="End Date"
-              />
-            </div>
+                <X className="w-3.5 h-3.5" />
+                <span>Clear Filters</span>
+              </button>
+            )}
           </div>
 
           {/* Selected Actions Bar */}
-          {selectedIds.length > 0 && (
-            <div className="pt-3 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-primary/5 p-3 rounded-xl">
-              <span className="text-xs font-bold text-primary">
-                {selectedIds.length} submission(s) selected
-              </span>
+          {(selectedIds.length > 0 || isAllMatchingSelected) && (
+            <div className="pt-3 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-primary/5 p-3 rounded-xl animate-[fadeIn_0.15s_ease-out]">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-primary">
+                  {isAllMatchingSelected
+                    ? `All ${totalSubmissionsCount} submissions selected`
+                    : `${selectedIds.length} submission(s) selected`}
+                </span>
+                <button
+                  onClick={clearSelection}
+                  className="text-[11px] text-foreground/60 hover:text-foreground underline cursor-pointer"
+                >
+                  Deselect all
+                </button>
+              </div>
               <div className="flex items-center gap-2 flex-wrap">
                 <button
-                  onClick={() => handleExport("excel", "selected")}
+                  onClick={() => openExportModal("selected")}
                   disabled={exporting}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
-                  title="Export selected submissions to Excel (.xlsx)"
+                  title="Export selected submissions"
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Export Excel</span>
-                </button>
-                <button
-                  onClick={() => handleExport("csv", "selected")}
-                  disabled={exporting}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
-                  title="Export selected submissions to CSV (.csv)"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Export CSV</span>
+                  <span>Export Selected</span>
                 </button>
 
                 <div className="h-4 w-px bg-border/80 mx-1 hidden sm:block" />
@@ -672,6 +755,33 @@ export default function FormSubmissionsAdminPage() {
           )}
         </div>
 
+        {/* Multi-page selection notification banner (Gmail style) */}
+        {isAllPageSelected && totalSubmissionsCount > submissions.length && (
+          <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 text-center text-xs text-foreground animate-[fadeIn_0.15s_ease-out]">
+            {!isAllMatchingSelected ? (
+              <span>
+                All <strong className="text-primary font-bold">{submissions.length}</strong> submissions on this page are selected.{" "}
+                <button
+                  onClick={selectAllMatching}
+                  className="font-extrabold text-primary underline hover:opacity-80 cursor-pointer ml-1"
+                >
+                  Select all {totalSubmissionsCount} submissions matching the current filter
+                </button>
+              </span>
+            ) : (
+              <span>
+                All <strong className="text-primary font-bold">{totalSubmissionsCount}</strong> submissions matching the current filter are selected.{" "}
+                <button
+                  onClick={clearSelection}
+                  className="font-extrabold text-rose-600 underline hover:opacity-80 cursor-pointer ml-1"
+                >
+                  Clear selection
+                </button>
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Submissions Table */}
         <div className="bg-background border border-border rounded-2xl shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
@@ -681,9 +791,17 @@ export default function FormSubmissionsAdminPage() {
                   <th className="px-2 py-3 w-10 text-center">
                     <input
                       type="checkbox"
-                      checked={selectedIds.length === submissions.length && submissions.length > 0}
+                      checked={
+                        isAllMatchingSelected ||
+                        (submissions.length > 0 && submissions.every((s) => selectedIds.includes(s.id)))
+                      }
                       onChange={toggleSelectAll}
-                      className="rounded border-border text-primary focus:ring-primary"
+                      className="rounded border-border text-primary focus:ring-primary cursor-pointer"
+                      title={
+                        isAllMatchingSelected || isAllPageSelected
+                          ? "Deselect all"
+                          : "Select all on this page"
+                      }
                     />
                   </th>
                   <th className="px-2 py-3 max-w-30 2xl:max-w-none">Entry ID & Date</th>
@@ -718,9 +836,9 @@ export default function FormSubmissionsAdminPage() {
                       <td className="px-2 py-3 text-center">
                         <input
                           type="checkbox"
-                          checked={selectedIds.includes(sub.id)}
+                          checked={isAllMatchingSelected || selectedIds.includes(sub.id)}
                           onChange={() => toggleSelect(sub.id)}
-                          className="rounded border-border text-primary focus:ring-primary"
+                          className="rounded border-border text-primary focus:ring-primary cursor-pointer"
                         />
                       </td>
 
@@ -834,16 +952,49 @@ export default function FormSubmissionsAdminPage() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="p-4 bg-surface border-t border-border flex items-center justify-between">
-            <span className="text-xs text-foreground/60 font-medium">
-              Showing page <strong className="text-foreground">{page}</strong> of <strong className="text-foreground">{totalPages}</strong> ({totalSubmissionsCount} submissions)
-            </span>
+          <div className="p-4 bg-surface border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="text-xs text-foreground/60 font-medium">
+                Showing{" "}
+                <strong className="text-foreground">
+                  {totalSubmissionsCount === 0 ? 0 : (page - 1) * limit + 1}
+                </strong>
+                {" - "}
+                <strong className="text-foreground">
+                  {Math.min(page * limit, totalSubmissionsCount)}
+                </strong>
+                {" of "}
+                <strong className="text-foreground">{totalSubmissionsCount}</strong> submissions
+              </span>
+
+              <div className="flex items-center gap-1.5 text-xs text-foreground/70">
+                <span className="text-[11px] font-semibold text-foreground/50">Rows per page:</span>
+                <select
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value));
+                    setPage(1);
+                    clearSelection();
+                  }}
+                  className="px-2.5 py-1 bg-background border border-border rounded-xl text-xs font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
+                >
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                  <option value={200}>200</option>
+                </select>
+              </div>
+            </div>
 
             <div className="flex items-center gap-2">
+              <span className="text-xs text-foreground/50 font-medium hidden sm:inline">
+                Page {page} of {totalPages}
+              </span>
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
                 className="p-2 rounded-xl bg-background border border-border text-xs font-bold hover:bg-surface disabled:opacity-40 cursor-pointer"
+                title="Previous Page"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -852,6 +1003,7 @@ export default function FormSubmissionsAdminPage() {
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages || loading}
                 className="p-2 rounded-xl bg-background border border-border text-xs font-bold hover:bg-surface disabled:opacity-40 cursor-pointer"
+                title="Next Page"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -1119,6 +1271,226 @@ export default function FormSubmissionsAdminPage() {
                     </div>
                   </>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Export Scope & Format Confirmation Modal */}
+        {isExportModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-background border border-border rounded-3xl w-full max-w-lg shadow-2xl animate-[fadeIn_0.15s_ease-out] overflow-hidden flex flex-col">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-border flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                    <Download className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-foreground">Export Form Submissions</h3>
+                    <p className="text-xs text-foreground/60">Choose which records and format you want to export.</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsExportModalOpen(false)}
+                  disabled={exporting}
+                  className="p-2 rounded-xl bg-surface hover:bg-surface/80 text-foreground cursor-pointer disabled:opacity-50"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-5">
+                {/* 1. Scope Selection */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-foreground/60 block">
+                    1. Select Records to Export
+                  </label>
+                  <div className="space-y-2">
+                    {/* Entire Dataset / All matching */}
+                    <label
+                      className={`flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                        exportScope === "all"
+                          ? "bg-primary/5 border-primary shadow-xs"
+                          : "bg-surface/50 border-border hover:bg-surface"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="exportScope"
+                        checked={exportScope === "all"}
+                        onChange={() => setExportScope("all")}
+                        className="mt-1 text-primary focus:ring-primary"
+                      />
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-foreground">Entire Dataset / All Matching Records</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-extrabold bg-primary/10 text-primary">
+                            {totalSubmissionsCount} records
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-foreground/60">
+                          {hasActiveFilters
+                            ? "Exports all records that match the currently applied search & date filters across all pages."
+                            : "Exports all form submission records currently stored in the database."}
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Current Page Only */}
+                    <label
+                      className={`flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${
+                        exportScope === "page"
+                          ? "bg-primary/5 border-primary shadow-xs"
+                          : "bg-surface/50 border-border hover:bg-surface"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="exportScope"
+                        checked={exportScope === "page"}
+                        onChange={() => setExportScope("page")}
+                        className="mt-1 text-primary focus:ring-primary"
+                      />
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-foreground">Current Page Records Only</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-extrabold bg-surface border border-border text-foreground/80">
+                            {submissions.length} records (Page {page})
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-foreground/60">
+                          Exports only the {submissions.length} records displayed on the current active page.
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Selected Records */}
+                    <label
+                      className={`flex items-start gap-3 p-3.5 rounded-2xl border transition-all ${
+                        selectedIds.length === 0 && !isAllMatchingSelected
+                          ? "opacity-50 cursor-not-allowed bg-surface/20 border-border"
+                          : exportScope === "selected"
+                          ? "bg-primary/5 border-primary shadow-xs cursor-pointer"
+                          : "bg-surface/50 border-border hover:bg-surface cursor-pointer"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="exportScope"
+                        disabled={selectedIds.length === 0 && !isAllMatchingSelected}
+                        checked={exportScope === "selected"}
+                        onChange={() => setExportScope("selected")}
+                        className="mt-1 text-primary focus:ring-primary"
+                      />
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-foreground">Checked / Selected Records</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-extrabold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                            {isAllMatchingSelected ? totalSubmissionsCount : selectedIds.length} records
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-foreground/60">
+                          {selectedIds.length === 0 && !isAllMatchingSelected
+                            ? "No records currently checked in the table."
+                            : `Exports only the ${isAllMatchingSelected ? totalSubmissionsCount : selectedIds.length} specifically selected submission(s).`}
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* 2. Format Selection */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-foreground/60 block">
+                    2. Choose Export Format
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setExportFormat("excel")}
+                      className={`flex items-center gap-2.5 p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                        exportFormat === "excel"
+                          ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-700 dark:text-emerald-400 font-bold"
+                          : "bg-surface border-border text-foreground hover:bg-surface/80 font-medium"
+                      }`}
+                    >
+                      <FileSpreadsheet className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold">Excel (.xlsx)</p>
+                        <p className="text-[10px] text-foreground/50">Spreadsheet</p>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setExportFormat("csv")}
+                      className={`flex items-center gap-2.5 p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                        exportFormat === "csv"
+                          ? "bg-blue-500/10 border-blue-500/40 text-blue-700 dark:text-blue-400 font-bold"
+                          : "bg-surface border-border text-foreground hover:bg-surface/80 font-medium"
+                      }`}
+                    >
+                      <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0" />
+                      <div>
+                        <p className="text-xs font-bold">CSV (.csv)</p>
+                        <p className="text-[10px] text-foreground/50">Plain Text</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-5 border-t border-border bg-surface/30 flex items-center justify-between gap-3 shrink-0">
+                <span className="text-[11px] text-foreground/60 font-medium">
+                  Will export:{" "}
+                  <strong className="text-foreground">
+                    {exportScope === "page"
+                      ? submissions.length
+                      : exportScope === "selected"
+                      ? isAllMatchingSelected
+                        ? totalSubmissionsCount
+                        : selectedIds.length
+                      : totalSubmissionsCount}
+                  </strong>{" "}
+                  record(s)
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setIsExportModalOpen(false)}
+                    disabled={exporting}
+                    className="px-4 py-2 rounded-xl bg-surface border border-border text-xs font-bold text-foreground hover:bg-surface/80 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={() => executeExport(exportFormat, exportScope)}
+                    disabled={
+                      exporting ||
+                      (exportScope === "selected" && selectedIds.length === 0 && !isAllMatchingSelected) ||
+                      (exportScope === "all" && totalSubmissionsCount === 0) ||
+                      (exportScope === "page" && submissions.length === 0)
+                    }
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+                  >
+                    {exporting ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download Export</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

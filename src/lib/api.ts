@@ -1413,7 +1413,7 @@ export const api = {
     const res = await client.post("/forms/contractor", data);
     return res.data;
   },
-  getFormSubmissions: async (params?: { page?: number; limit?: number; formType?: string; status?: string; search?: string; startDate?: string; endDate?: string }): Promise<{ status: string; data: FormSubmissionRecord[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
+  getFormSubmissions: async (params?: { page?: number; limit?: number; formType?: string; status?: string; search?: string; startDate?: string; endDate?: string; ids?: string[] }): Promise<{ status: string; data: FormSubmissionRecord[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
     const query = new URLSearchParams();
     if (params?.page) query.set("page", String(params.page));
     if (params?.limit) query.set("limit", String(params.limit));
@@ -1422,6 +1422,7 @@ export const api = {
     if (params?.search) query.set("search", params.search);
     if (params?.startDate) query.set("startDate", params.startDate);
     if (params?.endDate) query.set("endDate", params.endDate);
+    if (params?.ids && params.ids.length > 0) query.set("ids", params.ids.join(","));
     const res = await client.get(`/admin/form-submissions?${query.toString()}`);
     return res.data;
   },
