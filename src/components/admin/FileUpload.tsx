@@ -38,9 +38,13 @@ export default function FileUpload({
       if (res && res.url) {
         onChange(res.url);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to upload file:", err);
-      alert("Failed to upload file. Please check backend connection and try again.");
+      const serverMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to upload file. Please check backend connection and try again.";
+      alert(`Upload failed: ${serverMessage}`);
     } finally {
       setUploading(false);
     }

@@ -259,6 +259,9 @@ client.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
     return config;
   },
   (error) => {
@@ -680,9 +683,7 @@ export const api = {
     if (bucket) formData.append("bucket", bucket);
 
     const res = await client.post("/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      timeout: 120000,
     });
     return res.data?.data;
   },

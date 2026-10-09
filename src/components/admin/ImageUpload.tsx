@@ -48,9 +48,13 @@ export default function ImageUpload({
       if (res && res.url) {
         onChange(res.url);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to upload image:", err);
-      alert("Failed to upload image. Please check backend connection and try again.");
+      const serverMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to upload image. Please check backend connection and try again.";
+      alert(`Upload failed: ${serverMessage}`);
     } finally {
       setUploading(false);
     }
