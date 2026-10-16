@@ -22,6 +22,8 @@ export interface HeroSlideData {
   videoUrl?: string;
   video?: string;
   showOverlay?: boolean;
+  showTitle?: boolean;
+  showCta?: boolean;
   cta1?: {
     text?: string;
     link?: string;
@@ -55,6 +57,8 @@ interface HeroProps {
     };
     media?: string[];
     slides?: HeroSlideData[];
+    showTitle?: boolean;
+    showCta?: boolean;
   };
 }
 
@@ -66,6 +70,8 @@ interface SlideItem {
   hasVideo: boolean;
   videoUrl?: string;
   showOverlay?: boolean;
+  showTitle?: boolean;
+  showCta?: boolean;
   cta1?: {
     text?: string;
     link?: string;
@@ -97,6 +103,8 @@ export default function Hero({ data }: HeroProps) {
         hasVideo: isVid,
         videoUrl: s.videoUrl || s.video || "",
         showOverlay: s.showOverlay,
+        showTitle: s.showTitle,
+        showCta: s.showCta,
         cta1: s.cta1,
         cta2: s.cta2,
         title: s.title,
@@ -221,6 +229,8 @@ export default function Hero({ data }: HeroProps) {
         {slides.map((slide, idx) => {
           const isCurrentSlide = idx === activeIndex;
           const showVideo = isPlayingVideo && isCurrentSlide;
+          const shouldShowTitle = slide.showTitle !== false && data?.showTitle !== false;
+          const shouldShowCta = slide.showCta !== false && data?.showCta !== false;
           const slideTitle = slide.title || data?.title || "Dependable Bonds for Indian Homes";
           const slideCta1Text = slide.cta1?.text || data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products";
           const slideCta1Link = slide.cta1?.link || data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section";
@@ -309,36 +319,42 @@ export default function Hero({ data }: HeroProps) {
               )}
 
               {/* Content Wrapper for this slide */}
-              <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
-                <div className="relative mx-auto max-w-360 h-full w-full">
-                  <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
-                    {/* Title */}
-                    <Heading className="text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
-                      {slideTitle}
-                    </Heading>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
-                      {slideCta1Text && (
-                        <Link
-                          href={slideCta1Link}
-                          className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
-                        >
-                          {slideCta1Text}
-                        </Link>
+              {(shouldShowTitle || shouldShowCta) && (
+                <div className="absolute inset-0 pointer-events-none z-20 flex items-end">
+                  <div className="relative mx-auto max-w-360 h-full w-full">
+                    <div className="absolute bottom-20 lg:bottom-14 2xl:bottom-18 left-7 xl:left-10 right-7 xl:right-10 flex flex-col items-start pointer-events-auto max-w-82 md:max-w-92 xd:max-w-110">
+                      {/* Title */}
+                      {shouldShowTitle && slideTitle && (
+                        <Heading className="text-[32px]! sm:text-[36px]! xd:text-[44px]! tracking-[0%] text-white leading-[0.95]">
+                          {slideTitle}
+                        </Heading>
                       )}
-                      {slideCta2Text && (
-                        <Link
-                          href={slideCta2Link}
-                          className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
-                        >
-                          {slideCta2Text}
-                        </Link>
+
+                      {/* Action Buttons */}
+                      {shouldShowCta && (slideCta1Text || slideCta2Text) && (
+                        <div className="flex items-center mt-4.25 xl:mt-2 gap-4.25 xl:gap-3.75">
+                          {slideCta1Text && (
+                            <Link
+                              href={slideCta1Link}
+                              className="w-37.5 h-8.5 rounded-full bg-white text-[#1c1c1c] text-sm font-medium transition hover:bg-white/90 flex items-center justify-center text-center font-google-sans"
+                            >
+                              {slideCta1Text}
+                            </Link>
+                          )}
+                          {slideCta2Text && (
+                            <Link
+                              href={slideCta2Link}
+                              className="w-37.5 h-8.5 rounded-full border-[1.5px] border-white text-white text-sm font-medium transition hover:bg-white/10 flex items-center justify-center text-center font-google-sans"
+                            >
+                              {slideCta2Text}
+                            </Link>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </SwiperSlide>
           );
         })}

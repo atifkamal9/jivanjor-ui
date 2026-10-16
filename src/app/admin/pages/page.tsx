@@ -54,6 +54,9 @@ const defaultHomeSections = {
         bgImage: "/images/hero.png",
         bgImagePhone: "/images/hero.png",
         videoUrl: "",
+        showOverlay: true,
+        showTitle: true,
+        showCta: true,
         cta1: { text: "Explore Products", link: "#product-section" },
         cta2: { text: "About Jivanjor", link: "/about" }
       },
@@ -63,6 +66,9 @@ const defaultHomeSections = {
         bgImage: "/images/hero (1).png",
         bgImagePhone: "/images/hero (1) mobile.png",
         videoUrl: "",
+        showOverlay: true,
+        showTitle: true,
+        showCta: true,
         cta1: { text: "Explore Products", link: "#product-section" },
         cta2: { text: "About Jivanjor", link: "/about" }
       },
@@ -72,6 +78,9 @@ const defaultHomeSections = {
         bgImage: "/images/video-thumbnail.png",
         bgImagePhone: "/images/video-thumbnail.png",
         videoUrl: "/videos/hero-background.mp4",
+        showOverlay: true,
+        showTitle: true,
+        showCta: true,
         cta1: { text: "Explore Products", link: "#product-section" },
         cta2: { text: "About Jivanjor", link: "/about" }
       }
@@ -2234,6 +2243,9 @@ export default function PagesPage() {
                                 bgImage: "/images/hero.png",
                                 bgImagePhone: "/images/hero.png",
                                 videoUrl: "",
+                                showOverlay: true,
+                                showTitle: true,
+                                showCta: true,
                                 cta1: { text: "Explore Products", link: "#product-section" },
                                 cta2: { text: "About Jivanjor", link: "/about" }
                               });
@@ -2440,29 +2452,75 @@ export default function PagesPage() {
                                   </div>
                                 )}
 
-                                {/* Overlay Background Toggle */}
-                                <div className="flex items-center gap-2 pt-2 border-t border-border/40">
-                                  <input
-                                    type="checkbox"
-                                    id={`heroShowOverlay-${sIdx}`}
-                                    checked={slide.showOverlay !== false}
-                                    onChange={(e) => {
-                                      const currentSlides = [...(formData.sections.hero.slides || [])];
-                                      currentSlides[sIdx] = { ...currentSlides[sIdx], showOverlay: e.target.checked };
-                                      updateSectionField("hero", "slides", currentSlides);
-                                    }}
-                                    className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
-                                  />
-                                  <label htmlFor={`heroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
-                                    Enable Dark Gradient Overlay Background
-                                  </label>
+                                {/* Display Options Toggles */}
+                                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 border-t border-border/40">
+                                  {/* Overlay Toggle */}
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`heroShowOverlay-${sIdx}`}
+                                      checked={slide.showOverlay !== false}
+                                      onChange={(e) => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        currentSlides[sIdx] = { ...currentSlides[sIdx], showOverlay: e.target.checked };
+                                        updateSectionField("hero", "slides", currentSlides);
+                                      }}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded cursor-pointer"
+                                    />
+                                    <label htmlFor={`heroShowOverlay-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Enable Dark Gradient Overlay Background
+                                    </label>
+                                  </div>
+
+                                  {/* Title Toggle */}
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`heroShowTitle-${sIdx}`}
+                                      checked={slide.showTitle !== false}
+                                      onChange={(e) => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        currentSlides[sIdx] = { ...currentSlides[sIdx], showTitle: e.target.checked };
+                                        updateSectionField("hero", "slides", currentSlides);
+                                      }}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded cursor-pointer"
+                                    />
+                                    <label htmlFor={`heroShowTitle-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Show Banner Heading / Title
+                                    </label>
+                                  </div>
+
+                                  {/* CTA Buttons Toggle */}
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      id={`heroShowCta-${sIdx}`}
+                                      checked={slide.showCta !== false}
+                                      onChange={(e) => {
+                                        const currentSlides = [...(formData.sections.hero.slides || [])];
+                                        currentSlides[sIdx] = { ...currentSlides[sIdx], showCta: e.target.checked };
+                                        updateSectionField("hero", "slides", currentSlides);
+                                      }}
+                                      className="h-4 w-4 text-primary focus:ring-primary border-border rounded cursor-pointer"
+                                    />
+                                    <label htmlFor={`heroShowCta-${sIdx}`} className="text-xs text-foreground/75 font-semibold cursor-pointer select-none">
+                                      Show Call-to-Action (CTA) Buttons
+                                    </label>
+                                  </div>
                                 </div>
 
                                 {/* Banner Heading / Title */}
-                                <div className="space-y-1.5 pt-3 border-t border-border/60">
-                                  <label className="block text-xs font-bold text-foreground/70 uppercase tracking-wider">
-                                    Banner Heading / Title
-                                  </label>
+                                <div className={`space-y-1.5 pt-3 border-t border-border/60 transition-opacity ${slide.showTitle === false ? "opacity-60" : ""}`}>
+                                  <div className="flex items-center justify-between">
+                                    <label className="block text-xs font-bold text-foreground/70 uppercase tracking-wider">
+                                      Banner Heading / Title
+                                    </label>
+                                    {slide.showTitle === false && (
+                                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded">
+                                        Hidden on Banner
+                                      </span>
+                                    )}
+                                  </div>
                                   <input
                                     type="text"
                                     value={slide.title || ""}
@@ -2471,16 +2529,23 @@ export default function PagesPage() {
                                       currentSlides[sIdx] = { ...currentSlides[sIdx], title: e.target.value };
                                       updateSectionField("hero", "slides", currentSlides);
                                     }}
-                                    placeholder="e.g. Strong Adhesion for Precision Woodwork (falls back to Global Title if empty)"
+                                    placeholder={slide.showTitle === false ? "Title is currently hidden on this banner" : "e.g. Strong Adhesion for Precision Woodwork (falls back to Global Title if empty)"}
                                     className="w-full px-3.5 py-2 bg-background border border-border rounded-xl text-xs outline-none focus:border-primary font-medium"
                                   />
                                 </div>
 
                                 {/* Per-banner Call-to-action Buttons */}
-                                <div className="pt-3 border-t border-border/60 space-y-3">
-                                  <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
-                                    Individual Banner CTAs (Call-To-Actions)
-                                  </span>
+                                <div className={`pt-3 border-t border-border/60 space-y-3 transition-opacity ${slide.showCta === false ? "opacity-60" : ""}`}>
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-[11px] font-extrabold uppercase text-foreground/70 tracking-wider">
+                                      Individual Banner CTAs (Call-To-Actions)
+                                    </span>
+                                    {slide.showCta === false && (
+                                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded">
+                                        Hidden on Banner
+                                      </span>
+                                    )}
+                                  </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* CTA 1 */}
                                     <div className="space-y-2 bg-background/60 p-3 rounded-xl border border-border">
