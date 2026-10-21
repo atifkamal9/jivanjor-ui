@@ -1,4 +1,11 @@
-import { api, Product, Category } from "@/lib/api";
+import { Product, Category } from "@/lib/api";
+
+import {
+  getServerCategories,
+  getServerProducts,
+  getServerActiveTemplateForPage,
+} from "@/lib/server-api";
+
 import {
   CategoryDetailClient,
   RightChoice,
@@ -16,7 +23,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const cats = await api.getCategories().catch(() => []);
+   const cats = await getServerCategories().catch(() => []);
     const cat = cats.find((c) => c.slug === slug);
     const catName = cat?.name || "Product Category";
     const canonical = `https://jivanjor.com/categories/${slug}`;
@@ -60,11 +67,22 @@ export default async function Categories({ params }: PageProps) {
   let categoryProducts: Product[] = [];
 
   try {
-    const [cats, prods, template] = await Promise.all([
-      api.getCategories().catch(() => []),
-      api.getProducts().catch(() => []),
-      api.getActiveTemplateForPage("categories").catch(() => null),
-    ]);
+   const [cats, prods, template] = await Promise.all([
+  getServerCategories().catch((err) => {
+    console.error("Failed to fetch categories in SSR:", err);
+    return [];
+  }),
+
+  getServerProducts().catch((err) => {
+    console.error("Failed to fetch products in SSR:", err);
+    return [];
+  }),
+
+  getServerActiveTemplateForPage("categories").catch((err) => {
+    console.error("Failed to fetch categories template in SSR:", err);
+    return null;
+  }),
+]);
     categoryData = cats.find(
       (c) => c.slug === slug && c.isVisible !== false && !c.hideInMenu
     );
