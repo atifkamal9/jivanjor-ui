@@ -265,7 +265,7 @@ client.interceptors.request.use(
 );
 
 // Mappers for backward compatibility with UI schemas
-function mapCategoryFromBackend(cat: any): Category {
+export function mapCategoryFromBackend(cat: any): Category {
   let description = cat.description || "";
   let tagline = cat.tagline || "";
   let categoryTitle = "";
@@ -366,7 +366,7 @@ function mapMaterialFromBackend(mat: any): Material {
   };
 }
 
-function mapProductFromBackend(prod: any): Product {
+export function mapProductFromBackend(prod: any): Product {
   let metadataStr = "";
   let themeColor = "#0498AA";
   let overviewBullets: { text: string; icon: string }[] = [];
