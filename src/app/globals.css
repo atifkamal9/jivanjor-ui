@@ -260,3 +260,116 @@ div {
 .swiper-wrapper {
   align-items: center;
 }
+
+
+/* Blog Article Tables & TipTap Editor Tables */
+.prose-content table,
+.blog-editor-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .prose-content table,
+  .blog-editor-content table {
+    font-size: 1.125rem;
+  }
+}
+
+.prose-content th,
+.blog-editor-content th {
+  background-color: #f8fafc;
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  position: relative;
+}
+
+.prose-content td,
+.blog-editor-content td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  vertical-align: top;
+  position: relative;
+}
+
+.prose-content tr:nth-child(even) td,
+.blog-editor-content tr:nth-child(even) td {
+  background-color: #fafbfd;
+}
+
+.prose-content tr:hover td,
+.blog-editor-content tr:hover td {
+  background-color: #f1f5f9;
+}
+
+.prose-content table p,
+.blog-editor-content table p {
+  margin: 0 !important;
+  font-size: inherit;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.prose-content table ul,
+.blog-editor-content table ul {
+  list-style-type: disc;
+  margin: 0.25rem 0 !important;
+  padding-left: 1.25rem;
+}
+
+.prose-content table ol,
+.blog-editor-content table ol {
+  list-style-type: decimal;
+  margin: 0.25rem 0 !important;
+  padding-left: 1.25rem;
+}
+
+.prose-content table li,
+.blog-editor-content table li {
+  margin: 0.15rem 0;
+  font-size: inherit;
+  line-height: 1.45;
+}
+
+/* TipTap Editor specific table selection & handles */
+.blog-editor-content .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(239, 68, 68, 0.15);
+  pointer-events: none;
+}
+
+.blog-editor-content .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: #ff0009;
+  pointer-events: none;
+}
+
+.blog-editor-content .tableWrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.prose-content {
+  overflow-x: auto;
+}
