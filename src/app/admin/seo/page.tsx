@@ -118,9 +118,34 @@ export default function SeoMetadataPage() {
 
   const handleOpenEdit = (seo: SeoMetadata) => {
     setEditingId(seo.id);
+    const sType = (seo.page_type || "").toLowerCase();
+    const sId = (seo.page_id || "").toLowerCase();
+
+    // Map backend type to dropdown options
+    let mappedType = seo.page_type;
+    let mappedId = seo.page_id;
+
+    if (sType === "home" || sId === "home" || sId === "home_page") {
+      mappedType = "home";
+      mappedId = "home";
+    } else if (sType === "static" || sType.includes("hub")) {
+      if (sId === "about") mappedType = "about";
+      else if (sId === "contact") mappedType = "contact";
+      else if (sId === "partner") mappedType = "partner";
+      else if (sId === "contractor") mappedType = "contractor";
+      else if (sId === "products" || sId === "products-hub") mappedType = "products-hub";
+      else if (sId === "categories" || sId === "categories-hub") mappedType = "categories-hub";
+      else if (sId === "applications" || sId === "applications-hub") mappedType = "applications-hub";
+      else if (sId === "blog" || sId === "blog-hub") mappedType = "blog-hub";
+      else if (sId === "resources") mappedType = "resources";
+      else if (sId === "sitemap") mappedType = "sitemap";
+      else if (sId === "privacy") mappedType = "privacy";
+      else if (pages.some((p) => p.id === seo.page_id || p.slug === seo.page_id)) mappedType = "page";
+    }
+
     setFormData({
-      page_type: seo.page_type,
-      page_id: seo.page_id,
+      page_type: mappedType,
+      page_id: mappedId,
       meta_title: seo.meta_title,
       meta_description: seo.meta_description,
       canonical_url: seo.canonical_url,
@@ -332,7 +357,7 @@ export default function SeoMetadataPage() {
     const sType = (seo.page_type || "").toLowerCase();
     const sId = (seo.page_id || "").toLowerCase();
 
-    if (sType === "home" || (sType === "static" && (!sId || sId === "home"))) {
+    if (sType === "home" || (sType === "static" && (!sId || sId === "home" || sId === "home_page"))) {
       return "Global Home Page (/)";
     }
     if (sType === "static" || sType.includes("hub")) {

@@ -1,28 +1,22 @@
-import { headers } from "next/headers";
-
 import {
   mapTemplateFromBackend,
   mapCategoryFromBackend,
   mapProductFromBackend,
+  mapSettingsFromBackend,
   type Category,
   type Product,
+  type SiteSettings,
 } from "@/lib/api";
 
 export async function getServerApiBase(): Promise<string> {
-  const h = await headers();
-
-  const host =
-    h.get("x-forwarded-host") ||
-    h.get("host");
-
-  if (!host) {
-    throw new Error("Unable to determine request host");
-  }
-
-  return `https://${host}/api`;
+  const backendUrl =
+    process.env.API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://jivanjor-server.onrender.com/api";
+  return backendUrl.replace(/\/+$/, "");
 }
 
-export async function getServerSettings() {
+export async function getServerSettings(): Promise<SiteSettings> {
   const apiBase = await getServerApiBase();
 
   const response = await fetch(`${apiBase}/settings`, {
@@ -34,12 +28,9 @@ export async function getServerSettings() {
   }
 
   const result = await response.json();
+  const raw = result?.data?.settings ?? result?.data ?? result;
 
-  return (
-    result?.data?.settings ??
-    result?.data ??
-    result
-  );
+  return mapSettingsFromBackend(raw);
 }
 
 export async function getServerActiveTemplateForPage(page: string) {

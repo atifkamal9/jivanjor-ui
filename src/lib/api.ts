@@ -238,6 +238,46 @@ export interface PageTemplate {
   rawSections?: any;
 }
 
+export function mapSettingsFromBackend(raw: any): SiteSettings {
+  const settings = raw?.settings || raw || {};
+
+  const DEFAULT_HEAD = `<meta name="google-site-verification" content="7nyrS05tsfB0z8AuZOUzjOymZdinnDqL1HXbWNxi-Mk" />\n<meta name="msvalidate.01" content="BBDC037359A5048E914423506D41E929" />\n<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`;
+  const DEFAULT_BODY = `<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-JS98QGT5QS" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+
+  // Check if _script_config is stored in contactPage.sections
+  const scriptSec = (settings.contactPage?.sections || []).find(
+    (s: any) => s.title === "_script_config"
+  );
+
+  let headScripts = "";
+  let bodyScripts = "";
+  let footerScripts = "";
+
+  if (scriptSec) {
+    headScripts = scriptSec.headScripts !== undefined ? scriptSec.headScripts : "";
+    bodyScripts = scriptSec.bodyScripts !== undefined ? scriptSec.bodyScripts : "";
+    footerScripts = scriptSec.footerScripts !== undefined ? scriptSec.footerScripts : "";
+  } else if (settings.scriptConfig?.headScripts || settings.contactPage?.scriptConfig?.headScripts) {
+    const sc = settings.scriptConfig || settings.contactPage?.scriptConfig;
+    headScripts = sc.headScripts || "";
+    bodyScripts = sc.bodyScripts || "";
+    footerScripts = sc.footerScripts || "";
+  } else {
+    headScripts = DEFAULT_HEAD;
+    bodyScripts = DEFAULT_BODY;
+    footerScripts = "";
+  }
+
+  return {
+    ...settings,
+    scriptConfig: {
+      headScripts,
+      bodyScripts,
+      footerScripts,
+    },
+  };
+}
+
 // Set up Axios Client
 export const API_BASE =
   process.env.API_URL ||
@@ -1169,43 +1209,7 @@ export const api = {
   getSettings: async (): Promise<SiteSettings> => {
     try {
       const res = await client.get("/settings");
-      const settings = res.data?.data?.settings || {};
-
-      const DEFAULT_HEAD = `<meta name="google-site-verification" content="7nyrS05tsfB0z8AuZOUzjOymZdinnDqL1HXbWNxi-Mk" />\n<meta name="msvalidate.01" content="BBDC037359A5048E914423506D41E929" />\n<!-- Google tag (gtag.js) -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-JS98QGT5QS"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n\n  gtag('config', 'G-JS98QGT5QS');\n</script>`;
-      const DEFAULT_BODY = `<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=G-JS98QGT5QS" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
-
-      // Check if _script_config is stored in contactPage.sections
-      const scriptSec = (settings.contactPage?.sections || []).find(
-        (s: any) => s.title === "_script_config"
-      );
-
-      let headScripts = "";
-      let bodyScripts = "";
-      let footerScripts = "";
-
-      if (scriptSec) {
-        headScripts = scriptSec.headScripts !== undefined ? scriptSec.headScripts : "";
-        bodyScripts = scriptSec.bodyScripts !== undefined ? scriptSec.bodyScripts : "";
-        footerScripts = scriptSec.footerScripts !== undefined ? scriptSec.footerScripts : "";
-      } else if (settings.scriptConfig?.headScripts || settings.contactPage?.scriptConfig?.headScripts) {
-        const sc = settings.scriptConfig || settings.contactPage?.scriptConfig;
-        headScripts = sc.headScripts || "";
-        bodyScripts = sc.bodyScripts || "";
-        footerScripts = sc.footerScripts || "";
-      } else {
-        headScripts = DEFAULT_HEAD;
-        bodyScripts = DEFAULT_BODY;
-        footerScripts = "";
-      }
-
-      return {
-        ...settings,
-        scriptConfig: {
-          headScripts,
-          bodyScripts,
-          footerScripts,
-        },
-      };
+      return mapSettingsFromBackend(res.data?.data?.settings || res.data?.data || res.data);
     } catch (err) {
       console.error("Failed to fetch site settings:", err);
       return {

@@ -116,18 +116,49 @@ export async function fetchMatchedSeo(
     }
 
     // Strategy 2: Match Home page specifically
-    if (normType === "home" || normType === "static_home" || normId === "home" || targetCanonical === "/") {
-      const homeMatch = seoList.find((s) => {
+    const isHomeQuery =
+      normType === "home" ||
+      normType === "static_home" ||
+      normId === "home" ||
+      normId === "home_page" ||
+      normId === "home-page" ||
+      targetCanonical === "/";
+
+    if (isHomeQuery) {
+      // 1. Highest priority: Explicit home record (HOME_PAGE, home, static_home, or page_type = home)
+      const explicitHome = seoList.find((s) => {
         const sType = (s.page_type || "").toLowerCase().replace("_", "-");
         const sId = (s.page_id || "").toLowerCase().trim();
-        const sCanon = normalizeCanonicalUrl(s.canonical_url);
         return (
-          sType === "home" ||
-          sCanon === "/" ||
-          (sType === "static" && (!sId || sId === "home" || sId === "static_page"))
+          sId === "home_page" ||
+          sId === "home" ||
+          sId === "static_home" ||
+          sId === "homepage" ||
+          sType === "home"
         );
       });
-      if (homeMatch) return homeMatch;
+      if (explicitHome) return explicitHome;
+
+      // 2. Fallback: Normalized canonical is "/" but STRICTLY exclude unrelated pages
+      const canonicalHome = seoList.find((s) => {
+        const sId = (s.page_id || "").toLowerCase().trim();
+        const sCanon = normalizeCanonicalUrl(s.canonical_url);
+        const titleLower = (s.meta_title || "").toLowerCase();
+        const isOtherPage =
+          sId.includes("privacy") ||
+          sId.includes("about") ||
+          sId.includes("contact") ||
+          sId.includes("partner") ||
+          sId.includes("contractor") ||
+          sId.includes("product") ||
+          sId.includes("category") ||
+          sId.includes("blog") ||
+          sId.includes("resource") ||
+          titleLower.startsWith("privacy") ||
+          titleLower.startsWith("about");
+        return sCanon === "/" && !isOtherPage;
+      });
+      if (canonicalHome) return canonicalHome;
     }
 
     // Strategy 3: Match by Page Type & Identifier candidates
@@ -142,6 +173,7 @@ export async function fetchMatchedSeo(
 
       // Static hub page aliases
       const hubAliases: Record<string, string[]> = {
+        home: ["home", "home_page", "home-page", "static_home", "homepage"],
         products: ["products", "products-hub", "product-hub", "products_hub", "product"],
         categories: ["categories", "categories-hub", "category-hub", "categories_hub", "category"],
         resources: ["resources", "resources-hub", "technical-resources", "resources_page"],
