@@ -345,7 +345,7 @@ export default function BlogPage() {
                 Knowledge Hub &amp; Blogs
               </h1>
               <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-                Compose wood science publications, guidebooks, and announcements
+                Compose wood science publications and guidebooks
               </p>
             </div>
             <button
