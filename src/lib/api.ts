@@ -975,8 +975,16 @@ export const api = {
   },
 
   // BLOG POSTS
-  getBlogPosts: async (): Promise<BlogPost[]> => {
-    const res = await client.get("/blogs");
+  getBlogPosts: async (params?: { limit?: number; page?: number; search?: string; category?: string }): Promise<BlogPost[]> => {
+    const query = new URLSearchParams();
+    // Default to a high limit so all blog posts are fetched (backend defaults to 10)
+    query.set("limit", String(params?.limit ?? 9999));
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.search) query.set("search", params.search);
+    if (params?.category) query.set("category", params.category);
+    const queryString = query.toString();
+    const url = `/blogs${queryString ? `?${queryString}` : ""}`;
+    const res = await client.get(url);
     const blogs = res.data?.data?.blogs || [];
     const mapped = Array.isArray(blogs) ? blogs.map(mapBlogPostFromBackend) : [];
     return mapped.sort((a, b) => {

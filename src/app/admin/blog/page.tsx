@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, BlogPost } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -21,6 +21,8 @@ import {
   Globe,
   FileSearch,
   Image as ImageIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -30,7 +32,7 @@ export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Form states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -315,10 +317,17 @@ export default function BlogPage() {
   });
 
   // Pagination
-  const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage) || 1;
+  const totalPages = Math.max(1, Math.ceil(filteredBlogs.length / itemsPerPage));
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentBlogs = filteredBlogs.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Clamp current page if totalPages changes
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
 
   // Composer Tabs Config
   const composerTabs: { id: ComposerTab; label: string; icon: React.ReactNode }[] = [
@@ -470,24 +479,34 @@ export default function BlogPage() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-6 py-4 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl shadow-sm transition-colors duration-300">
-              <span className="text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
-                Page {currentPage} of {totalPages}
+              <span className="text-xs font-semibold text-gray-400 dark:text-zinc-500">
+                Showing {indexOfFirstItem + 1}–{Math.min(indexOfLastItem, filteredBlogs.length)} of {filteredBlogs.length} publications
               </span>
-              <div className="flex gap-2">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
-                >
-                  Previous
-                </button>
-                <button
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
-                >
-                  Next
-                </button>
+
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-gray-500 dark:text-zinc-400">
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={currentPage <= 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className="w-9 h-9 flex items-center justify-center rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs cursor-pointer transition-all"
+                    title="Previous Page"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className="w-9 h-9 flex items-center justify-center rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed shadow-xs cursor-pointer transition-all"
+                    title="Next Page"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           )}
