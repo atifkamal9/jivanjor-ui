@@ -1,150 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-       <loc>https://jivanjor.com/</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>1.0000</priority>
+    <loc>https://www.jivanjor.com/</loc>
+    <priority>1.0</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/products</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/about</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/resources</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/partner</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/super-premium</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/contractor</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/speciality</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/contact</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/regular</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/resources</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/waterproof</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/privacy</loc>
+    <priority>0.8</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/wood-ancillaries</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/categories/super-premium-adhesive</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/eco</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/categories/waterproof-grade-adhesive</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/wood-preservative</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/categories/specialty-adhesive</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/sitemap</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/categories/eco</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/contact</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.8000</priority>
+    <loc>https://www.jivanjor.com/categories/regular-adhesive</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories/super-premium-adhesive</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.6400</priority>
+    <loc>https://www.jivanjor.com/categories/wood-ancillaries</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/categories</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.6400</priority>
+    <loc>https://www.jivanjor.com/categories/wood-preservative</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.6400</priority>
+    <loc>https://www.jivanjor.com/products?product=supremo</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/blog</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.6400</priority>
+    <loc>https://www.jivanjor.com/products?product=lamino</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/products?product=champion-super</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=watershield</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/products?product=aquabond</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=aquashield</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/products?product=foambond</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=aquabond</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/products?product=watershield</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=fastx</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Furniture%20Assembly%20%26%20Joinery</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=pvc-xtra</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Lamination%20%26%20Veneering</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=hero</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Edge%20Banding%20%26%20Finishing</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=polystic-super</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Wooden%20Cabinets%20%26%20Storage%20Units</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=all-rounder</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Repair%20%26%20Restoration</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=jubispray</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=Small%20Assembly%20%26%20Detail%20Work</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=jubiquick-hv</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=furniture-assembly-%26-joinery</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=binder</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=lamination-%26-veneering</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=aquaprotekt</loc>
+    <priority>0.9</priority>
   </url>
   <url>
-       <loc>https://jivanjor.com/applications?article=edge-banding-%26-finishing</loc>
-       <lastmod>2026-09-27T20:01:36+00:00</lastmod>
-       <priority>0.5120</priority>
+    <loc>https://www.jivanjor.com/products?product=d4-pur</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=jubipaste</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=lambond</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=foambond</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=masking-tape</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=jubispray-advanced</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/products?product=termilok</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/mdf-board-or-plywood-know-where-to-use-each-material-in-your-home</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/wooden-bed-design-guide-materials-load-support-joints-and-finishes-for-indian-homes</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/sliding-or-hinged-wardrobe-a-space-and-durability-guide-for-indian-bedrooms</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/how-to-choose-tile-adhesive-for-floors-walls-and-wet-areas</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/laminate-and-sunmica-explained-types-sheets-and-where-to-use-them</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/modular-kitchen-design-for-indian-homes-choose-the-right-layout-for-your-space</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.jivanjor.com/blog/how-to-fill-cracks-in-wooden-furniture-wood-filler-selection-and-repair-steps</loc>
+    <priority>0.8</priority>
   </url>
 </urlset>
