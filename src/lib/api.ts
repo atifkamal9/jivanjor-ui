@@ -1003,6 +1003,7 @@ export const api = {
   ): Promise<BlogPost> => {
     const payload = {
       title: blogPost.title,
+      slug: blogPost.slug || undefined,
       content: blogPost.content,
       category: blogPost.category,
       tags: blogPost.tags,

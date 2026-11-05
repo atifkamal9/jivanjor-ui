@@ -155,7 +155,7 @@ export default function BlogRichEditor({ value, onChange, title = "Content Edito
     editorProps: {
       attributes: {
         class:
-          "w-full px-5 py-4 rounded-b-xl border border-t-0 border-gray-200 bg-white text-gray-900 outline-none focus:ring-2 focus:ring-red-500/20 dark:border-zinc-700 dark:bg-zinc-955 dark:text-zinc-100 min-h-[350px] shadow-inner leading-relaxed blog-editor-content prose-content focus:outline-none",
+          "w-full px-5 py-4 rounded-b-xl bg-white text-gray-900 outline-none dark:bg-zinc-955 dark:text-zinc-100 min-h-[350px] leading-relaxed blog-editor-content prose-content focus:outline-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -216,9 +216,11 @@ export default function BlogRichEditor({ value, onChange, title = "Content Edito
   };
 
   return (
-    <div className="space-y-0 rounded-xl overflow-hidden border border-gray-200 dark:border-zinc-700">
-      {/* Main Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-gray-100 dark:bg-zinc-800 p-2 border-b border-gray-200 dark:border-zinc-700">
+    <div className="space-y-0 rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-955 relative">
+      {/* Sticky Toolbars Container */}
+      <div className="sticky -top-6 md:-top-8 z-20 shadow-md rounded-t-xl bg-gray-100 dark:bg-zinc-800">
+        {/* Main Toolbar */}
+        <div className="flex flex-wrap items-center justify-between gap-2 bg-gray-100/95 dark:bg-zinc-800/95 backdrop-blur-md p-2 border-b border-gray-200 dark:border-zinc-700 rounded-t-xl">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider px-2">
             {title}
@@ -544,7 +546,7 @@ export default function BlogRichEditor({ value, onChange, title = "Content Edito
 
       {/* Contextual Table Editing Toolbar (Appears when cursor is inside any table) */}
       {editor.isActive("table") && (
-        <div className="flex flex-wrap items-center gap-1.5 px-3 py-1.5 bg-red-50/90 dark:bg-red-950/40 border-b border-red-200 dark:border-red-900/60 text-xs">
+        <div className="flex flex-wrap items-center gap-1.5 px-3 py-1.5 bg-red-50/95 dark:bg-red-950/90 backdrop-blur-md border-b border-red-200 dark:border-red-900/60 text-xs shadow-xs">
           <span className="font-bold text-red-700 dark:text-red-400 flex items-center gap-1 text-[11px] uppercase tracking-wider mr-1">
             <TableIcon className="h-3.5 w-3.5" /> Table Edit:
           </span>
@@ -627,6 +629,7 @@ export default function BlogRichEditor({ value, onChange, title = "Content Edito
           </button>
         </div>
       )}
+      </div>
 
       {/* Editor Content Area */}
       <EditorContent editor={editor} />

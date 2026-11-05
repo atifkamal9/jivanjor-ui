@@ -287,16 +287,33 @@ export default function Navbar() {
 
   const dynamicKnowledgeItems = (() => {
     const knowledgeMenu = publishedMenu.find(
-      (m) => m.id === "nav-knowledge" || m.title.toLowerCase() === "knowledge center"
+      (m) =>
+        m.id === "nav-knowledge" ||
+        m.title.toLowerCase() === "knowledge center" ||
+        m.title.toLowerCase() === "knowledge"
     );
 
-    let items: Array<{ name: string; link: string; order?: number }> = [];
+    let items: Array<{
+      name: string;
+      link: string;
+      order?: number;
+      hideInMenu?: boolean;
+      description?: string;
+      image?: string;
+      target?: string;
+    }> = [];
 
-    if (knowledgeMenu?.subItems) {
-      items = knowledgeMenu.subItems.map((sub: any) => ({
+    if (knowledgeMenu?.subItems && knowledgeMenu.subItems.length > 0) {
+      items = knowledgeMenu.subItems
+        .filter((sub: any) => sub.hideInMenu !== true)
+        .map((sub: any) => ({
         name: sub.title,
         link: sub.url || `/blog?category=${encodeURIComponent(sub.title)}`,
         order: sub.order ?? 0,
+        hideInMenu: sub.hideInMenu,
+        description: sub.description,
+        image: sub.image,
+        target: sub.target,
       }));
     } else if (blogCategories.length > 0) {
       items = blogCategories.map((cat: any, idx: number) => ({
@@ -721,28 +738,36 @@ export default function Navbar() {
 
               if (!activeItem) return null;
 
-              const isKnowledgeNav = activeItem.id === "nav-knowledge" || activeItem.title.toLowerCase() === "knowledge center";
-              const rawSubItems = isKnowledgeNav
+              const isKnowledgeNav =
+                activeItem.id === "nav-knowledge" ||
+                activeItem.title.toLowerCase() === "knowledge center" ||
+                activeItem.title.toLowerCase() === "knowledge";
+              const rawSubItems = (activeItem.subItems && activeItem.subItems.length > 0)
+                ? (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0))
+                : isKnowledgeNav
                 ? dynamicKnowledgeItems.map((item, idx) => ({
                   id: `sub-know-${idx}`,
                   title: item.name,
                   type: "page",
                   url: item.link,
                   order: item.order ?? (idx + 1),
-                  description: undefined,
-                  target: undefined,
-                  hideInMenu: false,
+
+
+                  description: item.description,
+                  target: item.target,
+                  image: item.image,
+                  hideInMenu: item.hideInMenu ?? false,
                 })).sort((a, b) => (a.order || 0) - (b.order || 0))
-                : (activeItem.subItems || []).sort((a, b) => (a.order || 0) - (b.order || 0));
+                : [];
 
               const subItems = rawSubItems.filter((sub: any) => sub.hideInMenu !== true);
 
               const fallbackImage =
-                activeItem.id === "nav-about"
+                activeItem.id === "nav-about" || activeItem.title.toLowerCase() === "about"
                   ? aboutImage
-                  : activeItem.id === "nav-applications"
+                  : activeItem.id === "nav-applications" || activeItem.title.toLowerCase() === "applications"
                     ? appImage
-                    : activeItem.id === "nav-knowledge"
+                    : isKnowledgeNav
                       ? knowledgeImage
                       : "/images/hero.png";
 
@@ -811,11 +836,11 @@ export default function Navbar() {
                     <p className="text-lg text-foreground">
                       {hoveredGenericSubItem ||
                         activeItem.description ||
-                        (activeItem.id === "nav-about"
+                        (activeItem.id === "nav-about" || activeItem.title.toLowerCase() === "about"
                           ? aboutDescription
-                          : activeItem.id === "nav-applications"
+                          : activeItem.id === "nav-applications" || activeItem.title.toLowerCase() === "applications"
                             ? appDescription
-                            : activeItem.id === "nav-knowledge"
+                            : isKnowledgeNav
                               ? knowledgeDescription
                               : `${activeItem.title} - Explore Jivanjor adhesive products and solutions.`)}
                     </p>

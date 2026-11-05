@@ -37,6 +37,7 @@ export default function BlogPage() {
   // Form states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSlugCustomized, setIsSlugCustomized] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -142,11 +143,15 @@ export default function BlogPage() {
   };
 
   const handleTitleChange = (title: string) => {
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "");
-    setFormData((prev) => ({ ...prev, title, slug }));
+    if (!isSlugCustomized) {
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+      setFormData((prev) => ({ ...prev, title, slug }));
+    } else {
+      setFormData((prev) => ({ ...prev, title }));
+    }
   };
 
   const resetSeo = () => {
@@ -156,6 +161,7 @@ export default function BlogPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setIsSlugCustomized(false);
     setFormData({
       title: "",
       slug: "",
@@ -178,6 +184,7 @@ export default function BlogPage() {
 
   const handleOpenEdit = async (blog: BlogPost) => {
     setEditingId(blog.id);
+    setIsSlugCustomized(true);
     setFormData({
       title: blog.title,
       slug: blog.slug,
@@ -590,17 +597,32 @@ export default function BlogPage() {
                           </div>
 
                           <div>
-                            <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <label className="text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2 flex items-center justify-between">
                               <span>URL Slug Link</span>
-                              <span className="text-[10px] text-red-500 flex items-center gap-1 font-bold">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const autoSlug = formData.title
+                                    .toLowerCase()
+                                    .replace(/[^a-z0-9]+/g, "-")
+                                    .replace(/(^-|-$)+/g, "");
+                                  setIsSlugCustomized(false);
+                                  setFormData((prev) => ({ ...prev, slug: autoSlug }));
+                                }}
+                                title="Auto-generate slug from title"
+                                className="text-[10px] text-red-500 hover:text-red-600 flex items-center gap-1 font-bold cursor-pointer transition-colors"
+                              >
                                 <Sparkles className="h-3 w-3" /> AUTO
-                              </span>
+                              </button>
                             </label>
                             <input
                               type="text"
                               required
                               value={formData.slug}
-                              onChange={(e) => setFormData((prev) => ({ ...prev, slug: e.target.value }))}
+                              onChange={(e) => {
+                                setIsSlugCustomized(true);
+                                setFormData((prev) => ({ ...prev, slug: e.target.value }));
+                              }}
                               placeholder="mechanics-of-polyvinyl-acetate"
                               className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100"
                             />
