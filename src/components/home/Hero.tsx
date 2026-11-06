@@ -2,17 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import { Heading } from "@/components/ui";
+import { getYouTubeId, getYouTubeThumbnail, isVideoUrl } from "@/lib/video";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
 
-const isVideo = (url: string) =>
-  /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
+export { getYouTubeId };
 
 export interface HeroSlideData {
   id?: string;
@@ -89,19 +89,23 @@ export default function Hero({ data }: HeroProps) {
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const slides: SlideItem[] = data?.slides && data.slides.length > 0
     ? data.slides.map((s, idx) => {
-      const isVid = s.type === "video" || isVideo(s.videoUrl || s.video || "");
-      const desktopImg = s.bgImage || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
-      const mobileImg = s.bgImagePhone || s.bgImage || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
+      const vidSource = s.videoUrl || s.video || "";
+      const ytId = getYouTubeId(vidSource);
+      const isVid = s.type === "video" || Boolean(ytId) || isVideoUrl(vidSource);
+      const ytThumb = ytId ? (getYouTubeThumbnail(ytId, "maxres") || getYouTubeThumbnail(ytId, "hq") || "") : "";
+      const desktopImg = s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
+      const mobileImg = s.bgImagePhone || s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
       return {
         id: s.id || `slide-${idx}`,
         type: isVid ? "video" : "image",
         bgImage: desktopImg,
         bgImagePhone: mobileImg,
         hasVideo: isVid,
-        videoUrl: s.videoUrl || s.video || "",
+        videoUrl: vidSource,
         showOverlay: s.showOverlay,
         showTitle: s.showTitle,
         showCta: s.showCta,
@@ -112,12 +116,14 @@ export default function Hero({ data }: HeroProps) {
     })
     : (data?.media && data.media.length > 0
       ? data.media.map((url, idx) => {
-        const isVid = isVideo(url);
+        const ytId = getYouTubeId(url);
+        const isVid = Boolean(ytId) || isVideoUrl(url);
+        const ytThumb = ytId ? (getYouTubeThumbnail(ytId, "maxres") || getYouTubeThumbnail(ytId, "hq") || "") : "";
         return {
           id: `slide-${idx}`,
           type: isVid ? "video" : "image",
-          bgImage: isVid ? "/images/video-thumbnail.png" : url,
-          bgImagePhone: isVid ? "/images/video-thumbnail.png" : url,
+          bgImage: isVid ? (ytThumb || "/images/video-thumbnail.png") : url,
+          bgImagePhone: isVid ? (ytThumb || "/images/video-thumbnail.png") : url,
           hasVideo: isVid,
           videoUrl: isVid ? url : "",
         };
@@ -196,10 +202,54 @@ export default function Hero({ data }: HeroProps) {
 
   const handleVideoEnded = () => {
     setIsPlayingVideo(false);
-    if (swiperInstance && swiperInstance.autoplay) {
-      swiperInstance.autoplay.start();
+    if (swiperInstance) {
+      swiperInstance.slideNext();
+      if (swiperInstance.autoplay) {
+        swiperInstance.autoplay.start();
+      }
     }
   };
+
+  // Autoplay video as soon as a video slide comes into view; pause Swiper auto-rotation while video plays
+  useEffect(() => {
+    const current = slides[activeIndex];
+    if (current?.hasVideo) {
+      setIsPlayingVideo(true);
+      if (swiperInstance && swiperInstance.autoplay) {
+        swiperInstance.autoplay.stop();
+      }
+    } else {
+      setIsPlayingVideo(false);
+      if (swiperInstance && swiperInstance.autoplay && !swiperInstance.autoplay.running) {
+        swiperInstance.autoplay.start();
+      }
+    }
+  }, [activeIndex, swiperInstance, slides]);
+
+  // Listen to YouTube player state changes to detect when video finishes (YT.PlayerState.ENDED = 0)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.data) return;
+      let data: any = event.data;
+      if (typeof data === "string") {
+        try {
+          data = JSON.parse(data);
+        } catch {
+          return;
+        }
+      }
+      const isEnded =
+        (data?.event === "onStateChange" && data?.info === 0) ||
+        (data?.event === "infoDelivery" && data?.info?.playerState === 0);
+
+      if (isEnded) {
+        handleVideoEnded();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [swiperInstance]);
 
   const currentSlide = slides[activeIndex];
   const showPlayButton = currentSlide?.hasVideo;
@@ -210,11 +260,8 @@ export default function Hero({ data }: HeroProps) {
         onSwiper={setSwiperInstance}
         onSlideChange={(swiper) => {
           setActiveIndex(swiper.realIndex);
-          if (isPlayingVideo) {
-            setIsPlayingVideo(false);
-            if (videoRef.current) {
-              videoRef.current.pause();
-            }
+          if (videoRef.current) {
+            videoRef.current.pause();
           }
         }}
         modules={[Autoplay, EffectFade]}
@@ -244,16 +291,45 @@ export default function Hero({ data }: HeroProps) {
             >
               {/* Background Layer */}
               {showVideo ? (
-                <div className="absolute inset-0 z-0 bg-black">
-                  <video
-                    ref={videoRef}
-                    src={slide.videoUrl || "/videos/hero-background.mp4"}
-                    className="w-full h-full object-center object-cover"
-                    autoPlay
-                    playsInline
-                    muted={isMuted}
-                    onEnded={handleVideoEnded}
-                  />
+                <div className="absolute inset-0 z-0 bg-black overflow-hidden">
+                  {getYouTubeId(slide.videoUrl) ? (
+                    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none bg-black">
+                      <iframe
+                        ref={iframeRef}
+                        onLoad={() => {
+                          const win = iframeRef.current?.contentWindow;
+                          if (win) {
+                            win.postMessage('{"event":"listening"}', "*");
+                            win.postMessage(
+                              '{"event":"command","func":"addEventListener","args":["onStateChange"]}',
+                              "*"
+                            );
+                          }
+                        }}
+                        src={`https://www.youtube.com/embed/${getYouTubeId(slide.videoUrl)}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&playsinline=1&enablejsapi=1`}
+                        className="absolute top-1/2 left-1/2 pointer-events-none border-0"
+                        style={{
+                          width: "max(100%, 177.78vh)",
+                          height: "max(100%, 56.25vw)",
+                          minWidth: "100%",
+                          minHeight: "100%",
+                          transform: "translate(-50%, -50%) scale(1.08)",
+                        }}
+                        allow="autoplay; encrypted-media"
+                        title={slideTitle}
+                      />
+                    </div>
+                  ) : (
+                    <video
+                      ref={videoRef}
+                      src={slide.videoUrl || "/videos/hero-background.mp4"}
+                      className="w-full h-full object-center object-cover"
+                      autoPlay
+                      playsInline
+                      muted={isMuted}
+                      onEnded={handleVideoEnded}
+                    />
+                  )}
                   {/* Mobile & Desktop Version Overlays */}
                   {slide.showOverlay !== false && (
                     <>

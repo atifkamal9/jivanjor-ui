@@ -32,11 +32,12 @@ import {
   ChevronUp,
   ChevronDown,
   GripVertical,
-  X
+  X,
+  UploadCloud,
 } from "lucide-react";
+import { getYouTubeId, getYouTubeThumbnail, isVideoUrl, YouTubeIcon } from "@/lib/video";
 
-const isVideo = (url: string) =>
-  /\.(mp4|webm|mov)(\?.*)?$/i.test(url) || url.includes("video");
+const isVideo = (url: string) => isVideoUrl(url);
 
 const defaultHomeSections = {
   hero: {
@@ -1524,6 +1525,8 @@ export default function TemplatesPage() {
                         <div className="space-y-4">
                           {((homeSections.hero.slides || []) as any[]).map((slide: any, sIdx: number) => {
                             const isVid = slide.type === "video";
+                            const ytId = getYouTubeId(slide.videoUrl || "");
+                            const videoSource = slide.videoSource || (ytId ? "youtube" : (slide.videoUrl && !ytId ? "upload" : "youtube"));
                             return (
                               <div key={slide.id || sIdx} className="p-5 border border-border bg-surface/30 rounded-2xl space-y-4 relative">
                                 <div className="flex items-center justify-between pb-3 border-b border-border">
@@ -1624,21 +1627,142 @@ export default function TemplatesPage() {
                                 {/* Media Inputs depending on type */}
                                 {isVid ? (
                                   <div className="space-y-4 pt-2">
-                                    <div className="space-y-2">
-                                      <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
-                                        Video Link / File URL
-                                      </label>
-                                      <MediaUpload
-                                        value={slide.videoUrl || ""}
-                                        onChange={(url) => {
-                                          const currentSlides = [...(homeSections.hero.slides || [])];
-                                          currentSlides[sIdx] = { ...currentSlides[sIdx], videoUrl: url };
-                                          updateSectionField("hero", "slides", currentSlides);
-                                        }}
-                                        folder="templates"
-                                        accept="video"
-                                      />
-                                    </div>
+                                      <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                          <label className="block text-xs font-bold text-foreground/60 uppercase tracking-wider">
+                                            Video Link / File URL
+                                          </label>
+                                          <div className="flex items-center gap-1 bg-surface p-0.5 rounded-lg border border-border">
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const currentSlides = [...(homeSections.hero.slides || [])];
+                                                currentSlides[sIdx] = { ...currentSlides[sIdx], videoSource: "youtube" };
+                                                updateSectionField("hero", "slides", currentSlides);
+                                              }}
+                                              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                                                videoSource === "youtube"
+                                                  ? "bg-white dark:bg-zinc-800 text-red-600 shadow-xs"
+                                                  : "text-foreground/60 hover:text-foreground"
+                                              }`}
+                                            >
+                                              <YouTubeIcon className="h-3.5 w-3.5 text-red-600" />
+                                              <span>YouTube Video</span>
+                                            </button>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                const currentSlides = [...(homeSections.hero.slides || [])];
+                                                currentSlides[sIdx] = { ...currentSlides[sIdx], videoSource: "upload" };
+                                                updateSectionField("hero", "slides", currentSlides);
+                                              }}
+                                              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                                                videoSource === "upload"
+                                                  ? "bg-white dark:bg-zinc-800 text-primary shadow-xs"
+                                                  : "text-foreground/60 hover:text-foreground"
+                                              }`}
+                                            >
+                                              <UploadCloud className="h-3.5 w-3.5" />
+                                              <span>Upload File</span>
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        {videoSource === "youtube" ? (
+                                          <div className="space-y-2.5">
+                                            <div className="relative">
+                                              <input
+                                                type="text"
+                                                value={slide.videoUrl || ""}
+                                                onChange={(e) => {
+                                                  const val = e.target.value;
+                                                  const currentSlides = [...(homeSections.hero.slides || [])];
+                                                  currentSlides[sIdx] = {
+                                                    ...currentSlides[sIdx],
+                                                    videoUrl: val,
+                                                    videoSource: "youtube",
+                                                  };
+                                                  updateSectionField("hero", "slides", currentSlides);
+                                                }}
+                                                placeholder="Paste YouTube link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)"
+                                                className="w-full pl-9 pr-16 py-2.5 bg-background border border-border rounded-xl text-xs font-medium focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                                              />
+                                              <YouTubeIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-red-600" />
+                                              {slide.videoUrl && (
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const currentSlides = [...(homeSections.hero.slides || [])];
+                                                    currentSlides[sIdx] = { ...currentSlides[sIdx], videoUrl: "" };
+                                                    updateSectionField("hero", "slides", currentSlides);
+                                                  }}
+                                                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-foreground/40 hover:text-foreground px-1.5 py-0.5 rounded bg-surface border border-border cursor-pointer"
+                                                >
+                                                  Clear
+                                                </button>
+                                              )}
+                                            </div>
+
+                                            {ytId ? (
+                                              <div className="p-3 rounded-xl border border-red-500/20 bg-red-500/5 space-y-2.5">
+                                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                                  <div className="flex items-center gap-1.5">
+                                                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                    <span className="text-xs font-bold text-foreground">
+                                                      YouTube Video Attached (ID: <code className="font-mono text-red-600">{ytId}</code>)
+                                                    </span>
+                                                  </div>
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                      const currentSlides = [...(homeSections.hero.slides || [])];
+                                                      const thumb = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                                                      currentSlides[sIdx] = {
+                                                        ...currentSlides[sIdx],
+                                                        bgImage: thumb,
+                                                        bgImagePhone: thumb,
+                                                      };
+                                                      updateSectionField("hero", "slides", currentSlides);
+                                                    }}
+                                                    className="text-[11px] font-bold text-primary hover:underline cursor-pointer flex items-center gap-1"
+                                                    title="Automatically apply the YouTube thumbnail image to desktop and mobile fallbacks"
+                                                  >
+                                                    <Sparkles className="h-3 w-3" />
+                                                    <span>Set Thumbnail as Fallback Image</span>
+                                                  </button>
+                                                </div>
+
+                                                <div className="relative aspect-video max-w-sm rounded-lg overflow-hidden border border-border bg-black shadow-xs">
+                                                  <iframe
+                                                    src={`https://www.youtube.com/embed/${ytId}?rel=0`}
+                                                    className="w-full h-full border-0"
+                                                    title="YouTube Preview"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                  />
+                                                </div>
+                                              </div>
+                                            ) : slide.videoUrl ? (
+                                              <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                                                ⚠️ Please enter a valid YouTube link (e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...)
+                                              </p>
+                                            ) : null}
+                                          </div>
+                                        ) : (
+                                          <div className="space-y-2">
+                                            <MediaUpload
+                                              value={slide.videoUrl || ""}
+                                              onChange={(url) => {
+                                                const currentSlides = [...(homeSections.hero.slides || [])];
+                                                currentSlides[sIdx] = { ...currentSlides[sIdx], videoUrl: url, videoSource: "upload" };
+                                                updateSectionField("hero", "slides", currentSlides);
+                                              }}
+                                              folder="templates"
+                                              accept="video"
+                                            />
+                                          </div>
+                                        )}
+                                      </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       <div className="space-y-2">
