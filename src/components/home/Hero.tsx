@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Play, Pause, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import { Heading } from "@/components/ui";
@@ -85,143 +85,235 @@ interface SlideItem {
 
 export default function Hero({ data }: HeroProps) {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const [isEnded, setIsEnded] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const [origin, setOrigin] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const swiperRef = useRef<any>(null);
+  const endTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const slides: SlideItem[] = data?.slides && data.slides.length > 0
-    ? data.slides.map((s, idx) => {
-      const vidSource = s.videoUrl || s.video || "";
-      const ytId = getYouTubeId(vidSource);
-      const isVid = s.type === "video" || Boolean(ytId) || isVideoUrl(vidSource);
-      const ytThumb = ytId ? (getYouTubeThumbnail(ytId, "maxres") || getYouTubeThumbnail(ytId, "hq") || "") : "";
-      const desktopImg = s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
-      const mobileImg = s.bgImagePhone || s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
-      return {
-        id: s.id || `slide-${idx}`,
-        type: isVid ? "video" : "image",
-        bgImage: desktopImg,
-        bgImagePhone: mobileImg,
-        hasVideo: isVid,
-        videoUrl: vidSource,
-        showOverlay: s.showOverlay,
-        showTitle: s.showTitle,
-        showCta: s.showCta,
-        cta1: s.cta1,
-        cta2: s.cta2,
-        title: s.title,
-      };
-    })
-    : (data?.media && data.media.length > 0
-      ? data.media.map((url, idx) => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
+  const slides: SlideItem[] = useMemo(() => {
+    if (data?.slides && data.slides.length > 0) {
+      return data.slides.map((s, idx) => {
+        const vidSource = s.videoUrl || s.video || "";
+        const ytId = getYouTubeId(vidSource);
+        const isVid = s.type === "video" || Boolean(ytId) || isVideoUrl(vidSource);
+        const ytThumb = ytId ? (getYouTubeThumbnail(ytId, "maxres") || getYouTubeThumbnail(ytId, "hq") || "") : "";
+        const desktopImg = s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
+        const mobileImg = s.bgImagePhone || s.bgImage || ytThumb || (isVid ? "/images/video-thumbnail.png" : "/images/hero.png");
+        return {
+          id: s.id || `slide-${idx}`,
+          type: (isVid ? "video" : "image") as "image" | "video",
+          bgImage: desktopImg,
+          bgImagePhone: mobileImg,
+          hasVideo: isVid,
+          videoUrl: vidSource,
+          showOverlay: s.showOverlay,
+          showTitle: s.showTitle,
+          showCta: s.showCta,
+          cta1: s.cta1,
+          cta2: s.cta2,
+          title: s.title,
+        };
+      });
+    }
+
+    if (data?.media && data.media.length > 0) {
+      return data.media.map((url, idx) => {
         const ytId = getYouTubeId(url);
         const isVid = Boolean(ytId) || isVideoUrl(url);
         const ytThumb = ytId ? (getYouTubeThumbnail(ytId, "maxres") || getYouTubeThumbnail(ytId, "hq") || "") : "";
         return {
           id: `slide-${idx}`,
-          type: isVid ? "video" : "image",
+          type: (isVid ? "video" : "image") as "image" | "video",
           bgImage: isVid ? (ytThumb || "/images/video-thumbnail.png") : url,
           bgImagePhone: isVid ? (ytThumb || "/images/video-thumbnail.png") : url,
           hasVideo: isVid,
           videoUrl: isVid ? url : "",
         };
-      })
-      : [
-        {
-          id: "slide-1",
-          type: "image",
-          title: "Dependable Bonds for Indian Homes",
-          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
-          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero.png",
-          hasVideo: false,
-          videoUrl: "",
-          cta1: {
-            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
-            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
-          },
-          cta2: {
-            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
-            link: data?.actionButtons?.secondary?.actionPath || "/about",
-          },
+      });
+    }
+
+    return [
+      {
+        id: "slide-1",
+        type: "image" as const,
+        title: "Dependable Bonds for Indian Homes",
+        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+        bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero.png",
+        hasVideo: false,
+        videoUrl: "",
+        cta1: {
+          text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+          link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
         },
-        {
-          id: "slide-2",
-          type: "image",
-          title: "Strong Adhesion for Precision Woodwork",
-          bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
-          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
-          hasVideo: false,
-          videoUrl: "",
-          cta1: {
-            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
-            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
-          },
-          cta2: {
-            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
-            link: data?.actionButtons?.secondary?.actionPath || "/about",
-          },
+        cta2: {
+          text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+          link: data?.actionButtons?.secondary?.actionPath || "/about",
         },
-        {
-          id: "slide-3",
-          type: "video",
-          title: "Innovative Adhesives for Every Surface",
-          bgImage: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-          bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
-          hasVideo: true,
-          videoUrl: "/videos/hero-background.mp4",
-          cta1: {
-            text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
-            link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
-          },
-          cta2: {
-            text: data?.actionButtons?.secondary?.text || "About Jivanjor",
-            link: data?.actionButtons?.secondary?.actionPath || "/about",
-          },
+      },
+      {
+        id: "slide-2",
+        type: "image" as const,
+        title: "Strong Adhesion for Precision Woodwork",
+        bgImage: data?.bgImage || data?.backgroundImage || "/images/hero (1).png",
+        bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/hero (1) mobile.png",
+        hasVideo: false,
+        videoUrl: "",
+        cta1: {
+          text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+          link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
         },
-      ]
-    );
+        cta2: {
+          text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+          link: data?.actionButtons?.secondary?.actionPath || "/about",
+        },
+      },
+      {
+        id: "slide-3",
+        type: "video" as const,
+        title: "Innovative Adhesives for Every Surface",
+        bgImage: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+        bgImagePhone: data?.bgImage || data?.backgroundImage || "/images/video-thumbnail.png",
+        hasVideo: true,
+        videoUrl: "/videos/hero-background.mp4",
+        cta1: {
+          text: data?.actionButtons?.primary?.text || data?.ctaText || "Explore Products",
+          link: data?.actionButtons?.primary?.actionPath || data?.ctaLink || "#product-section",
+        },
+        cta2: {
+          text: data?.actionButtons?.secondary?.text || "About Jivanjor",
+          link: data?.actionButtons?.secondary?.actionPath || "/about",
+        },
+      },
+    ];
+  }, [data]);
+
+  const sendYouTubeCommand = (func: string, args: any[] = []) => {
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func, args }),
+        "*"
+      );
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleToggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    if (videoRef.current) {
+      videoRef.current.muted = nextMuted;
+    }
+    sendYouTubeCommand(nextMuted ? "mute" : "unMute");
+  };
 
   const handlePlayVideo = () => {
+    const swiper = swiperRef.current || swiperInstance;
+    if (isEnded) {
+      handleReplayVideo();
+      return;
+    }
     if (isPlayingVideo) {
+      setIsPlayingVideo(false);
       if (videoRef.current) {
         videoRef.current.pause();
       }
-      setIsPlayingVideo(false);
-      if (swiperInstance && swiperInstance.autoplay) {
-        swiperInstance.autoplay.start();
+      sendYouTubeCommand("pauseVideo");
+      if (swiper && swiper.autoplay) {
+        swiper.autoplay.start();
       }
     } else {
       setIsPlayingVideo(true);
-      if (swiperInstance && swiperInstance.autoplay) {
-        swiperInstance.autoplay.stop();
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => {});
       }
+      sendYouTubeCommand("playVideo");
+      if (swiper && swiper.autoplay) {
+        swiper.autoplay.stop();
+      }
+    }
+  };
+
+  const handleReplayVideo = () => {
+    if (endTimerRef.current) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = null;
+    }
+    setIsEnded(false);
+    setIsPlayingVideo(true);
+
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    }
+
+    sendYouTubeCommand("seekTo", [0, true]);
+    sendYouTubeCommand("playVideo");
+
+    const swiper = swiperRef.current || swiperInstance;
+    if (swiper && swiper.autoplay) {
+      swiper.autoplay.stop();
     }
   };
 
   const handleVideoEnded = () => {
     setIsPlayingVideo(false);
-    if (swiperInstance) {
-      swiperInstance.slideNext();
-      if (swiperInstance.autoplay) {
-        swiperInstance.autoplay.start();
-      }
+    setIsEnded(true);
+
+    if (endTimerRef.current) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = null;
+    }
+
+    const swiper = swiperRef.current || swiperInstance;
+    // If multiple slides exist, wait 4 seconds so the user can see and click Replay before auto-advancing
+    if (swiper && slides.length > 1) {
+      endTimerRef.current = setTimeout(() => {
+        setIsEnded(false);
+        swiper.slideNext();
+        if (swiper.autoplay) {
+          swiper.autoplay.start();
+        }
+      }, 4000);
     }
   };
 
   // Autoplay video as soon as a video slide comes into view; pause Swiper auto-rotation while video plays
   useEffect(() => {
+    if (endTimerRef.current) {
+      clearTimeout(endTimerRef.current);
+      endTimerRef.current = null;
+    }
+    setIsEnded(false);
+
     const current = slides[activeIndex];
+    const swiper = swiperRef.current || swiperInstance;
     if (current?.hasVideo) {
       setIsPlayingVideo(true);
-      if (swiperInstance && swiperInstance.autoplay) {
-        swiperInstance.autoplay.stop();
+      if (swiper && swiper.autoplay) {
+        swiper.autoplay.stop();
       }
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        videoRef.current.play().catch(() => {});
+      }
+      sendYouTubeCommand("seekTo", [0, true]);
+      sendYouTubeCommand("playVideo");
     } else {
       setIsPlayingVideo(false);
-      if (swiperInstance && swiperInstance.autoplay && !swiperInstance.autoplay.running) {
-        swiperInstance.autoplay.start();
+      if (swiper && swiper.autoplay && !swiper.autoplay.running) {
+        swiper.autoplay.start();
       }
     }
   }, [activeIndex, swiperInstance, slides]);
@@ -230,26 +322,43 @@ export default function Hero({ data }: HeroProps) {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (!event.data) return;
-      let data: any = event.data;
-      if (typeof data === "string") {
+      let msgData: any = event.data;
+      if (typeof msgData === "string") {
         try {
-          data = JSON.parse(data);
+          msgData = JSON.parse(msgData);
         } catch {
           return;
         }
       }
-      const isEnded =
-        (data?.event === "onStateChange" && data?.info === 0) ||
-        (data?.event === "infoDelivery" && data?.info?.playerState === 0);
 
-      if (isEnded) {
+      let playerState: number | undefined;
+      if (msgData?.event === "onStateChange" && typeof msgData?.info === "number") {
+        playerState = msgData.info;
+      } else if (
+        msgData?.event === "infoDelivery" &&
+        typeof msgData?.info?.playerState === "number"
+      ) {
+        playerState = msgData.info.playerState;
+      }
+
+      if (playerState === 0) {
         handleVideoEnded();
+      } else if (playerState === 1) {
+        setIsPlayingVideo(true);
+        setIsEnded(false);
+      } else if (playerState === 2) {
+        setIsPlayingVideo(false);
       }
     };
 
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [swiperInstance]);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      if (endTimerRef.current) {
+        clearTimeout(endTimerRef.current);
+      }
+    };
+  }, [swiperInstance, slides.length]);
 
   const currentSlide = slides[activeIndex];
   const showPlayButton = currentSlide?.hasVideo;
@@ -257,12 +366,21 @@ export default function Hero({ data }: HeroProps) {
   return (
     <section className="relative w-full h-130 xd:h-142 2xl:h-164.5 overflow-hidden bg-black text-white">
       <Swiper
-        onSwiper={setSwiperInstance}
+        onSwiper={(swiper) => {
+          setSwiperInstance(swiper);
+          swiperRef.current = swiper;
+        }}
         onSlideChange={(swiper) => {
+          if (endTimerRef.current) {
+            clearTimeout(endTimerRef.current);
+            endTimerRef.current = null;
+          }
+          setIsEnded(false);
           setActiveIndex(swiper.realIndex);
           if (videoRef.current) {
             videoRef.current.pause();
           }
+          sendYouTubeCommand("pauseVideo");
         }}
         modules={[Autoplay, EffectFade]}
         effect="fade"
@@ -275,7 +393,7 @@ export default function Hero({ data }: HeroProps) {
       >
         {slides.map((slide, idx) => {
           const isCurrentSlide = idx === activeIndex;
-          const showVideo = isPlayingVideo && isCurrentSlide;
+          const showVideo = isCurrentSlide && slide.hasVideo;
           const shouldShowTitle = slide.showTitle !== false && data?.showTitle !== false;
           const shouldShowCta = slide.showCta !== false && data?.showCta !== false;
           const slideTitle = slide.title || data?.title || "Dependable Bonds for Indian Homes";
@@ -297,16 +415,21 @@ export default function Hero({ data }: HeroProps) {
                       <iframe
                         ref={iframeRef}
                         onLoad={() => {
-                          const win = iframeRef.current?.contentWindow;
-                          if (win) {
-                            win.postMessage('{"event":"listening"}', "*");
-                            win.postMessage(
-                              '{"event":"command","func":"addEventListener","args":["onStateChange"]}',
+                          try {
+                            iframeRef.current?.contentWindow?.postMessage(
+                              JSON.stringify({ event: "listening" }),
                               "*"
                             );
+                          } catch {}
+                          sendYouTubeCommand("addEventListener", ["onStateChange"]);
+                          if (isMuted) {
+                            sendYouTubeCommand("mute");
+                          } else {
+                            sendYouTubeCommand("unMute");
                           }
+                          sendYouTubeCommand("playVideo");
                         }}
-                        src={`https://www.youtube.com/embed/${getYouTubeId(slide.videoUrl)}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&playsinline=1&enablejsapi=1`}
+                        src={`https://www.youtube.com/embed/${getYouTubeId(slide.videoUrl)}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&playsinline=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
                         className="absolute top-1/2 left-1/2 pointer-events-none border-0"
                         style={{
                           width: "max(100%, 177.78vh)",
@@ -315,7 +438,7 @@ export default function Hero({ data }: HeroProps) {
                           minHeight: "100%",
                           transform: "translate(-50%, -50%) scale(1.08)",
                         }}
-                        allow="autoplay; encrypted-media"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         title={slideTitle}
                       />
                     </div>
@@ -348,6 +471,21 @@ export default function Hero({ data }: HeroProps) {
                         }}
                       />
                     </>
+                  )}
+                  {/* Center Replay Button Overlay */}
+                  {isEnded && (
+                    <div className="absolute inset-0 z-25 flex flex-col items-center justify-center pointer-events-auto">
+                      <button
+                        onClick={handleReplayVideo}
+                        className="group flex flex-col items-center gap-3 p-4 rounded-full bg-black/75 hover:bg-black/90 backdrop-blur-md border border-white/25 text-white shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                        title="Replay"
+                        aria-label="Replay"
+                      >
+                        <div className="w-13 h-13 xl:w-16 xl:h-16 rounded-full bg-white/20 group-hover:bg-white/30 flex items-center justify-center transition-colors">
+                          <RotateCcw className="w-6.5 h-6.5 xl:w-8 xl:h-8 text-white transition-transform duration-500 group-hover:-rotate-180" />
+                        </div>
+                      </button>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -460,25 +598,27 @@ export default function Hero({ data }: HeroProps) {
       {/* Play Video / Audio Controls */}
       {showPlayButton && (
         <div className="absolute bottom-5 right-6.25 lg:bottom-14.5 2xl:bottom-18.25 flex items-center gap-3 z-30">
-          {isPlayingVideo && (
-            <button
-              onClick={() => setIsMuted(!isMuted)}
-              className="w-9.75 h-[40.1px] xl:w-[60.5px] xl:h-[62.2px] bg-white rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 duration-300 cursor-pointer text-[#2D2D2D]"
-              title={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? (
-                <VolumeX className="w-4 h-4 xl:w-7.5 xl:h-7.5" />
-              ) : (
-                <Volume2 className="w-4 h-4 xl:w-7.5 xl:h-7.5" />
-              )}
-            </button>
-          )}
           <button
-            onClick={handlePlayVideo}
+            onClick={handleToggleMute}
             className="w-9.75 h-[40.1px] xl:w-[60.5px] xl:h-[62.2px] bg-white rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 duration-300 cursor-pointer text-[#2D2D2D]"
-            title={isPlayingVideo ? "Stop Video" : "Play Video"}
+            title={isMuted ? "Unmute" : "Mute"}
+            aria-label={isMuted ? "Unmute audio" : "Mute audio"}
           >
-            {isPlayingVideo ? (
+            {isMuted ? (
+              <VolumeX className="w-4 h-4 xl:w-7.5 xl:h-7.5" />
+            ) : (
+              <Volume2 className="w-4 h-4 xl:w-7.5 xl:h-7.5" />
+            )}
+          </button>
+          <button
+            onClick={isEnded ? handleReplayVideo : handlePlayVideo}
+            className="w-9.75 h-[40.1px] xl:w-[60.5px] xl:h-[62.2px] bg-white rounded-full flex items-center justify-center shadow-md transition-all hover:scale-110 duration-300 cursor-pointer text-[#2D2D2D]"
+            title={isEnded ? "Replay Video" : isPlayingVideo ? "Pause Video" : "Play Video"}
+            aria-label={isEnded ? "Replay video" : isPlayingVideo ? "Pause video" : "Play video"}
+          >
+            {isEnded ? (
+              <RotateCcw className="w-4 h-4 xl:w-7.5 xl:h-7.5 text-[#2D2D2D]" />
+            ) : isPlayingVideo ? (
               <Pause className="fill-[#2D2D2D] w-4 h-4 xl:w-7.5 xl:h-7.5" />
             ) : (
               <Play className="fill-[#2D2D2D] w-4 h-4 xl:w-7.5 xl:h-7.5" />
