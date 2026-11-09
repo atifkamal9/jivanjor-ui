@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { RightChoice } from "@/components/categories";
 import { api } from "@/lib/api";
+import { formatContentWithYouTubeEmbeds } from "@/lib/video";
 
 interface ListProps {
   description?: string;
@@ -389,7 +390,7 @@ function ListContent({
                   <div className="space-y-6 w-full">
                     <div
                       className="font-google-sans text-base md:text-lg text-[#222] dark:text-zinc-200 leading-relaxed space-y-4 prose max-w-none prose-content w-full"
-                      dangerouslySetInnerHTML={{ __html: activeArticle.content || `<p>${activeArticle.desc}</p>` }}
+                      dangerouslySetInnerHTML={{ __html: formatContentWithYouTubeEmbeds(activeArticle.content || `<p>${activeArticle.desc || ""}</p>`) }}
                     />
                   </div>
 

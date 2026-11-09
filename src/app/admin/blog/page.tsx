@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { api, BlogPost } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
+import { formatContentWithYouTubeEmbeds } from "@/lib/video";
 import { BLOG_POST_CATEGORIES, FALLBACK_BLOG_CATEGORIES } from "@/lib/blog-categories";
 import {
   Plus,
@@ -628,16 +629,18 @@ export default function BlogPage() {
                             />
                           </div>
 
-                          <div>
-                            <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+                          <div className="space-y-2">
+                            <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
                               TLDR Summary / Highlights
                             </label>
-                            <textarea
-                              rows={2}
+                            <BlogRichEditor
+                              compact
+                              title="TLDR Editor"
+                              minHeight="min-h-[110px]"
                               value={formData.tldr}
-                              onChange={(e) => setFormData((prev) => ({ ...prev, tldr: e.target.value }))}
-                              placeholder="e.g. Laminate bubbling is a common failure point in coastal interior woodwork. This guide covers..."
-                              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50/50 text-sm outline-none focus:border-red-500 focus:bg-white dark:border-zinc-800 dark:bg-zinc-955 dark:text-zinc-100 resize-none font-medium"
+                              onChange={(html) =>
+                                setFormData((prev) => ({ ...prev, tldr: html }))
+                              }
                             />
                           </div>
 
@@ -792,13 +795,20 @@ export default function BlogPage() {
                         {formData.tldr && (
                           <div className="bg-red-50/40 dark:bg-red-950/15 border-l-4 border-red-600 p-4 mb-6 rounded-r-xl font-sans">
                             <span className="block text-[10px] font-black uppercase text-red-600 dark:text-red-400 tracking-wider mb-1">TLDR Summary / Key Highlights</span>
-                            <p className="text-xs text-gray-700 dark:text-zinc-300 font-medium leading-relaxed">{formData.tldr}</p>
+                            <div
+                              className="text-xs text-gray-700 dark:text-zinc-300 font-medium leading-relaxed prose prose-sm max-w-none tldr-content"
+                              dangerouslySetInnerHTML={{
+                                __html: /<(p|ul|ol|li|strong|em|b|i|u|span|div)[\s>]/i.test(formData.tldr)
+                                  ? formData.tldr
+                                  : `<p>${formData.tldr}</p>`,
+                              }}
+                            />
                           </div>
                         )}
 
                         <div
                           className="text-sm text-gray-700 dark:text-zinc-300 leading-relaxed blog-editor-content prose-content"
-                          dangerouslySetInnerHTML={{ __html: formData.content || "<p>Empty content...</p>" }}
+                          dangerouslySetInnerHTML={{ __html: formatContentWithYouTubeEmbeds(formData.content || "<p>Empty content...</p>") }}
                         />
                       </div>
                     </div>

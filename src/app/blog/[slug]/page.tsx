@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const postTitle = post?.title || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
     const canonical = `https://jivanjor.com/blog/${post?.slug || slug}`;
     const description =
-      post?.tldr ||
+      (post?.tldr ? post.tldr.replace(/<[^>]*>/g, "").trim() : "") ||
       (post?.content
         ? post.content.replace(/<[^>]*>/g, "").slice(0, 150) + "..."
         : `Read ${postTitle} on the Jivanjor Woodworking Knowledge Hub.`);
@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: Props) {
   const postTitle = post?.title || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
   const canonical = `https://jivanjor.com/blog/${post?.slug || slug}`;
   const description =
-    post?.tldr ||
+    (post?.tldr ? post.tldr.replace(/<[^>]*>/g, "").trim() : "") ||
     (post?.content
       ? post.content.replace(/<[^>]*>/g, "").slice(0, 150) + "..."
       : `Read ${postTitle} on the Jivanjor Woodworking Knowledge Hub.`);

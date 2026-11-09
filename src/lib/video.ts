@@ -49,3 +49,68 @@ export function YouTubeIcon({ className = "h-4 w-4" }: { className?: string }) {
   );
 }
 
+/**
+ * Formats rich article/blog HTML content so that YouTube URLs (pasted plain text,
+ * anchor links, bracket syntax, or bare iframes) are automatically converted into
+ * responsive 16:9 embedded player blocks on public blog pages and case studies.
+ */
+export function formatContentWithYouTubeEmbeds(html?: string): string {
+  if (!html || typeof html !== "string") return "";
+
+  const createEmbedHtml = (ytId: string) =>
+    `<div data-youtube-video data-video-id="${ytId}" class="youtube-video-container my-6 ml-0 mr-auto relative w-full max-w-[640px] aspect-video rounded-2xl overflow-hidden shadow-md bg-black"><iframe src="https://www.youtube.com/embed/${ytId}?rel=0" class="absolute inset-0 w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>`;
+
+  // 1. Convert <p><a href="...youtube...">...</a></p> where the link is the only content in the paragraph
+  let result = html.replace(
+    /<p(?:\s+[^>]*)?>[\s\n]*(?:<br\s*\/?>[\s\n]*)*<a\s+[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/a>[\s\n]*(?:<br\s*\/?>[\s\n]*)*<\/p>/gi,
+    (match, href) => {
+      const ytId = getYouTubeId(href);
+      if (ytId) {
+        return createEmbedHtml(ytId);
+      }
+      return match;
+    }
+  );
+
+  // 2. Convert <p>https://...youtube... or youtu.be...</p>
+  result = result.replace(
+    /<p(?:\s+[^>]*)?>[\s\n]*(?:<br\s*\/?>[\s\n]*)*(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^\s<]+)[\s\n]*(?:<br\s*\/?>[\s\n]*)*<\/p>/gi,
+    (match, url) => {
+      const ytId = getYouTubeId(url);
+      if (ytId) {
+        return createEmbedHtml(ytId);
+      }
+      return match;
+    }
+  );
+
+  // 3. Convert markdown/bracket syntax [youtube:URL] or [video:URL]
+  result = result.replace(
+    /\[(?:youtube|video):\s*(https?:\/\/[^\s\]]+)\s*\]/gi,
+    (match, url) => {
+      const ytId = getYouTubeId(url);
+      if (ytId) {
+        return createEmbedHtml(ytId);
+      }
+      return match;
+    }
+  );
+
+  // 4. Wrap any bare/unwrapped YouTube iframes in responsive container
+  result = result.replace(
+    /(<iframe\s+[^>]*src=["']https?:\/\/(?:www\.)?(?:youtube\.com\/embed\/|youtube-nocookie\.com\/embed\/)([^"'?]+)[^"']*["'][^>]*>(?:<\/iframe>)?)/gi,
+    (match, iframeTag, rawVideoId) => {
+      const ytId = getYouTubeId(rawVideoId) || rawVideoId;
+      return createEmbedHtml(ytId);
+    }
+  );
+
+  // 5. Clean up any accidental double-wrapping from step 4 if iframe was already inside data-youtube-video
+  result = result.replace(
+    /<div[^>]*data-youtube-video[^>]*>\s*<div[^>]*data-youtube-video[^>]*>(.*?)<\/div>\s*<\/div>/gi,
+    '<div data-youtube-video class="youtube-video-container my-6 ml-0 mr-auto relative w-full max-w-[640px] aspect-video rounded-2xl overflow-hidden shadow-md bg-black">$1</div>'
+  );
+
+  return result;
+}
+

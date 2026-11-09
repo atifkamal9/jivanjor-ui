@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { RightChoice } from "@/components/categories";
+import { formatContentWithYouTubeEmbeds } from "@/lib/video";
 
 export interface RelatedArticle {
   title: string;
@@ -65,6 +66,16 @@ export default function BlogContent({
   const [tocSections, setTocSections] = useState<{ id: string; title: string }[]>([]);
   const [activeSection, setActiveSection] = useState<string>("");
   const [shareUrl, setShareUrl] = useState("");
+  const isClickScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -110,7 +121,7 @@ export default function BlogContent({
         });
 
         setTocSections(items);
-        setActiveSection(items[0]?.id || "");
+        setActiveSection((prev) => (items.some((i) => i.id === prev) ? prev : items[0]?.id || ""));
       } else {
         setTocSections([]);
       }
@@ -126,16 +137,41 @@ export default function BlogContent({
     if (tocSections.length === 0) return;
 
     const handleScroll = () => {
+      // Don't overwrite active section while smooth scrolling after a user clicks a TOC tab
+      if (isClickScrollingRef.current) return;
+
       const scrollPosition = window.scrollY + 160;
+      const isBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 70;
+
+      // When reached the bottom of the article, highlight the last TOC item
+      if (isBottom && tocSections.length > 0) {
+        setActiveSection(tocSections[tocSections.length - 1].id);
+        return;
+      }
+
+      const articleEl = document.querySelector("article .prose-content");
+      const headings = articleEl
+        ? (Array.from(articleEl.querySelectorAll("h1, h2, h3, h4, h5, h6")) as HTMLElement[])
+        : [];
+
       let currentId = tocSections[0]?.id || "";
 
-      for (const section of tocSections) {
-        const el = document.getElementById(section.id);
+      // Scan from bottom to top so the active section is the one currently in view
+      for (let i = tocSections.length - 1; i >= 0; i--) {
+        const section = tocSections[i];
+        let el = document.getElementById(section.id);
+        if (!el && headings.length > 0) {
+          el = headings.find(
+            (h) => h.id === section.id || h.textContent?.trim() === section.title.trim()
+          ) || null;
+        }
+
         if (el) {
           const top = el.getBoundingClientRect().top + window.scrollY;
           if (scrollPosition >= top) {
             currentId = section.id;
-          } else {
             break;
           }
         }
@@ -152,18 +188,31 @@ export default function BlogContent({
   }, [tocSections]);
 
   const scrollToSection = (id: string, title?: string) => {
+    // 1. Immediately highlight the clicked section tab
+    setActiveSection(id);
+
+    // 2. Lock handleScroll during smooth scroll animation
+    isClickScrollingRef.current = true;
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      isClickScrollingRef.current = false;
+    }, 1000);
+
+    // 3. Find target heading element
     let el = document.getElementById(id);
 
     if (!el) {
       const articleEl = document.querySelector("article .prose-content");
       if (articleEl) {
         const headings = Array.from(articleEl.querySelectorAll("h1, h2, h3, h4, h5, h6"));
-        el = headings.find((h) => {
+        el = (headings.find((h) => {
           return (
             h.id === id ||
             h.textContent?.trim() === title?.trim()
           );
-        }) as HTMLElement | null;
+        }) as HTMLElement) || null;
       }
     }
 
@@ -174,7 +223,6 @@ export default function BlogContent({
         top,
         behavior: "smooth",
       });
-      setActiveSection(id);
     }
   };
 
@@ -329,9 +377,14 @@ export default function BlogContent({
               <h4 className="font-google-sans font-bold text-xl md:text-[22px] text-[#222] mb-3">
                 TLDR :
               </h4>
-              <p className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222] max-w-4xl">
-                {articleData.tldr}
-              </p>
+              <div
+                className="font-google-sans text-base md:text-lg lg:text-[22px] text-[#222] max-w-4xl leading-relaxed space-y-2 prose prose-sm md:prose-base lg:prose-lg max-w-none tldr-content"
+                dangerouslySetInnerHTML={{
+                  __html: /<(p|ul|ol|li|strong|em|b|i|u|span|div)[\s>]/i.test(articleData.tldr)
+                    ? articleData.tldr
+                    : `<p>${articleData.tldr}</p>`,
+                }}
+              />
             </div>
           )}
 
@@ -340,7 +393,7 @@ export default function BlogContent({
             <div className="space-y-6">
               <div
                 className="font-google-sans text-base md:text-lg lg:text-xl text-[#222] leading-relaxed space-y-4 prose max-w-none prose-content"
-                dangerouslySetInnerHTML={{ __html: articleData.content || "" }}
+                dangerouslySetInnerHTML={{ __html: formatContentWithYouTubeEmbeds(articleData.content) }}
               />
             </div>
 

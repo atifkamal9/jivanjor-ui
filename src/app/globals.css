@@ -373,3 +373,68 @@ div {
 .prose-content {
   overflow-x: auto;
 }
+
+/* Embedded YouTube & Video containers */
+.youtube-video-container,
+.prose-content .youtube-video-container,
+.blog-editor-content .youtube-video-container,
+div[data-youtube-video] {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #000000;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: 0 !important;
+  margin-right: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.youtube-video-container iframe,
+.prose-content .youtube-video-container iframe,
+.blog-editor-content .youtube-video-container iframe,
+div[data-youtube-video] iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* TLDR Summary formatted styling */
+.tldr-content p {
+  margin: 0.25rem 0;
+  font-size: inherit;
+  line-height: 1.6;
+}
+
+.tldr-content ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.tldr-content ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.tldr-content li {
+  margin: 0.25rem 0;
+}
+
+.tldr-content strong,
+.tldr-content b {
+  font-weight: 700;
+  color: inherit;
+}
+
+.tldr-content a {
+  color: #ff0009;
+  text-decoration: underline;
+}

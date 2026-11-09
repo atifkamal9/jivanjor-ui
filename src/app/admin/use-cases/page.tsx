@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { api, UseCase } from "@/lib/api";
 import ImageUpload from "@/components/admin/ImageUpload";
 import BlogRichEditor from "@/components/admin/BlogRichEditor";
+import { formatContentWithYouTubeEmbeds } from "@/lib/video";
 import {
   Plus,
   Search,
@@ -530,7 +531,7 @@ export default function UseCasesPage() {
 
                       <div
                         className="prose dark:prose-invert max-w-none text-gray-800 dark:text-zinc-200"
-                        dangerouslySetInnerHTML={{ __html: formData.content }}
+                        dangerouslySetInnerHTML={{ __html: formatContentWithYouTubeEmbeds(formData.content || "<p>Empty content...</p>") }}
                       />
                     </div>
                   )}
