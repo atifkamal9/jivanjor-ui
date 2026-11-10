@@ -11,6 +11,7 @@ import {
   SitemapSection,
   SitemapLink,
 } from "@/lib/sitemap-storage";
+import { api, type Product } from "@/lib/api";
 import {
   Compass,
   Plus,
@@ -27,6 +28,7 @@ import {
   Edit3,
   Filter,
   Search,
+  RefreshCw,
 } from "lucide-react";
 
 export default function AdminSitemapManagerPage() {
@@ -34,6 +36,7 @@ export default function AdminSitemapManagerPage() {
     getLocalSitemapConfig()
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [activeSectionFilter, setActiveSectionFilter] = useState<string>("all");
   const [searchFilter, setSearchFilter] = useState("");
@@ -54,7 +57,290 @@ export default function AdminSitemapManagerPage() {
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(""), 3000);
+    setTimeout(() => setToastMessage(""), 4000);
+  };
+
+  const handleSync = async () => {
+    setIsSyncing(true);
+    try {
+      const [
+        productsRes,
+        categoriesRes,
+        blogsRes,
+        pagesRes,
+        templatesRes,
+        useCasesRes,
+      ] = await Promise.allSettled([
+        api.getProducts({ visibleOnly: true }),
+        api.getCategories(),
+        api.getBlogPosts(),
+        api.getPages(),
+        api.getTemplates(),
+        api.getUseCases(),
+      ]);
+
+      const liveProducts =
+        productsRes.status === "fulfilled" && Array.isArray(productsRes.value)
+          ? productsRes.value
+          : [];
+      const liveCategories =
+        categoriesRes.status === "fulfilled" && Array.isArray(categoriesRes.value)
+          ? categoriesRes.value
+          : [];
+      const liveBlogs =
+        blogsRes.status === "fulfilled" && Array.isArray(blogsRes.value)
+          ? blogsRes.value
+          : [];
+      const livePages =
+        pagesRes.status === "fulfilled" && Array.isArray(pagesRes.value)
+          ? pagesRes.value
+          : [];
+      const liveTemplates =
+        templatesRes.status === "fulfilled" && Array.isArray(templatesRes.value)
+          ? templatesRes.value
+          : [];
+      const liveUseCases =
+        useCasesRes.status === "fulfilled" && Array.isArray(useCasesRes.value)
+          ? useCasesRes.value
+          : [];
+
+      let currentSections = [...config.sections];
+
+      // 1. Sync Categories into 'categories' section
+      const categoryLinks: SitemapLink[] = liveCategories
+        .filter((cat) => cat.isVisible !== false)
+        .map((cat, idx) => {
+          const slug = (cat.slug || cat.name || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+          return {
+            id: `cat-${cat.id || idx}`,
+            title: cat.name,
+            href: `/categories/${slug}`,
+            description:
+              cat.tagline ||
+              cat.description ||
+              "Browse adhesives by specialization category.",
+          };
+        });
+
+      const catSecIdx = currentSections.findIndex((s) => s.id === "categories");
+      if (catSecIdx !== -1) {
+        const customLinks = currentSections[catSecIdx].links.filter((l) => l.isCustom);
+        currentSections[catSecIdx] = {
+          ...currentSections[catSecIdx],
+          links: [...categoryLinks, ...customLinks],
+        };
+      } else if (categoryLinks.length > 0) {
+        currentSections.push({
+          id: "categories",
+          title: "Product Categories",
+          description: "Browse adhesives by category and performance rating.",
+          isVisible: true,
+          order: currentSections.length + 1,
+          links: categoryLinks,
+        });
+      }
+
+      // 2. Sync Products into 'products' section - strictly only visible products
+      const isProductVisible = (p: Product | any): boolean => {
+        if (!p) return false;
+        if (p.isVisible === false || p.isVisible === "false" || p.isVisible === 0 || p.isVisible === "0") return false;
+        if (p.is_visible === false || p.is_visible === "false" || p.is_visible === 0 || p.is_visible === "0") return false;
+        if (p.metadata && typeof p.metadata === "object") {
+          if (p.metadata.isVisible === false || p.metadata.isVisible === "false" || p.metadata.isVisible === 0 || p.metadata.isVisible === "0") return false;
+          if (p.metadata.is_visible === false || p.metadata.is_visible === "false" || p.metadata.is_visible === 0 || p.metadata.is_visible === "0") return false;
+        }
+        return p.isVisible === true || p.isVisible === undefined;
+      };
+
+      const productLinks: SitemapLink[] = liveProducts
+        .filter(isProductVisible)
+        .map((p, idx) => {
+          const slug = (p.slug || p.name || "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+          return {
+            id: `prod-${p.id || idx}`,
+            title: p.name,
+            href: `/products?product=${encodeURIComponent(slug)}`,
+            description:
+              p.short_description ||
+              p.shortDescription ||
+              (p.description ? p.description.slice(0, 90) + "..." : "Premium Jivanjor wood adhesive."),
+          };
+        });
+
+      const prodSecIdx = currentSections.findIndex((s) => s.id === "products");
+      if (prodSecIdx !== -1) {
+        const customLinks = currentSections[prodSecIdx].links.filter((l) => l.isCustom);
+        currentSections[prodSecIdx] = {
+          ...currentSections[prodSecIdx],
+          links: [...productLinks, ...customLinks],
+        };
+      } else if (productLinks.length > 0) {
+        currentSections.push({
+          id: "products",
+          title: "Products Directory",
+          description: "Complete catalog of premium woodworking adhesives.",
+          isVisible: true,
+          order: currentSections.length + 1,
+          links: productLinks,
+        });
+      }
+
+      // 3. Sync Editorial Blogs into 'editorial' section
+      const blogLinks: SitemapLink[] = liveBlogs.map((b, idx) => {
+        const slug = (b.slug || b.title || "").trim();
+        const rawDesc = b.tldr
+          ? b.tldr.replace(/<[^>]*>/g, "").slice(0, 100)
+          : b.category || "Woodworking guide and industry advice.";
+        return {
+          id: `blog-${b.id || idx}`,
+          title: b.title,
+          href: `/blog/${slug}`,
+          description: rawDesc,
+        };
+      });
+
+      const blogSecIdx = currentSections.findIndex((s) => s.id === "editorial");
+      if (blogSecIdx !== -1) {
+        const customLinks = currentSections[blogSecIdx].links.filter((l) => l.isCustom);
+        currentSections[blogSecIdx] = {
+          ...currentSections[blogSecIdx],
+          links: [...blogLinks, ...customLinks],
+        };
+      } else if (blogLinks.length > 0) {
+        currentSections.push({
+          id: "editorial",
+          title: "Editorial Articles & Guides",
+          description: "Woodworking advice, application guides, and expert knowledge.",
+          isVisible: true,
+          order: currentSections.length + 1,
+          links: blogLinks,
+        });
+      }
+
+      // 4. Sync Dynamic CMS Pages into 'about-sub' or dynamic pages
+      const reservedSlugs = new Set([
+        "home",
+        "about",
+        "products",
+        "categories",
+        "applications",
+        "blog",
+        "partner",
+        "contractor",
+        "contact",
+        "resources",
+        "privacy",
+        "sitemap",
+      ]);
+
+      const dynamicPageLinks: SitemapLink[] = livePages
+        .filter((pg) => pg.slug && !reservedSlugs.has(pg.slug.trim().toLowerCase()))
+        .map((pg, idx) => {
+          const slug = pg.slug.trim().toLowerCase();
+          const template = liveTemplates.find((t) => t.id === pg.activeTemplateId);
+          const rawData =
+            (template?.rawSections as any) || (template?.sections as any) || {};
+          const layoutType = rawData.layoutType || "";
+
+          let href = `/${slug}`;
+          if (layoutType === "about") href = `/about/${slug}`;
+          else if (layoutType === "applications") href = `/applications/${slug}`;
+          else if (layoutType === "products") href = `/products/${slug}`;
+          else if (layoutType === "categories") href = `/categories/${slug}`;
+          else if (layoutType === "blog") href = `/blog/${slug}`;
+
+          return {
+            id: `page-${pg.id || idx}`,
+            title: pg.title,
+            href,
+            description: pg.description || "Corporate and brand overview.",
+          };
+        });
+
+      const aboutSecIdx = currentSections.findIndex((s) => s.id === "about-sub");
+      if (aboutSecIdx !== -1) {
+        const existing = currentSections[aboutSecIdx].links;
+        const existingHrefs = new Set(existing.map((l) => l.href.toLowerCase()));
+        const toAdd = dynamicPageLinks.filter((l) => !existingHrefs.has(l.href.toLowerCase()));
+        currentSections[aboutSecIdx] = {
+          ...currentSections[aboutSecIdx],
+          links: [...existing, ...toAdd],
+        };
+      } else if (dynamicPageLinks.length > 0) {
+        currentSections.push({
+          id: "about-sub",
+          title: "Brand & Corporate",
+          description: "Research innovation, quality promises, media, and market network.",
+          isVisible: true,
+          order: 2,
+          links: dynamicPageLinks,
+        });
+      }
+
+      // 5. Sync Applications / Use Cases
+      const useCaseLinks: SitemapLink[] = liveUseCases.map((uc, idx) => {
+        const slug = (uc.slug || uc.title || "")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-");
+        return {
+          id: `uc-${uc.id || idx}`,
+          title: uc.title,
+          href: `/applications?article=${encodeURIComponent(slug)}`,
+          description: uc.description || "Application solutions and bonding technique.",
+        };
+      });
+
+      const appSecIdx = currentSections.findIndex(
+        (s) => s.id === "applications" || s.title.toLowerCase().includes("application")
+      );
+      if (appSecIdx !== -1) {
+        const customLinks = currentSections[appSecIdx].links.filter((l) => l.isCustom);
+        currentSections[appSecIdx] = {
+          ...currentSections[appSecIdx],
+          links: [...useCaseLinks, ...customLinks],
+        };
+      } else if (useCaseLinks.length > 0) {
+        currentSections.push({
+          id: "applications",
+          title: "Applications & Solutions",
+          description: "Application guides for furniture, laminates, and wood.",
+          isVisible: true,
+          order: currentSections.length + 1,
+          links: useCaseLinks,
+        });
+      }
+
+      // Re-index orders
+      currentSections = currentSections.map((sec, idx) => ({
+        ...sec,
+        order: idx + 1,
+      }));
+
+      const updatedConfig: SitemapConfig = {
+        ...config,
+        sections: currentSections,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      saveLocalSitemapConfig(updatedConfig);
+      setConfig(updatedConfig);
+
+      showToast(
+        `Synced ${productLinks.length} visible products, ${categoryLinks.length} categories, ${blogLinks.length} blogs, ${dynamicPageLinks.length} dynamic pages, and ${useCaseLinks.length} use cases successfully!`
+      );
+    } catch (err: any) {
+      console.error("Failed to sync sitemap:", err);
+      showToast(err?.message || "Failed to sync content from backend.");
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const handleSave = () => {
@@ -261,9 +547,27 @@ export default function AdminSitemapManagerPage() {
             <p className="text-sm text-foreground/60 mt-1">
               Directly edit and customize Main Pages, Brand & Corporate, Product Categories, Editorial Guides, Support, or custom sections.
             </p>
+            {config.lastUpdated && (
+              <span className="inline-block text-xs text-foreground/50 mt-1 font-medium">
+                Last synced: {new Date(config.lastUpdated).toLocaleString()}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSync}
+              disabled={isSyncing || isSaving}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface border border-border text-foreground font-semibold text-xs sm:text-sm hover:border-primary/50 hover:text-primary transition-all cursor-pointer shadow-sm disabled:opacity-60"
+              title="Sync live pages, products, categories, blogs, and use cases from database"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${isSyncing ? "animate-spin text-primary" : ""}`}
+              />
+              <span>{isSyncing ? "Syncing..." : "Sync"}</span>
+            </button>
+
             <Link
               href="/sitemap"
               target="_blank"
@@ -276,7 +580,7 @@ export default function AdminSitemapManagerPage() {
 
             <button
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || isSyncing}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs sm:text-sm shadow-md hover:bg-primary/90 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" />
@@ -393,6 +697,18 @@ export default function AdminSitemapManagerPage() {
             >
               <Plus className="w-4 h-4" />
               <span>Add Custom Section</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSync}
+              disabled={isSyncing || isSaving}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-foreground font-semibold text-xs hover:border-primary/50 hover:text-primary transition-all cursor-pointer disabled:opacity-60"
+            >
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-primary" : ""}`}
+              />
+              <span>{isSyncing ? "Syncing..." : "Sync Live Content"}</span>
             </button>
           </div>
 

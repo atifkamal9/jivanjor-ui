@@ -595,7 +595,23 @@ export function mapProductFromBackend(prod: any): Product {
     enquireText,
     enquireLink,
     rightChoice: prod.rightChoice || prod.right_choice || (prod.metadata && typeof prod.metadata === "object" ? prod.metadata.rightChoice || prod.metadata.right_choice : undefined),
-    isVisible: prod.isVisible !== undefined ? Boolean(prod.isVisible) : (prod.metadata && typeof prod.metadata === "object" && prod.metadata.isVisible !== undefined ? Boolean(prod.metadata.isVisible) : true),
+    isVisible: (() => {
+      if (prod.isVisible !== undefined) {
+        return prod.isVisible === true || prod.isVisible === "true" || prod.isVisible === 1 || prod.isVisible === "1";
+      }
+      if (prod.is_visible !== undefined) {
+        return prod.is_visible === true || prod.is_visible === "true" || prod.is_visible === 1 || prod.is_visible === "1";
+      }
+      if (prod.metadata && typeof prod.metadata === "object") {
+        if (prod.metadata.isVisible !== undefined) {
+          return prod.metadata.isVisible === true || prod.metadata.isVisible === "true" || prod.metadata.isVisible === 1 || prod.metadata.isVisible === "1";
+        }
+        if (prod.metadata.is_visible !== undefined) {
+          return prod.metadata.is_visible === true || prod.metadata.is_visible === "true" || prod.metadata.is_visible === 1 || prod.metadata.is_visible === "1";
+        }
+      }
+      return true;
+    })(),
   };
 }
 
@@ -729,13 +745,14 @@ export const api = {
   },
 
   // PRODUCTS
-  getProducts: async (params?: { limit?: number; page?: number; categoryId?: string; search?: string }): Promise<Product[]> => {
+  getProducts: async (params?: { limit?: number; page?: number; categoryId?: string; search?: string; visibleOnly?: boolean }): Promise<Product[]> => {
     const query = new URLSearchParams();
     // Default to a high limit so all products are fetched (backend defaults to 10)
     query.set("limit", String(params?.limit ?? 9999));
     if (params?.page) query.set("page", String(params.page));
     if (params?.categoryId) query.set("categoryId", params.categoryId);
     if (params?.search) query.set("search", params.search);
+    if (params?.visibleOnly !== undefined) query.set("visibleOnly", String(params.visibleOnly));
     const res = await client.get(`/products?${query.toString()}`);
     const products = res.data?.data?.products || [];
     return Array.isArray(products) ? products.map(mapProductFromBackend) : [];
