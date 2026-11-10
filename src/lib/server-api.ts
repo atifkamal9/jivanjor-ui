@@ -9,11 +9,28 @@ import {
 } from "@/lib/api";
 
 export async function getServerApiBase(): Promise<string> {
-  const backendUrl =
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "https://jivanjor-server.onrender.com/api";
-  return backendUrl.replace(/\/+$/, "");
+  const { headers } = await import("next/headers");
+  const h = await headers();
+
+  const host = h.get("x-forwarded-host") || h.get("host");
+
+  if (!host) {
+    throw new Error("Unable to determine request hostname");
+  }
+
+  const hostname = host.toLowerCase().split(":")[0];
+
+  const allowedHosts = [
+    "uat.jivanjor.com",
+    "jivanjor.com",
+    "www.jivanjor.com",
+  ];
+
+  if (!allowedHosts.includes(hostname)) {
+    throw new Error(`Unexpected request hostname: ${hostname}`);
+  }
+
+  return `https://${hostname}/api`;
 }
 
 export async function getServerSettings(): Promise<SiteSettings> {
