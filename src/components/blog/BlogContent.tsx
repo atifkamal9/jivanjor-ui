@@ -312,7 +312,7 @@ export default function BlogContent({
             <h3 className="text-2xl font-google-sans font-bold text-[#222]">
               Table of Contents
             </h3>
-            <nav className="flex flex-col gap-3 font-google-sans text-xl text-[#222] max-w-3xs px-2">
+            <nav className="flex flex-col gap-3 font-google-sans text-lg text-[#222] max-w-2xs px-1">
               {tocSections.map((section) => {
                 const isActive = activeSection === section.id;
                 return (
@@ -339,7 +339,7 @@ export default function BlogContent({
               <div className="font-google-sans font-bold text-xl text-[#222] list-none flex items-center justify-between cursor-pointer">
                 <span>Table of Contents</span>
               </div>
-              <nav className="flex flex-col space-y-3 font-google-sans text-base text-[#222] mt-4 max-w-65">
+              <nav className="flex flex-col space-y-3 font-google-sans text-sm md:text-base text-[#222] mt-4 max-w-65">
                 {tocSections.map((section) => {
                   const isActive = activeSection === section.id;
                   return (
