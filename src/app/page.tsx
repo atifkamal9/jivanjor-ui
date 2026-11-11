@@ -7,7 +7,8 @@ import {
   RightChoice,
   Testimonial,
 } from "@/components/home";
-import { getServerActiveTemplateForPage } from "@/lib/server-api";
+import { getServerActiveTemplateForPage, getServerPage } from "@/lib/server-api";
+import { api } from "@/lib/api";
 import JsonLdScript from "@/components/seo/JsonLdScript";
 import { getResolvedSeoAndSchema } from "@/lib/seo-helper";
 import { Metadata } from "next";
@@ -28,14 +29,63 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  let template = undefined;
+  let template: any = undefined;
+  let pageData: any = undefined;
+
   try {
-    template = await getServerActiveTemplateForPage("home");
+    const [t, p] = await Promise.all([
+      getServerActiveTemplateForPage("home").catch(() => null),
+      getServerPage("home").catch(() => null),
+    ]);
+    template = t;
+    pageData = p;
   } catch (err) {
-    console.error("Failed to load active homepage template from server:", err);
+    console.error("Failed to load active homepage data from server-api:", err);
   }
 
-  const sections = template?.rawSections || {};
+  // Resilient fallback to Axios client methods if server-api returned null
+  if (!pageData) {
+    try {
+      const [p, pages] = await Promise.all([
+        api.getPageById("home").catch(() => null),
+        api.getPages().catch(() => []),
+      ]);
+      pageData = p || pages.find((pg: any) => pg.slug === "home" || pg.id === "home");
+    } catch (err) {
+      console.error("Failed to fallback load pageData:", err);
+    }
+  }
+
+  if (!template) {
+    try {
+      template = await api.getActiveTemplateForPage("home").catch(() => null);
+    } catch (err) {
+      console.error("Failed to fallback load template:", err);
+    }
+  }
+
+  const safeParseSections = (data: any) => {
+    if (!data) return undefined;
+    if (typeof data === "object") return data;
+    if (typeof data === "string") {
+      try {
+        return JSON.parse(data);
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  };
+
+  const rawPageSections = safeParseSections(pageData?.sections);
+  const rawTemplateSections =
+    safeParseSections(template?.rawSections) || safeParseSections(template?.sections);
+
+  // Custom page configuration saved from Admin > Dynamic Page takes precedence
+  const sections = {
+    ...(rawTemplateSections || {}),
+    ...(rawPageSections || {}),
+  };
   const { schemaConfig } = await getResolvedSeoAndSchema("home", "home", HOME_FALLBACK);
 
   return (

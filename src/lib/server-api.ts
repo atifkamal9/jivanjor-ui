@@ -51,30 +51,70 @@ export async function getServerSettings(): Promise<SiteSettings> {
 }
 
 export async function getServerActiveTemplateForPage(page: string) {
-  const apiBase = await getServerApiBase();
+  try {
+    const apiBase = await getServerApiBase();
 
-  const response = await fetch(
-    `${apiBase}/templates/active/page/${encodeURIComponent(page)}`,
-    {
-      cache: "no-store",
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      `Active template API failed with ${response.status}`
+    const response = await fetch(
+      `${apiBase}/templates/active/page/${encodeURIComponent(page)}`,
+      {
+        cache: "no-store",
+      }
     );
+
+    if (!response.ok) {
+      throw new Error(
+        `Active template API failed with ${response.status}`
+      );
+    }
+
+    const result = await response.json();
+
+    const temp =
+      result?.data?.template ||
+      result?.data;
+
+    return temp
+      ? mapTemplateFromBackend(temp)
+      : undefined;
+  } catch {
+    return undefined;
   }
+}
 
-  const result = await response.json();
+export async function getServerPage(pageSlug: string): Promise<any | undefined> {
+  try {
+    const apiBase = await getServerApiBase();
 
-  const temp =
-    result?.data?.template ||
-    result?.data;
+    const response = await fetch(
+      `${apiBase}/pages/${encodeURIComponent(pageSlug)}`,
+      {
+        cache: "no-store",
+      }
+    );
 
-  return temp
-    ? mapTemplateFromBackend(temp)
-    : undefined;
+    if (response.ok) {
+      const result = await response.json();
+      if (result?.data?.page) {
+        return result.data.page;
+      }
+    }
+
+    // Fallback: fetch all pages and find by slug or id
+    const listRes = await fetch(`${apiBase}/pages`, { cache: "no-store" });
+    if (listRes.ok) {
+      const listData = await listRes.json();
+      const pages = listData?.data?.pages || listData?.data || [];
+      if (Array.isArray(pages)) {
+        return pages.find(
+          (p: any) => p.slug === pageSlug || p.id === pageSlug || p._id === pageSlug
+        );
+      }
+    }
+
+    return undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function getServerCategories(): Promise<Category[]> {
