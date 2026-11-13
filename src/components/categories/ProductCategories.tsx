@@ -310,7 +310,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
           const match = cats.find((c) => c.slug === category);
           if (match) {
             if (!match.parent_category) {
-              const firstChild = cats.find((c) => c.parent_category === match.id && c.isVisible !== false && !c.hideInMenu);
+              const firstChild = cats.find((c) => c.parent_category === match.id && c.isVisible !== false);
               if (firstChild) {
                 setActiveCategory(firstChild.name);
                 if (onCategoryChange) {
@@ -350,7 +350,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
       const match = categories.find((c) => c.slug === category);
       if (match) {
         const targetName = !match.parent_category
-          ? (categories.find((c) => c.parent_category === match.id && c.isVisible !== false && !c.hideInMenu)?.name || match.name)
+          ? (categories.find((c) => c.parent_category === match.id && c.isVisible !== false)?.name || match.name)
           : match.name;
         if (targetName && targetName !== activeCategory) {
           setActiveCategory(targetName);
@@ -369,7 +369,7 @@ export default function ProductCategories({ category, data, onCategoryChange }: 
   const siblingSubcategories = (parentId
     ? categories.filter((c) => c.parent_category === parentId)
     : categories.filter((c) => c.parent_category)
-  ).filter((c) => c.isVisible !== false && !c.hideInMenu)
+  ).filter((c) => c.isVisible !== false)
     .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
   const categoriesData = categories.length > 0 && (matchedCategory || siblingSubcategories.length > 0)

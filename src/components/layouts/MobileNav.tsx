@@ -189,7 +189,7 @@ export default function MobileNav({
                       <div className="bg-surface border-t p-5 space-y-1.5 transition-all duration-300">
                         {isProductMenu ? (
                           productCategories
-                            .filter((cat) => cat.hideInMenu !== true)
+                            .filter((cat) => (cat as any).isVisible !== false && cat.hideInMenu !== true)
                             .map((cat) => {
                             const isCatOpen = openCategory === cat.name;
                             return (

@@ -80,7 +80,7 @@ export default function ProductRange({ data }: ProductRangeProps) {
           api.getProducts().catch(() => []),
           api.getCategories().catch(() => []),
         ]);
-        const visibleCats = cats.filter((c: Category) => c.isVisible !== false && !c.hideInMenu);
+        const visibleCats = cats.filter((c: Category) => c.isVisible !== false);
         const visibleCatIds = new Set(visibleCats.map((c: Category) => c.id));
         const visibleProds = prods.filter((p: Product) => p.isVisible !== false && visibleCatIds.has(p.category_id));
 

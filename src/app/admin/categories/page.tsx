@@ -290,8 +290,8 @@ export default function CategoriesPage() {
       rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
-      hideInMenu: category.hideInMenu || false,
-      isVisible: category.isVisible !== undefined ? category.isVisible : !category.hideInMenu,
+      hideInMenu: category.hideInMenu ?? false,
+      isVisible: category.isVisible !== undefined ? category.isVisible : true,
       displayOrder: category.displayOrder ?? 0,
     });
 
@@ -354,13 +354,12 @@ export default function CategoriesPage() {
 
   const handleToggleVisibility = async (category: Category) => {
     try {
-      const updatedIsVisible = !(category.isVisible !== false && !category.hideInMenu);
+      const updatedIsVisible = !(category.isVisible !== false);
       await api.saveCategory({
         ...category,
         isVisible: updatedIsVisible,
-        hideInMenu: !updatedIsVisible,
       });
-      // If parent category is being hidden, also hide its sub-categories
+      // If parent category is being hidden, also hide its sub-categories on the platform
       if (!updatedIsVisible && !category.parent_category) {
         const childSubCats = categories.filter((c) => c.parent_category === category.id);
         await Promise.all(
@@ -368,7 +367,6 @@ export default function CategoriesPage() {
             api.saveCategory({
               ...sub,
               isVisible: false,
-              hideInMenu: true,
             })
           )
         );
@@ -580,13 +578,18 @@ export default function CategoriesPage() {
                                   <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                     <span>{mainCat.name}</span>
                                     <span className="text-[9px] font-black uppercase tracking-wider text-red-600 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900/40">Root</span>
-                                    {mainCat.isVisible !== false && !mainCat.hideInMenu ? (
+                                    {mainCat.isVisible !== false ? (
                                       <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-1">
                                         Visible
                                       </span>
                                     ) : (
                                       <span className="text-[9px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-900/40 flex items-center gap-1">
                                         Hidden
+                                      </span>
+                                    )}
+                                    {mainCat.hideInMenu && (
+                                      <span className="text-[9px] font-bold text-gray-500 bg-gray-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded border border-gray-200 dark:border-zinc-700" title="Hidden from header navigation in Menu Settings">
+                                        Menu: Hidden
                                       </span>
                                     )}
                                     {subCats.length > 0 && (
@@ -635,13 +638,13 @@ export default function CategoriesPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleToggleVisibility(mainCat)}
-                                  className={`p-2 rounded-lg border transition-all cursor-pointer ${mainCat.isVisible !== false && !mainCat.hideInMenu
+                                  className={`p-2 rounded-lg border transition-all cursor-pointer ${mainCat.isVisible !== false
                                     ? "bg-gray-50 text-emerald-600 hover:bg-emerald-50 dark:bg-zinc-800 dark:text-emerald-400 border-gray-100 dark:border-zinc-800"
                                     : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
                                     }`}
-                                  title={mainCat.isVisible !== false && !mainCat.hideInMenu ? "Visible on site - Click to hide" : "Hidden from site - Click to show"}
+                                  title={mainCat.isVisible !== false ? "Visible on platform - Click to hide" : "Hidden from platform - Click to show"}
                                 >
-                                  {mainCat.isVisible !== false && !mainCat.hideInMenu ? (
+                                  {mainCat.isVisible !== false ? (
                                     <Eye className="h-4 w-4" />
                                   ) : (
                                     <EyeOff className="h-4 w-4" />
@@ -705,13 +708,18 @@ export default function CategoriesPage() {
                                     <div>
                                       <p className="font-extrabold text-sm text-gray-900 dark:text-zinc-50 flex items-center gap-2">
                                         <span>{sub.name}</span>
-                                        {sub.isVisible !== false && !sub.hideInMenu ? (
+                                        {sub.isVisible !== false ? (
                                           <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 flex items-center gap-0.5">
                                             Visible
                                           </span>
                                         ) : (
                                           <span className="text-[8px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/30 px-1.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-900/40 flex items-center gap-0.5">
                                             Hidden
+                                          </span>
+                                        )}
+                                        {sub.hideInMenu && (
+                                          <span className="text-[8px] font-bold text-gray-500 bg-gray-100 dark:bg-zinc-800 px-1 py-0.5 rounded border border-gray-200 dark:border-zinc-700" title="Hidden from header navigation in Menu Settings">
+                                            Menu: Hidden
                                           </span>
                                         )}
                                       </p>
@@ -755,13 +763,13 @@ export default function CategoriesPage() {
                                     <button
                                       type="button"
                                       onClick={() => handleToggleVisibility(sub)}
-                                      className={`p-2 rounded-lg border transition-all cursor-pointer ${sub.isVisible !== false && !sub.hideInMenu
+                                      className={`p-2 rounded-lg border transition-all cursor-pointer ${sub.isVisible !== false
                                         ? "bg-gray-50 text-emerald-600 hover:bg-emerald-50 dark:bg-zinc-800 dark:text-emerald-400 border-gray-100 dark:border-zinc-800"
                                         : "bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400 border-amber-200 dark:border-amber-900/40"
                                         }`}
-                                      title={sub.isVisible !== false && !sub.hideInMenu ? "Visible on site - Click to hide" : "Hidden from site - Click to show"}
+                                      title={sub.isVisible !== false ? "Visible on platform - Click to hide" : "Hidden from platform - Click to show"}
                                     >
-                                      {sub.isVisible !== false && !sub.hideInMenu ? (
+                                      {sub.isVisible !== false ? (
                                         <Eye className="h-4 w-4" />
                                       ) : (
                                         <EyeOff className="h-4 w-4" />
@@ -989,21 +997,21 @@ export default function CategoriesPage() {
 
                     <div>
                       <label className="block text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
-                        Visibility Status
+                        Platform Visibility Status
                       </label>
                       <div className="flex items-center gap-3 p-4 rounded-xl border border-red-200 bg-red-50/50 dark:border-red-800 dark:bg-red-950">
                         <input
                           type="checkbox"
                           id="categoryIsVisible"
-                          checked={formData.isVisible !== false && !formData.hideInMenu}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, isVisible: e.target.checked, hideInMenu: !e.target.checked }))}
+                          checked={formData.isVisible !== false}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, isVisible: e.target.checked }))}
                           className="h-4 w-4 rounded text-red-600 focus:ring-red-500 cursor-pointer"
                         />
                         <label htmlFor="categoryIsVisible" className="text-sm font-extrabold text-gray-900 dark:text-zinc-100 cursor-pointer select-none">
-                          Visible on Website & Menu Settings
+                          Visible across Platform (Products, Categories & Site)
                         </label>
                       </div>
-                      <p className="text-[11px] text-gray-400 mt-1">If unchecked, this category and its sub-categories will be hidden from the public website UI and menu settings admin panel.</p>
+                      <p className="text-[11px] text-gray-400 mt-1">If unchecked, this category and its sub-categories will be hidden across the entire platform. (To specifically show or hide this category in the header menu, configure Menu Settings under Settings &gt; Menu).</p>
                     </div>
                   </div>
                 )}

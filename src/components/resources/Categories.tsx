@@ -352,7 +352,7 @@ const MAIN_CATEGORIES_DATA: MainCategoryData[] = [
 ];
 
 function buildDynamicCategories(cats: ApiCategory[], prods: Product[]): MainCategoryData[] {
-  const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+  const visibleCats = cats.filter((c) => c.isVisible !== false);
   const sortedCats = [...visibleCats].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
   const roots = sortedCats.filter(c => !c.parent_category);
   if (roots.length === 0) return [];

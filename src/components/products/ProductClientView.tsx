@@ -36,7 +36,7 @@ export default function ProductClientView({
           api.getCategories(),
         ]);
 
-        const visibleCats = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+        const visibleCats = cats.filter((c) => c.isVisible !== false);
         const visibleCatIds = new Set(visibleCats.map((c) => c.id));
         const visibleProds = prods.filter((p) => p.isVisible !== false && visibleCatIds.has(p.category_id));
 

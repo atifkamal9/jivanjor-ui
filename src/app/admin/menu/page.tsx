@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { api, Category } from "@/lib/api";
 import {
@@ -38,6 +38,7 @@ import {
   Image as ImageIcon,
   Eye,
   EyeOff,
+  Save,
 } from "lucide-react";
 
 
@@ -65,6 +66,8 @@ export default function AdminMenuPage() {
 
   // Product mega menu categories (for ordering)
   const [allCategories, setAllCategories] = useState<Category[]>([]);
+  // Baseline published categories map to detect unsaved visibility changes
+  const publishedCategoriesRef = useRef<Map<string, boolean>>(new Map());
   // Dragged product category index (for the Products static menu reorder)
   const [draggedProductCatIndex, setDraggedProductCatIndex] = useState<number | null>(null);
   // Expanded product main-cats (to show sub-cat reorder)
@@ -162,6 +165,9 @@ export default function AdminMenuPage() {
       ]);
 
       setAllCategories(categoriesRes);
+      const catMap = new Map<string, boolean>();
+      categoriesRes.forEach((c) => catMap.set(c.id, Boolean(c.hideInMenu)));
+      publishedCategoriesRef.current = catMap;
 
       let templateCats: string[] = [];
       const listSection = (blogTemplateRes as any)?.rawSections?.list || (blogTemplateRes as any)?.sections?.find((s: any) => s.type === "list" || s.id === "list");
@@ -294,7 +300,13 @@ export default function AdminMenuPage() {
   };
 
   const hasHeaderUnsavedChanges = () => {
-    return JSON.stringify(headerItems) !== JSON.stringify(publishedHeaderItems);
+    if (JSON.stringify(headerItems) !== JSON.stringify(publishedHeaderItems)) return true;
+    for (const cat of allCategories) {
+      if (publishedCategoriesRef.current.get(cat.id) !== Boolean(cat.hideInMenu)) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const hasFooterUnsavedChanges = () => {
@@ -329,12 +341,11 @@ export default function AdminMenuPage() {
     setHeaderItems(newItems);
   };
 
-  const handleMainDragEnd = async () => {
+  const handleMainDragEnd = () => {
     setDraggedMainIndex(null);
-    await saveHeaderDraft(headerItems);
   };
 
-  const moveHeaderMainItem = async (index: number, direction: "up" | "down") => {
+  const moveHeaderMainItem = (index: number, direction: "up" | "down") => {
     const targetIdx = direction === "up" ? index - 1 : index + 1;
     if (targetIdx < 0 || targetIdx >= headerItems.length) return;
 
@@ -345,7 +356,6 @@ export default function AdminMenuPage() {
     newItems.forEach((it, idx) => (it.order = idx + 1));
 
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
   };
 
   const handleHeaderSubDragStart = (e: React.DragEvent, mainIdx: number, subIdx: number) => {
@@ -372,12 +382,11 @@ export default function AdminMenuPage() {
     setHeaderItems(newItems);
   };
 
-  const handleHeaderSubDragEnd = async () => {
+  const handleHeaderSubDragEnd = () => {
     setDraggedSubInfo(null);
-    await saveHeaderDraft(headerItems);
   };
 
-  const moveHeaderSubItem = async (mainIdx: number, subIdx: number, direction: "up" | "down") => {
+  const moveHeaderSubItem = (mainIdx: number, subIdx: number, direction: "up" | "down") => {
     const targetIdx = direction === "up" ? subIdx - 1 : subIdx + 1;
     const subItems = headerItems[mainIdx].subItems || [];
     if (targetIdx < 0 || targetIdx >= subItems.length) return;
@@ -391,16 +400,34 @@ export default function AdminMenuPage() {
     newSubItems.forEach((s, idx) => (s.order = idx + 1));
     newItems[mainIdx].subItems = newSubItems;
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
   };
 
-  const saveHeaderDraft = async (updatedItems: MenuItem[]) => {
+  const handleSaveHeaderDraft = async () => {
     setSaving(true);
     try {
-      await api.updateDraftHeaderMenu(updatedItems);
+      await api.updateDraftHeaderMenu(headerItems);
+
+      const modifiedCats = allCategories.filter((cat) => {
+        const baseHide = publishedCategoriesRef.current.get(cat.id);
+        return baseHide !== undefined && baseHide !== Boolean(cat.hideInMenu);
+      });
+
+      if (modifiedCats.length > 0) {
+        await Promise.all(
+          modifiedCats.map((cat) =>
+            api.saveCategory({
+              ...cat,
+              isVisible: cat.isVisible !== undefined ? Boolean(cat.isVisible) : true,
+              hideInMenu: Boolean(cat.hideInMenu),
+            })
+          )
+        );
+      }
+
+      showToast("Header menu draft saved successfully!", "success");
     } catch (err) {
       console.error("Failed to save header draft:", err);
-      showToast("Failed to auto-save header draft", "error");
+      showToast("Failed to save header draft", "error");
     } finally {
       setSaving(false);
     }
@@ -409,15 +436,51 @@ export default function AdminMenuPage() {
   const handlePublishHeader = async () => {
     setPublishing(true);
     try {
+      // 1. Sync draft header menu
+      await api.updateDraftHeaderMenu(headerItems);
+
+      // 2. Persist modified category hideInMenu states
+      const modifiedCats = allCategories.filter((cat) => {
+        const baseHide = publishedCategoriesRef.current.get(cat.id);
+        return baseHide !== undefined && baseHide !== Boolean(cat.hideInMenu);
+      });
+
+      if (modifiedCats.length > 0) {
+        await Promise.all(
+          modifiedCats.map((cat) =>
+            api.saveCategory({
+              ...cat,
+              isVisible: cat.isVisible !== undefined ? Boolean(cat.isVisible) : true,
+              hideInMenu: Boolean(cat.hideInMenu),
+            })
+          )
+        );
+        modifiedCats.forEach((cat) => {
+          publishedCategoriesRef.current.set(cat.id, Boolean(cat.hideInMenu));
+        });
+      }
+
+      // 3. Publish to live menu
       const res = await api.publishHeaderMenu();
-      setPublishedHeaderItems(res.publishedItems || headerItems);
-      showToast("Header menu published successfully!", "success");
+      setPublishedHeaderItems(res?.publishedItems || headerItems);
+      showToast("Header menu saved and published successfully!", "success");
     } catch (err) {
       console.error("Failed to publish header menu:", err);
       showToast("Failed to publish header menu", "error");
     } finally {
       setPublishing(false);
     }
+  };
+
+  const handleDiscardHeaderChanges = () => {
+    setHeaderItems(JSON.parse(JSON.stringify(publishedHeaderItems)));
+    setAllCategories((prev) =>
+      prev.map((c) => {
+        const orig = publishedCategoriesRef.current.get(c.id);
+        return orig !== undefined ? { ...c, hideInMenu: orig } : c;
+      })
+    );
+    showToast("Header changes discarded", "success");
   };
 
   const handleResetHeader = async () => {
@@ -456,12 +519,11 @@ export default function AdminMenuPage() {
     setFooterSections(newSections);
   };
 
-  const handleFooterSecDragEnd = async () => {
+  const handleFooterSecDragEnd = () => {
     setDraggedFooterSecIndex(null);
-    await saveFooterDraft(footerSections);
   };
 
-  const moveFooterSection = async (index: number, direction: "up" | "down") => {
+  const moveFooterSection = (index: number, direction: "up" | "down") => {
     const targetIdx = direction === "up" ? index - 1 : index + 1;
     if (targetIdx < 0 || targetIdx >= footerSections.length) return;
 
@@ -472,7 +534,6 @@ export default function AdminMenuPage() {
     newSections.forEach((s, idx) => (s.order = idx + 1));
 
     setFooterSections(newSections);
-    await saveFooterDraft(newSections);
   };
 
   const handleFooterLinkDragStart = (e: React.DragEvent, secIdx: number, subIdx: number) => {
@@ -499,12 +560,11 @@ export default function AdminMenuPage() {
     setFooterSections(newSections);
   };
 
-  const handleFooterLinkDragEnd = async () => {
+  const handleFooterLinkDragEnd = () => {
     setDraggedFooterLinkInfo(null);
-    await saveFooterDraft(footerSections);
   };
 
-  const moveFooterSubLink = async (secIdx: number, subIdx: number, direction: "up" | "down") => {
+  const moveFooterSubLink = (secIdx: number, subIdx: number, direction: "up" | "down") => {
     const targetIdx = direction === "up" ? subIdx - 1 : subIdx + 1;
     const subItems = footerSections[secIdx].subItems || [];
     if (targetIdx < 0 || targetIdx >= subItems.length) return;
@@ -518,16 +578,16 @@ export default function AdminMenuPage() {
     newSubItems.forEach((l, idx) => (l.order = idx + 1));
     newSections[secIdx].subItems = newSubItems;
     setFooterSections(newSections);
-    await saveFooterDraft(newSections);
   };
 
-  const saveFooterDraft = async (updatedSections: FooterSectionItem[]) => {
+  const handleSaveFooterDraft = async () => {
     setSaving(true);
     try {
-      await api.updateDraftFooterMenu(updatedSections);
+      await api.updateDraftFooterMenu(footerSections);
+      showToast("Footer menu draft saved successfully!", "success");
     } catch (err) {
       console.error("Failed to save footer draft:", err);
-      showToast("Failed to auto-save footer draft", "error");
+      showToast("Failed to save footer draft", "error");
     } finally {
       setSaving(false);
     }
@@ -536,15 +596,21 @@ export default function AdminMenuPage() {
   const handlePublishFooter = async () => {
     setPublishing(true);
     try {
+      await api.updateDraftFooterMenu(footerSections);
       const res = await api.publishFooterMenu();
-      setPublishedFooterSections(res.publishedItems || footerSections);
-      showToast("Footer menu published successfully!", "success");
+      setPublishedFooterSections(res?.publishedItems || footerSections);
+      showToast("Footer menu saved and published successfully!", "success");
     } catch (err) {
       console.error("Failed to publish footer menu:", err);
       showToast("Failed to publish footer menu", "error");
     } finally {
       setPublishing(false);
     }
+  };
+
+  const handleDiscardFooterChanges = () => {
+    setFooterSections(JSON.parse(JSON.stringify(publishedFooterSections)));
+    showToast("Footer changes discarded", "success");
   };
 
   const handleResetFooter = async () => {
@@ -624,7 +690,6 @@ export default function AdminMenuPage() {
 
     setHeaderItems(newItems);
     setMainModalOpen(false);
-    await saveHeaderDraft(newItems);
     showToast(editingMainIndex !== null ? "Main menu item updated" : "New main menu item added", "success");
   };
 
@@ -639,7 +704,6 @@ export default function AdminMenuPage() {
     const newItems = headerItems.filter((_, idx) => idx !== index);
     newItems.forEach((it, idx) => (it.order = idx + 1));
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
     showToast("Main menu item deleted", "success");
   };
 
@@ -708,7 +772,6 @@ export default function AdminMenuPage() {
     newItems[targetMainIndex].subItems = currentSubItems;
     setHeaderItems(newItems);
     setSubModalOpen(false);
-    await saveHeaderDraft(newItems);
     showToast(editingSubIndex !== null ? "Sub-item updated" : "Sub-item added", "success");
   };
 
@@ -725,7 +788,6 @@ export default function AdminMenuPage() {
     newItems[mainIdx].subItems = subItems;
 
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
     showToast("Sub-item deleted", "success");
   };
 
@@ -733,7 +795,8 @@ export default function AdminMenuPage() {
   // Returns the ordered list of main categories for the Products mega menu.
   // Priority: stored order in nav-products.subItems → API order.
   const getProductsMenuMainCats = (): Category[] => {
-    const mainCats = allCategories.filter((c) => !c.parent_category && c.isVisible !== false && !c.hideInMenu);
+    // Show all active categories in Menu Settings studio (including hidden ones, marked with Hidden badge)
+    const mainCats = allCategories.filter((c) => !c.parent_category && c.isVisible !== false);
     const productsItem = headerItems.find(
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );
@@ -773,10 +836,10 @@ export default function AdminMenuPage() {
         url: `/categories/${cat.slug}`,
         order: idx + 1,
         description: existingDescMap.get(cat.id) || "",
+        hideInMenu: cat.hideInMenu ?? false,
       })),
     };
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
   };
 
   const handleProductCatDragStart = (e: React.DragEvent, index: number) => {
@@ -801,6 +864,8 @@ export default function AdminMenuPage() {
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );
     if (productsIdx !== -1) {
+      const existingSubItems = newItems[productsIdx].subItems || [];
+      const existingDescMap = new Map(existingSubItems.map((s) => [s.id, s.description || ""]));
       newItems[productsIdx] = {
         ...newItems[productsIdx],
         subItems: reordered.map((cat, idx) => ({
@@ -809,15 +874,16 @@ export default function AdminMenuPage() {
           type: "page" as const,
           url: `/categories/${cat.slug}`,
           order: idx + 1,
+          description: existingDescMap.get(cat.id) || "",
+          hideInMenu: cat.hideInMenu ?? false,
         })),
       };
       setHeaderItems(newItems);
     }
   };
 
-  const handleProductCatDragEnd = async () => {
+  const handleProductCatDragEnd = () => {
     setDraggedProductCatIndex(null);
-    await saveHeaderDraft(headerItems);
   };
 
   const moveProductCat = async (index: number, direction: "up" | "down") => {
@@ -836,7 +902,13 @@ export default function AdminMenuPage() {
   // Returns the ordered list of sub-categories for a given main category.
   // Priority: stored sub-order in description JSON → API order.
   const getOrderedSubCats = (mainCatId: string): Category[] => {
-    const rawSubCats = allCategories.filter((c) => c.parent_category === mainCatId && c.isVisible !== false && !c.hideInMenu);
+    const parentCat = allCategories.find((c) => c.id === mainCatId);
+    // Show all active sub-categories in Menu Settings studio (including hidden ones, marked with Hidden badge)
+    const rawSubCats = allCategories.filter(
+      (c) =>
+        (c.parent_category === mainCatId || (parentCat?.slug && c.parent_category === parentCat.slug)) &&
+        c.isVisible !== false
+    );
     const productsItem = headerItems.find(
       (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
     );
@@ -875,7 +947,6 @@ export default function AdminMenuPage() {
 
     newItems[productsIdx] = { ...newItems[productsIdx], subItems: updatedSubItems };
     setHeaderItems(newItems);
-    await saveHeaderDraft(newItems);
   };
 
   const handleProductSubCatDragStart = (e: React.DragEvent, mainCatId: string, subIdx: number) => {
@@ -912,9 +983,8 @@ export default function AdminMenuPage() {
     }
   };
 
-  const handleProductSubCatDragEnd = async () => {
+  const handleProductSubCatDragEnd = () => {
     setDraggedProductSubCatInfo(null);
-    await saveHeaderDraft(headerItems);
   };
 
   const moveProductSubCat = async (mainCatId: string, subIdx: number, direction: "up" | "down") => {
@@ -964,7 +1034,6 @@ export default function AdminMenuPage() {
 
     setFooterSections(newSections);
     setFooterSecModalOpen(false);
-    await saveFooterDraft(newSections);
     showToast(editingFooterSecIdx !== null ? "Footer section updated" : "Footer section added", "success");
   };
 
@@ -975,7 +1044,6 @@ export default function AdminMenuPage() {
     const newSections = footerSections.filter((_, idx) => idx !== secIdx);
     newSections.forEach((s, idx) => (s.order = idx + 1));
     setFooterSections(newSections);
-    await saveFooterDraft(newSections);
     showToast("Footer section deleted", "success");
   };
 
@@ -1030,7 +1098,6 @@ export default function AdminMenuPage() {
     newSections[targetFooterSecIdx].subItems = subItems;
     setFooterSections(newSections);
     setFooterLinkModalOpen(false);
-    await saveFooterDraft(newSections);
     showToast(editingFooterLinkIdx !== null ? "Child link updated" : "Child link added", "success");
   };
 
@@ -1042,13 +1109,12 @@ export default function AdminMenuPage() {
     newSections[secIdx].subItems = subItems;
 
     setFooterSections(newSections);
-    await saveFooterDraft(newSections);
     showToast("Child link deleted", "success");
   };
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
         {/* Toast Notification */}
         {toastMessage && (
           <div
@@ -1063,42 +1129,46 @@ export default function AdminMenuPage() {
         )}
 
         {/* Page Title Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background p-6 rounded-2xl border border-border shadow-xs">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-              <FolderTree className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold text-foreground">Menu & Navigation Management</h1>
-              <p className="text-xs text-foreground/60 mt-0.5">
-                Configure top header menus, mega dropdowns, and footer navigation columns with 1-click live publishing.
-              </p>
-            </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-black text-gray-900 dark:text-zinc-50">
+              Menu &amp; Navigation Settings
+            </h1>
+            <p className="text-sm font-semibold text-gray-400 dark:text-zinc-500 uppercase tracking-wider">
+              Configure top header menus, mega dropdowns, and footer navigation columns
+            </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap sm:flex-nowrap">
             <button
+              type="button"
               onClick={activeTab === "header" ? handleResetHeader : handleResetFooter}
               disabled={resetting}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-xs font-bold text-foreground/75 hover:bg-surface transition-all cursor-pointer disabled:opacity-50"
+              className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 hover:border-red-400 dark:hover:border-red-500 text-gray-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 font-bold text-xs cursor-pointer transition-all shadow-xs disabled:opacity-50"
               title="Reset menu to default navigation structure"
             >
-              <RotateCcw className={`h-4 w-4 ${resetting ? "animate-spin" : ""}`} />
+              <RotateCcw className={`h-3.5 w-3.5 ${resetting ? "animate-spin" : ""}`} />
               <span>Reset Default</span>
             </button>
 
             <button
+              type="button"
               onClick={activeTab === "header" ? handlePublishHeader : handlePublishFooter}
               disabled={
                 publishing ||
                 (activeTab === "header" ? !hasHeaderUnsavedChanges() : !hasFooterUnsavedChanges())
               }
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black text-white shadow-lg transition-all cursor-pointer ${(activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
-                  ? "bg-primary hover:opacity-90 shadow-primary/25 hover:scale-102"
-                  : "bg-gray-400 dark:bg-zinc-700 opacity-60 cursor-not-allowed shadow-none"
+              className={`flex items-center justify-center gap-1 px-3 py-2 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer ${(activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20"
+                  : "bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 border border-gray-200 dark:border-zinc-700 opacity-60 cursor-not-allowed shadow-none"
                 }`}
+              title={
+                (activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges())
+                  ? "Publish unsaved changes to live website"
+                  : "All changes are published and up to date"
+              }
             >
-              <CheckCircle2 className={`h-4 w-4 ${publishing ? "animate-spin" : ""}`} />
+              <CheckCircle2 className={`h-3.5 w-3.5 ${publishing ? "animate-spin" : ""}`} />
               <span>
                 {publishing
                   ? "Publishing..."
@@ -1109,22 +1179,24 @@ export default function AdminMenuPage() {
             </button>
 
             <button
+              type="button"
               onClick={activeTab === "header" ? openAddMainModal : openAddFooterSecModal}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 text-xs font-black transition-all cursor-pointer"
+              className="flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-sm shadow-red-600/10 cursor-pointer transition-all"
             >
               <Plus className="h-4 w-4" />
-              <span>{activeTab === "header" ? "Add Main Menu" : "Add Footer Column"}</span>
+              <span>{activeTab === "header" ? "Add Main Menu Item" : "Add Footer Column"}</span>
             </button>
           </div>
         </div>
 
         {/* Tab Switcher: Header vs Footer */}
-        <div className="flex items-center gap-2 p-1.5 bg-background border border-border rounded-2xl w-fit">
+        <div className="flex items-center gap-2 p-1.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl w-fit shadow-xs">
           <button
+            type="button"
             onClick={() => setActiveTab("header")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === "header"
-                ? "bg-primary text-white shadow-md shadow-primary/25"
-                : "text-foreground/70 hover:bg-surface hover:text-foreground"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "header"
+                ? "bg-red-600 text-white shadow-md shadow-red-600/20"
+                : "text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
               }`}
           >
             <LayoutTemplate className="h-4 w-4" />
@@ -1135,10 +1207,11 @@ export default function AdminMenuPage() {
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab("footer")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === "footer"
-                ? "bg-primary text-white shadow-md shadow-primary/25"
-                : "text-foreground/70 hover:bg-surface hover:text-foreground"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === "footer"
+                ? "bg-red-600 text-white shadow-md shadow-red-600/20"
+                : "text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
               }`}
           >
             <Footprints className="h-4 w-4" />
@@ -1150,18 +1223,18 @@ export default function AdminMenuPage() {
         </div>
 
         {/* Status Bar */}
-        <div className="flex items-center justify-between px-5 py-3 bg-background border border-border rounded-xl text-xs font-bold">
+        <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-2xl text-xs font-bold shadow-xs">
           <div className="flex items-center gap-2">
-            <span className="text-foreground/50">Active Tab Status ({activeTab === "header" ? "Header Menu" : "Footer Menu"}):</span>
+            <span className="text-gray-400 dark:text-zinc-500 font-semibold">Active Tab Status ({activeTab === "header" ? "Header Menu" : "Footer Menu"}):</span>
             {(activeTab === "header" ? hasHeaderUnsavedChanges() : hasFooterUnsavedChanges()) ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-black border border-amber-500/20">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[11px] font-black border border-amber-500/20">
                 <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
                 Unpublished Draft Changes Pending
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-black border border-emerald-500/20">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-black border border-emerald-500/20">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                All Changes Published & Live
+                All Changes Published &amp; Live
               </span>
             )}
           </div>
@@ -1272,7 +1345,7 @@ export default function AdminMenuPage() {
                         <div className="flex items-center gap-1.5 shrink-0 ml-3">
                           <button
                             type="button"
-                            onClick={async () => {
+                            onClick={() => {
                               const newItems = [...headerItems];
                               const updatedHide = !newItems[mainIdx].hideInMenu;
                               const updatedSubs = (newItems[mainIdx].subItems || []).map((sub) => ({
@@ -1285,13 +1358,6 @@ export default function AdminMenuPage() {
                                 subItems: updatedSubs,
                               };
                               setHeaderItems(newItems);
-                              await saveHeaderDraft(newItems);
-                              showToast(
-                                updatedHide
-                                  ? `"${mainItem.title}" and all sub-menu items hidden from header menu`
-                                  : `"${mainItem.title}" and all sub-menu items set to visible in header menu`,
-                                "success"
-                              );
                             }}
                             className={`p-2 rounded-lg border transition-all cursor-pointer ${mainItem.hideInMenu
                                 ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
@@ -1402,9 +1468,14 @@ export default function AdminMenuPage() {
                                                   <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/20">
                                                     {orderedSubCats.length} sub-cats
                                                   </span>
+                                                  {cat.isVisible === false && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 flex items-center gap-1" title="Disabled platform-wide in Product Categories">
+                                                      Platform Hidden
+                                                    </span>
+                                                  )}
                                                   {cat.hideInMenu && (
-                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1">
-                                                      <EyeOff className="h-2.5 w-2.5" /> Hidden
+                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-1" title="Hidden from Header Menu in Menu Settings">
+                                                      <EyeOff className="h-2.5 w-2.5" /> Menu Hidden
                                                     </span>
                                                   )}
                                                 </div>
@@ -1413,12 +1484,8 @@ export default function AdminMenuPage() {
                                             <div className="flex items-center gap-1 shrink-0 ml-2">
                                               <button
                                                 type="button"
-                                                onClick={async () => {
+                                                onClick={() => {
                                                   const updatedHide = !cat.hideInMenu;
-                                                  const childSubCats = allCategories.filter(
-                                                    (c) => c.parent_category === cat.id || c.parent_category === cat.slug
-                                                  );
-
                                                   setAllCategories((prev) =>
                                                     prev.map((c) => {
                                                       if (c.id === cat.id) return { ...c, hideInMenu: updatedHide };
@@ -1429,22 +1496,17 @@ export default function AdminMenuPage() {
                                                     })
                                                   );
 
-                                                  try {
-                                                    await api.saveCategory({ ...cat, hideInMenu: updatedHide });
-                                                    if (childSubCats.length > 0) {
-                                                      await Promise.all(
-                                                        childSubCats.map((sub) => api.saveCategory({ ...sub, hideInMenu: updatedHide }))
-                                                      );
-                                                    }
-                                                    showToast(
-                                                      updatedHide
-                                                        ? `"${cat.name}" and all sub-categories hidden from Products Mega Menu`
-                                                        : `"${cat.name}" and all sub-categories visible in Products Mega Menu`,
-                                                      "success"
+                                                  const newItems = [...headerItems];
+                                                  const productsIdx = newItems.findIndex(
+                                                    (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+                                                  );
+                                                  if (productsIdx !== -1) {
+                                                    const existingSubs = newItems[productsIdx].subItems || [];
+                                                    const updatedSubs = existingSubs.map((s) =>
+                                                      s.id === cat.id ? { ...s, hideInMenu: updatedHide } : s
                                                     );
-                                                  } catch (err) {
-                                                    console.error("Failed to toggle category menu visibility:", err);
-                                                    showToast("Failed to update category visibility", "error");
+                                                    newItems[productsIdx] = { ...newItems[productsIdx], subItems: updatedSubs };
+                                                    setHeaderItems(newItems);
                                                   }
                                                 }}
                                                 className={`p-1 rounded-md border transition-all cursor-pointer ${
@@ -1505,59 +1567,62 @@ export default function AdminMenuPage() {
                                                       <GripVertical className="h-3.5 w-3.5" />
                                                     </div>
                                                     <span className="text-[11px] font-semibold text-foreground truncate">{sub.name}</span>
+                                                    {sub.isVisible === false && (
+                                                      <span className="px-1 py-0.5 rounded text-[8px] font-black uppercase bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 flex items-center gap-0.5 shrink-0" title="Disabled platform-wide in Product Categories">
+                                                        Platform Hidden
+                                                      </span>
+                                                    )}
                                                     {sub.hideInMenu && (
-                                                      <span className="px-1 py-0.5 rounded text-[8px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-0.5 shrink-0">
-                                                        <EyeOff className="h-2 w-2" /> Hidden
+                                                      <span className="px-1 py-0.5 rounded text-[8px] font-black uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center gap-0.5 shrink-0" title="Hidden from Header Menu in Menu Settings">
+                                                        <EyeOff className="h-2 w-2" /> Menu Hidden
                                                       </span>
                                                     )}
                                                   </div>
                                                   <div className="flex items-center gap-1 shrink-0 ml-2">
                                                     <button
                                                       type="button"
-                                                      onClick={async () => {
+                                                      onClick={() => {
                                                         const updatedHide = !sub.hideInMenu;
                                                         const parentCat = allCategories.find(
                                                           (c) => !c.parent_category && (c.id === sub.parent_category || c.slug === sub.parent_category || c.id === cat.id)
                                                         );
 
-                                                        const sisterSubCats = allCategories.filter(
-                                                          (c) => c.parent_category === (parentCat?.id || cat.id) || c.parent_category === (parentCat?.slug || cat.slug)
-                                                        );
-
                                                         let shouldParentHide = parentCat?.hideInMenu;
                                                         if (updatedHide === false && parentCat?.hideInMenu) {
                                                           shouldParentHide = false;
-                                                        } else if (updatedHide === true && parentCat && !parentCat.hideInMenu) {
-                                                          const otherSistersHidden = sisterSubCats
-                                                            .filter((c) => c.id !== sub.id)
-                                                            .every((c) => c.hideInMenu === true);
-                                                          if (otherSistersHidden) {
-                                                            shouldParentHide = true;
-                                                          }
                                                         }
 
                                                         setAllCategories((prev) =>
                                                           prev.map((c) => {
                                                             if (c.id === sub.id) return { ...c, hideInMenu: updatedHide };
-                                                            if (parentCat && c.id === parentCat.id) return { ...c, hideInMenu: shouldParentHide };
+                                                            if (parentCat && c.id === parentCat.id && shouldParentHide !== undefined) {
+                                                              return { ...c, hideInMenu: shouldParentHide };
+                                                            }
                                                             return c;
                                                           })
                                                         );
 
-                                                        try {
-                                                          await api.saveCategory({ ...sub, hideInMenu: updatedHide });
-                                                          if (parentCat && shouldParentHide !== parentCat.hideInMenu) {
-                                                            await api.saveCategory({ ...parentCat, hideInMenu: shouldParentHide });
-                                                          }
-                                                          showToast(
-                                                            updatedHide
-                                                              ? `"${sub.name}" hidden from Products Mega Menu`
-                                                              : `"${sub.name}" visible in Products Mega Menu`,
-                                                            "success"
-                                                          );
-                                                        } catch (err) {
-                                                          console.error("Failed to toggle sub-category menu visibility:", err);
-                                                          showToast("Failed to update sub-category visibility", "error");
+                                                        const newItems = [...headerItems];
+                                                        const productsIdx = newItems.findIndex(
+                                                          (it) => it.isStatic || it.id === "nav-products" || it.title.toLowerCase() === "products"
+                                                        );
+                                                        if (productsIdx !== -1) {
+                                                          const existingSubs = newItems[productsIdx].subItems || [];
+                                                          const updatedSubs = existingSubs.map((entry) => {
+                                                            if (entry.id !== cat.id) return entry;
+                                                            let parsed: any = {};
+                                                            try { parsed = JSON.parse(entry.description || "{}"); } catch {}
+                                                            const hiddenIds = new Set<string>(parsed.hiddenSubCatIds || []);
+                                                            if (updatedHide) hiddenIds.add(sub.id);
+                                                            else hiddenIds.delete(sub.id);
+                                                            return {
+                                                              ...entry,
+                                                              hideInMenu: shouldParentHide !== undefined ? shouldParentHide : entry.hideInMenu,
+                                                              description: JSON.stringify({ ...parsed, hiddenSubCatIds: Array.from(hiddenIds) }),
+                                                            };
+                                                          });
+                                                          newItems[productsIdx] = { ...newItems[productsIdx], subItems: updatedSubs };
+                                                          setHeaderItems(newItems);
                                                         }
                                                       }}
                                                       className={`p-0.5 rounded border transition-all cursor-pointer ${
@@ -1632,7 +1697,7 @@ export default function AdminMenuPage() {
                                   <div className="flex items-center gap-1 shrink-0 ml-2">
                                     <button
                                       type="button"
-                                      onClick={async () => {
+                                      onClick={() => {
                                         const newItems = [...headerItems];
                                         const currentSubs = [...(newItems[mainIdx].subItems || [])];
                                         const updatedSubHide = !currentSubs[subIdx].hideInMenu;
@@ -1641,27 +1706,7 @@ export default function AdminMenuPage() {
                                           hideInMenu: updatedSubHide,
                                         };
                                         newItems[mainIdx].subItems = currentSubs;
-
-                                        // Update parent menu state if needed
-                                        let updatedParentHide = newItems[mainIdx].hideInMenu;
-                                        if (updatedSubHide === false && newItems[mainIdx].hideInMenu) {
-                                          updatedParentHide = false;
-                                        } else if (updatedSubHide === true && !newItems[mainIdx].hideInMenu) {
-                                          const allSubHidden = currentSubs.every((s) => s.hideInMenu === true);
-                                          if (allSubHidden) {
-                                            updatedParentHide = true;
-                                          }
-                                        }
-                                        newItems[mainIdx].hideInMenu = updatedParentHide;
-
                                         setHeaderItems(newItems);
-                                        await saveHeaderDraft(newItems);
-                                        showToast(
-                                          updatedSubHide
-                                            ? `"${sub.title}" hidden from sub-menu`
-                                            : `"${sub.title}" set to visible in sub-menu`,
-                                          "success"
-                                        );
                                       }}
                                       className={`p-1 rounded-md border transition-all cursor-pointer ${sub.hideInMenu
                                           ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
@@ -1794,7 +1839,7 @@ export default function AdminMenuPage() {
                         <div className="flex items-center gap-1.5 shrink-0 ml-3">
                           <button
                             type="button"
-                            onClick={async () => {
+                            onClick={() => {
                               const newSections = [...footerSections];
                               const updatedHide = !newSections[secIdx].hideInMenu;
                               const updatedSubs = (newSections[secIdx].subItems || []).map((sub) => ({
@@ -1807,13 +1852,6 @@ export default function AdminMenuPage() {
                                 subItems: updatedSubs,
                               };
                               setFooterSections(newSections);
-                              await saveFooterDraft(newSections);
-                              showToast(
-                                updatedHide
-                                  ? `"${sec.title}" column and all child links hidden from footer`
-                                  : `"${sec.title}" column and all child links set to visible in footer`,
-                                "success"
-                              );
                             }}
                             className={`p-2 rounded-lg border transition-all cursor-pointer ${sec.hideInMenu
                                 ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
@@ -1913,7 +1951,7 @@ export default function AdminMenuPage() {
                                   <div className="flex items-center gap-1 shrink-0 ml-2">
                                     <button
                                       type="button"
-                                      onClick={async () => {
+                                      onClick={() => {
                                         const newSections = [...footerSections];
                                         const currentSubItems = [...(newSections[secIdx].subItems || [])];
                                         const updatedLinkHide = !currentSubItems[linkIdx].hideInMenu;
@@ -1936,13 +1974,6 @@ export default function AdminMenuPage() {
                                         newSections[secIdx].hideInMenu = updatedParentHide;
 
                                         setFooterSections(newSections);
-                                        await saveFooterDraft(newSections);
-                                        showToast(
-                                          updatedLinkHide
-                                            ? `"${link.title}" hidden from footer column`
-                                            : `"${link.title}" set to visible in footer column`,
-                                          "success"
-                                        );
                                       }}
                                       className={`p-1 rounded-md border transition-all cursor-pointer ${link.hideInMenu
                                           ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
@@ -2369,6 +2400,51 @@ export default function AdminMenuPage() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+        {/* Floating Unsaved Changes Bar */}
+        {((activeTab === "header" && hasHeaderUnsavedChanges()) ||
+          (activeTab === "footer" && hasFooterUnsavedChanges())) && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-2xl w-[calc(100%-2rem)] bg-card/95 backdrop-blur-md border border-amber-500/40 shadow-2xl rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200">
+            <div className="flex items-center gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-foreground">
+                  Unsaved changes in {activeTab === "header" ? "Header" : "Footer"} Navigation
+                </p>
+                <p className="text-[11px] text-foreground/60">
+                  Save as draft to store changes or publish directly to the live site.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={activeTab === "header" ? handleDiscardHeaderChanges : handleDiscardFooterChanges}
+                disabled={publishing || saving}
+                className="px-3 py-1.5 rounded-xl border border-border text-xs font-semibold text-foreground/70 hover:bg-surface hover:text-foreground cursor-pointer transition-all"
+              >
+                Discard
+              </button>
+              <button
+                type="button"
+                onClick={activeTab === "header" ? handleSaveHeaderDraft : handleSaveFooterDraft}
+                disabled={publishing || saving}
+                className="px-3.5 py-1.5 rounded-xl bg-surface border border-border/80 text-xs font-bold text-foreground hover:bg-surface/80 cursor-pointer shadow-xs transition-all flex items-center gap-1.5"
+              >
+                <Save className="h-3.5 w-3.5" />
+                {saving ? "Saving..." : "Save Draft"}
+              </button>
+              <button
+                type="button"
+                onClick={activeTab === "header" ? handlePublishHeader : handlePublishFooter}
+                disabled={publishing}
+                className="px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-black uppercase tracking-wider hover:opacity-90 cursor-pointer shadow-md shadow-primary/20 transition-all flex items-center gap-1.5"
+              >
+                <CheckCircle2 className={`h-3.5 w-3.5 ${publishing ? "animate-spin" : ""}`} />
+                {publishing ? "Publishing..." : "Publish Menu"}
+              </button>
             </div>
           </div>
         )}

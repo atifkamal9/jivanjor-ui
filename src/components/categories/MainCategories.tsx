@@ -419,9 +419,9 @@ export default function MainCategories() {
 
   const mainCategoriesData: MainCategoryData[] = categories.length > 0
     ? categories
-      .filter((cat) => !cat.parent_category && cat.isVisible !== false && !cat.hideInMenu)
+      .filter((cat) => !cat.parent_category && cat.isVisible !== false)
       .map((cat) => {
-        const subCats = categories.filter((sub) => sub.parent_category === cat.id && sub.isVisible !== false && !sub.hideInMenu);
+        const subCats = categories.filter((sub) => sub.parent_category === cat.id && sub.isVisible !== false);
         return {
           name: cat.name,
           slug: cat.slug,

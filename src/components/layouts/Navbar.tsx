@@ -67,7 +67,7 @@ export default function Navbar() {
         if (settingsRes) setSiteSettings(settingsRes);
 
         // Find first main category and make it the active one
-        const firstMain = sortedCats.find((cat: any) => !cat.parent_category);
+        const firstMain = sortedCats.find((cat: any) => !cat.parent_category && cat.isVisible !== false && cat.hideInMenu !== true);
         if (firstMain) {
           setActiveCategory(firstMain.name);
         }
@@ -379,8 +379,8 @@ export default function Navbar() {
   const dynamicProductCategories = (() => {
     if (dbCategories.length === 0) return productCategories;
 
-    // Filter out hidden main categories
-    const mainCats = dbCategories.filter((cat) => !cat.parent_category && cat.hideInMenu !== true);
+    // Filter out hidden main categories (hidden on platform or hidden in menu)
+    const mainCats = dbCategories.filter((cat) => !cat.parent_category && cat.isVisible !== false && cat.hideInMenu !== true);
 
     // Check if there's a stored order in the published menu's nav-products item
     const productsMenuItem = publishedMenu.find(
@@ -399,8 +399,8 @@ export default function Navbar() {
     }
 
     return orderedMainCats.map((cat) => {
-      // Filter out hidden sub categories
-      let subCats = dbCategories.filter((sub) => sub.parent_category === cat.id && sub.hideInMenu !== true);
+      // Filter out hidden sub categories (hidden on platform or hidden in menu)
+      let subCats = dbCategories.filter((sub) => (sub.parent_category === cat.id || sub.parent_category === cat.slug) && sub.isVisible !== false && sub.hideInMenu !== true);
 
       // Apply stored sub-category order from description JSON if available
       const storedEntry = storedOrder.find((s) => s.id === cat.id);
@@ -951,10 +951,10 @@ export default function Navbar() {
             productCategories={
               dbCategories.length > 0
                 ? dbCategories
-                  .filter((cat) => !cat.parent_category && cat.hideInMenu !== true)
+                  .filter((cat) => !cat.parent_category && cat.isVisible !== false && cat.hideInMenu !== true)
                   .map((cat) => {
                     const subCats = dbCategories.filter(
-                      (sub) => sub.parent_category === cat.id && sub.hideInMenu !== true
+                      (sub) => (sub.parent_category === cat.id || sub.parent_category === cat.slug) && sub.isVisible !== false && sub.hideInMenu !== true
                     );
                     return {
                       name: cat.name,

@@ -328,7 +328,15 @@ export function mapCategoryFromBackend(cat: any): Category {
   let rightChoiceSubtitle = "";
   let rightChoiceCtaText = "";
   let rightChoiceCtaLink = "";
-  let hideInMenu = Boolean(cat.hideInMenu || cat.hiddenInMenu || false);
+  let hideInMenu: boolean =
+    cat.hideInMenu !== undefined
+      ? Boolean(cat.hideInMenu)
+      : (cat.hiddenInMenu !== undefined ? Boolean(cat.hiddenInMenu) : false);
+
+  let isVisible: boolean =
+    cat.isVisible !== undefined
+      ? Boolean(cat.isVisible)
+      : true;
 
   let catImage = cat.icon || "";
 
@@ -355,17 +363,18 @@ export function mapCategoryFromBackend(cat: any): Category {
       if (parsed.image || parsed.icon) {
         catImage = catImage || parsed.image || parsed.icon || "";
       }
-      if (parsed.hideInMenu !== undefined || parsed.hiddenInMenu !== undefined) {
-        hideInMenu = Boolean(parsed.hideInMenu || parsed.hiddenInMenu);
+      if (parsed.hideInMenu !== undefined) {
+        hideInMenu = Boolean(parsed.hideInMenu);
+      } else if (parsed.hiddenInMenu !== undefined) {
+        hideInMenu = Boolean(parsed.hiddenInMenu);
+      }
+      if (parsed.isVisible !== undefined) {
+        isVisible = Boolean(parsed.isVisible);
       }
     } catch (e) {
       // ignore
     }
   }
-
-  const isVisible = cat.isVisible !== undefined
-    ? Boolean(cat.isVisible)
-    : (hideInMenu !== undefined ? !hideInMenu : true);
 
   return {
     id: cat.id,
@@ -397,7 +406,7 @@ export function mapCategoryFromBackend(cat: any): Category {
     } : undefined,
     icon: catImage || "",
     image: catImage || "",
-    hideInMenu: !isVisible,
+    hideInMenu,
     isVisible,
     displayOrder: cat.displayOrder ?? cat.display_order ?? 0,
   };
@@ -857,11 +866,17 @@ export const api = {
       rightChoiceSubtitle: category.rightChoiceSubtitle || category.rightChoice?.subtitle || "",
       rightChoiceCtaText: category.rightChoiceCtaText || category.rightChoice?.ctaText || "",
       rightChoiceCtaLink: category.rightChoiceCtaLink || category.rightChoice?.ctaLink || "",
-      hideInMenu: category.isVisible !== undefined ? !category.isVisible : (category.hideInMenu ?? false),
-      isVisible: category.isVisible !== undefined ? category.isVisible : !(category.hideInMenu ?? false),
+      hideInMenu: category.hideInMenu !== undefined ? Boolean(category.hideInMenu) : false,
+      isVisible: category.isVisible !== undefined ? Boolean(category.isVisible) : true,
     });
 
-    const isVisibleVal = category.isVisible !== undefined ? category.isVisible : !(category.hideInMenu ?? false);
+    const isHideInMenuVal = category.hideInMenu !== undefined
+      ? Boolean(category.hideInMenu)
+      : false;
+
+    const isVisibleVal = category.isVisible !== undefined
+      ? Boolean(category.isVisible)
+      : true;
 
     const payload = {
       name: category.name,
@@ -871,7 +886,7 @@ export const api = {
       icon: finalIcon || null,
       image: finalIcon || null,
       isVisible: isVisibleVal,
-      hideInMenu: !isVisibleVal,
+      hideInMenu: isHideInMenuVal,
     };
     if (category.id) {
       const res = await client.put(`/categories/${category.id}`, payload);

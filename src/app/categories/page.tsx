@@ -61,7 +61,7 @@ export default async function Categories() {
       api.getCategories().catch(() => []),
     ]);
     templateData = template;
-    categoriesList = cats.filter((c) => c.isVisible !== false && !c.hideInMenu);
+    categoriesList = cats.filter((c) => c.isVisible !== false);
   } catch (err) {
     console.error("Failed to fetch active categories template:", err);
   }
