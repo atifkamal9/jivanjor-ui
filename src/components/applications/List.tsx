@@ -299,7 +299,7 @@ function ListContent({
       {/* Top Header/Breadcrumb if activeArticle is present */}
       {activeArticle && (
         <>
-          <section className="flex flex-col justify-between max-w-360 mx-auto my-3 md:my-5 px-5 gap-2.5 z-50 font-google-sans">
+          <section className="flex flex-col justify-between max-w-360 mx-auto my-2 md:my-3 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-2.5 z-50">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm md:text-base font-medium">
               <Link href="/" className="hover:opacity-80 transition-opacity">
                 <svg className="w-4.5 h-4.5 text-black dark:text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -332,8 +332,8 @@ function ListContent({
 
           {/* Hero Banner Image */}
           {activeArticle.image && (
-            <section className="max-w-360 mx-auto px-5 mb-6 font-google-sans">
-              <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
+          <section className="flex flex-col justify-between max-w-360 mx-auto my-2 md:my-3 px-5 lg:px-8 hd:px-12 3xl:px-8 gap-2.5 z-50">
+            <div className="hidden sm:block relative w-full h-55 sm:h-87.5 md:h-105 rounded-[20px] overflow-hidden bg-surface shadow-md">
                 <Image
                   src={activeArticle.image}
                   alt={activeArticle.title}
