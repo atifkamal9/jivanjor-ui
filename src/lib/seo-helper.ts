@@ -88,10 +88,44 @@ export async function fetchMatchedSeo(
   extraCandidateIds: (string | null | undefined)[] = []
 ): Promise<SeoMetadata | undefined> {
   try {
-    const seoList = await api.getSeoMetadata().catch((err) => {
-      console.warn(`[fetchMatchedSeo] Failed to fetch SEO metadata:`, err?.message || err);
-      return [];
+    
+// ---update 
+
+const seoList = await (async () => {
+  try {
+    const { getServerApiBase } = await import("@/lib/server-api");
+    const apiBase = await getServerApiBase();
+
+    const response = await fetch(`${apiBase}/seo`, {
+      cache: "no-store",
     });
+
+    if (!response.ok) {
+      throw new Error(`SEO API failed with ${response.status}`);
+    }
+
+    const result = await response.json();
+    const list = result?.data?.seoList ?? result?.data?.seo ?? [];
+
+    if (!Array.isArray(list)) {
+      return [];
+    }
+
+    // Reuse the existing mapper through the API module.
+    const { mapSeoFromBackend } = await import("@/lib/api");
+    return list.map(mapSeoFromBackend);
+  } catch (err) {
+    console.warn(
+      "[fetchMatchedSeo] Failed to fetch SEO metadata:",
+      err instanceof Error ? err.message : err
+    );
+    return [];
+  }
+})();
+
+//----
+
+
     if (!seoList || seoList.length === 0) return undefined;
 
     const normType = (pageType || "").toLowerCase().replace("_", "-");

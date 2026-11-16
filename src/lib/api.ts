@@ -683,7 +683,7 @@ function mapBlogPostFromBackend(post: any): BlogPost {
   };
 }
 
-function mapSeoFromBackend(seo: any): SeoMetadata {
+export function mapSeoFromBackend(seo: any): SeoMetadata {
   const isHome =
     seo.pageType === "STATIC" && (seo.pageId === "STATIC_PAGE" || !seo.pageId);
   return {
