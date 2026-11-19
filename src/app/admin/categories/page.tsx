@@ -27,6 +27,7 @@ import {
   ArrowDown,
   GripVertical,
   Image as ImageIcon,
+  X,
 } from "lucide-react";
 
 export default function CategoriesPage() {
@@ -105,6 +106,9 @@ export default function CategoriesPage() {
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setUserRole(getUserRole());
@@ -231,6 +235,7 @@ export default function CategoriesPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     setFormData({
       name: "",
       slug: "",
@@ -268,6 +273,7 @@ export default function CategoriesPage() {
 
   const handleOpenEdit = (category: Category) => {
     setEditingId(category.id);
+    setErrorMessage(null);
     setFormData({
       name: category.name,
       slug: category.slug,
@@ -318,37 +324,69 @@ export default function CategoriesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
+
     try {
       const savedCat = await api.saveCategory({
         id: editingId || undefined,
         ...formData,
       });
 
-      // Save SEO metadata record in context
-      await api.saveSeoMetadata({
-        id: existingSeoId || undefined,
-        page_type: "category",
-        page_id: savedCat.id,
-        meta_title: seoMetaTitle || savedCat.name,
-        meta_description: seoMetaDescription || savedCat.description || "",
-        canonical_url: seoCanonicalUrl || `https://jivanjor.com/categories/${savedCat.slug}`,
-        image: seoImage || undefined,
-      });
+      // Save SEO metadata record safely in context
+      try {
+        const metaTitle = (seoMetaTitle || savedCat.name || "Category").trim();
+        let metaDesc = (seoMetaDescription || savedCat.description || savedCat.tagline || "").trim();
+        if (!metaDesc || metaDesc.length < 5) {
+          metaDesc = `${savedCat.name} classification and product range.`;
+        }
 
+        await api.saveSeoMetadata({
+          id: existingSeoId || undefined,
+          page_type: "category",
+          page_id: savedCat.id,
+          meta_title: metaTitle.length >= 2 ? metaTitle : `${savedCat.name} | Jivanjor`,
+          meta_description: metaDesc,
+          canonical_url: seoCanonicalUrl || `https://jivanjor.com/categories/${savedCat.slug}`,
+          image: seoImage || undefined,
+        });
+      } catch (seoErr) {
+        console.warn("Non-fatal: Failed to save category SEO metadata", seoErr);
+      }
+
+      // If a subcategory was modified or created, ensure its parent is expanded
+      if (savedCat.parent_category) {
+        setCollapsedCategoryIds((prev) => ({
+          ...prev,
+          [savedCat.parent_category]: false,
+        }));
+      }
+
+      // Close modal and sync updated categories list with loading state
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save category & SEO", err);
+      setErrorMessage(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to save category classification. Please verify the input and try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteCategory(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete category", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -840,8 +878,9 @@ export default function CategoriesPage() {
           <div className="flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0">
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => setIsModalOpen(false)}
-              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Discard changes"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -856,6 +895,19 @@ export default function CategoriesPage() {
               </p>
             </div>
           </div>
+
+          {errorMessage && (
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-semibold shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:text-red-900 dark:hover:text-red-200 cursor-pointer transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
             {/* Sidebar tabs */}
@@ -1259,16 +1311,29 @@ export default function CategoriesPage() {
               <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 dark:border-zinc-800 mt-6 shrink-0">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg"
+                  disabled={isSaving}
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[170px]"
                 >
-                  {editingId ? "Save Modifications" : "Publish Category"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? editingId
+                        ? "Saving Modifications..."
+                        : "Publishing Category..."
+                      : editingId
+                        ? "Save Modifications"
+                        : "Publish Category"}
+                  </span>
                 </button>
               </div>
             </div>
@@ -1288,16 +1353,23 @@ export default function CategoriesPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 transition-all"
               >
                 Cancel
               </button>
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer disabled:opacity-50 transition-all"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>
@@ -1351,17 +1423,25 @@ export default function CategoriesPage() {
 
           // Save SEO metadata if SEO fields are present
           if (row.meta_title || row.meta_description || row.canonical_url || row.seo_image) {
-            const latestSeos = await api.getSeoMetadata();
-            const matchedSeo = latestSeos.find((s) => s.page_type === "category" && s.page_id === savedCat.id);
-            await api.saveSeoMetadata({
-              id: matchedSeo?.id,
-              page_type: "category",
-              page_id: savedCat.id,
-              meta_title: row.meta_title || savedCat.name,
-              meta_description: row.meta_description || savedCat.description || "",
-              canonical_url: row.canonical_url || `https://jivanjor.com/categories?category=${savedCat.slug}`,
-              image: row.seo_image || undefined,
-            });
+            try {
+              const latestSeos = await api.getSeoMetadata();
+              const matchedSeo = latestSeos.find((s) => s.page_type === "category" && s.page_id === savedCat.id);
+              let metaDesc = (row.meta_description || savedCat.description || savedCat.tagline || "").trim();
+              if (!metaDesc || metaDesc.length < 5) {
+                metaDesc = `${savedCat.name} classification and product range.`;
+              }
+              await api.saveSeoMetadata({
+                id: matchedSeo?.id,
+                page_type: "category",
+                page_id: savedCat.id,
+                meta_title: row.meta_title || savedCat.name,
+                meta_description: metaDesc,
+                canonical_url: row.canonical_url || `https://jivanjor.com/categories/${savedCat.slug}`,
+                image: row.seo_image || undefined,
+              });
+            } catch (seoErr) {
+              console.warn("Non-fatal: Failed to save category SEO metadata during bulk upload", seoErr);
+            }
           }
         }}
       />
