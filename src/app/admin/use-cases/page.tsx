@@ -18,6 +18,7 @@ import {
   Globe,
   FileSearch,
   BookOpen,
+  X,
 } from "lucide-react";
 
 type ComposerTab = "useCase" | "seo";
@@ -56,6 +57,9 @@ export default function UseCasesPage() {
   const [composerPreview, setComposerPreview] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // ContentEditable Editor Ref
   const editorRef = useRef<HTMLDivElement>(null);
@@ -116,6 +120,7 @@ export default function UseCasesPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     setFormData({
       title: "",
       slug: "",
@@ -132,6 +137,7 @@ export default function UseCasesPage() {
 
   const handleOpenEdit = async (useCase: UseCase) => {
     setEditingId(useCase.id);
+    setErrorMessage(null);
     setFormData({
       title: useCase.title,
       slug: useCase.slug,
@@ -168,6 +174,9 @@ export default function UseCasesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
+
     try {
       const saved = await api.saveUseCase({
         id: editingId || undefined,
@@ -176,31 +185,50 @@ export default function UseCasesPage() {
 
       // Save SEO metadata if filled
       if (seoData.meta_title || seoData.meta_description) {
-        await api.saveSeoMetadata({
-          id: existingSeoId || undefined,
-          page_type: "use_case",
-          page_id: saved?.id || editingId || "",
-          meta_title: seoData.meta_title || formData.title,
-          meta_description: seoData.meta_description || formData.description,
-          canonical_url: seoData.canonical_url || `/applications?article=${formData.slug}`,
-          image: seoData.image || formData.image,
-        });
+        try {
+          const metaTitle = (seoData.meta_title || formData.title || "Application Use Case").trim();
+          let metaDesc = (seoData.meta_description || formData.description || "").trim();
+          if (!metaDesc || metaDesc.length < 5) {
+            metaDesc = `${formData.title} application guidelines and story overview.`;
+          }
+          await api.saveSeoMetadata({
+            id: existingSeoId || undefined,
+            page_type: "use_case",
+            page_id: saved?.id || editingId || "",
+            meta_title: metaTitle.length >= 2 ? metaTitle : `${formData.title} | Jivanjor`,
+            meta_description: metaDesc,
+            canonical_url: seoData.canonical_url || `https://jivanjor.com/applications?article=${formData.slug}`,
+            image: seoData.image || formData.image || undefined,
+          });
+        } catch (seoErr) {
+          console.warn("Non-fatal: Failed to save use case SEO metadata", seoErr);
+        }
       }
 
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save use case", err);
+      setErrorMessage(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to save application use case. Please check the input and try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteUseCase(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete use case", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -360,12 +388,13 @@ export default function UseCasesPage() {
       ) : (
         <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
           {/* Header Workspace Title Bar */}
-          <div className="flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0 gap-4">
             <div className="flex items-center gap-3">
               <button
                 type="button"
+                disabled={isSaving}
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+                className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Discard changes"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -392,6 +421,19 @@ export default function UseCasesPage() {
               </button>
             )}
           </div>
+
+          {errorMessage && (
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-semibold shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:text-red-900 dark:hover:text-red-200 cursor-pointer transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           {/* Composer Tabs */}
           <div className="flex gap-1 bg-gray-100 dark:bg-zinc-800/60 p-1 rounded-xl w-fit border border-gray-200 dark:border-zinc-700">
@@ -629,16 +671,29 @@ export default function UseCasesPage() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg active:scale-95"
+                  disabled={isSaving}
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[170px]"
                 >
-                  {editingId ? "Save Use Case" : "Record Use Case"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? editingId
+                        ? "Saving Use Case..."
+                        : "Recording Use Case..."
+                      : editingId
+                        ? "Save Use Case"
+                        : "Record Use Case"}
+                  </span>
                 </button>
               </div>
             </form>
@@ -658,16 +713,23 @@ export default function UseCasesPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 transition-all"
               >
                 Cancel
               </button>
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer disabled:opacity-50 transition-all"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>

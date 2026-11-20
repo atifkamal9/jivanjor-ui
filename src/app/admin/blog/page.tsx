@@ -24,6 +24,7 @@ import {
   Image as ImageIcon,
   ChevronLeft,
   ChevronRight,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -67,6 +68,9 @@ export default function BlogPage() {
   const [composerPreview, setComposerPreview] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // ContentEditable Editor Ref
   const editorRef = useRef<HTMLDivElement>(null);
@@ -163,6 +167,7 @@ export default function BlogPage() {
   const handleOpenAdd = () => {
     setEditingId(null);
     setIsSlugCustomized(false);
+    setErrorMessage(null);
     setFormData({
       title: "",
       slug: "",
@@ -186,6 +191,7 @@ export default function BlogPage() {
   const handleOpenEdit = async (blog: BlogPost) => {
     setEditingId(blog.id);
     setIsSlugCustomized(true);
+    setErrorMessage(null);
     setFormData({
       title: blog.title,
       slug: blog.slug,
@@ -227,6 +233,9 @@ export default function BlogPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
+
     const currentContent = editorRef.current ? editorRef.current.innerHTML : formData.content;
     const tags = formData.tagsInput
       .split(",")
@@ -258,31 +267,50 @@ export default function BlogPage() {
         seoData.canonical_url ||
         seoData.image;
       if (hasSeo) {
-        await api.saveSeoMetadata({
-          id: existingSeoId || undefined,
-          page_type: "blog",
-          page_id: saved.id,
-          meta_title: seoData.meta_title,
-          meta_description: seoData.meta_description,
-          canonical_url: seoData.canonical_url,
-          image: seoData.image || undefined,
-        });
+        try {
+          const metaTitle = (seoData.meta_title || saved.title || "Blog Post").trim();
+          let metaDesc = (seoData.meta_description || saved.tldr || saved.title || "").trim();
+          if (!metaDesc || metaDesc.length < 5) {
+            metaDesc = `${saved.title} knowledge article and insights.`;
+          }
+          await api.saveSeoMetadata({
+            id: existingSeoId || undefined,
+            page_type: "blog",
+            page_id: saved.id,
+            meta_title: metaTitle.length >= 2 ? metaTitle : `${saved.title} | Jivanjor`,
+            meta_description: metaDesc,
+            canonical_url: seoData.canonical_url || `https://jivanjor.com/blog/${saved.slug}`,
+            image: seoData.image || saved.image || undefined,
+          });
+        } catch (seoErr) {
+          console.warn("Non-fatal: Failed to save blog post SEO metadata", seoErr);
+        }
       }
 
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save blog post", err);
+      setErrorMessage(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to save publication. Please check the input and try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteBlogPost(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete blog post", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -526,8 +554,9 @@ export default function BlogPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
+                disabled={isSaving}
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+                className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Discard changes"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -554,6 +583,19 @@ export default function BlogPage() {
               </button>
             )}
           </div>
+
+          {errorMessage && (
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-semibold shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:text-red-900 dark:hover:text-red-200 cursor-pointer transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           {/* Composer Tabs */}
           <div className="flex gap-1 bg-gray-100 dark:bg-zinc-800/60 p-1 rounded-xl w-fit border border-gray-200 dark:border-zinc-700">
@@ -936,16 +978,29 @@ export default function BlogPage() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg"
+                  disabled={isSaving}
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[170px]"
                 >
-                  {editingId ? "Save Modifications" : "Publish Publication"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? editingId
+                        ? "Saving Modifications..."
+                        : "Publishing Publication..."
+                      : editingId
+                        ? "Save Modifications"
+                        : "Publish Publication"}
+                  </span>
                 </button>
               </div>
             </form>
@@ -965,16 +1020,23 @@ export default function BlogPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 transition-all"
               >
                 Cancel
               </button>
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer disabled:opacity-50 transition-all"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>
