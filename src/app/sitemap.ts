@@ -1,6 +1,10 @@
+
 import type { MetadataRoute } from "next";
 import {
-  api,
+  mapProductFromBackend,
+  mapCategoryFromBackend,
+  mapBlogPostFromBackend,
+  mapTemplateFromBackend,
   type BlogPost,
   type Category,
   type Page,
@@ -8,15 +12,10 @@ import {
   type Product,
   type UseCase,
 } from "@/lib/api";
+import { getServerApiBase } from "@/lib/server-api";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  process.env.SITE_URL ||
-  "https://jivanjor.com"
-).replace(/\/+$/, "");
 
 const STATIC_ROUTES: Array<{
   path: string;
@@ -46,28 +45,72 @@ const STATIC_ROUTES: Array<{
 
 function parseDate(dateStr?: string | null): Date {
   if (!dateStr) return new Date();
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? new Date() : d;
+  const date = new Date(dateStr);
+  return isNaN(date.getTime()) ? new Date() : date;
+}
+
+async function getSitemapData<T>(
+  apiBase: string,
+  endpoint: string,
+  responseKey: string,
+  mapper?: (item: any) => T
+): Promise<T[]> {
+  const response = await fetch(`${apiBase}${endpoint}`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Sitemap API ${endpoint} returned HTTP ${response.status}`
+    );
+  }
+
+  const result = await response.json();
+
+  const items =
+    result?.data?.[responseKey] ??
+    result?.[responseKey] ??
+    [];
+
+  if (!Array.isArray(items)) {
+    throw new Error(`Invalid sitemap API response: ${endpoint}`);
+  }
+
+  return mapper ? items.map(mapper) : (items as T[]);
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const apiBase = await getServerApiBase();
+
+  // The production and UAT domains share one frontend.
+  // Generate URLs for the hostname of the incoming request.
+  const siteUrl = apiBase.replace(/\/api\/?$/, "");
+
   const seenUrls = new Set<string>();
   const entries: MetadataRoute.Sitemap = [];
 
   const addEntry = (entry: MetadataRoute.Sitemap[number]) => {
     let cleanUrl = entry.url.trim();
+
     try {
       const parsed = new URL(cleanUrl);
-      if (parsed.pathname.length > 1 && parsed.pathname.endsWith("/")) {
+
+      if (
+        parsed.pathname.length > 1 &&
+        parsed.pathname.endsWith("/")
+      ) {
         parsed.pathname = parsed.pathname.slice(0, -1);
       }
+
       cleanUrl = parsed.toString();
     } catch {
       cleanUrl = cleanUrl.replace(/([^:]\/)\/+/g, "$1");
     }
 
     const dedupeKey = cleanUrl.toLowerCase();
+
     if (seenUrls.has(dedupeKey)) return;
+
     seenUrls.add(dedupeKey);
 
     entries.push({
@@ -76,17 +119,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   };
 
-  // 1. Core static routes
+  // 1. Static routes
   for (const route of STATIC_ROUTES) {
     addEntry({
-      url: `${SITE_URL}${route.path}`,
+      url: `${siteUrl}${route.path}`,
       lastModified: new Date(),
       changeFrequency: route.changeFrequency,
       priority: route.priority,
     });
   }
 
-  // 2. Fetch live database collections in parallel
+  // 2. Fetch current CMS collections from the correct backend
   const [
     productsRes,
     categoriesRes,
@@ -95,89 +138,166 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     templatesRes,
     useCasesRes,
   ] = await Promise.allSettled([
-    api.getProducts({ visibleOnly: true }).catch(() => []),
-    api.getCategories().catch(() => []),
-    api.getBlogPosts().catch(() => []),
-    api.getPages().catch(() => []),
-    api.getTemplates().catch(() => []),
-    api.getUseCases().catch(() => []),
+    getSitemapData<Product>(
+      apiBase,
+      "/products?limit=9999&visibleOnly=true",
+      "products",
+      mapProductFromBackend
+    ),
+    getSitemapData<Category>(
+      apiBase,
+      "/categories",
+      "categories",
+      mapCategoryFromBackend
+    ),
+    getSitemapData<BlogPost>(
+      apiBase,
+      "/blogs?limit=9999",
+      "blogs",
+      mapBlogPostFromBackend
+    ),
+    getSitemapData<Page>(
+      apiBase,
+      "/pages",
+      "pages"
+    ),
+    getSitemapData<PageTemplate>(
+      apiBase,
+      "/templates",
+      "templates",
+      mapTemplateFromBackend
+    ),
+    getSitemapData<UseCase>(
+      apiBase,
+      "/use-cases",
+      "useCases"
+    ),
   ]);
 
-  const products: Product[] =
-    productsRes.status === "fulfilled" && Array.isArray(productsRes.value)
-      ? productsRes.value
-      : [];
-  const categories: Category[] =
-    categoriesRes.status === "fulfilled" && Array.isArray(categoriesRes.value)
-      ? categoriesRes.value
-      : [];
-  const blogs: BlogPost[] =
-    blogsRes.status === "fulfilled" && Array.isArray(blogsRes.value)
-      ? blogsRes.value
-      : [];
-  const pages: Page[] =
-    pagesRes.status === "fulfilled" && Array.isArray(pagesRes.value)
-      ? pagesRes.value
-      : [];
-  const templates: PageTemplate[] =
-    templatesRes.status === "fulfilled" && Array.isArray(templatesRes.value)
-      ? templatesRes.value
-      : [];
-  const useCases: UseCase[] =
-    useCasesRes.status === "fulfilled" && Array.isArray(useCasesRes.value)
-      ? useCasesRes.value
-      : [];
+  const results = [
+    productsRes,
+    categoriesRes,
+    blogsRes,
+    pagesRes,
+    templatesRes,
+    useCasesRes,
+  ];
 
-  // 3. Dynamic Categories from API
+  const names = [
+    "products",
+    "categories",
+    "blogs",
+    "pages",
+    "templates",
+    "use-cases",
+  ];
+
+  results.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.error(
+        `[sitemap.xml] Failed to load ${names[index]}:`,
+        result.reason
+      );
+    }
+  });
+
+  // Do not silently publish a static-only sitemap
+  // when every dynamic request has failed.
+  if (results.every((result) => result.status === "rejected")) {
+    throw new Error("All dynamic sitemap API requests failed");
+  }
+
+  const products: Product[] =
+    productsRes.status === "fulfilled" ? productsRes.value : [];
+
+  const categories: Category[] =
+    categoriesRes.status === "fulfilled" ? categoriesRes.value : [];
+
+  const blogs: BlogPost[] =
+    blogsRes.status === "fulfilled" ? blogsRes.value : [];
+
+  const pages: Page[] =
+    pagesRes.status === "fulfilled" ? pagesRes.value : [];
+
+  const templates: PageTemplate[] =
+    templatesRes.status === "fulfilled" ? templatesRes.value : [];
+
+  const useCases: UseCase[] =
+    useCasesRes.status === "fulfilled" ? useCasesRes.value : [];
+
+  // 3. Dynamic categories
   for (const cat of categories) {
     if (cat.isVisible === false) continue;
+
     const slug = (cat.slug || cat.name || "")
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-");
+
     if (!slug) continue;
+
     addEntry({
-      url: `${SITE_URL}/categories/${slug}`,
-      lastModified: parseDate((cat as any).updatedAt || (cat as any).updated_at),
+      url: `${siteUrl}/categories/${slug}`,
+      lastModified: parseDate(
+        (cat as any).updatedAt || (cat as any).updated_at
+      ),
       changeFrequency: "weekly",
       priority: 0.9,
     });
   }
 
-  // Helper to ensure strictly visible products
+  // 4. Dynamic products
   const isProductVisible = (p: Product | any): boolean => {
     if (!p) return false;
-    if (p.isVisible === false || p.isVisible === "false" || p.isVisible === 0 || p.isVisible === "0") return false;
-    if (p.is_visible === false || p.is_visible === "false" || p.is_visible === 0 || p.is_visible === "0") return false;
-    if (p.metadata && typeof p.metadata === "object") {
-      if (p.metadata.isVisible === false || p.metadata.isVisible === "false" || p.metadata.isVisible === 0 || p.metadata.isVisible === "0") return false;
-      if (p.metadata.is_visible === false || p.metadata.is_visible === "false" || p.metadata.is_visible === 0 || p.metadata.is_visible === "0") return false;
+
+    const hidden = (value: any) =>
+      value === false || value === "false" ||
+      value === 0 || value === "0";
+
+    if (hidden(p.isVisible) || hidden(p.is_visible)) {
+      return false;
     }
+
+    if (p.metadata && typeof p.metadata === "object") {
+      if (
+        hidden(p.metadata.isVisible) ||
+        hidden(p.metadata.is_visible)
+      ) {
+        return false;
+      }
+    }
+
     return p.isVisible === true || p.isVisible === undefined;
   };
 
-  // 4. Dynamic Products from API (strictly only visible products)
   for (const prod of products) {
     if (!isProductVisible(prod)) continue;
+
     const slug = (prod.slug || prod.name || "")
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-");
+
     if (!slug) continue;
+
     addEntry({
-      url: `${SITE_URL}/products?product=${encodeURIComponent(slug)}`,
-      lastModified: parseDate((prod as any).updatedAt || (prod as any).updated_at),
+      url: `${siteUrl}/products?product=${encodeURIComponent(slug)}`,
+      lastModified: parseDate(
+        (prod as any).updatedAt || (prod as any).updated_at
+      ),
       changeFrequency: "weekly",
       priority: 0.9,
     });
   }
 
-  // 5. Dynamic Blog Posts from API
+  // 5. Dynamic blogs
   for (const blog of blogs) {
     const slug = (blog.slug || blog.title || "").trim();
+
     if (!slug) continue;
+
     addEntry({
-      url: `${SITE_URL}/blog/${slug}`,
+      url: `${siteUrl}/blog/${slug}`,
       lastModified: parseDate(
         blog.updated_at || blog.updatedAt || blog.publish_date
       ),
@@ -186,22 +306,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // 6. Dynamic Use Cases / Applications from API
+  // 6. Dynamic use cases / applications
   for (const uc of useCases) {
     const slug = (uc.slug || uc.title || "")
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-");
+
     if (!slug) continue;
+
     addEntry({
-      url: `${SITE_URL}/applications?article=${encodeURIComponent(slug)}`,
+      url: `${siteUrl}/applications?article=${encodeURIComponent(slug)}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     });
   }
 
-  // 7. Dynamic CMS-managed Pages from API
+  // 7. CMS-managed pages
   const reservedSlugs = new Set([
     "home",
     "about",
@@ -219,14 +341,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const page of pages) {
     const slug = page.slug?.trim().toLowerCase();
+
     if (!slug || reservedSlugs.has(slug)) continue;
 
-    const template = templates.find((t) => t.id === page.activeTemplateId);
+    const template = templates.find(
+      (t) => t.id === page.activeTemplateId
+    );
+
     const rawData =
-      (template?.rawSections as any) || (template?.sections as any) || {};
+      (template?.rawSections as any) ||
+      (template?.sections as any) ||
+      {};
+
     const layoutType = rawData.layoutType || "";
 
     let pagePath = `/${slug}`;
+
     if (layoutType === "about") {
       pagePath = `/about/${slug}`;
     } else if (layoutType === "applications") {
@@ -240,12 +370,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     addEntry({
-      url: `${SITE_URL}${pagePath}`,
+      url: `${siteUrl}${pagePath}`,
       lastModified: parseDate(
         page.updatedAt ||
-          page.updated_at ||
-          page.createdAt ||
-          page.created_at
+        page.updated_at ||
+        page.createdAt ||
+        page.created_at
       ),
       changeFrequency: "weekly",
       priority: 0.8,

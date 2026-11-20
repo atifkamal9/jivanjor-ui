@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { getAuthToken } from "./auth";
 
 export interface User {
@@ -634,7 +634,7 @@ function mapIssueFromBackend(iss: any): Issue {
   };
 }
 
-function mapBlogPostFromBackend(post: any): BlogPost {
+export function mapBlogPostFromBackend(post: any): BlogPost {
   let tagsArray: string[] = [];
   if (post.tags) {
     if (Array.isArray(post.tags)) {
@@ -683,7 +683,7 @@ function mapBlogPostFromBackend(post: any): BlogPost {
   };
 }
 
-function mapSeoFromBackend(seo: any): SeoMetadata {
+export function mapSeoFromBackend(seo: any): SeoMetadata {
   const isHome =
     seo.pageType === "STATIC" && (seo.pageId === "STATIC_PAGE" || !seo.pageId);
   return {
@@ -1286,14 +1286,14 @@ export const api = {
               details: [
                 { label: "Phone", value: "1800-XXX-XXX", icon: "/images/Phone-call.svg" },
                 { label: "Email", value: "support@jivanjor.com", icon: "/images/Mail-one.svg" },
-                { label: "Hours", value: "Mon-Sat, 9:00 AM – 6:00 PM", icon: "/images/Alarm-clock.svg" },
+                { label: "Hours", value: "Mon-Sat, 9:00 AM â€“ 6:00 PM", icon: "/images/Alarm-clock.svg" },
               ],
             },
             {
               title: "Corporate Headquarters",
               details: [
                 { label: "Address", value: "1234, Address Street", icon: "/images/Pin.svg" },
-                { label: "Hours", value: "Mon-Sat, 9:00 AM – 6:00 PM", icon: "/images/Alarm-clock.svg" },
+                { label: "Hours", value: "Mon-Sat, 9:00 AM â€“ 6:00 PM", icon: "/images/Alarm-clock.svg" },
               ],
             },
           ],
@@ -1588,6 +1588,7 @@ export interface FormSubmissionsHealth {
   oldestPendingAgeSeconds: number;
   lastSuccessAt?: string | null;
 }
+
 
 
 
