@@ -656,6 +656,9 @@ export default function TemplatesPage() {
   // Deletion confirm state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -715,6 +718,7 @@ export default function TemplatesPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     setTemplateName("");
     setTemplateSlug("");
     setHomeSections({ layoutType: "" });
@@ -724,6 +728,7 @@ export default function TemplatesPage() {
 
   const handleOpenEdit = (template: PageTemplate) => {
     setEditingId(template.id);
+    setErrorMessage(null);
     setTemplateName(template.name);
     setTemplateSlug(template.slug);
 
@@ -936,6 +941,8 @@ export default function TemplatesPage() {
       alert("Please select a Template Layout Style Type.");
       return;
     }
+    setIsSaving(true);
+    setErrorMessage(null);
     try {
       await api.saveTemplate({
         id: editingId || undefined,
@@ -945,18 +952,24 @@ export default function TemplatesPage() {
       });
       setIsFormView(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save template", err);
+      setErrorMessage(err.message || "Failed to save template");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDeleteTemplate = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteTemplate(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete template", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -1212,8 +1225,9 @@ export default function TemplatesPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
+                disabled={isSaving}
                 onClick={() => setIsFormView(false)}
-                className="p-2 rounded-xl bg-surface hover:bg-primary/10 text-foreground/60 hover:text-primary transition-all cursor-pointer border border-border"
+                className="p-2 rounded-xl bg-surface hover:bg-primary/10 text-foreground/60 hover:text-primary transition-all cursor-pointer border border-border disabled:opacity-50"
                 title="Discard changes"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -1229,6 +1243,19 @@ export default function TemplatesPage() {
               </div>
             </div>
           </div>
+
+          {errorMessage && (
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 dark:bg-red-950/20 dark:border-red-900/50 flex items-center justify-between text-sm text-red-600 dark:text-red-400 font-medium shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
             {/* Sidebar indices tabs */}
@@ -5250,17 +5277,23 @@ export default function TemplatesPage() {
               <div className="mt-auto pt-6 border-t border-border flex items-center justify-end gap-3 bg-background shrink-0">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsFormView(false)}
-                  className="px-6 py-3 rounded-xl text-sm font-bold border border-border text-foreground hover:bg-surface cursor-pointer"
+                  className="px-6 py-3 rounded-xl text-sm font-bold border border-border text-foreground hover:bg-surface cursor-pointer disabled:opacity-50"
                 >
                   Discard Changes
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-primary hover:opacity-90 text-white shadow-md shadow-primary/10 cursor-pointer flex items-center gap-1.5"
+                  disabled={isSaving}
+                  className="px-6 py-3 rounded-xl text-sm font-bold bg-primary hover:opacity-90 text-white shadow-md shadow-primary/10 cursor-pointer flex items-center gap-2 disabled:opacity-50"
                 >
-                  <CheckCircle2 className="h-4.5 w-4.5" />
-                  <span>Save Template Layout</span>
+                  {isSaving ? (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  ) : (
+                    <CheckCircle2 className="h-4.5 w-4.5 shrink-0" />
+                  )}
+                  <span>{isSaving ? "Saving Template..." : "Save Template Layout"}</span>
                 </button>
               </div>
             </div>
@@ -5280,16 +5313,21 @@ export default function TemplatesPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
+                disabled={isDeleting}
                 onClick={() => handleDeleteTemplate(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer disabled:opacity-50"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>

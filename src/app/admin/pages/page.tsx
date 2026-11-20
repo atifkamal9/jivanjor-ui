@@ -727,6 +727,9 @@ export default function PagesPage() {
   } | null>(null);
   const [isDeletingAuthor, setIsDeletingAuthor] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Subpages Drag & Drop Reordering state
   const [draggedSubpageId, setDraggedSubpageId] = useState<string | null>(null);
@@ -842,6 +845,7 @@ export default function PagesPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     setFormData({
       title: "",
       slug: "",
@@ -860,6 +864,7 @@ export default function PagesPage() {
 
   const handleOpenEdit = (page: Page) => {
     setEditingId(page.id);
+    setErrorMessage(null);
 
     // Identify selected template layout type and bootstrap defaults
     let pageSections = page.sections;
@@ -1274,37 +1279,54 @@ export default function PagesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
     try {
       const savedPage = await api.savePage({
         id: editingId || undefined,
         ...formData,
       });
 
-      const targetPageId = savedPage.slug === "home" ? "HOME_PAGE" : (savedPage.id || savedPage.slug);
-      await api.saveSeoMetadata({
-        id: existingSeoId || undefined,
-        page_type: "static",
-        page_id: targetPageId,
-        meta_title: seoMetaTitle || savedPage.title,
-        meta_description: seoMetaDescription || savedPage.description || "",
-        canonical_url: seoCanonicalUrl || `https://jivanjor.com/${savedPage.slug === "home" ? "" : savedPage.slug}`,
-        image: seoImage || undefined,
-      });
+      try {
+        const targetPageId = savedPage.slug === "home" ? "HOME_PAGE" : (savedPage.id || savedPage.slug);
+        const resolvedTitle = seoMetaTitle.trim() || savedPage.title || "Page";
+        const fallbackDesc = `${savedPage.title || "Jivanjor Page"} overview and details`;
+        const resolvedDesc = seoMetaDescription.trim() || savedPage.description?.trim() || fallbackDesc;
+        const finalDesc = resolvedDesc.length >= 5 ? resolvedDesc : `${resolvedDesc} overview`;
+
+        await api.saveSeoMetadata({
+          id: existingSeoId || undefined,
+          page_type: "static",
+          page_id: targetPageId,
+          meta_title: resolvedTitle,
+          meta_description: finalDesc,
+          canonical_url: seoCanonicalUrl || `https://jivanjor.com/${savedPage.slug === "home" ? "" : savedPage.slug}`,
+          image: seoImage || undefined,
+        });
+      } catch (seoErr) {
+        console.warn("Failed to save SEO metadata for page, non-fatal:", seoErr);
+      }
 
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save page", err);
+      setErrorMessage(err.message || "Failed to save page");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deletePage(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete page", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -1755,8 +1777,9 @@ export default function PagesPage() {
           <div className="flex items-center gap-3 border-b border-border pb-5 shrink-0">
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => setIsModalOpen(false)}
-              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-foreground/60 dark:text-zinc-400 border border-border cursor-pointer transition-all"
+              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-foreground/60 dark:text-zinc-400 border border-border cursor-pointer transition-all disabled:opacity-50"
               title="Discard changes"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -1771,6 +1794,19 @@ export default function PagesPage() {
               </p>
             </div>
           </div>
+
+          {errorMessage && (
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 dark:bg-red-950/20 dark:border-red-900/50 flex items-center justify-between text-sm text-red-600 dark:text-red-400 font-medium shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
             {/* Sidebar tabs */}
@@ -6777,16 +6813,25 @@ export default function PagesPage() {
               <div className="flex items-center justify-end gap-3 pt-6 border-t border-border mt-6 shrink-0">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-border text-foreground hover:bg-surface cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-border text-foreground hover:bg-surface cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-primary hover:opacity-90 text-white shadow-md shadow-primary/10 cursor-pointer"
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-primary hover:opacity-90 text-white shadow-md shadow-primary/10 cursor-pointer disabled:opacity-50"
                 >
-                  {editingId ? "Save Custom Page" : "Configure Page"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? "Saving Page..."
+                      : (editingId ? "Save Custom Page" : "Configure Page")}
+                  </span>
                 </button>
               </div>
             </div>
@@ -6809,16 +6854,21 @@ export default function PagesPage() {
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-border text-foreground hover:bg-surface cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer disabled:opacity-50"
               >
-                Delete Everything
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Delete Everything"}</span>
               </button>
             </div>
           </div>

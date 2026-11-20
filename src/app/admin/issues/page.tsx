@@ -24,6 +24,9 @@ export default function IssuesPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -51,6 +54,7 @@ export default function IssuesPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     setFormData({
       issue_title: "",
       slug: "",
@@ -62,6 +66,7 @@ export default function IssuesPage() {
 
   const handleOpenEdit = (issue: Issue) => {
     setEditingId(issue.id);
+    setErrorMessage(null);
     setFormData({
       issue_title: issue.issue_title,
       slug: issue.slug,
@@ -73,6 +78,8 @@ export default function IssuesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
     try {
       await api.saveIssue({
         id: editingId || undefined,
@@ -80,18 +87,24 @@ export default function IssuesPage() {
       });
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save issue", err);
+      setErrorMessage(err.message || "Failed to save issue");
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteIssue(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete issue", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -250,8 +263,9 @@ export default function IssuesPage() {
           <div className="flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0">
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => setIsModalOpen(false)}
-              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all disabled:opacity-50"
               title="Discard changes"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -266,6 +280,19 @@ export default function IssuesPage() {
               </p>
             </div>
           </div>
+
+          {errorMessage && (
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 dark:bg-red-950/20 dark:border-red-900/50 flex items-center justify-between text-sm text-red-600 dark:text-red-400 font-medium">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-lg transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 rounded-3xl p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -333,16 +360,25 @@ export default function IssuesPage() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 dark:border-zinc-800">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg"
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg disabled:opacity-50"
                 >
-                  {editingId ? "Save Troubleshooting Asset" : "Publish Support Guide"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? (editingId ? "Saving..." : "Publishing...")
+                      : (editingId ? "Save Troubleshooting Asset" : "Publish Support Guide")}
+                  </span>
                 </button>
               </div>
             </form>
@@ -362,16 +398,21 @@ export default function IssuesPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer disabled:opacity-50"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>

@@ -548,8 +548,9 @@ export default function AdminPincodesPage() {
                 </div>
               </div>
               <button
+                disabled={isUploading}
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl text-zinc-400 cursor-pointer"
+                className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl text-zinc-400 cursor-pointer disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -629,8 +630,9 @@ export default function AdminPincodesPage() {
             {/* Modal Actions */}
             <div className="flex items-center justify-end gap-3 border-t border-zinc-100 dark:border-zinc-800 pt-4 mt-auto">
               <button
+                disabled={isUploading}
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer"
+                className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
