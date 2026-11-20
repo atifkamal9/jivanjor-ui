@@ -115,6 +115,9 @@ export default function ProductsPage() {
   // Delete state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setUserRole(getUserRole());
@@ -175,6 +178,7 @@ export default function ProductsPage() {
 
   const handleOpenAdd = () => {
     setEditingId(null);
+    setErrorMessage(null);
     const rootCats = categories.filter(c => !c.parent_category);
     const defaultMainId = rootCats[0]?.id || "";
     const subs = categories.filter(c => c.parent_category === defaultMainId);
@@ -257,6 +261,7 @@ export default function ProductsPage() {
 
   const handleOpenEdit = (product: Product) => {
     setEditingId(product.id);
+    setErrorMessage(null);
 
     // Find the product's category parent-child mapping
     const productCat = categories.find(c => c.id === product.category_id);
@@ -359,6 +364,7 @@ export default function ProductsPage() {
   const handleDuplicate = (product: Product) => {
     // Set editingId to null so saving creates a brand new product
     setEditingId(null);
+    setErrorMessage(null);
 
     // Find the product's category parent-child mapping
     const productCat = categories.find((c) => c.id === product.category_id);
@@ -463,6 +469,9 @@ export default function ProductsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
+
     try {
       const savedProd = await api.saveProduct({
         id: editingId || undefined,
@@ -470,31 +479,51 @@ export default function ProductsPage() {
         overviewBullets: formData.overviewBullets.slice(0, 3),
       });
 
-      // Save SEO metadata record in context
-      await api.saveSeoMetadata({
-        id: existingSeoId || undefined,
-        page_type: "product",
-        page_id: savedProd.id,
-        meta_title: seoMetaTitle || savedProd.name,
-        meta_description: seoMetaDescription || savedProd.description || "",
-        canonical_url: seoCanonicalUrl || `https://jivanjor.com/products/${savedProd.slug}`,
-        image: seoImage || undefined,
-      });
+      // Save SEO metadata record in context safely
+      try {
+        const metaTitle = (seoMetaTitle || savedProd.name || "Product").trim();
+        let metaDesc = (seoMetaDescription || savedProd.description || savedProd.short_description || "").trim();
+        if (!metaDesc || metaDesc.length < 5) {
+          metaDesc = `${savedProd.name} technical specifications and product details.`;
+        }
+
+        await api.saveSeoMetadata({
+          id: existingSeoId || undefined,
+          page_type: "product",
+          page_id: savedProd.id,
+          meta_title: metaTitle.length >= 2 ? metaTitle : `${savedProd.name} | Jivanjor`,
+          meta_description: metaDesc,
+          canonical_url: seoCanonicalUrl || `https://jivanjor.com/products/${savedProd.slug}`,
+          image: seoImage || undefined,
+        });
+      } catch (seoErr) {
+        console.warn("Non-fatal: Failed to save product SEO metadata", seoErr);
+      }
 
       setIsModalOpen(false);
       await loadData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to save product & SEO", err);
+      setErrorMessage(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to save product profile. Please check the input and try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
+    setIsDeleting(true);
     try {
       await api.deleteProduct(id);
       setDeleteConfirmId(null);
       await loadData();
     } catch (err) {
       console.error("Failed to delete product", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -796,8 +825,9 @@ export default function ProductsPage() {
           <div className="flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 pb-5 shrink-0">
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => setIsModalOpen(false)}
-              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all"
+              className="p-2 rounded-xl bg-surface hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-955/20 text-gray-500 dark:text-zinc-400 border border-gray-200 dark:border-zinc-800 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               title="Discard changes"
             >
               <ArrowLeft className="h-5 w-5" />
@@ -812,6 +842,19 @@ export default function ProductsPage() {
               </p>
             </div>
           </div>
+
+          {errorMessage && (
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-400 text-sm font-semibold shrink-0">
+              <span>{errorMessage}</span>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="p-1 hover:text-red-900 dark:hover:text-red-200 cursor-pointer transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex-1 flex flex-col lg:flex-row gap-6">
             {/* Sidebar tabs */}
@@ -2181,16 +2224,29 @@ export default function ProductsPage() {
               <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 dark:border-zinc-800 mt-6 shrink-0">
                 <button
                   type="button"
+                  disabled={isSaving}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                  className="px-5 py-3 rounded-xl text-sm font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg"
+                  disabled={isSaving}
+                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white shadow-md shadow-red-600/10 cursor-pointer transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[170px]"
                 >
-                  {editingId ? "Save Modifications" : "Publish Product"}
+                  {isSaving && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                  )}
+                  <span>
+                    {isSaving
+                      ? editingId
+                        ? "Saving Modifications..."
+                        : "Publishing Product..."
+                      : editingId
+                        ? "Save Modifications"
+                        : "Publish Product"}
+                  </span>
                 </button>
               </div>
             </div>
@@ -2210,16 +2266,23 @@ export default function ProductsPage() {
             </p>
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => setDeleteConfirmId(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-bold border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 transition-all"
               >
                 Cancel
               </button>
               <button
+                type="button"
+                disabled={isDeleting}
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white cursor-pointer disabled:opacity-50 transition-all"
               >
-                Confirm Delete
+                {isDeleting && (
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent shrink-0" />
+                )}
+                <span>{isDeleting ? "Deleting..." : "Confirm Delete"}</span>
               </button>
             </div>
           </div>
@@ -2347,17 +2410,25 @@ export default function ProductsPage() {
 
           // Save SEO metadata if SEO fields are present in the row
           if (row.meta_title || row.meta_description || row.canonical_url || row.seo_image) {
-            const latestSeos = await api.getSeoMetadata();
-            const matchedSeo = latestSeos.find((s) => s.page_type === "product" && s.page_id === savedProd.id);
-            await api.saveSeoMetadata({
-              id: matchedSeo?.id,
-              page_type: "product",
-              page_id: savedProd.id,
-              meta_title: row.meta_title || savedProd.name,
-              meta_description: row.meta_description || savedProd.description || "",
-              canonical_url: row.canonical_url || `https://jivanjor.com/products?product=${savedProd.slug}`,
-              image: row.seo_image || savedProd.image || undefined,
-            });
+            try {
+              const latestSeos = await api.getSeoMetadata();
+              const matchedSeo = latestSeos.find((s) => s.page_type === "product" && s.page_id === savedProd.id);
+              let metaDesc = (row.meta_description || savedProd.description || savedProd.short_description || "").trim();
+              if (!metaDesc || metaDesc.length < 5) {
+                metaDesc = `${savedProd.name} technical specifications and product details.`;
+              }
+              await api.saveSeoMetadata({
+                id: matchedSeo?.id,
+                page_type: "product",
+                page_id: savedProd.id,
+                meta_title: row.meta_title || savedProd.name,
+                meta_description: metaDesc,
+                canonical_url: row.canonical_url || `https://jivanjor.com/products?product=${savedProd.slug}`,
+                image: row.seo_image || savedProd.image || undefined,
+              });
+            } catch (seoErr) {
+              console.warn("Non-fatal: Failed to save product SEO metadata during bulk upload", seoErr);
+            }
           }
         }}
       />
